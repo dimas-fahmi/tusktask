@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import React from "react";
 import "@/src/ui/css/globals.tailwind.css";
-
+import { ThemeContextProvider } from "@/src/context/ThemeContext";
 
 export default function RootLayout({
   children,
@@ -11,10 +11,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`antialiased`}
-      >
-        {children}
+      <body className={`antialiased cassandra-pink bg-tt-primary`}>
+        <ThemeContextProvider>{children}</ThemeContextProvider>
       </body>
     </html>
   );
