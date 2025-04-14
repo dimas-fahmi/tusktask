@@ -1,19 +1,17 @@
-"use client";
-
 import React from "react";
-import useThemeContext from "@/src/lib/tusktask/hooks/context/useThemeContext";
+import { Metadata } from "next";
+import LandingPageindex from "@/src/ui/components/tusktask/pages/LandingPage";
+
+export const metadata: Metadata = {
+  title: "We'll Remember it for you | TuskTask",
+  description: "TuskTask - Task Management App",
+};
 
 const LandingPage = () => {
-  const { setCurrentTheme } = useThemeContext();
-
   return (
-    <div>
-      Landing Page
-      <button onClick={() => setCurrentTheme("default")}>default</button>
-      <button onClick={() => setCurrentTheme("cassandra-pink")}>
-        casandra
-      </button>
-    </div>
+    <>
+      <LandingPageindex />
+    </>
   );
 };
 

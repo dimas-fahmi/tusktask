@@ -3,6 +3,7 @@
 import React from "react";
 import "@/src/ui/css/globals.tailwind.css";
 import { ThemeContextProvider } from "@/src/context/ThemeContext";
+import { poppins, quicksand } from "@/src/ui/fonts";
 
 export default function RootLayout({
   children,
@@ -11,7 +12,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased cassandra-pink bg-tt-primary`}>
+      <body
+        className={`${poppins.variable} ${quicksand.variable} antialiased bg-tt-primary`}
+      >
         <ThemeContextProvider>{children}</ThemeContextProvider>
       </body>
     </html>
