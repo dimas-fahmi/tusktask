@@ -7,6 +7,8 @@ import Hugo from "../../../svg/logos/Hugo";
 import Axure from "../../../svg/logos/Axure";
 import Stripe from "../../../svg/logos/Stripe";
 import Coursera from "../../../svg/logos/Cousera";
+import { motion } from "motion/react";
+import { animate } from "motion";
 
 interface HeroProps {
   className?: string;
@@ -14,7 +16,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ className }) => {
   const heroContent = {
-    title: "Oops, Did You Just Kill Your Plants Again?",
+    title: "Oops, Did You Just Killed Your Plants Again?",
     subtitle:
       "Never Again! With Tuskask, we'll remind you of every event, task, and goal effortlessly.",
     primaryCta: "Get Started",
@@ -24,6 +26,27 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
       alt: "Illustration of Mabel the cat",
       width: 360,
       height: 360,
+    },
+  };
+
+  const imageVariants = {
+    animate: {
+      x: [-5, 5],
+      scale: [1, 1.05, 1],
+      transition: {
+        x: {
+          repeat: Infinity,
+          repeatType: "reverse" as const,
+          duration: 2,
+          ease: "easeInOut",
+        },
+        scale: {
+          repeat: Infinity,
+          repeatType: "loop" as const,
+          duration: 4,
+          ease: "easeInOut",
+        },
+      },
     },
   };
 
@@ -67,7 +90,11 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
       </div>
 
       {/* Illustration */}
-      <div className="flex items-center justify-center">
+      <motion.div
+        variants={imageVariants}
+        animate="animate"
+        className="flex items-center justify-center"
+      >
         <Image
           src={heroContent.image.src}
           alt={heroContent.image.alt}
@@ -76,7 +103,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
           priority
           className="max-w-full h-auto"
         />
-      </div>
+      </motion.div>
     </section>
   );
 };
