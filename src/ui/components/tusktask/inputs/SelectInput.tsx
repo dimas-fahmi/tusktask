@@ -79,9 +79,6 @@ const SelectInput = React.forwardRef<HTMLButtonElement, SelectInputProps>(
         <SelectContent>
           <SelectGroup>
             <SelectLabel>{label}</SelectLabel>
-            <SelectItem value={"7498247"} key={"lakdjsad"}>
-              fkajsdha
-            </SelectItem>
             {items?.map((item, index) => (
               <SelectItem value={item} key={index}>
                 {item}

@@ -91,7 +91,18 @@ export async function PATCH(req: Request) {
 
     // Fix birthDate to object
     if (typeof newValue.birthDate === "string") {
-      newValue.birthDate = new Date(newValue.birthDate);
+      const dateValue = new Date(newValue.birthDate);
+      if (isNaN(dateValue.getTime())) {
+        status = 400;
+        response = createResponse({
+          status,
+          message: "Invalid birth date format",
+          userFriendly: true,
+          data: null,
+        });
+        return NextResponse.json(response, { status });
+      }
+      newValue.birthDate = dateValue;
     }
 
     // Validate the update data using Zod schema
@@ -144,6 +155,7 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json(response, { status });
   } catch (error) {
+    console.error("Error updating user:", error);
     status = 500;
     response = createResponse({
       status,

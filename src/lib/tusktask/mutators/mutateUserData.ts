@@ -15,19 +15,35 @@ export const mutateUserData = async ({
     });
   }
 
-  const response = await fetch("/api/users", {
-    method: "PATCH",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({ userId, trigger, newValue }),
-  });
+  try {
+    const response = await fetch("/api/users", {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ userId, trigger, newValue }),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (!response.ok) {
-    throw data;
+    if (!response.ok) {
+      // Standardized response
+      throw data;
+    }
+
+    // Standardized response
+    return data;
+  } catch (error) {
+    if (error instanceof Error && "status" in error) {
+      // This is already a formatted error from our API
+      throw error;
+    }
+    // Handle network errors or other exceptions
+    return createResponse({
+      status: 500,
+      message: `Failed to update user data: ${error instanceof Error ? error.message : "Unknown error"}`,
+      userFriendly: false,
+      data: null,
+    });
   }
-
-  return data;
 };
