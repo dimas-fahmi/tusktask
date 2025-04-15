@@ -12,6 +12,7 @@ import { UsersPatchApiRequest, UsersPatchApiResponse } from "@/src/types/api";
 import { useSession } from "next-auth/react";
 import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 import { UserType } from "@/src/db/schema/users";
+import { userMutationErrorHandler } from "@/src/lib/tusktask/handlers/userMutationHandlers";
 
 const BirthDatePhase = () => {
   // Next Step after this
@@ -58,7 +59,7 @@ const BirthDatePhase = () => {
     UsersPatchApiRequest
   >({
     mutationFn: mutateUserData,
-    onSuccess: (data) => {
+    onSuccess: () => {
       triggerToast({
         type: "success",
         title: "Success",
@@ -76,19 +77,7 @@ const BirthDatePhase = () => {
       }, 1000);
     },
     onError: (data) => {
-      console.log(data);
-      triggerToast({
-        type: "error",
-        title: data.userFriendly ? data.code : "Operation Failed",
-        duration: 10000,
-        description: data.userFriendly
-          ? typeof data.message === "string"
-            ? data.message
-            : data.message._errors[0]
-          : "Please try again, if the issue persist please contact support.",
-      });
-      setLoading(false);
-      console.log(data);
+      userMutationErrorHandler({ data, setLoading });
     },
   });
 

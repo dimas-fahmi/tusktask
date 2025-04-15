@@ -6,7 +6,7 @@ import {
   StandardApiResponse,
   StandardHTTPCodeResponse,
 } from "@/src/lib/tusktask/utils/createApiResponse";
-import { removeSensitiveFields } from "@/src/lib/tusktask/utils/removeSenstitiveFields";
+import { removeSensitiveFields } from "@/src/lib/tusktask/utils/removeSensititiveFields";
 import { UsersPatchApiRequest } from "@/src/types/api";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
