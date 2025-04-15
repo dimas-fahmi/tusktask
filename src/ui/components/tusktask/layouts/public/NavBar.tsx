@@ -50,7 +50,9 @@ const NavBar = () => {
         {/* End Section */}
         <div className="flex items-center gap-3">
           <Button variant={"link"}>Github</Button>
-          <Button>Sign In</Button>
+          <Button asChild>
+            <Link href={"/signin"}>Sign In</Link>
+          </Button>
         </div>
       </div>
     </nav>

@@ -16,13 +16,13 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ className }) => {
   const heroContent = {
-    title: "Oops, Did You Just Killed Your Plants Again?",
+    title: "Oops, Did You Just Killed Your Plant Again?",
     subtitle:
       "Never Again! With Tuskask, we'll remind you of every event, task, and goal effortlessly.",
     primaryCta: "Get Started",
     secondaryCta: "Learn More",
     image: {
-      src: "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/landing/landing-02-vK41AIfuPC8kPYmq601zf04eBHnjGe.png",
+      src: "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/landing/landing-01-hero.png",
       alt: "Illustration of Mabel the cat",
       width: 360,
       height: 360,
@@ -69,7 +69,7 @@ const Hero: React.FC<HeroProps> = ({ className }) => {
         <p className="text-lg text-muted-foreground">{heroContent.subtitle}</p>
         <div className="flex flex-wrap gap-4">
           <Button asChild size="lg">
-            <Link href="/signup">{heroContent.primaryCta}</Link>
+            <Link href="/signin">{heroContent.primaryCta}</Link>
           </Button>
           <Button asChild variant="outline" size="lg">
             <Link href="/guides">{heroContent.secondaryCta}</Link>

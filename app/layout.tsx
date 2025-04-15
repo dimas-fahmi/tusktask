@@ -4,6 +4,7 @@ import React from "react";
 import "@/src/ui/css/globals.tailwind.css";
 import { ThemeContextProvider } from "@/src/context/ThemeContext";
 import { poppins, quicksand } from "@/src/ui/fonts";
+import { SessionProvider } from "next-auth/react";
 
 export default function RootLayout({
   children,
@@ -15,7 +16,9 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${quicksand.variable} antialiased bg-tt-primary`}
       >
-        <ThemeContextProvider>{children}</ThemeContextProvider>
+        <SessionProvider>
+          <ThemeContextProvider>{children}</ThemeContextProvider>
+        </SessionProvider>
       </body>
     </html>
   );
