@@ -104,11 +104,11 @@
   --tt-tertiary: #f82553;
   --tt-tertiary-foreground: #ffffff;
 
-  --tt-quaternary: oklch(0.32 0.1466 262.34);
-  --tt-quaternary-foreground: oklch(1 0 0);
+  --tt-quaternary: #008080;
+  --tt-quaternary-foreground: #f5deb3;
 
-  --tt-quinary: oklch(0.65 0.1283 55.43);
-  --tt-quinary-foreground: oklch(0 0 0);
+  --tt-quinary: #01277a;
+  --tt-quinary-foreground: #caac00;
 }
 
 .cassandra-pink {
