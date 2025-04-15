@@ -16,7 +16,7 @@ const SelectVariants = cva("", {
     variant: {
       default: "",
       secondary: "",
-      error: "border-tt-tertiary ",
+      error: "border-tt-tertiary text-tt-tertiary",
     },
     selectSize: {
       default: "",
@@ -33,6 +33,7 @@ type SelectInputProps = {
   items: string[];
   label: string;
   placeholder: string;
+  error?: boolean;
 } & VariantProps<typeof SelectVariants> &
   React.ComponentProps<"select"> & {
     value?: string;
@@ -55,13 +56,20 @@ const SelectInput = React.forwardRef<HTMLButtonElement, SelectInputProps>(
       onChange,
       name,
       onBlur,
+      error = false,
     },
     ref
   ) => {
     return (
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger
-          className={cn(SelectVariants({ variant, selectSize, className }))}
+          className={cn(
+            SelectVariants({
+              variant: error ? "error" : variant,
+              selectSize,
+              className,
+            })
+          )}
           ref={ref}
           name={name}
           onBlur={onBlur}

@@ -11,6 +11,9 @@ import UsernamePhase from "./UsernamePhase";
 import EmailPhase from "./EmailPhase";
 import AvatarPhase from "./AvatarPhase";
 import FinalPhase from "./FinalPhase";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
+import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 
 export interface RegistrationFlowContextValues {
   currentPhase: UserType["registration"];
@@ -21,7 +24,12 @@ export interface RegistrationFlowContextValues {
   setCanContinue: React.Dispatch<React.SetStateAction<boolean>>;
   onContinue: () => void;
   setOnContinue: React.Dispatch<React.SetStateAction<() => void>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const RegistrationFlowContext =
+  createContext<RegistrationFlowContextValues | null>(null);
 
 const registrationForms: Record<UserType["registration"], React.ReactNode> = {
   birthDate: <BirthDatePhase />,
@@ -48,7 +56,10 @@ const RegistrationFlowIndex = () => {
   // Submission Handler
   const [onContinue, setOnContinue] = useState<
     RegistrationFlowContextValues["onContinue"]
-  >(() => {});
+  >(() => () => {});
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
 
   // Listen To Session change and update current registration phase accordingly
   useEffect(() => {
@@ -58,36 +69,65 @@ const RegistrationFlowIndex = () => {
   }, [session, status]);
 
   return (
-    <div className="md:max-w-md p-4 md:p-0 space-y-6">
-      <header>
-        <Image
-          width={80}
-          height={80}
-          src={
-            "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/logo/tusktask-wordmark.png"
-          }
-          alt="TuskTask Logo"
-          className="-ms-2 block"
-        />
-      </header>
-      <main>{registrationForms[currentPhase]}</main>
-      <footer className="space-y-4">
-        <span className="block text-sm text-tt-primary-foreground/70">
-          By completing the registration process, you acknowledge and agree to
-          abide by our terms of service as well as our privacy policy.
-        </span>
-        <div className="flex justify-end">
-          <Button
-            onClick={() => signOut()}
-            className="hover:bg-tt-tertiary hover:text-tt-tertiary-foreground"
-            variant={"outline"}
-          >
-            Log Out
-          </Button>
-        </div>
-      </footer>
-    </div>
+    <RegistrationFlowContext.Provider
+      value={{
+        currentPhase,
+        setCurrentPhase,
+        canContinue,
+        setCanContinue,
+        onContinue,
+        setOnContinue,
+        loading,
+        setLoading,
+      }}
+    >
+      <div className="md:max-w-md p-4 md:p-0 space-y-6">
+        <header>
+          <Image
+            width={80}
+            height={80}
+            src={
+              "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/logo/tusktask-wordmark.png"
+            }
+            alt="TuskTask Logo"
+            className="-ms-2 block"
+          />
+        </header>
+        <main>{registrationForms[currentPhase]}</main>
+        <footer className="space-y-4">
+          <span className="block text-sm text-tt-primary-foreground/70">
+            By completing the registration process, you acknowledge and agree to
+            abide by our terms of service as well as our privacy policy.
+          </span>
+          <div className={`flex justify-end ${canContinue && "gap-3"}`}>
+            <Button
+              onClick={() => signOut()}
+              className="hover:bg-tt-tertiary hover:text-tt-tertiary-foreground"
+              variant={"outline"}
+            >
+              Log Out
+            </Button>
+            <Button
+              className={`${canContinue ? "max-w-96" : "max-w-0 p-0 m-0"} overflow-hidden transition-all duration-300`}
+              disabled={loading || !canContinue}
+              onClick={() => onContinue()}
+            >
+              {loading ? (
+                <>
+                  <span className="animate-spin">
+                    <LoaderCircle />
+                  </span>
+                  <span>Loading</span>
+                </>
+              ) : (
+                <>Continue</>
+              )}
+            </Button>
+          </div>
+        </footer>
+      </div>
+    </RegistrationFlowContext.Provider>
   );
 };
 
-export { RegistrationFlowIndex };
+export { RegistrationFlowIndex, RegistrationFlowContext };

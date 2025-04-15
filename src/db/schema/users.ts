@@ -4,6 +4,11 @@ import { timestamp, pgTable, text, unique } from "drizzle-orm/pg-core";
 import { notificationsToUsers } from "./notifications";
 import { tasksToUsers } from "./tasks";
 import { projectsToUsers } from "./projects";
+import {
+  createSelectSchema,
+  createInsertSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
 
 // Users Table
 export const users = pgTable(
@@ -62,3 +67,16 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 // User Type
 export type UserType = InferSelectModel<typeof users>;
+
+export type SensitiveUserFields =
+  | "email"
+  | "emailVerified"
+  | "deletedAt"
+  | "birthDate"
+  | "registration";
+
+export type SafeUserType = Omit<UserType, SensitiveUserFields>;
+
+export const userInsertSchema = createInsertSchema(users);
+export const userSelectSchema = createSelectSchema(users);
+export const userUpdateSchema = createUpdateSchema(users);
