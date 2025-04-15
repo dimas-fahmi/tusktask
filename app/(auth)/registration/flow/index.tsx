@@ -12,8 +12,6 @@ import EmailPhase from "./EmailPhase";
 import AvatarPhase from "./AvatarPhase";
 import FinalPhase from "./FinalPhase";
 import { LoaderCircle } from "lucide-react";
-import { toast } from "sonner";
-import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 
 export interface RegistrationFlowContextValues {
   currentPhase: UserType["registration"];
@@ -65,7 +63,17 @@ const RegistrationFlowIndex = () => {
   useEffect(() => {
     if (status !== "authenticated" || !session || !session?.user) return;
 
+    // Update Phase based on user's registration phase from session
     setCurrentPhase(session.user.registration);
+
+    // Reset after change phase
+    if (loading) {
+      setLoading(false);
+    }
+
+    if (canContinue) {
+      setCanContinue(false);
+    }
   }, [session, status]);
 
   return (

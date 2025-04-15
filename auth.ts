@@ -21,7 +21,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({}) {
       return true;
     },
-    async session({ session }) {
+    async session({ session, trigger, newSession }) {
+      if (trigger === "update") {
+        if (newSession.registration) {
+          session.user.registration = newSession.user.registration;
+        }
+      }
+
       return session;
     },
   },
