@@ -7,6 +7,8 @@ interface AnimatedEntryProps {
   delay?: number;
   speed?: number;
   trigger?: boolean;
+  initialPosition?: number;
+  className?: string;
 }
 
 const AnimatedEntry: React.FC<AnimatedEntryProps> = ({
@@ -15,6 +17,8 @@ const AnimatedEntry: React.FC<AnimatedEntryProps> = ({
   delay = 0,
   speed = 0.5,
   trigger,
+  initialPosition = 100,
+  className = "",
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false });
@@ -23,8 +27,18 @@ const AnimatedEntry: React.FC<AnimatedEntryProps> = ({
   const variants = {
     hidden: {
       opacity: 0,
-      x: origin === "left" ? -100 : origin === "right" ? 100 : 0,
-      y: origin === "top" ? -100 : origin === "bottom" ? 100 : 0,
+      x:
+        origin === "left"
+          ? -initialPosition
+          : origin === "right"
+            ? initialPosition
+            : 0,
+      y:
+        origin === "top"
+          ? -initialPosition
+          : origin === "bottom"
+            ? initialPosition
+            : 0,
     },
     visible: {
       opacity: 1,
@@ -46,6 +60,7 @@ const AnimatedEntry: React.FC<AnimatedEntryProps> = ({
       initial="hidden"
       animate={shouldAnimate ? "visible" : "hidden"}
       variants={variants}
+      className={className}
     >
       {children}
     </motion.div>

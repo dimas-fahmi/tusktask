@@ -95,14 +95,14 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* PRIMARY THEME */
-  --tt-primary: #f8f7e5;
+  --tt-primary: #f8f8e9;
   --tt-primary-foreground: #1d1d1d;
 
   --tt-secondary: #01277a;
   --tt-secondary-foreground: #ffffff;
 
-  --tt-tertiary: #d397b1;
-  --tt-tertiary-foreground: #1d1d1d;
+  --tt-tertiary: #f82553;
+  --tt-tertiary-foreground: #ffffff;
 
   --tt-quaternary: oklch(0.32 0.1466 262.34);
   --tt-quaternary-foreground: oklch(1 0 0);

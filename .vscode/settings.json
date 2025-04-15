@@ -1,3 +1,9 @@
 {
-  "editor.inlineSuggest.enabled": false
+  "editor.inlineSuggest.enabled": false,
+  "editor.quickSuggestions": {
+    "strings": "on",
+    "comments": "on",
+    "other": "on"
+  },
+  "tailwindCSS.colorDecorators": true
 }
