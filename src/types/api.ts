@@ -25,3 +25,11 @@ export interface EmailPatchRequest {
 }
 
 export type EmailPatchApiResponse = StandardApiResponse<SafeUserType | null>;
+
+export interface UsernameGetApiRequest {
+  userId: string;
+  userName: string;
+  reason?: "username_availability" | "lookup";
+}
+
+export type UsernameGetApiResponse = StandardApiResponse<SafeUserType | null>;
