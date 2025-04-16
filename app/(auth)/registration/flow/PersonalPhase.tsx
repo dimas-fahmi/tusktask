@@ -131,7 +131,7 @@ const PersonalPhase = () => {
             Just your name—we'll keep it simple and safe!
           </p>
         </header>
-        <div className="space-y-2.5">
+        <div className="space-y-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="full_name">Full Name</Label>
             <Controller

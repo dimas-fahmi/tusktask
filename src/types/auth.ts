@@ -6,6 +6,7 @@ declare module "next-auth" {
     user: {
       registration: UserType["registration"];
       email: UserType["email"];
+      userName: UserType["userName"];
     } & DefaultSession["user"];
   }
 }

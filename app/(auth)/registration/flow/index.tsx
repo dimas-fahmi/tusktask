@@ -12,6 +12,7 @@ import EmailPhase from "./EmailPhase";
 import AvatarPhase from "./AvatarPhase";
 import FinalPhase from "./FinalPhase";
 import { LoaderCircle } from "lucide-react";
+import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
 
 export interface RegistrationFlowContextValues {
   currentPhase: UserType["registration"];
@@ -76,7 +77,9 @@ const RegistrationFlowIndex = () => {
     }
   }, [session, status]);
 
-  return (
+  return !session?.user.registration ? (
+    <MainLoader />
+  ) : (
     <RegistrationFlowContext.Provider
       value={{
         currentPhase,

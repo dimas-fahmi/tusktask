@@ -175,7 +175,14 @@ const EmailPhase = () => {
   ]);
 
   return (
-    <AnimatedEntry origin="right" destination="left" trigger={active}>
+    <AnimatedEntry
+      origin="right"
+      delay={0.5}
+      speed={1}
+      trigger={active}
+      destination="left"
+      outSpeed={1}
+    >
       <div className={`space-y-6 transition-all duration-700`}>
         <header>
           <h2 className="text-3xl font-primary font-bold">
