@@ -33,3 +33,9 @@ export interface UsernameGetApiRequest {
 }
 
 export type UsernameGetApiResponse = StandardApiResponse<SafeUserType | null>;
+
+export interface AvatarPatchApiRequest {
+  newAvatar: string;
+}
+
+export type AvatarPatchApiResponse = StandardApiResponse<string | null>;
