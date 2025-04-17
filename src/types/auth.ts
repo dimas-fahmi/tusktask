@@ -7,6 +7,10 @@ declare module "next-auth" {
       registration: UserType["registration"];
       email: UserType["email"];
       userName: UserType["userName"];
+      firstName: UserType["firstName"];
+      lastName: UserType["lastName"];
+      notificationSound: UserType["notificationSound"];
+      reminderSound: UserType["reminderSound"];
     } & DefaultSession["user"];
   }
 }

@@ -10,9 +10,9 @@ import { useMutation } from "@tanstack/react-query";
 import { mutateUserData } from "@/src/lib/tusktask/mutators/mutateUserData";
 import { UsersPatchApiRequest, UsersPatchApiResponse } from "@/src/types/api";
 import { useSession } from "next-auth/react";
-import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 import { UserType } from "@/src/db/schema/users";
 import { userMutationErrorHandler } from "@/src/lib/tusktask/handlers/userMutationHandlers";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 const BirthDatePhase = () => {
   // Next Step after this
@@ -20,6 +20,8 @@ const BirthDatePhase = () => {
 
   // Pull the session
   const { data: session, update } = useSession();
+
+  const { triggerToast } = useNotificationContext();
 
   // Pull setters from context
   const { setCanContinue, setOnContinue, setLoading } =
@@ -69,6 +71,7 @@ const BirthDatePhase = () => {
       setLoading(false);
       setTimeout(async () => {
         setPassed(true);
+        setCanContinue(false);
         await update({
           user: {
             registration: next,

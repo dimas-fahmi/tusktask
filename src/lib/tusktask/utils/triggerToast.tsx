@@ -1,8 +1,12 @@
+"use client";
+
 import { toast } from "sonner";
 import { AlarmClock, BellRing, CircleAlert, CircleCheck } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { cn } from "../../shadcn/utils";
 import React from "react";
+import { playSound } from "@/src/context/NotificationContext";
+import { useSession } from "next-auth/react";
 
 export interface TriggerToastProps {
   type: "default" | "success" | "error" | "reminder";
@@ -12,13 +16,6 @@ export interface TriggerToastProps {
   action?: React.ReactNode;
   duration?: number;
 }
-
-const playSound = () => {
-  const audio = new Audio("/sounds/notification.wav");
-  audio.play().catch((err) => {
-    console.warn("Failed to play sound:", err);
-  });
-};
 
 const icons: Record<TriggerToastProps["type"], React.ReactNode> = {
   default: <BellRing />,
@@ -48,8 +45,6 @@ export const triggerToast = ({
       variant: "default",
     },
   });
-
-  playSound();
 
   toast(title, {
     description,

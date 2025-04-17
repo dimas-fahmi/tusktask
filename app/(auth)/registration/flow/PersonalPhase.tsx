@@ -1,7 +1,7 @@
 import { userMutationErrorHandler } from "@/src/lib/tusktask/handlers/userMutationHandlers";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useRegistrationFlowContext from "@/src/lib/tusktask/hooks/context/useRegistrationFlowContext";
 import { mutateUserData } from "@/src/lib/tusktask/mutators/mutateUserData";
-import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 import { UsersPatchApiRequest, UsersPatchApiResponse } from "@/src/types/api";
 import { Input } from "@/src/ui/components/shadcn/ui/input";
 import { Label } from "@/src/ui/components/shadcn/ui/label";
@@ -16,6 +16,8 @@ import { Controller, useForm } from "react-hook-form";
 const PersonalPhase = () => {
   // Next Registration Phase
   const next = "email";
+
+  const { triggerToast } = useNotificationContext();
 
   // Pull session
   const { data: session, update } = useSession();
@@ -65,6 +67,7 @@ const PersonalPhase = () => {
       setLoading(false);
       setTimeout(async () => {
         setActive(false);
+        setCanContinue(false);
         await update({
           user: {
             registration: next,

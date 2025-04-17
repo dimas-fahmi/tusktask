@@ -12,11 +12,13 @@ import { Input } from "@/src/ui/components/shadcn/ui/input";
 import AnimatedEntry from "@/src/ui/components/tusktask/animation/AnimatedEntry";
 import { userNameSchema } from "@/src/zod/userName";
 import { mutateUserData } from "@/src/lib/tusktask/mutators/mutateUserData";
-import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 import { userMutationErrorHandler } from "@/src/lib/tusktask/handlers/userMutationHandlers";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 const UsernamePhase = () => {
   const next: UserType["registration"] = "avatar";
+
+  const { triggerToast } = useNotificationContext();
 
   // Local state management
   const [active, setActive] = useState(true);
@@ -101,6 +103,7 @@ const UsernamePhase = () => {
         description: "Thank you, we'll take you to the next step.",
       });
       setLoading(false);
+      setCanContinue(false);
       setTimeout(async () => {
         setActive(false);
         await update({ user: { registration: next } });

@@ -1,6 +1,6 @@
 import { generateRandomString } from "@/src/lib/tusktask/utils/generateRandomString";
 import { InferSelectModel, relations } from "drizzle-orm";
-import { timestamp, pgTable, text, unique } from "drizzle-orm/pg-core";
+import { timestamp, pgTable, text, unique, boolean } from "drizzle-orm/pg-core";
 import { notificationsToUsers } from "./notifications";
 import { tasksToUsers } from "./tasks";
 import { projectsToUsers } from "./projects";
@@ -43,6 +43,8 @@ export const users = pgTable(
     })
       .default("birthDate")
       .notNull(),
+    notificationSound: boolean("notification_sound").default(true).notNull(),
+    reminderSound: boolean("reminder_sound").default(true).notNull(),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
     updatedAt: timestamp("updated_at", {
       mode: "date",

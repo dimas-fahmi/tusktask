@@ -2,22 +2,23 @@
 
 import { UserType } from "@/src/db/schema/users";
 import { userMutationErrorHandler } from "@/src/lib/tusktask/handlers/userMutationHandlers";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useRegistrationFlowContext from "@/src/lib/tusktask/hooks/context/useRegistrationFlowContext";
 import { mutateUserAvatar } from "@/src/lib/tusktask/mutators/mutateUserAvatar";
 import { mutateUserData } from "@/src/lib/tusktask/mutators/mutateUserData";
-import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import { Input } from "@/src/ui/components/shadcn/ui/input";
 import AnimatedEntry from "@/src/ui/components/tusktask/animation/AnimatedEntry";
 import { useMutation } from "@tanstack/react-query";
-import { register } from "module";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const AvatarPhase = () => {
   // Next Phase
   const next: UserType["registration"] = "final";
+
+  const { triggerToast } = useNotificationContext();
 
   // Active
   const [active, setActive] = useState(true);
@@ -62,6 +63,7 @@ const AvatarPhase = () => {
       setLoading(false);
       setTimeout(async () => {
         setActive(false);
+        setCanContinue(false);
         mutateUserData({
           userId: session!.user!.id!,
           trigger: "personal",
@@ -80,6 +82,10 @@ const AvatarPhase = () => {
       userMutationErrorHandler({ data, setLoading });
     },
   });
+
+  useEffect(() => {
+    setCanContinue(false);
+  }, [setCanContinue]);
 
   return (
     <AnimatedEntry
@@ -125,7 +131,6 @@ const AvatarPhase = () => {
               <Button
                 onClick={async () => {
                   if (!session || !session.user.id) return;
-                  setLoading(true);
                   await mutateUserData({
                     userId: session.user.id,
                     trigger: "personal",
@@ -168,7 +173,7 @@ const AvatarPhase = () => {
                 variant={"default"}
                 disabled={loading}
               >
-                Upload
+                {loading ? "Uploading" : "Upload"}
               </Button>
             )}
           </div>

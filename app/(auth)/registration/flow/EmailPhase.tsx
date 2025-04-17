@@ -1,15 +1,14 @@
 import { UserType } from "@/src/db/schema/users";
 import { checkEmailAvailability } from "@/src/lib/tusktask/fetchers/checkEmailAvailability";
 import { userMutationErrorHandler } from "@/src/lib/tusktask/handlers/userMutationHandlers";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useRegistrationFlowContext from "@/src/lib/tusktask/hooks/context/useRegistrationFlowContext";
 import { mutateUserData } from "@/src/lib/tusktask/mutators/mutateUserData";
 import { mutateUserEmail } from "@/src/lib/tusktask/mutators/mutateUserEmail";
-import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 import {
   EmailGetApiResponse,
   EmailPatchApiResponse,
   EmailPatchRequest,
-  UsersPatchApiRequest,
 } from "@/src/types/api";
 import { Input } from "@/src/ui/components/shadcn/ui/input";
 import AnimatedEntry from "@/src/ui/components/tusktask/animation/AnimatedEntry";
@@ -26,6 +25,8 @@ const EmailPhase = () => {
 
   // Pull Session
   const { data: session, update } = useSession();
+
+  const { triggerToast } = useNotificationContext();
 
   // Pull setters from context
   const { setCanContinue, setLoading, setOnContinue } =
@@ -120,6 +121,7 @@ const EmailPhase = () => {
       setLoading(false);
       setTimeout(async () => {
         setActive(false);
+        setCanContinue(false);
         await mutateUserData({
           userId: session!.user!.id!,
           trigger: "personal",
