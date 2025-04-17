@@ -45,14 +45,26 @@
   /* Application Color */
   --color-tt-primary: var(--tt-primary);
   --color-tt-primary-foreground: var(--tt-primary-foreground);
+
   --color-tt-secondary: var(--tt-secondary);
   --color-tt-secondary-foreground: var(--tt-secondary-foreground);
+
   --color-tt-tertiary: var(--tt-tertiary);
   --color-tt-tertiary-foreground: var(--tt-tertiary-foreground);
+
   --color-tt-quaternary: var(--tt-quaternary);
   --color-tt-quaternary-foreground: var(--tt-quaternary-foreground);
+
   --color-tt-quinary: var(--tt-quinary);
   --color-tt-quinary-foreground: var(--tt-quinary-foreground);
+
+  --color-tt-muted: var(--tt-muted);
+  --color-tt-muted-foreground: var(--tt-muted-foreground);
+
+  --color-tt-border: var(--tt-border);
+  --color-tt-input: var(--tt-input);
+
+  --color-tt-overlay: var(--tt-overlay);
 
   /* Application Font */
   --font-primary: var(--font-poppins);
@@ -94,21 +106,31 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* PRIMARY THEME */
-  --tt-primary: #f8f8e9;
-  --tt-primary-foreground: #1d1d1d;
+  --tt-primary: #f8f8e9; /* Background */
+  --tt-primary-foreground: #1d1d1d; /* Foreground text on primary */
 
-  --tt-secondary: #01277a;
-  --tt-secondary-foreground: #ffffff;
+  --tt-secondary: #01277a; /* Accent (main) */
+  --tt-secondary-foreground: #ffffff; /* Text on secondary */
 
-  --tt-tertiary: #f82553;
-  --tt-tertiary-foreground: #ffffff;
+  --tt-tertiary: #f82553; /* Destructive action */
+  --tt-tertiary-foreground: #ffffff; /* Text on destructive */
 
-  --tt-quaternary: #008080;
-  --tt-quaternary-foreground: #f5deb3;
+  --tt-quaternary: #008080; /* Success */
+  --tt-quaternary-foreground: #f5deb3; /* Text on success */
 
-  --tt-quinary: #01277a;
-  --tt-quinary-foreground: #fdd180;
+  --tt-quinary: #01277a; /* Alternative accent */
+  --tt-quinary-foreground: #fdd180; /* Text on alternative accent */
+
+  /* Muted / Subtle UI */
+  --tt-muted: #e5e5e0; /* For backgrounds of cards, inputs, etc. */
+  --tt-muted-foreground: #4b4b4b; /* Subtle text or placeholder */
+
+  /* Border & Input Styling */
+  --tt-border: #d0d0cc;
+  --tt-input: #ffffff;
+
+  /* Optional: Custom shadow or overlay tones */
+  --tt-overlay: rgba(0, 0, 0, 0.4);
 }
 
 .cassandra-pink {

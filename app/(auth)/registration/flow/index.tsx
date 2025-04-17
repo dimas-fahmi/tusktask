@@ -13,6 +13,7 @@ import AvatarPhase from "./AvatarPhase";
 import FinalPhase from "./FinalPhase";
 import { LoaderCircle } from "lucide-react";
 import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
+import { useRouter } from "next/navigation";
 
 export interface RegistrationFlowContextValues {
   currentPhase: UserType["registration"];
@@ -25,6 +26,7 @@ export interface RegistrationFlowContextValues {
   setOnContinue: React.Dispatch<React.SetStateAction<() => void>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setHideLogOut: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const RegistrationFlowContext =
@@ -37,12 +39,14 @@ const registrationForms: Record<UserType["registration"], React.ReactNode> = {
   email: <EmailPhase />,
   avatar: <AvatarPhase />,
   final: <FinalPhase />,
-  done: <>Loading</>,
+  done: <></>,
 };
 
 const RegistrationFlowIndex = () => {
   // Pull Session
   const { data: session, status } = useSession();
+
+  const router = useRouter();
 
   // Current Phase State
   const [currentPhase, setCurrentPhase] =
@@ -60,21 +64,18 @@ const RegistrationFlowIndex = () => {
   // Loading State
   const [loading, setLoading] = useState(false);
 
+  // Hide logout
+  const [hideLogOut, setHideLogOut] = useState(false);
+
   // Listen To Session change and update current registration phase accordingly
   useEffect(() => {
     if (status !== "authenticated" || !session || !session?.user) return;
+    if (session.user.registration === "done") {
+      router.push("/dashboard");
+    }
 
     // Update Phase based on user's registration phase from session
     setCurrentPhase(session.user.registration);
-
-    // Reset after change phase
-    if (loading) {
-      setLoading(false);
-    }
-
-    if (canContinue) {
-      setCanContinue(false);
-    }
   }, [session, status]);
 
   return !session?.user.registration ? (
@@ -90,6 +91,7 @@ const RegistrationFlowIndex = () => {
         setOnContinue,
         loading,
         setLoading,
+        setHideLogOut,
       }}
     >
       <div className="md:max-w-md p-4 md:p-0 space-y-6">
@@ -111,13 +113,15 @@ const RegistrationFlowIndex = () => {
             abide by our terms of service as well as our privacy policy.
           </span>
           <div className={`flex justify-end ${canContinue && "gap-3"}`}>
-            <Button
-              onClick={() => signOut()}
-              className="hover:bg-tt-tertiary hover:text-tt-tertiary-foreground"
-              variant={"outline"}
-            >
-              Log Out
-            </Button>
+            {!hideLogOut && (
+              <Button
+                onClick={() => signOut()}
+                className="hover:bg-tt-tertiary hover:text-tt-tertiary-foreground"
+                variant={"outline"}
+              >
+                Log Out
+              </Button>
+            )}
             <Button
               className={`${canContinue ? "max-w-96" : "max-w-0 p-0 m-0"} overflow-hidden transition-all duration-300`}
               disabled={loading || !canContinue}

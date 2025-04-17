@@ -8,6 +8,7 @@ import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/src/ui/components/shadcn/ui/sonner";
+import { NotificationContextProvider } from "@/src/context/NotificationContext";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +27,9 @@ export default function RootLayout({
       >
         <QueryClientProvider client={queryClient}>
           <SessionProvider>
-            <ThemeContextProvider>{children}</ThemeContextProvider>
+            <NotificationContextProvider>
+              <ThemeContextProvider>{children}</ThemeContextProvider>
+            </NotificationContextProvider>
           </SessionProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
