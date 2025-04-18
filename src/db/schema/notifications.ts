@@ -33,7 +33,7 @@ export const notifications = pgTable(
       precision: 3,
       withTimezone: true,
     }).defaultNow(),
-    markReadAt: timestamp("markRead_at", {
+    markReadAt: timestamp("mark_read_at", {
       mode: "date",
       precision: 3,
       withTimezone: true,

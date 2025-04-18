@@ -50,7 +50,7 @@ export const projects = pgTable(
       mode: "date",
       withTimezone: true,
     }),
-    deadlineAt: timestamp("dealine_at", {
+    deadlineAt: timestamp("deadline_at", {
       mode: "date",
       withTimezone: true,
     }),
