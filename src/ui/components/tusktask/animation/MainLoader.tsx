@@ -10,6 +10,7 @@ const MainLoader = () => {
           height={150}
           src={"/images/loader.gif"}
           alt="Loading Animation"
+          unoptimized
         />
       </div>
     </div>

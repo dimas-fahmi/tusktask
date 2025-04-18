@@ -8,6 +8,8 @@ import {
   CalendarX2,
   Folder,
   LayoutDashboard,
+  Settings,
+  SidebarClose,
 } from "lucide-react";
 
 import {
@@ -19,7 +21,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  useSidebar,
 } from "../../../shadcn/ui/sidebar";
 
 import { SidebarHeader as SidebarTTHeader } from "./SidebarHeader";
@@ -27,6 +29,8 @@ import { SidebarHeader as SidebarTTHeader } from "./SidebarHeader";
 import Link from "next/link";
 import { cn } from "@/src/lib/shadcn/utils";
 import { usePathname } from "next/navigation";
+import StatusOverview from "../StatusOverview";
+import { Button } from "../../../shadcn/ui/button";
 
 // Menu items.
 const items = [
@@ -96,26 +100,50 @@ const NavLink = ({
 };
 
 export function AppSidebar() {
+  const { setOpenMobile, setOpen } = useSidebar();
+
   return (
     <Sidebar>
-      <SidebarHeader className="pt-6">
-        <div className="flex justify-end md:hidden">
-          <SidebarTrigger />
-        </div>
+      <SidebarHeader className="pt-6 space-y-2 mb-4">
         <SidebarTTHeader />
+        <div className="md:hidden">
+          <StatusOverview overdue={0} todo={0} done={0} />
+        </div>
+        <div className="space-y-2">
+          <div className="grid grid-cols-1">
+            <Button variant={"default"} size={"sm"}>
+              <BadgePlus size={"20px"} />
+              New Task
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant={"outline"} size={"sm"}>
+              <Settings size={"20px"} />
+              Settings
+            </Button>
+            <Button
+              variant={"outline"}
+              size={"sm"}
+              onClick={() => {
+                setOpenMobile(false);
+                setOpen(false);
+              }}
+            >
+              <SidebarClose size={"20px"} />
+              Hide Menu
+            </Button>
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <button className="flex items-center gap-2 bg-tt-secondary px-4 py-2 text-tt-secondary-foreground rounded-md text-sm justify-center cursor-pointer hover:bg-tt-secondary/80">
-            <BadgePlus size={"20px"} />
-            New Task
-          </button>
-        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem
+                  key={item.title}
+                  onClick={() => setOpenMobile(false)}
+                >
                   <SidebarMenuButton asChild>
                     <NavLink
                       title={item.title}

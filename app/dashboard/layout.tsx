@@ -3,7 +3,7 @@
 import React from "react";
 import { SidebarProvider } from "@/src/ui/components/shadcn/ui/sidebar";
 import { AppSidebar } from "@/src/ui/components/tusktask/generics/AppSidebar";
-import MobileNavigation from "@/src/ui/components/tusktask/generics/AppSidebar/MobileNavigation";
+import LayoutHeader from "./LayoutHeader";
 
 const DashboardLayout = ({
   children,
@@ -12,8 +12,10 @@ const DashboardLayout = ({
     <div id={"dashboardLayout"}>
       <SidebarProvider>
         <AppSidebar />
-        <main className="p-4 md:p-16">{children}</main>
-        <MobileNavigation />
+        <div className="p-4 md:px-16 md:py-11 w-screen">
+          <LayoutHeader />
+          <main>{children}</main>
+        </div>
       </SidebarProvider>
     </div>
   );
