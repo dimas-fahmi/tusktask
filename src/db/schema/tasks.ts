@@ -8,8 +8,9 @@ import {
   unique,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { projects } from "./projects";
+import { createInsertSchema } from "drizzle-zod";
 
 // Tasks Table
 export const tasks = pgTable(
@@ -117,3 +118,7 @@ export const tasksToUsersRelations = relations(tasksToUsers, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export type TaskType = InferSelectModel<typeof tasks>;
+export type TaskInsertType = InferInsertModel<typeof tasks>;
+export const tasksInsertSchema = createInsertSchema(tasks);
