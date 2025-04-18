@@ -1,6 +1,8 @@
 import { TaskInsertType, TaskType } from "@/src/db/schema/tasks";
 
-export interface TasksGetApiRequest extends Partial<TaskType> {}
+export interface TasksGetApiRequest extends Partial<TaskType> {
+  overdue?: boolean;
+}
 
 export const filterFields: (keyof TasksGetApiRequest)[] = [
   "completedAt",
@@ -17,6 +19,7 @@ export const filterFields: (keyof TasksGetApiRequest)[] = [
   "visibility",
   "type",
   "tags",
+  "overdue",
 ];
 
 export type TasksPostApiRequest = Omit<
