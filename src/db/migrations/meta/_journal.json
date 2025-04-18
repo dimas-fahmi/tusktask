@@ -15,6 +15,13 @@
       "when": 1744880257615,
       "tag": "0001_aberrant_alex_power",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1744943938385,
+      "tag": "0002_burly_darkstar",
+      "breakpoints": true
     }
   ]
 }

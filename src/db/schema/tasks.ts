@@ -64,7 +64,7 @@ export const tasks = pgTable(
       withTimezone: true,
     }),
     reminderAt: timestamp("reminder_at", { mode: "date", withTimezone: true }),
-    deadlineAt: timestamp("dealine_at", {
+    deadlineAt: timestamp("deadline_at", {
       mode: "date",
       withTimezone: true,
     }),
@@ -86,8 +86,20 @@ export const tasks = pgTable(
 );
 
 // Tasks Relations
-export const tasksRelations = relations(tasks, ({ many }) => ({
+export const tasksRelations = relations(tasks, ({ many, one }) => ({
   tasksToUsers: many(tasksToUsers),
+  owner: one(users, {
+    fields: [tasks.ownerId],
+    references: [users.id],
+  }),
+  creator: one(users, {
+    fields: [tasks.createdById],
+    references: [users.id],
+  }),
+  project: one(projects, {
+    fields: [tasks.projectId],
+    references: [projects.id],
+  }),
 }));
 
 // Tasks To Users Joint Table
