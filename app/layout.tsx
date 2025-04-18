@@ -6,7 +6,6 @@ import { ThemeContextProvider } from "@/src/context/ThemeContext";
 import { poppins, quicksand } from "@/src/ui/fonts";
 import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/src/ui/components/shadcn/ui/sonner";
 import { NotificationContextProvider } from "@/src/context/NotificationContext";
 
@@ -31,7 +30,7 @@ export default function RootLayout({
               <ThemeContextProvider>{children}</ThemeContextProvider>
             </NotificationContextProvider>
           </SessionProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
         <Toaster position="top-right" richColors visibleToasts={5} />
       </body>
