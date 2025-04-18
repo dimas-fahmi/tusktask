@@ -1,5 +1,4 @@
-import { TaskInsertType, TaskType } from "@/src/db/schema/tasks";
-import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
+import { TaskInsertType } from "@/src/db/schema/tasks";
 
 export type TasksPostApiRequest = Omit<
   TaskInsertType,
@@ -8,5 +7,3 @@ export type TasksPostApiRequest = Omit<
   ownerId?: string;
   createdById?: string;
 };
-
-export type TasksPostApiResponse = StandardApiResponse<TaskType | null>;

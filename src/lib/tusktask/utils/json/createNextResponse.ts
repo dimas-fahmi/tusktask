@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import {
-  StandardApiResponse,
+  CreateApiResponseInput,
+  createResponse,
   StandardHTTPCodeResponse,
 } from "../createApiResponse";
 
 const createNextResponse = (
-  response: StandardApiResponse<unknown>,
-  status: StandardHTTPCodeResponse
+  status: StandardHTTPCodeResponse,
+  { data, message, userFriendly }: Omit<CreateApiResponseInput, "status">
 ) => {
+  const response = createResponse({ status, message, userFriendly, data });
   return NextResponse.json(response, { status });
 };
 
