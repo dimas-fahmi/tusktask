@@ -3,6 +3,13 @@ import { StandardApiResponse } from "../lib/tusktask/utils/createApiResponse";
 
 export type trigger = "personal" | "system";
 
+export interface StandardUserData {
+  id: UserType["id"];
+  name: UserType["name"];
+  userName: UserType["userName"];
+  image: UserType["image"];
+}
+
 export interface UsersPatchApiRequest {
   userId: string;
   trigger: trigger;

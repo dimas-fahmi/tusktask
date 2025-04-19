@@ -23,7 +23,7 @@
   --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
-  --color-border: var(--border);
+  --color-border: var(--tt-primary-border);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
@@ -45,12 +45,14 @@
   /* Application Color */
   --color-tt-primary: var(--tt-primary);
   --color-tt-primary-foreground: var(--tt-primary-foreground);
+  --color-tt-primary-border: var(--tt-primary-border);
 
   --color-tt-secondary: var(--tt-secondary);
   --color-tt-secondary-foreground: var(--tt-secondary-foreground);
 
   --color-tt-tertiary: var(--tt-tertiary);
   --color-tt-tertiary-foreground: var(--tt-tertiary-foreground);
+  --color-tt-tertiary-border: var(--tt-tertiary-border);
 
   --color-tt-quaternary: var(--tt-quaternary);
   --color-tt-quaternary-foreground: var(--tt-quaternary-foreground);
@@ -60,9 +62,6 @@
 
   --color-tt-muted: var(--tt-muted);
   --color-tt-muted-foreground: var(--tt-muted-foreground);
-
-  --color-tt-border: var(--tt-border);
-  --color-tt-input: var(--tt-input);
 
   --color-tt-overlay: var(--tt-overlay);
 
@@ -89,7 +88,6 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -109,12 +107,14 @@
 
   --tt-primary: #ffffff; /* Background */
   --tt-primary-foreground: #1d1d1d; /* Foreground text on primary */
+  --tt-primary-border: #e7e0e0;
 
   --tt-secondary: #1f3b7c; /* Accent (main) */
   --tt-secondary-foreground: #ffffff; /* Text on secondary */
 
   --tt-tertiary: #d15044; /* Destructive action */
   --tt-tertiary-foreground: #ffffff; /* Text on destructive */
+  --tt-tertiary-border: #ff4f3f;
 
   --tt-quaternary: #008080; /* Success */
   --tt-quaternary-foreground: #f5deb3; /* Text on success */
