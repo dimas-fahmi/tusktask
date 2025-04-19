@@ -19,7 +19,7 @@ import React from "react";
 
 const DashboardIndex = () => {
   const { data: session } = useSession();
-  const { overdue, today, tomorrow, todo } = useTasksContext();
+  const { overdue, today, tomorrow, upcoming } = useTasksContext();
 
   return (
     <div className="text-tt-primary-foreground">
@@ -36,7 +36,7 @@ const DashboardIndex = () => {
           </p>
           <p className="flex text-sm text-muted-foreground items-center gap-2">
             <Circle size={"1rem"} />
-            You have 18 tasks todo
+            You have 18 tasks upcoming
           </p>
           <p className="flex text-sm text-muted-foreground items-center gap-2">
             <CircleCheckBig size={"1rem"} />
@@ -51,9 +51,9 @@ const DashboardIndex = () => {
 
       <div className="mt-9 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {/* section container */}
-        <SectionCard title="overdue">
-          {overdue &&
-            overdue.map((task) => (
+        {overdue.length > 0 && (
+          <SectionCard title="overdue">
+            {overdue.map((task) => (
               <TaskCard
                 key={task.id}
                 name={task.name}
@@ -63,10 +63,12 @@ const DashboardIndex = () => {
                 description={task.description}
               />
             ))}
-        </SectionCard>
-        <SectionCard title="Today">
-          {today &&
-            today.map((task) => (
+          </SectionCard>
+        )}
+
+        {today.length > 0 && (
+          <SectionCard title="Today">
+            {today.map((task) => (
               <TaskCard
                 key={task.id}
                 name={task.name}
@@ -76,10 +78,12 @@ const DashboardIndex = () => {
                 description={task.description}
               />
             ))}
-        </SectionCard>
-        <SectionCard title="Tomorrow">
-          {tomorrow &&
-            tomorrow.map((task) => (
+          </SectionCard>
+        )}
+
+        {tomorrow.length > 0 && (
+          <SectionCard title="Tomorrow">
+            {tomorrow.map((task) => (
               <TaskCard
                 key={task.id}
                 name={task.name}
@@ -89,10 +93,12 @@ const DashboardIndex = () => {
                 description={task.description}
               />
             ))}
-        </SectionCard>
-        <SectionCard title="todo">
-          {todo &&
-            todo.map((task) => (
+          </SectionCard>
+        )}
+
+        <SectionCard title="upcoming">
+          {upcoming.length > 0 &&
+            upcoming.map((task) => (
               <TaskCard
                 key={task.id}
                 name={task.name}

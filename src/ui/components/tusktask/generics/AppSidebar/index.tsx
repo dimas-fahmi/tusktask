@@ -31,6 +31,7 @@ import { cn } from "@/src/lib/shadcn/utils";
 import { usePathname } from "next/navigation";
 import StatusOverview from "../StatusOverview";
 import { Button } from "../../../shadcn/ui/button";
+import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
 
 // Menu items.
 const items = [
@@ -101,6 +102,7 @@ const NavLink = ({
 
 export function AppSidebar() {
   const { setOpenMobile, setOpen } = useSidebar();
+  const { setNewTaskDialogOpen } = useTasksContext();
 
   return (
     <Sidebar>
@@ -111,7 +113,11 @@ export function AppSidebar() {
         </div>
         <div className="space-y-2">
           <div className="grid grid-cols-1">
-            <Button variant={"default"} size={"sm"}>
+            <Button
+              onClick={() => setNewTaskDialogOpen(true)}
+              variant={"default"}
+              size={"sm"}
+            >
               <BadgePlus size={"20px"} />
               New Task
             </Button>

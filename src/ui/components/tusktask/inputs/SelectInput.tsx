@@ -74,13 +74,13 @@ const SelectInput = React.forwardRef<HTMLButtonElement, SelectInputProps>(
           name={name}
           onBlur={onBlur}
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue className="capitalize" placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>{label}</SelectLabel>
             {items?.map((item, index) => (
-              <SelectItem value={item} key={index}>
+              <SelectItem className="capitalize" value={item} key={index}>
                 {item}
               </SelectItem>
             ))}

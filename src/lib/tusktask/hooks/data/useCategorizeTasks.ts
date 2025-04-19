@@ -4,7 +4,7 @@ export interface UseCategorizeTasks {
   overdue: TasksGetApiData[];
   today: TasksGetApiData[];
   tomorrow: TasksGetApiData[];
-  todo: TasksGetApiData[];
+  upcoming: TasksGetApiData[];
   completed: TasksGetApiData[];
 }
 
@@ -16,7 +16,7 @@ export const useCategorizeTasks = (
       overdue: [],
       today: [],
       tomorrow: [],
-      todo: [],
+      upcoming: [],
       completed: [],
     };
   }
@@ -34,7 +34,7 @@ export const useCategorizeTasks = (
     overdue: [] as TasksGetApiData[],
     today: [] as TasksGetApiData[],
     tomorrow: [] as TasksGetApiData[],
-    todo: [] as TasksGetApiData[],
+    upcoming: [] as TasksGetApiData[],
     completed: [] as TasksGetApiData[],
   };
 
@@ -58,7 +58,7 @@ export const useCategorizeTasks = (
     ) {
       categorized.tomorrow.push(task);
     } else {
-      categorized.todo.push(task);
+      categorized.upcoming.push(task);
     }
   }
 

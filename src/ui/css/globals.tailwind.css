@@ -33,10 +33,10 @@
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
+  --color-popover-foreground: var(--tt-primary-foreground);
+  --color-popover: var(--tt-primary);
   --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
+  --color-card: var(--tt-muted);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
