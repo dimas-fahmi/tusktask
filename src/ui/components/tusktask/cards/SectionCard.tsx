@@ -16,7 +16,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
   onClick,
 }) => {
   return (
-    <div className="max-w-[380px]">
+    <div className="">
       <header className="flex justify-between mb-3">
         <span className="tracking-tight font-semibold flex gap-2 items-end">
           <h4 className="text-tt-primary-foreground/90 capitalize">{title}</h4>
