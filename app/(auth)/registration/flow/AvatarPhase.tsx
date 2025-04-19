@@ -139,7 +139,7 @@ const AvatarPhase = () => {
                     },
                   });
 
-                  update({
+                  await update({
                     user: {
                       registration: next,
                     },

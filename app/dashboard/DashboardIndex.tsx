@@ -1,4 +1,6 @@
+import SectionCard from "@/src/ui/components/tusktask/cards/SectionCard";
 import StatusOverviewCard from "@/src/ui/components/tusktask/cards/StatusOverviewCard";
+import TaskCard from "@/src/ui/components/tusktask/cards/TaskCard";
 import StatusOverview from "@/src/ui/components/tusktask/generics/StatusOverview";
 import {
   Circle,
@@ -36,8 +38,72 @@ const DashboardIndex = () => {
           <StatusOverview overdue={0} todo={0} done={0} />
         </div>
       </header>
-      <div>
-        <div></div>
+      <div className="mt-9 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {/* section container */}
+        <SectionCard title="19 Apr ‧ Today">
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+        </SectionCard>
+        <SectionCard title="19 Apr ‧ Today">
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+        </SectionCard>
+        <SectionCard title="20 Apr ‧ Tomorrow">
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+        </SectionCard>
+        <SectionCard title="21 Apr">
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+          <TaskCard
+            name="Beli Susu Sapi"
+            completed={false}
+            tags={["penting", "urgent"]}
+            id="haha"
+            description="Susu murni bukan manis"
+          />
+        </SectionCard>
       </div>
     </div>
   );
