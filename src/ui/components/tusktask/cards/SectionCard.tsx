@@ -1,7 +1,7 @@
 import React from "react";
 
 export interface SectionCardProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   title: string;
   label?: string;
   onClick?: () => unknown;
@@ -16,10 +16,10 @@ const SectionCard: React.FC<SectionCardProps> = ({
   onClick,
 }) => {
   return (
-    <div className="">
+    <div className="max-w-[380px]">
       <header className="flex justify-between mb-3">
         <span className="tracking-tight font-semibold flex gap-2 items-end">
-          <span className="text-tt-primary-foreground/90">{title}</span>
+          <h4 className="text-tt-primary-foreground/90 capitalize">{title}</h4>
           <span className="text-tt-primary-foreground/40 text-sm">
             {number}
           </span>

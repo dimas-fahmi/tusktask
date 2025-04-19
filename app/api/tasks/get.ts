@@ -60,10 +60,19 @@ export const tasksGet = async (req: Request) => {
           columns: userConfigs,
         },
         project: true,
+        tasksToUsers: {
+          columns: {},
+          with: {
+            user: {
+              columns: userConfigs,
+            },
+          },
+        },
       },
     });
 
     if (result.length < 1) {
+      console.log(createStandardLog("tasks", null, "GET", "NOT_FOUND"));
       return createNextResponse(404, {
         message: "No such tasks is found",
         userFriendly: false,
