@@ -29,7 +29,7 @@ const NewTaskDialog: React.FC<{
   const {
     control,
     handleSubmit,
-    watch,
+    reset,
     formState: { isValid, isSubmitting },
   } = useForm({
     resolver: zodResolver(tasksInsertSchema),
@@ -52,6 +52,8 @@ const NewTaskDialog: React.FC<{
         description: "Your new task has been added successfully!",
         type: "success",
       });
+      reset();
+      setAdvanceExpanse(false);
       setOpen(false);
     },
     onError: () => {
@@ -249,7 +251,7 @@ const NewTaskDialog: React.FC<{
                     htmlFor="tags"
                     className="text-xs font-primary flex items-center gap-1 mb-1"
                   >
-                    Deadline Time
+                    Start Time
                   </label>
                   <DatePicker
                     value={field.value ?? undefined}
@@ -351,7 +353,15 @@ const NewTaskDialog: React.FC<{
               <Button
                 type="button"
                 variant={"outline"}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  triggerToast({
+                    type: "default",
+                    title: "Changes Saved",
+                    description: "We'll keep it temporary",
+                  });
+                  setAdvanceExpanse(false);
+                  setOpen(false);
+                }}
                 disabled={isSubmitting}
               >
                 Cancel

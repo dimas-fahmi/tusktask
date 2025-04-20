@@ -102,14 +102,19 @@ const NavLink = ({
 
 export function AppSidebar() {
   const { setOpenMobile, setOpen } = useSidebar();
-  const { setNewTaskDialogOpen } = useTasksContext();
+  const { setNewTaskDialogOpen, overdue, today, tomorrow, upcoming } =
+    useTasksContext();
 
   return (
     <Sidebar>
       <SidebarHeader className="pt-6 space-y-2 mb-4">
         <SidebarTTHeader />
         <div className="md:hidden">
-          <StatusOverview overdue={0} todo={0} done={0} />
+          <StatusOverview
+            overdue={overdue.length}
+            today={today.length}
+            upcoming={tomorrow.length + upcoming.length}
+          />
         </div>
         <div className="space-y-2">
           <div className="grid grid-cols-1">

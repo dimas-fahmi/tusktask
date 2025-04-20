@@ -1,21 +1,21 @@
 import React from "react";
 import StatusOverviewCard from "../../cards/StatusOverviewCard";
-import { Circle, CircleCheckBig, ClockAlert } from "lucide-react";
+import { Circle, Clock7, ClockAlert } from "lucide-react";
 
 const StatusOverview = ({
   overdue,
-  todo,
-  done,
+  today,
+  upcoming,
 }: {
   overdue: number;
-  todo: number;
-  done: number;
+  today: number;
+  upcoming: number;
 }) => {
   return (
     <div className="flex gap-2">
       <StatusOverviewCard title="Overdue" number={overdue} icon={ClockAlert} />
-      <StatusOverviewCard title="Todo" number={todo} icon={Circle} />
-      <StatusOverviewCard title="Done" number={done} icon={CircleCheckBig} />
+      <StatusOverviewCard title="Today" number={today} icon={Circle} />
+      <StatusOverviewCard title="Upcoming" number={upcoming} icon={Clock7} />
     </div>
   );
 };

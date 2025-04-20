@@ -1,4 +1,4 @@
-import { TasksGetApiData } from "@/app/api/tasks/types";
+import { TasksGetApiData, TasksGetApiResponse } from "@/app/api/tasks/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import React, { createContext, useState } from "react";
@@ -14,6 +14,8 @@ export interface TasksContextValue {
   completed: TasksGetApiData[];
   newTaskDialogOpen: boolean;
   setNewTaskDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  data: TasksGetApiResponse | undefined;
+  isFetching: boolean;
 }
 
 export const TasksContext = createContext<TasksContextValue | null>(null);
@@ -49,6 +51,8 @@ export const TasksContextProvider = ({
         tomorrow,
         setNewTaskDialogOpen,
         newTaskDialogOpen,
+        data,
+        isFetching,
       }}
     >
       {children}
