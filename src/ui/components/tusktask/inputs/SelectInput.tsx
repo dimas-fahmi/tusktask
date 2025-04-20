@@ -29,8 +29,13 @@ const SelectVariants = cva("", {
   },
 });
 
+type SelectItemsObj = {
+  label: string;
+  value: string;
+};
+
 type SelectInputProps = {
-  items: string[];
+  items: string[] | SelectItemsObj[];
   label: string;
   placeholder: string;
   error?: boolean;
@@ -79,11 +84,21 @@ const SelectInput = React.forwardRef<HTMLButtonElement, SelectInputProps>(
         <SelectContent>
           <SelectGroup>
             <SelectLabel>{label}</SelectLabel>
-            {items?.map((item, index) => (
-              <SelectItem className="capitalize" value={item} key={index}>
-                {item}
-              </SelectItem>
-            ))}
+            {items?.map((item, index) =>
+              typeof item === "string" ? (
+                <SelectItem className="capitalize" value={item} key={index}>
+                  {item}
+                </SelectItem>
+              ) : (
+                <SelectItem
+                  className="capitalize"
+                  value={item.value}
+                  key={index}
+                >
+                  {item.label}
+                </SelectItem>
+              )
+            )}
           </SelectGroup>
         </SelectContent>
       </Select>

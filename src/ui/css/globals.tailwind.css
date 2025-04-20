@@ -182,6 +182,10 @@
   .underline-effect:hover::after {
     transform: scaleX(1);
   }
+
+  .underline-effect.active::after {
+    transform: scaleX(1);
+  }
 }
 
 .dark {
