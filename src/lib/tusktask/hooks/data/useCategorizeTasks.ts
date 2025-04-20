@@ -45,7 +45,7 @@ export const useCategorizeTasks = (
       continue;
     }
 
-    const deadlineOrCreatedAt = new Date(task.deadlineAt ?? task.createdAt);
+    const deadlineOrCreatedAt = new Date(task.deadlineAt ?? task.createdAt!);
     deadlineOrCreatedAt.setHours(23, 59, 59, 999); // deadline is end of that day
 
     if (deadlineOrCreatedAt < today) {

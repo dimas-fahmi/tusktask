@@ -21,12 +21,12 @@ export const tasks = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name").notNull(),
     description: text("description"),
-    createdById: text("created_by_id")
-      .references(() => users.id, { onDelete: "cascade" })
-      .notNull(),
-    ownerId: text("owner_id")
-      .references(() => users.id, { onDelete: "cascade" })
-      .notNull(),
+    createdById: text("created_by_id").references(() => users.id, {
+      onDelete: "cascade",
+    }),
+    ownerId: text("owner_id").references(() => users.id, {
+      onDelete: "cascade",
+    }),
     completedById: text("completed_by_id").references(() => users.id, {
       onDelete: "set null",
     }),
@@ -41,24 +41,19 @@ export const tasks = pgTable(
       onDelete: "cascade",
     }),
 
-    type: text("type", { enum: ["task", "event"] })
-      .default("task")
-      .notNull(),
+    type: text("type", { enum: ["task", "event"] }).default("task"),
 
     status: text("status", {
       enum: ["not_started", "in_progress", "completed", "archived"],
-    })
-      .default("not_started")
-      .notNull(),
+    }).default("not_started"),
     visibility: text("visibility", {
       enum: ["private", "public", "shared"],
-    })
-      .default("private")
-      .notNull(),
+    }).default("private"),
 
-    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
-      .defaultNow()
-      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "date",
+      withTimezone: true,
+    }).defaultNow(),
     startAt: timestamp("start_at", {
       mode: "date",
       withTimezone: true,
