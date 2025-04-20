@@ -21,14 +21,24 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-export function DatePicker({
-  className,
-  placeholder,
-}: {
-  className?: string;
+interface DatePickerProps {
+  value?: Date;
+  onChange?: (date: Date | undefined) => void;
   placeholder: string;
-}) {
-  const [date, setDate] = React.useState<Date>();
+  className?: string;
+}
+
+export function DatePicker({
+  value,
+  onChange,
+  placeholder,
+  className,
+}: DatePickerProps) {
+  const date = value ? new Date(value) : undefined;
+
+  const handleDateChange = (newDate: Date | undefined) => {
+    onChange?.(newDate);
+  };
 
   return (
     <Dialog>
@@ -53,9 +63,9 @@ export function DatePicker({
       </DialogTrigger>
       <DialogContent className="w-auto p-4 md:p-6">
         <Select
-          onValueChange={(value) =>
-            setDate(addDays(new Date(), parseInt(value)))
-          }
+          onValueChange={(value) => {
+            handleDateChange(addDays(new Date(), parseInt(value)));
+          }}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select" />
@@ -67,13 +77,15 @@ export function DatePicker({
             <SelectItem value="7">In a week</SelectItem>
           </SelectContent>
         </Select>
+
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleDateChange}
           initialFocus
           fromDate={new Date()}
         />
+
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-medium text-tt-primary-foreground/80">
@@ -85,7 +97,7 @@ export function DatePicker({
                 if (date) {
                   const newDate = new Date(date);
                   newDate.setHours(parseInt(value));
-                  setDate(newDate);
+                  handleDateChange(newDate);
                 }
               }}
               disabled={!date}
@@ -112,7 +124,7 @@ export function DatePicker({
                 if (date) {
                   const newDate = new Date(date);
                   newDate.setMinutes(parseInt(value));
-                  setDate(newDate);
+                  handleDateChange(newDate);
                 }
               }}
               disabled={!date}

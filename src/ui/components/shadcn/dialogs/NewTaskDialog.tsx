@@ -9,7 +9,7 @@ import { createNewTask } from "@/src/lib/tusktask/mutators/creators/createNewTas
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { tasksInsertSchema } from "@/src/db/schema/tasks";
-import { Settings, Tag, UnfoldVertical } from "lucide-react";
+import { Divide, Settings, Tag, UnfoldVertical } from "lucide-react";
 import { DatePicker } from "../manuals/DatePicker";
 import { Input } from "../ui/input";
 
@@ -30,7 +30,7 @@ const NewTaskDialog: React.FC<{
     control,
     handleSubmit,
     watch,
-    formState: { isValid },
+    formState: { isValid, isSubmitting },
   } = useForm({
     resolver: zodResolver(tasksInsertSchema),
     mode: "onChange",
@@ -42,8 +42,6 @@ const NewTaskDialog: React.FC<{
       visibility: "private",
     },
   });
-
-  console.log(watch("name"), isValid);
 
   const { mutate, isPending } = useMutation({
     mutationFn: createNewTask,
@@ -67,15 +65,18 @@ const NewTaskDialog: React.FC<{
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="bg-tt-primary border-0 shadow-2xl">
+      <DialogContent
+        className={`bg-tt-primary border-0 shadow-2xl ${advanceExpand ? "px-4 pt-0 pb-4" : "p-4"} transition-all duration-500`}
+      >
         <DialogTitle className="sr-only">Create New Item</DialogTitle>
         <form
           onSubmit={handleSubmit((data) => {
-            console.log(data);
+            // @ts-ignore null | undefine overlap
+            mutate(data);
           })}
         >
           <div
-            className={`grid grid-cols-1 ${advanceExpand ? "max-h-0 overflow-hidden p-0" : ""} transition-all duration-300`}
+            className={`grid grid-cols-1 ${advanceExpand ? "max-h-0 overflow-hidden p-0" : ""} transition-all duration-500`}
           >
             <div className="space-y-4 mb-7 overflow-visible">
               <Controller
@@ -115,7 +116,7 @@ const NewTaskDialog: React.FC<{
 
           {/* Advance Settings */}
           <div
-            className={`${advanceExpand ? "md:p-4 md:border mt-4 rounded-xl" : "max-h-0 overflow-hidden p-0"} transition-all duration-300`}
+            className={`${advanceExpand ? "md:p-4 md:border mt-4 rounded-xl max-h-[1000px]" : "max-h-0 overflow-hidden p-0"} transition-all duration-500`}
           >
             <header>
               <h4 className="text-lg font-primary flex items-center gap-2">
@@ -128,9 +129,15 @@ const NewTaskDialog: React.FC<{
             <div className="mt-2 grid grid-cols-2 gap-3 mb-3">
               <Controller
                 control={control}
-                name="description"
-                render={({ field: { value, ...fieldProps }, fieldState }) => (
+                name="type"
+                render={({ field, fieldState }) => (
                   <div className="flex flex-col">
+                    <label
+                      htmlFor="tags"
+                      className="text-xs font-primary flex items-center gap-1 mb-1"
+                    >
+                      Type
+                    </label>
                     <SelectInput
                       label="Item Types"
                       items={[
@@ -139,6 +146,8 @@ const NewTaskDialog: React.FC<{
                       ]}
                       placeholder="Type"
                       className="w-full"
+                      onChange={field.onChange}
+                      value={field.value ?? ""}
                     />
                     {fieldState.error && (
                       <p className="text-xs ps-2 mt-0.5 text-tt-tertiary">
@@ -150,9 +159,15 @@ const NewTaskDialog: React.FC<{
               />
               <Controller
                 control={control}
-                name="description"
-                render={({ field: { value, ...fieldProps }, fieldState }) => (
+                name="status"
+                render={({ field, fieldState }) => (
                   <div className="flex flex-col">
+                    <label
+                      htmlFor="tags"
+                      className="text-xs font-primary flex items-center gap-1 mb-1"
+                    >
+                      Status
+                    </label>
                     <SelectInput
                       label="Status"
                       items={[
@@ -165,6 +180,8 @@ const NewTaskDialog: React.FC<{
                           value: "in_progress",
                         },
                       ]}
+                      onChange={field.onChange}
+                      value={field.value ?? ""}
                       placeholder="Status"
                       className="w-full"
                     />
@@ -182,9 +199,15 @@ const NewTaskDialog: React.FC<{
             <div className="mb-3">
               <Controller
                 control={control}
-                name="description"
-                render={({ field: { value, ...fieldProps }, fieldState }) => (
+                name="visibility"
+                render={({ field, fieldState }) => (
                   <div className="flex flex-col">
+                    <label
+                      htmlFor="tags"
+                      className="text-xs font-primary flex items-center gap-1 mb-1"
+                    >
+                      Priority
+                    </label>
                     <SelectInput
                       label="Priority"
                       items={[
@@ -201,6 +224,8 @@ const NewTaskDialog: React.FC<{
                           value: "shared",
                         },
                       ]}
+                      onChange={field.onChange}
+                      value={field.value ?? ""}
                       placeholder="Visibility"
                       className="w-full"
                     />
@@ -215,18 +240,89 @@ const NewTaskDialog: React.FC<{
             </div>
 
             {/* Date Pickers */}
-            <DatePicker className="w-full mb-3" placeholder="Start Time" />
-            <DatePicker className="w-full mb-3" placeholder="Finish Time" />
-            <DatePicker className="w-full mb-3" placeholder="Deadline Time" />
-            <DatePicker className="w-full mb-3" placeholder="Set Reminder" />
+            <Controller
+              control={control}
+              name="startAt"
+              render={({ field, fieldState }) => (
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="tags"
+                    className="text-xs font-primary flex items-center gap-1 mb-1"
+                  >
+                    Deadline Time
+                  </label>
+                  <DatePicker
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    className="w-full mb-3"
+                    placeholder="Start Time"
+                  />
+                  {fieldState.error && (
+                    <p className="text-xs ps-2 mt-0.5 text-tt-tertiary">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="deadlineAt"
+              render={({ field, fieldState }) => (
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="tags"
+                    className="text-xs font-primary flex items-center gap-1 mb-1"
+                  >
+                    Deadline Time
+                  </label>
+                  <DatePicker
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    className="w-full mb-3"
+                    placeholder="Deadline Time"
+                  />
+                  {fieldState.error && (
+                    <p className="text-xs ps-2 mt-0.5 text-tt-tertiary">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
+            <Controller
+              control={control}
+              name="reminderAt"
+              render={({ field, fieldState }) => (
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="tags"
+                    className="text-xs font-primary flex items-center gap-1 mb-1"
+                  >
+                    Reminder Time
+                  </label>
+                  <DatePicker
+                    value={field.value ?? undefined}
+                    onChange={field.onChange}
+                    className="w-full mb-3"
+                    placeholder="Reminder Time"
+                  />
+                  {fieldState.error && (
+                    <p className="text-xs ps-2 mt-0.5 text-tt-tertiary">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </div>
+              )}
+            />
 
             {/* Tags */}
-            <div className="mt-3">
+            <div>
               <label
                 htmlFor="tags"
-                className="font-primary flex items-center gap-1 mb-1"
+                className="text-xs font-primary flex items-center gap-1 mb-1"
               >
-                <Tag className="w-4" />
                 Tags
               </label>
               <Input
@@ -243,8 +339,10 @@ const NewTaskDialog: React.FC<{
           <footer className="flex justify-between flex-nowrap mt-6">
             <Button
               variant={"link"}
+              type="button"
               className={`${advanceExpand && "active"} !pe-4`}
               onClick={() => setAdvanceExpanse((prev) => !prev)}
+              disabled={isSubmitting}
             >
               <UnfoldVertical />
               Advance
@@ -254,11 +352,12 @@ const NewTaskDialog: React.FC<{
                 type="button"
                 variant={"outline"}
                 onClick={() => setOpen(false)}
+                disabled={isSubmitting}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={!isValid}>
-                Save
+              <Button type="submit" disabled={!isValid || isSubmitting}>
+                {isSubmitting ? "Saving" : "Save"}
               </Button>
             </div>
           </footer>
