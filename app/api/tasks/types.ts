@@ -10,6 +10,12 @@ export interface Assignee {
   user: StandardUserData;
 }
 
+export interface SpecificTask extends TaskType {
+  creator: StandardUserData;
+  owner: StandardUserData;
+  users: StandardUserData[];
+}
+
 export interface TasksGetApiData extends TaskType {
   creator: StandardUserData;
   owner: StandardUserData;

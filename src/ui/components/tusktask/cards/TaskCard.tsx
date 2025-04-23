@@ -1,7 +1,10 @@
+"use client";
+
 import { Check, Ellipsis, Hash } from "lucide-react";
 import React from "react";
 import { Separator } from "../../shadcn/ui/separator";
 import { truncateText } from "@/src/lib/tusktask/utils/text/truncateText";
+import { useRouter } from "next/navigation";
 
 export interface TaskCardProps {
   name: string;
@@ -18,8 +21,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
   tags,
   completed,
 }) => {
+  const router = useRouter();
+
   return (
-    <div className="group cursor-pointer active:scale-95 transition-all duration-300 px-4 py-2 border rounded-xl overflow-hidden shadow hover:shadow-xl space-y-2">
+    <div
+      className="group cursor-pointer active:scale-95 transition-all duration-300 px-4 py-2 border rounded-xl overflow-hidden shadow hover:shadow-xl space-y-2"
+      onClick={() => {
+        router.push(`/dashboard/task/${id}`);
+      }}
+    >
       <header className="grid grid-cols-[30px_auto] gap-2">
         <div>
           <button className="group p-1 cursor-pointer rounded-full flex items-center justify-center border">

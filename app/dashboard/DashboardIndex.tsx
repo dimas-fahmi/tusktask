@@ -96,7 +96,7 @@ const DashboardIndex = () => {
                 name={task.name}
                 completed={false}
                 tags={["penting", "urgent"]}
-                id="haha"
+                id={task.id}
                 description={task.description}
               />
             ))}
@@ -111,7 +111,7 @@ const DashboardIndex = () => {
                 name={task.name}
                 completed={false}
                 tags={["penting", "urgent"]}
-                id="haha"
+                id={task.id}
                 description={task.description}
               />
             ))}
@@ -126,7 +126,7 @@ const DashboardIndex = () => {
                 name={task.name}
                 completed={false}
                 tags={["penting", "urgent"]}
-                id="haha"
+                id={task.id}
                 description={task.description}
               />
             ))}
@@ -141,7 +141,7 @@ const DashboardIndex = () => {
                 name={task.name}
                 completed={false}
                 tags={["penting", "urgent"]}
-                id="haha"
+                id={task.id}
                 description={task.description}
               />
             ))}
