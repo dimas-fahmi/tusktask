@@ -1,9 +1,5 @@
 import { TasksGetApiRequest, TasksGetApiResponse } from "@/app/api/tasks/types";
-import {
-  createResponse,
-  StandardApiResponse,
-} from "../utils/createApiResponse";
-import { TaskType } from "@/src/db/schema/tasks";
+import { createResponse } from "../utils/createApiResponse";
 
 export const fetchMyTasks = async (
   filter: TasksGetApiRequest

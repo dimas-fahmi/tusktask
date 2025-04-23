@@ -7,7 +7,12 @@ import { NextResponse } from "next/server";
 import { createStandardLog } from "@/src/lib/tusktask/utils/api/createStandardLog";
 import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
 
-const userConfigs = { id: true, name: true, image: true, userName: true };
+export const userConfigs = {
+  id: true,
+  name: true,
+  image: true,
+  userName: true,
+};
 
 export const tasksGet = async (req: Request) => {
   console.log(createStandardLog("tasks", null, "GET", "INCOMING_REQUEST"));
