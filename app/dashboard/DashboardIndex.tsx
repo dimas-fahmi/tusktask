@@ -94,7 +94,7 @@ const DashboardIndex = () => {
               <TaskCard
                 key={task.id}
                 name={task.name}
-                completed={false}
+                completedAt={task.completedAt}
                 tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}
@@ -109,7 +109,7 @@ const DashboardIndex = () => {
               <TaskCard
                 key={task.id}
                 name={task.name}
-                completed={false}
+                completedAt={task.completedAt}
                 tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}
@@ -124,7 +124,7 @@ const DashboardIndex = () => {
               <TaskCard
                 key={task.id}
                 name={task.name}
-                completed={false}
+                completedAt={task.completedAt}
                 tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}
@@ -139,7 +139,7 @@ const DashboardIndex = () => {
               <TaskCard
                 key={task.id}
                 name={task.name}
-                completed={false}
+                completedAt={task.completedAt}
                 tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}

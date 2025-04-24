@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
 import {
   TriggerToastProps,
@@ -20,10 +20,26 @@ export interface NotificationContextValues {
   triggerToast: (props: TriggerToastProps) => void;
   permissionStatus: NotificationPermissionType;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
+  triggerSound: (type: PlaySoundType) => void;
 }
 
-export const playSound = () => {
-  const audio = new Audio("/sounds/notification.wav");
+export type PlaySoundType =
+  | "notification"
+  | "positive"
+  | "negative"
+  | "ping"
+  | "error";
+
+export const playSound = (type: PlaySoundType = "notification") => {
+  const audioFiles: Record<PlaySoundType, string> = {
+    error: "error.wav",
+    negative: "negative.wav",
+    notification: "notification.wav",
+    ping: "ping.wav",
+    positive: "positive.wav",
+  };
+
+  const audio = new Audio(`/sounds/${audioFiles[type]}`);
   audio.play().catch((err) => {
     console.warn("Failed to play sound:", err);
   });
@@ -80,6 +96,12 @@ export const NotificationContextProvider = ({
     setReminderSound(session.user.reminderSound);
   }, [session]);
 
+  const triggerSound = useCallback((type: PlaySoundType) => {
+    if (notificationSound) {
+      playSound(type);
+    }
+  }, []);
+
   return (
     <NotificationContext.Provider
       value={{
@@ -92,6 +114,7 @@ export const NotificationContextProvider = ({
         triggerToast,
         permissionStatus,
         setIndex,
+        triggerSound,
       }}
     >
       {children}

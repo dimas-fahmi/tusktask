@@ -5,13 +5,14 @@ import React from "react";
 import { Separator } from "../../shadcn/ui/separator";
 import { truncateText } from "@/src/lib/tusktask/utils/text/truncateText";
 import { useRouter } from "next/navigation";
+import TaskCheckButton from "../buttons/TaskCheckButton";
 
 export interface TaskCardProps {
   name: string;
   id: string;
   description?: string | undefined | null;
   tags: string[];
-  completed: boolean;
+  completedAt: Date | null | undefined;
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({
@@ -19,7 +20,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   id,
   description,
   tags,
-  completed,
+  completedAt,
 }) => {
   const router = useRouter();
 
@@ -32,9 +33,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
     >
       <header className="grid grid-cols-[30px_auto] gap-2">
         <div>
-          <button className="group p-1 cursor-pointer rounded-full flex items-center justify-center border">
-            <Check className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all text-tt-primary-foreground/0 hover:text-tt-primary-foreground/100 duration-300" />
-          </button>
+          <TaskCheckButton taskId={id} completedAt={completedAt} />
         </div>
         <div className="flex justify-between items-center">
           <h4 className="tracking-tight text-sm font-semibold capitalize">

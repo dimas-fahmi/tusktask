@@ -3,6 +3,7 @@
 import { SpecificTask } from "@/app/api/tasks/types";
 import { fetchSpecificTask } from "@/src/lib/tusktask/fetchers/fetchSpecificTask";
 import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
+import TaskCheckButton from "@/src/ui/components/tusktask/buttons/TaskCheckButton";
 import AssigneeCard from "@/src/ui/components/tusktask/cards/AssigneeCard";
 import TimeInfoCard from "@/src/ui/components/tusktask/cards/TimeInfoCard";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +15,8 @@ import {
   ClockArrowUp,
   Text,
 } from "lucide-react";
-import React from "react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 const TaskPageIndex = ({ id }: { id: string }) => {
   const { data, isFetching } = useQuery({
@@ -24,18 +26,25 @@ const TaskPageIndex = ({ id }: { id: string }) => {
 
   const taskData = data && (data.data as SpecificTask | null);
 
-  return isFetching ? (
-    <MainLoader />
+  return isFetching && !taskData ? (
+    <div className="flex justify-center items-center">
+      <Image
+        width={80}
+        height={80}
+        src={"/images/loader.gif"}
+        alt="Loading Animation"
+      />
+    </div>
   ) : (
     <div className="grid grid-cols-1 md:grid-cols-[auto_280px] gap-6 md:gap-0">
       <div className="space-y-6">
         <header className="grid grid-cols-1 gap-4">
           <div className="flex items-center justify-between">
             <h1 className="flex items-center gap-2 text-lg md:text-3xl font-bold text-tt-primary-foreground/80 capitalize">
-              <button className="group cursor-pointer">
-                <Circle className="group-hover:hidden" />
-                <CircleCheckBig className="hidden group-hover:block" />
-              </button>
+              <TaskCheckButton
+                taskId={taskData!.id!}
+                completedAt={taskData?.completedAt}
+              />
               {taskData?.name}
             </h1>
           </div>

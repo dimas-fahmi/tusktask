@@ -54,7 +54,7 @@ const TaskFilteredIndex = ({ filter }: { filter: TaskFilters }) => {
     <div className="space-y-6">
       <header className="grid grid-cols-1 gap-4">
         <div className="flex items-center justify-between">
-          <h1 className="flex items-center gap-2 text-3xl font-bold text-tt-primary-foreground/80">
+          <h1 className="flex items-center gap-2 text-2xl md:text-3xl font-bold text-tt-primary-foreground/80">
             <Icon size={"2rem"} />
             {headerObjs[filter].title}
           </h1>
@@ -86,7 +86,7 @@ const TaskFilteredIndex = ({ filter }: { filter: TaskFilters }) => {
               key={task.id}
               name={task.name}
               description={task.description}
-              completed={false}
+              completedAt={task.completedAt}
               tags={task.tags ?? []}
             />
           ))}
