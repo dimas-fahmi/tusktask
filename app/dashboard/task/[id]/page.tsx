@@ -38,7 +38,7 @@ const TaskPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   await queryClient.prefetchQuery({
     queryKey: ["task", id],
-    queryFn: () => getTaskById(id, session?.user.id),
+    queryFn: async () => await getTaskById(id, session?.user.id),
   });
 
   const dehydrateState = dehydrate(queryClient);
