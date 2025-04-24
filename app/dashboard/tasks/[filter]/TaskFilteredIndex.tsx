@@ -86,7 +86,7 @@ const TaskFilteredIndex = ({ filter }: { filter: TaskFilters }) => {
               key={task.id}
               name={task.name}
               description={task.description}
-              completed={false}
+              completedAt={task.completedAt}
               tags={task.tags ?? []}
             />
           ))}
