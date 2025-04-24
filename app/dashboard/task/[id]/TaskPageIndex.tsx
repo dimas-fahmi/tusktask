@@ -14,6 +14,7 @@ import {
   ClockArrowUp,
   Text,
 } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 const TaskPageIndex = ({ id }: { id: string }) => {
@@ -25,7 +26,14 @@ const TaskPageIndex = ({ id }: { id: string }) => {
   const taskData = data && (data.data as SpecificTask | null);
 
   return isFetching ? (
-    <MainLoader />
+    <div className="flex justify-center items-center">
+      <Image
+        width={80}
+        height={80}
+        src={"/images/loader.gif"}
+        alt="Loading Animation"
+      />
+    </div>
   ) : (
     <div className="grid grid-cols-1 md:grid-cols-[auto_280px] gap-6 md:gap-0">
       <div className="space-y-6">

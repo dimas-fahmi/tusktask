@@ -5,24 +5,9 @@ import {
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
-import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
-import { SpecificTask } from "@/app/api/tasks/types";
 import TaskPageIndex from "./TaskPageIndex";
-
-const getTask = async (
-  id: string
-): Promise<StandardApiResponse<SpecificTask | null>> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/tasks/${id}`,
-    {
-      method: "GET",
-    }
-  );
-
-  if (!response.ok) throw new Error("Failed to fetch task");
-
-  return await response.json();
-};
+import { getTaskById } from "@/src/lib/tusktask/server/tasks";
+import { auth } from "@/auth";
 
 export async function generateMetadata({
   params,
@@ -30,29 +15,30 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
+  const session = await auth();
 
   let task;
   try {
-    task = await getTask(id);
+    task = await getTaskById(id, session?.user.id);
   } catch (error) {
     return {
       title: `Task | TuskTask`,
     };
   }
-  const taskData = task.data as SpecificTask | null;
 
   return {
-    title: `${taskData?.name || "Task"} | TuskTask`,
+    title: `${task?.name || "Task"} | TuskTask`,
   };
 }
 
 const TaskPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const queryClient = new QueryClient();
+  const session = await auth();
 
   await queryClient.prefetchQuery({
     queryKey: ["task", id],
-    queryFn: () => getTask(id),
+    queryFn: () => getTaskById(id, session?.user.id),
   });
 
   const dehydrateState = dehydrate(queryClient);
