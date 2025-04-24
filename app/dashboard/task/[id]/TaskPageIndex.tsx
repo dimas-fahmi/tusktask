@@ -7,16 +7,9 @@ import TaskCheckButton from "@/src/ui/components/tusktask/buttons/TaskCheckButto
 import AssigneeCard from "@/src/ui/components/tusktask/cards/AssigneeCard";
 import TimeInfoCard from "@/src/ui/components/tusktask/cards/TimeInfoCard";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Circle,
-  CircleCheckBig,
-  Clock9,
-  ClockAlert,
-  ClockArrowUp,
-  Text,
-} from "lucide-react";
+import { Clock9, ClockAlert, ClockArrowUp, Text } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const TaskPageIndex = ({ id }: { id: string }) => {
   const { data, isFetching } = useQuery({
@@ -42,7 +35,7 @@ const TaskPageIndex = ({ id }: { id: string }) => {
           <div className="flex items-center justify-between">
             <h1 className="flex items-center gap-2 text-lg md:text-3xl font-bold text-tt-primary-foreground/80 capitalize">
               <TaskCheckButton
-                taskId={taskData!.id!}
+                taskId={taskData?.id ?? ""}
                 completedAt={taskData?.completedAt}
               />
               {taskData?.name}
@@ -69,7 +62,7 @@ const TaskPageIndex = ({ id }: { id: string }) => {
           <div className="space-y-2">
             {taskData?.users.map((user) => (
               <AssigneeCard
-                key={user.id}
+                key={user?.id}
                 name={user.name ?? ""}
                 username={user.userName ?? ""}
                 avatar={user.image ?? ""}
