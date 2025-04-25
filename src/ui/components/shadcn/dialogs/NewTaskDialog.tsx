@@ -9,9 +9,16 @@ import { createNewTask } from "@/src/lib/tusktask/mutators/creators/createNewTas
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { tasksInsertSchema } from "@/src/db/schema/tasks";
-import { Divide, Settings, Tag, UnfoldVertical } from "lucide-react";
+import {
+  Divide,
+  LoaderCircle,
+  Settings,
+  Tag,
+  UnfoldVertical,
+} from "lucide-react";
 import { DatePicker } from "../manuals/DatePicker";
 import { Input } from "../ui/input";
+import LoadingState from "../../tusktask/typography/LoadingState";
 
 const NewTaskDialog: React.FC<{
   open: boolean;
@@ -73,6 +80,16 @@ const NewTaskDialog: React.FC<{
         <DialogTitle className="sr-only">Create New Item</DialogTitle>
         <form
           onSubmit={handleSubmit((data) => {
+            if (data.name.length < 1) {
+              triggerToast({
+                type: "error",
+                title: "You Forgot Something",
+                description: "It is necessary to provide a name for this task",
+                duration: 5000,
+              });
+              return;
+            }
+
             // @ts-ignore null | undefine overlap
             mutate(data);
           })}
@@ -362,12 +379,12 @@ const NewTaskDialog: React.FC<{
                   setAdvanceExpanse(false);
                   setOpen(false);
                 }}
-                disabled={isSubmitting}
+                disabled={isPending}
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                {isSubmitting ? "Saving" : "Save"}
+              <Button type="submit" disabled={!isValid || isPending}>
+                {isPending ? <LoadingState title="Saving" /> : <>Save</>}
               </Button>
             </div>
           </footer>

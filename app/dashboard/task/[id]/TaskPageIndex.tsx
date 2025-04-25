@@ -2,6 +2,7 @@
 
 import { SpecificTask } from "@/app/api/tasks/types";
 import { fetchSpecificTask } from "@/src/lib/tusktask/fetchers/fetchSpecificTask";
+import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
 import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
 import TaskCheckButton from "@/src/ui/components/tusktask/buttons/TaskCheckButton";
 import AssigneeCard from "@/src/ui/components/tusktask/cards/AssigneeCard";
@@ -9,16 +10,24 @@ import TimeInfoCard from "@/src/ui/components/tusktask/cards/TimeInfoCard";
 import { useQuery } from "@tanstack/react-query";
 import { Clock9, ClockAlert, ClockArrowUp, Text } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 
 const TaskPageIndex = ({ id }: { id: string }) => {
-  console.log(id);
+  // pull setters from task context
+  const { setTaskTimeUpdateDialogOpen, setSpecificTask } = useTasksContext();
+
   const { data, isFetching } = useQuery({
     queryKey: ["task", id],
     queryFn: () => fetchSpecificTask(id),
   });
 
   const taskData = data && (data.data as SpecificTask | null);
+
+  useEffect(() => {
+    if (taskData && taskData.id) {
+      setSpecificTask(taskData);
+    }
+  }, [taskData]);
 
   return isFetching && !taskData ? (
     <div className="flex justify-center items-center">
@@ -84,12 +93,14 @@ const TaskPageIndex = ({ id }: { id: string }) => {
             <TimeInfoCard
               icon={ClockArrowUp}
               label="Start At"
-              date={taskData?.createdAt}
+              date={taskData?.startAt}
+              onClick={() => setTaskTimeUpdateDialogOpen(true)}
             />
             <TimeInfoCard
               icon={ClockAlert}
               label="Deadline At"
               date={taskData?.deadlineAt}
+              onClick={() => setTaskTimeUpdateDialogOpen(true)}
             />
           </div>
         </section>
