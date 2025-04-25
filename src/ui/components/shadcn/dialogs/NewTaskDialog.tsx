@@ -19,6 +19,8 @@ import {
 import { DatePicker } from "../manuals/DatePicker";
 import { Input } from "../ui/input";
 import LoadingState from "../../tusktask/typography/LoadingState";
+import { TasksGetApiData } from "@/app/api/tasks/types";
+import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
 
 const NewTaskDialog: React.FC<{
   open: boolean;
@@ -52,8 +54,44 @@ const NewTaskDialog: React.FC<{
 
   const { mutate, isPending } = useMutation({
     mutationFn: createNewTask,
-    onSuccess: () => {
+    onMutate: async (data) => {
+      await queryClient.cancelQueries({
+        queryKey: ["tasks", "personal"],
+      });
+
+      const previousData = queryClient.getQueriesData({
+        queryKey: ["tasks", "personal"],
+      });
+
+      queryClient.setQueryData(
+        ["tasks", "personal"],
+        (old: StandardApiResponse<TasksGetApiData[] | null> | undefined) => {
+          const oldData = old?.data ?? [];
+          setOpen(false);
+
+          return {
+            ...old,
+            data: [
+              ...(oldData as TasksGetApiData[]),
+              {
+                id: crypto.randomUUID(),
+                name: data.name,
+                createdAt: new Date(),
+                deadlineAt: data.deadlineAt,
+                startAt: data.startAt,
+                createdByOptimisticUpdate: true,
+              },
+            ],
+          };
+        }
+      );
+
+      return { previousData };
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", "personal"] });
+    },
+    onSuccess: () => {
       triggerToast({
         title: "Task Created",
         description: "Your new task has been added successfully!",
@@ -61,14 +99,19 @@ const NewTaskDialog: React.FC<{
       });
       reset();
       setAdvanceExpanse(false);
-      setOpen(false);
     },
-    onError: () => {
+    onError: (err, data, context) => {
       triggerToast({
         title: "Something went wrong",
         description: "Failed to create a new task, please try again",
         type: "error",
       });
+
+      if (context?.previousData) {
+        queryClient.setQueryData(["tasks", "personal"], context.previousData);
+      }
+
+      setOpen(true);
     },
   });
 
@@ -371,11 +414,6 @@ const NewTaskDialog: React.FC<{
                 type="button"
                 variant={"outline"}
                 onClick={() => {
-                  triggerToast({
-                    type: "default",
-                    title: "Changes Saved",
-                    description: "We'll keep it temporary",
-                  });
                   setAdvanceExpanse(false);
                   setOpen(false);
                 }}
