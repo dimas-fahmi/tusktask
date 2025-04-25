@@ -52,23 +52,37 @@ const DashboardIndex = () => {
           {today.length > 0 && (
             <p className="flex text-sm text-muted-foreground items-center gap-2">
               <Circle size={"1rem"} />
-              You have {today.length} tasks today
+              You have {today.length} {today.length > 1 ? "tasks" : "task"}{" "}
+              today
             </p>
           )}
 
-          {upcoming.length > 0 && tomorrow.length > 0 && (
+          {tomorrow.length > 0 && (
             <p className="flex text-sm text-muted-foreground items-center gap-2">
               <Clock7 size={"1rem"} />
-              You have {upcoming.length + tomorrow.length} upcoming tasks
+              You have {tomorrow.length}{" "}
+              {tomorrow.length > 1 ? "tasks" : "task"} for tomorrow
             </p>
           )}
 
-          {today.length < 1 && overdue.length < 1 && upcoming.length < 1 && (
+          {upcoming.length > 0 && (
             <p className="flex text-sm text-muted-foreground items-center gap-2">
-              <CircleAlert size={"1rem"} />
-              You don't have any active task, create a new one and be organize.
+              <Clock7 size={"1rem"} />
+              You have {upcoming.length} upcoming{" "}
+              {upcoming.length > 1 ? "tasks" : "task"}
             </p>
           )}
+
+          {tomorrow.length < 1 &&
+            today.length < 1 &&
+            overdue.length < 1 &&
+            upcoming.length < 1 && (
+              <p className="flex text-sm text-muted-foreground items-center gap-2">
+                <CircleAlert size={"1rem"} />
+                You don't have any active task, create a new one and be
+                organize.
+              </p>
+            )}
         </div>
 
         <div className="md:hidden">
@@ -80,11 +94,14 @@ const DashboardIndex = () => {
         </div>
       </header>
 
-      {today.length < 1 && overdue.length < 1 && upcoming.length < 1 && (
-        <div className="md:hidden text-center mt-6 text-xs  text-tt-primary-foreground/80">
-          You have no active task, create and be organize.
-        </div>
-      )}
+      {today.length < 1 &&
+        overdue.length < 1 &&
+        upcoming.length < 1 &&
+        tomorrow.length < 1 && (
+          <div className="md:hidden text-center mt-6 text-xs  text-tt-primary-foreground/80">
+            You have no active task, create and be organize.
+          </div>
+        )}
 
       <div className="mt-6 md:mt-9 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {/* section container */}

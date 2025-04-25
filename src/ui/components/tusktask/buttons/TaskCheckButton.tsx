@@ -1,8 +1,10 @@
 "use client";
 
 import { TaskPatchApiRequest } from "@/app/api/tasks/patch";
+import { TasksGetApiData } from "@/app/api/tasks/types";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { mutateTaskData } from "@/src/lib/tusktask/mutators/tasks/mutateTaskData";
+import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Circle, CircleCheckBig } from "lucide-react";
 import React, { useState } from "react";
@@ -22,18 +24,49 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
 
   const { mutate } = useMutation({
     mutationFn: mutateTaskData,
-    onSuccess: () => {
+
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks", "personal"] });
+
+      const previousTasks = queryClient.getQueryData<
+        StandardApiResponse<TasksGetApiData[] | null>
+      >(["tasks", "personal"]);
+
+      queryClient.setQueryData(
+        ["tasks", "personal"],
+        (old: StandardApiResponse<TasksGetApiData[] | null> | undefined) => {
+          const oldData = old?.data as TasksGetApiData[];
+          if (!oldData) return old;
+
+          const optimisticData = oldData.map((task) =>
+            task.id === newData.taskId
+              ? { ...task, completedAt: newData.newValue.completedAt }
+              : task
+          );
+
+          return {
+            ...old,
+            data: optimisticData,
+          };
+        }
+      );
+
+      return { previousTasks };
+    },
+
+    onError: (err, data, context) => {
+      setIsDone((prev) => !prev);
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks", "personal"], context.previousTasks);
+      }
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["task", taskId],
         exact: false,
       });
-
-      queryClient.invalidateQueries({
-        queryKey: ["tasks", "personal"],
-      });
-    },
-    onError: () => {
-      setIsDone((prev) => !prev);
+      queryClient.invalidateQueries({ queryKey: ["tasks", "personal"] });
     },
   });
 
