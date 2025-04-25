@@ -12,6 +12,7 @@ import Image from "next/image";
 import React from "react";
 
 const TaskPageIndex = ({ id }: { id: string }) => {
+  console.log(id);
   const { data, isFetching } = useQuery({
     queryKey: ["task", id],
     queryFn: () => fetchSpecificTask(id),
