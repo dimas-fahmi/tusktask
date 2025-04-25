@@ -26,6 +26,7 @@ interface DatePickerProps {
   onChange?: (date: Date | undefined) => void;
   placeholder: string;
   className?: string;
+  id?: string;
 }
 
 export function DatePicker({
@@ -33,6 +34,7 @@ export function DatePicker({
   onChange,
   placeholder,
   className,
+  id = "",
 }: DatePickerProps) {
   const date = value ? new Date(value) : undefined;
 
@@ -50,6 +52,7 @@ export function DatePicker({
       </DialogDescription>
       <DialogTrigger asChild>
         <Button
+          id={id}
           variant={"outline"}
           className={cn(
             "justify-start text-left font-normal shadow-none",
