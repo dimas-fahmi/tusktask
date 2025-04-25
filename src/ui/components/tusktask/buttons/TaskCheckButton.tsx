@@ -7,6 +7,7 @@ import { mutateTaskData } from "@/src/lib/tusktask/mutators/tasks/mutateTaskData
 import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Circle, CircleCheckBig } from "lucide-react";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 
 export interface TaskCheckButtonProps {
@@ -18,6 +19,7 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
   completedAt,
   taskId,
 }) => {
+  const { data: session } = useSession();
   const queryClient = useQueryClient();
   const { triggerSound } = useNotificationContext();
   const [isDone, setIsDone] = useState(completedAt ? true : false);
@@ -75,12 +77,14 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
       className="group/tcb cursor-pointer"
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
+        if (!session || !session.user) return;
         triggerSound(!isDone ? "positive" : "negative");
 
         const request: TaskPatchApiRequest = {
           taskId,
           newValue: {
             completedAt: isDone ? null : new Date(),
+            completedById: session.user.id,
           },
         };
         setIsDone((prev) => !prev);
