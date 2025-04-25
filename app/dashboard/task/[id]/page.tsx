@@ -33,21 +33,8 @@ export async function generateMetadata({
 
 const TaskPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const queryClient = new QueryClient();
-  const session = await auth();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["task", id],
-    queryFn: async () => await getTaskById(id, session?.user.id),
-  });
-
-  const dehydrateState = dehydrate(queryClient);
-
-  return (
-    <HydrationBoundary state={dehydrateState}>
-      <TaskPageIndex id={id} />
-    </HydrationBoundary>
-  );
+  return <TaskPageIndex id={id} />;
 };
 
 export default TaskPage;
