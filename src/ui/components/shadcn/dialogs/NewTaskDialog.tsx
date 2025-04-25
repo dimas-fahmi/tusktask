@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { DatePicker } from "../manuals/DatePicker";
 import { Input } from "../ui/input";
+import LoadingState from "../../tusktask/typography/LoadingState";
 
 const NewTaskDialog: React.FC<{
   open: boolean;
@@ -383,16 +384,7 @@ const NewTaskDialog: React.FC<{
                 Cancel
               </Button>
               <Button type="submit" disabled={!isValid || isPending}>
-                {isPending ? (
-                  <span className="flex items-center gap-1">
-                    <span className="animate-spin">
-                      <LoaderCircle />
-                    </span>
-                    Saving
-                  </span>
-                ) : (
-                  <>Save</>
-                )}
+                {isPending ? <LoadingState title="Saving" /> : <>Save</>}
               </Button>
             </div>
           </footer>

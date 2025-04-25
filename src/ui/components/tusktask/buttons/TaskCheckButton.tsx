@@ -39,9 +39,11 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
 
   return (
     <button
-      className="group cursor-pointer"
+      className="group/tcb cursor-pointer"
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
+        triggerSound(!isDone ? "positive" : "negative");
+
         const request: TaskPatchApiRequest = {
           taskId,
           newValue: {
@@ -51,14 +53,12 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
         setIsDone((prev) => !prev);
 
         mutate(request);
-
-        triggerSound(!isDone ? "positive" : "negative");
       }}
     >
       {!isDone ? (
         <>
-          <Circle className="group-hover:hidden" />
-          <CircleCheckBig className="hidden group-hover:block" />
+          <Circle className="group-hover/tcb:hidden" />
+          <CircleCheckBig className="hidden group-hover/tcb:block" />
         </>
       ) : (
         <CircleCheckBig className="" />

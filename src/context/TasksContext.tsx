@@ -1,10 +1,15 @@
-import { TasksGetApiData, TasksGetApiResponse } from "@/app/api/tasks/types";
+import {
+  SpecificTask,
+  TasksGetApiData,
+  TasksGetApiResponse,
+} from "@/app/api/tasks/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import React, { createContext, useState } from "react";
 import { fetchMyTasks } from "../lib/tusktask/fetchers/fetchMyTasks";
 import { useCategorizeTasks } from "../lib/tusktask/hooks/data/useCategorizeTasks";
 import NewTaskDialog from "../ui/components/shadcn/dialogs/NewTaskDialog";
+import TaskTimeUpdateDialog from "../ui/components/tusktask/dialogs/TaskTimeUpdateDialog";
 
 export interface TasksContextValue {
   overdue: TasksGetApiData[];
@@ -14,6 +19,10 @@ export interface TasksContextValue {
   completed: TasksGetApiData[];
   newTaskDialogOpen: boolean;
   setNewTaskDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  taskTimeUpdateDialogOpen: boolean;
+  setTaskTimeUpdateDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  specificTask: SpecificTask | null;
+  setSpecificTask: React.Dispatch<React.SetStateAction<SpecificTask | null>>;
   data: TasksGetApiResponse | undefined;
   isFetching: boolean;
 }
@@ -27,8 +36,15 @@ export const TasksContextProvider = ({
 }) => {
   const { data: session } = useSession();
 
+  // Dialog States
   const [newTaskDialogOpen, setNewTaskDialogOpen] = useState(false);
+  const [taskTimeUpdateDialogOpen, setTaskTimeUpdateDialogOpen] =
+    useState(false);
 
+  // SpecificTask State
+  const [specificTask, setSpecificTask] = useState<SpecificTask | null>(null);
+
+  // Global Query
   const { data, isFetching } = useQuery({
     queryKey: ["tasks", "personal"],
     queryFn: () => {
@@ -53,10 +69,18 @@ export const TasksContextProvider = ({
         newTaskDialogOpen,
         data,
         isFetching,
+        taskTimeUpdateDialogOpen,
+        setTaskTimeUpdateDialogOpen,
+        specificTask,
+        setSpecificTask,
       }}
     >
       {children}
       <NewTaskDialog open={newTaskDialogOpen} setOpen={setNewTaskDialogOpen} />
+      <TaskTimeUpdateDialog
+        open={taskTimeUpdateDialogOpen}
+        setOpen={setTaskTimeUpdateDialogOpen}
+      />
     </TasksContext.Provider>
   );
 };
