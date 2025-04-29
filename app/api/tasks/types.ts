@@ -20,6 +20,7 @@ export interface TasksGetApiData extends TaskType {
   creator: StandardUserData;
   owner: StandardUserData;
   tasksToUsers: Assignee[];
+  createdByOptimisticUpdate: boolean | null;
 }
 
 export type TasksGetApiResponse = StandardApiResponse<TasksGetApiData[] | null>;

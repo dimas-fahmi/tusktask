@@ -112,9 +112,11 @@ const DashboardIndex = () => {
                 key={task.id}
                 name={task.name}
                 completedAt={task.completedAt}
-                tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}
+                createdByOptimisticUpdate={
+                  task.createdByOptimisticUpdate ?? null
+                }
               />
             ))}
           </SectionCard>
@@ -127,9 +129,11 @@ const DashboardIndex = () => {
                 key={task.id}
                 name={task.name}
                 completedAt={task.completedAt}
-                tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}
+                createdByOptimisticUpdate={
+                  task.createdByOptimisticUpdate ?? null
+                }
               />
             ))}
           </SectionCard>
@@ -142,9 +146,11 @@ const DashboardIndex = () => {
                 key={task.id}
                 name={task.name}
                 completedAt={task.completedAt}
-                tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}
+                createdByOptimisticUpdate={
+                  task.createdByOptimisticUpdate ?? null
+                }
               />
             ))}
           </SectionCard>
@@ -157,9 +163,11 @@ const DashboardIndex = () => {
                 key={task.id}
                 name={task.name}
                 completedAt={task.completedAt}
-                tags={["penting", "urgent"]}
                 id={task.id}
                 description={task.description}
+                createdByOptimisticUpdate={
+                  task.createdByOptimisticUpdate ?? null
+                }
               />
             ))}
           </SectionCard>
