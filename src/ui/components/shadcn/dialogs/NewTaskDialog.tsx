@@ -55,14 +55,19 @@ const NewTaskDialog: React.FC<{
   const { mutate, isPending } = useMutation({
     mutationFn: createNewTask,
     onMutate: async (data) => {
+      // Cancel queries to prevent race conditions
       await queryClient.cancelQueries({
         queryKey: ["tasks", "personal"],
       });
 
-      const previousData = queryClient.getQueriesData({
+      // Store previous data for rollback
+      const previousData = queryClient.getQueriesData<
+        StandardApiResponse<TasksGetApiData[] | null>
+      >({
         queryKey: ["tasks", "personal"],
       });
 
+      // optimistic update
       queryClient.setQueryData(
         ["tasks", "personal"],
         (old: StandardApiResponse<TasksGetApiData[] | null> | undefined) => {
@@ -86,6 +91,7 @@ const NewTaskDialog: React.FC<{
         }
       );
 
+      // Return to context
       return { previousData };
     },
     onSettled: () => {
@@ -107,6 +113,7 @@ const NewTaskDialog: React.FC<{
         type: "error",
       });
 
+      // Rollback on error
       if (context?.previousData) {
         queryClient.setQueryData(["tasks", "personal"], context.previousData);
       }

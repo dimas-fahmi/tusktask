@@ -28,12 +28,15 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
     mutationFn: mutateTaskData,
 
     onMutate: async (newData) => {
+      // Cancel queries to prevent race conditions
       await queryClient.cancelQueries({ queryKey: ["tasks", "personal"] });
 
+      // store previous data for rollback
       const previousTasks = queryClient.getQueryData<
         StandardApiResponse<TasksGetApiData[] | null>
       >(["tasks", "personal"]);
 
+      // optimistic update
       queryClient.setQueryData(
         ["tasks", "personal"],
         (old: StandardApiResponse<TasksGetApiData[] | null> | undefined) => {
@@ -53,11 +56,14 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
         }
       );
 
+      // Return to context
       return { previousTasks };
     },
 
     onError: (err, data, context) => {
       setIsDone((prev) => !prev);
+
+      // rollback on error
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks", "personal"], context.previousTasks);
       }

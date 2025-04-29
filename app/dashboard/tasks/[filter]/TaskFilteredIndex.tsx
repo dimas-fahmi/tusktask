@@ -3,14 +3,12 @@
 import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import TaskCard from "@/src/ui/components/tusktask/cards/TaskCard";
-import StatusOverview from "@/src/ui/components/tusktask/generics/StatusOverview";
 import {
   Calendar1,
   CalendarArrowUp,
   CalendarClock,
   CalendarX2,
   CirclePlus,
-  LayoutDashboard,
   MessageCircleMore,
 } from "lucide-react";
 import React from "react";
@@ -88,6 +86,7 @@ const TaskFilteredIndex = ({ filter }: { filter: TaskFilters }) => {
               description={task.description}
               completedAt={task.completedAt}
               tags={task.tags ?? []}
+              createdByOptimisticUpdate={task.createdByOptimisticUpdate ?? null}
             />
           ))}
       </div>

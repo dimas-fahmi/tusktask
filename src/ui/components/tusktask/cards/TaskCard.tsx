@@ -1,33 +1,45 @@
 "use client";
 
-import { Check, Ellipsis, Hash } from "lucide-react";
+import { Check, Ellipsis, Hash, LoaderCircle } from "lucide-react";
 import React from "react";
 import { Separator } from "../../shadcn/ui/separator";
 import { truncateText } from "@/src/lib/tusktask/utils/text/truncateText";
 import { useRouter } from "next/navigation";
 import TaskCheckButton from "../buttons/TaskCheckButton";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 export interface TaskCardProps {
   name: string;
   id: string;
   description?: string | undefined | null;
-  tags: string[];
+  tags?: string[] | null;
   completedAt: Date | null | undefined;
+  createdByOptimisticUpdate: boolean | null;
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({
   name,
   id,
   description,
-  tags,
+  tags = [],
   completedAt,
+  createdByOptimisticUpdate = false,
 }) => {
   const router = useRouter();
+  const { triggerToast } = useNotificationContext();
 
   return (
     <div
       className="group cursor-pointer active:scale-95 transition-all duration-300 px-4 py-2 border rounded-xl overflow-hidden shadow hover:shadow-xl space-y-2"
       onClick={() => {
+        if (createdByOptimisticUpdate) {
+          triggerToast({
+            type: "default",
+            title: "Wait A Moment",
+            description: "Storing your task, wait a few seconds.",
+          });
+          return;
+        }
         router.push(`/dashboard/task/${id}`);
       }}
     >
@@ -50,11 +62,20 @@ const TaskCard: React.FC<TaskCardProps> = ({
       </p>
       <Separator />
       <div className="flex items-center gap-2">
-        <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
-          <Hash className="w-3 h-3" />
-          <span>Task</span>
-        </span>
-        {tags &&
+        {createdByOptimisticUpdate ? (
+          <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-1">
+            <LoaderCircle className="w-3 h-3 animate-spin" />
+            <span>Saving</span>
+          </span>
+        ) : (
+          <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
+            <Hash className="w-3 h-3" />
+            <span>Task</span>
+          </span>
+        )}
+
+        {!createdByOptimisticUpdate &&
+          tags &&
           tags.map((tag, index) => (
             <span
               key={index}
