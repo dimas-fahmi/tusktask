@@ -5,8 +5,6 @@ import { AlarmClock, BellRing, CircleAlert, CircleCheck } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { cn } from "../../shadcn/utils";
 import React from "react";
-import { playSound } from "@/src/context/NotificationContext";
-import { useSession } from "next-auth/react";
 
 export interface TriggerToastProps {
   type: "default" | "success" | "error" | "reminder";
