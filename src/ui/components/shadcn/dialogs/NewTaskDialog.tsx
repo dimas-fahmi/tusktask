@@ -9,13 +9,7 @@ import { createNewTask } from "@/src/lib/tusktask/mutators/creators/createNewTas
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { tasksInsertSchema } from "@/src/db/schema/tasks";
-import {
-  Divide,
-  LoaderCircle,
-  Settings,
-  Tag,
-  UnfoldVertical,
-} from "lucide-react";
+import { Settings, UnfoldVertical } from "lucide-react";
 import { DatePicker } from "../manuals/DatePicker";
 import { Input } from "../ui/input";
 import LoadingState from "../../tusktask/typography/LoadingState";

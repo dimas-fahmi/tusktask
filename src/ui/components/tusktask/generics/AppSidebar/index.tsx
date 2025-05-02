@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   Settings,
   SidebarClose,
+  Timer,
 } from "lucide-react";
 
 import {
@@ -41,10 +42,16 @@ const items = [
     icon: LayoutDashboard,
   },
   {
+    title: "Pomodoro",
+    url: "/dashboard/pomodoro     ",
+    icon: Timer,
+  },
+  {
     title: "Today",
     url: "/dashboard/tasks/today",
     icon: Calendar1,
   },
+
   {
     title: "Tomorrow",
     url: "/dashboard/tasks/tomorrow",
