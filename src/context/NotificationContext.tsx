@@ -17,10 +17,15 @@ export interface NotificationContextValues {
   setReminderSound: React.Dispatch<React.SetStateAction<boolean>>;
   isRegulated: boolean;
   setIsRegulated: React.Dispatch<React.SetStateAction<boolean>>;
-  triggerToast: (props: TriggerToastProps) => void;
+  triggerToast: (
+    props: TriggerToastProps,
+    sound?: boolean,
+    playSoundType?: PlaySoundType
+  ) => void;
   permissionStatus: NotificationPermissionType;
   setIndex: React.Dispatch<React.SetStateAction<number>>;
   triggerSound: (type: PlaySoundType) => void;
+  stopAllSounds: () => void;
 }
 
 export type PlaySoundType =
@@ -28,22 +33,8 @@ export type PlaySoundType =
   | "positive"
   | "negative"
   | "ping"
-  | "error";
-
-export const playSound = (type: PlaySoundType = "notification") => {
-  const audioFiles: Record<PlaySoundType, string> = {
-    error: "error.wav",
-    negative: "negative.wav",
-    notification: "notification.wav",
-    ping: "ping.wav",
-    positive: "positive.wav",
-  };
-
-  const audio = new Audio(`/sounds/${audioFiles[type]}`);
-  audio.play().catch((err) => {
-    console.warn("Failed to play sound:", err);
-  });
-};
+  | "error"
+  | "alarm";
 
 export const NotificationContext =
   createContext<NotificationContextValues | null>(null);
@@ -53,6 +44,7 @@ export const NotificationContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const [activeSounds, setActiveSounds] = useState<HTMLAudioElement[]>([]);
   const [notificationSound, setNotificationSound] = useState(true);
   const [reminderSound, setReminderSound] = useState(true);
   const [isRegulated, setIsRegulated] = useState(true);
@@ -60,6 +52,37 @@ export const NotificationContextProvider = ({
   const [permissionStatus, setPermissionStatus] =
     useState<NotificationContextValues["permissionStatus"]>("default");
   const [index, setIndex] = useState(1);
+
+  const playSound = (type: PlaySoundType = "notification") => {
+    const audioFiles: Record<PlaySoundType, string> = {
+      error: "error.wav",
+      negative: "negative.wav",
+      notification: "notification.wav",
+      ping: "ping.wav",
+      positive: "positive.wav",
+      alarm: "alarm.wav",
+    };
+
+    const audio = new Audio(`/sounds/${audioFiles[type]}`);
+    audio.play().catch((err) => {
+      console.warn("Failed to play sound:", err);
+    });
+
+    setActiveSounds((prev) => [...prev, audio]);
+
+    // Remove it from the list once it ends
+    audio.addEventListener("ended", () => {
+      setActiveSounds((prev) => prev.filter((a) => a !== audio));
+    });
+  };
+
+  const stopAllSounds = () => {
+    activeSounds.forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+    setActiveSounds([]);
+  };
 
   useEffect(() => {
     setPermissionStatus(Notification.permission);
@@ -75,15 +98,19 @@ export const NotificationContextProvider = ({
     return () => clearTimeout(debounce);
   }, [notificationSound, reminderSound, setIsRegulated]);
 
-  const triggerToast = (props: TriggerToastProps) => {
+  const triggerToast = (
+    props: TriggerToastProps,
+    sound = true,
+    playSoundType?: PlaySoundType
+  ) => {
     const { type } = props;
 
     const shouldPlay =
       (type === "reminder" && reminderSound) ||
       (type !== "reminder" && notificationSound);
 
-    if (shouldPlay) {
-      playSound();
+    if (shouldPlay && sound) {
+      playSound(playSoundType ?? "notification");
     }
 
     rawTriggerToast(props);
@@ -115,6 +142,7 @@ export const NotificationContextProvider = ({
         permissionStatus,
         setIndex,
         triggerSound,
+        stopAllSounds,
       }}
     >
       {children}
