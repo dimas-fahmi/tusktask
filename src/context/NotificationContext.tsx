@@ -54,6 +54,8 @@ export const NotificationContextProvider = ({
   const [index, setIndex] = useState(1);
 
   const playSound = (type: PlaySoundType = "notification") => {
+    stopAllSounds();
+
     const audioFiles: Record<PlaySoundType, string> = {
       error: "error.wav",
       negative: "negative.wav",

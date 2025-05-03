@@ -82,7 +82,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5"
             >
               <Hash className="w-3 h-3" />
-              <span>{tag}</span>
+              <span className="capitalize">{tag}</span>
             </span>
           ))}
       </div>
