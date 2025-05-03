@@ -134,6 +134,7 @@ const DashboardIndex = () => {
                 createdByOptimisticUpdate={
                   task.createdByOptimisticUpdate ?? null
                 }
+                tags={task.tags}
               />
             ))}
           </SectionCard>

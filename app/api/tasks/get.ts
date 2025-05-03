@@ -1,6 +1,6 @@
 import { db } from "@/src/db";
 import { tasks, tasksToUsers } from "@/src/db/schema/tasks";
-import { and, eq, ilike, lt } from "drizzle-orm";
+import { and, eq, ilike, inArray, lt } from "drizzle-orm";
 import { filterFields, TasksGetApiRequest } from "./types";
 import { getSearchParams } from "@/src/lib/tusktask/utils/url/getSearchParams";
 import { NextResponse } from "next/server";
@@ -41,8 +41,18 @@ export const tasksGet = async (req: Request) => {
     where.push(eq(tasks.createdById, createdById));
   }
 
+  // Filter Construction
   if (body.name) {
     where.push(ilike(tasks.name, `%${body.name}%`));
+  }
+
+  if (body.tags) {
+    const tags = (body.tags as unknown as string).split(",");
+    where.push(inArray(tasks.tags, [tags]));
+  }
+
+  if (body.status) {
+    where.push(eq(tasks.status, body.status));
   }
 
   if (typeof body.overdue === "string") {
@@ -53,7 +63,9 @@ export const tasksGet = async (req: Request) => {
     const now = new Date();
     where.push(lt(tasks.deadlineAt, now));
   }
+  // End of filter construction
 
+  // Fetching
   try {
     const result = await db.query.tasks.findMany({
       where: and(...where),

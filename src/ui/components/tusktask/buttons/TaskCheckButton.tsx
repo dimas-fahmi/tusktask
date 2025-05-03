@@ -74,7 +74,7 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
         queryKey: ["task", taskId],
         exact: false,
       });
-      queryClient.invalidateQueries({ queryKey: ["tasks", "personal"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"], exact: false });
     },
   });
 
@@ -91,6 +91,7 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
           newValue: {
             completedAt: isDone ? null : new Date(),
             completedById: session.user.id,
+            status: "completed",
           },
         };
         setIsDone((prev) => !prev);

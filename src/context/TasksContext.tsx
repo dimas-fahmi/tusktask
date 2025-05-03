@@ -5,7 +5,7 @@ import {
 } from "@/app/api/tasks/types";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { fetchMyTasks } from "../lib/tusktask/fetchers/fetchMyTasks";
 import { useCategorizeTasks } from "../lib/tusktask/hooks/data/useCategorizeTasks";
 import NewTaskDialog from "../ui/components/shadcn/dialogs/NewTaskDialog";
@@ -25,6 +25,8 @@ export interface TasksContextValue {
   setSpecificTask: React.Dispatch<React.SetStateAction<SpecificTask | null>>;
   data: TasksGetApiResponse | undefined;
   isFetching: boolean;
+  isPomodoroTask: boolean;
+  setIsPomodoroTask: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const TasksContext = createContext<TasksContextValue | null>(null);
@@ -44,6 +46,9 @@ export const TasksContextProvider = ({
   // SpecificTask State
   const [specificTask, setSpecificTask] = useState<SpecificTask | null>(null);
 
+  // Pomodoro Mode Task
+  const [isPomodoroTask, setIsPomodoroTask] = useState(false);
+
   // Global Query
   const { data, isFetching } = useQuery({
     queryKey: ["tasks", "personal"],
@@ -56,6 +61,13 @@ export const TasksContextProvider = ({
   const { completed, overdue, today, upcoming, tomorrow } = useCategorizeTasks(
     data && Array.isArray(data.data) ? data.data : null
   );
+
+  // Listen to newTaskDialogOpen
+  useEffect(() => {
+    if (!newTaskDialogOpen) {
+      setIsPomodoroTask(false);
+    }
+  }, [newTaskDialogOpen]);
 
   return (
     <TasksContext.Provider
@@ -73,6 +85,8 @@ export const TasksContextProvider = ({
         setTaskTimeUpdateDialogOpen,
         specificTask,
         setSpecificTask,
+        isPomodoroTask,
+        setIsPomodoroTask,
       }}
     >
       {children}

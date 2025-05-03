@@ -15,6 +15,7 @@ import { Input } from "../ui/input";
 import LoadingState from "../../tusktask/typography/LoadingState";
 import { TasksGetApiData } from "@/app/api/tasks/types";
 import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
+import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
 
 const NewTaskDialog: React.FC<{
   open: boolean;
@@ -25,6 +26,9 @@ const NewTaskDialog: React.FC<{
 
   // Pull trigger toast from notification
   const { triggerToast } = useNotificationContext();
+
+  // Pull setters from TaskContext
+  const { setIsPomodoroTask, isPomodoroTask } = useTasksContext();
 
   // Advance mode
   const [advanceExpand, setAdvanceExpanse] = useState(false);
@@ -89,7 +93,7 @@ const NewTaskDialog: React.FC<{
       return { previousData };
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", "personal"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"], exact: false });
     },
     onSuccess: () => {
       triggerToast({
@@ -134,7 +138,11 @@ const NewTaskDialog: React.FC<{
               return;
             }
 
-            // @ts-ignore null | undefine overlap
+            if (isPomodoroTask) {
+              data["tags"] = [...(data["tags"] ?? []), "pomodoro"];
+            }
+
+            // @ts-ignore null | undefine & null overlap
             mutate(data);
           })}
         >
@@ -388,10 +396,19 @@ const NewTaskDialog: React.FC<{
               >
                 Tags
               </label>
-              <Input
-                type="text"
-                placeholder="Urgent, Homework, Killer Teacher"
+              <Controller
+                control={control}
+                name="tags"
+                render={() => (
+                  <div>
+                    <Input
+                      type="text"
+                      placeholder="Urgent, Homework, Killer Teacher"
+                    />
+                  </div>
+                )}
               />
+
               <small className="text-xs text-tt-primary-foreground/50">
                 Separate tags using a comma ",".
               </small>
@@ -415,6 +432,7 @@ const NewTaskDialog: React.FC<{
                 type="button"
                 variant={"outline"}
                 onClick={() => {
+                  setIsPomodoroTask(false);
                   setAdvanceExpanse(false);
                   setOpen(false);
                 }}
