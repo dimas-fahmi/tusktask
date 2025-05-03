@@ -126,8 +126,11 @@ const PomodoroIndex = () => {
     let interval: string | number | NodeJS.Timeout | undefined;
     if (isRunning && time > 0) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime - 1);
-        document.title = `${formatTime(time)} | ${cycle[0].toUpperCase() + cycle.slice(1)}`;
+        setTime((prevTime) => {
+          const next = Math.max(prevTime - 1, 0);
+          document.title = `${formatTime(next)} | ${cycle[0].toUpperCase() + cycle.slice(1)}`;
+          return next;
+        });
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -221,6 +224,7 @@ const PomodoroIndex = () => {
               />
             ))}
 
+          {/* null if 404 */}
           {data && !data.data && (
             <p className="text-center text-xs">No Active Pomodoro Task</p>
           )}

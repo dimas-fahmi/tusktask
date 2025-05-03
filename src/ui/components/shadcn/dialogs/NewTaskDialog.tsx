@@ -399,11 +399,19 @@ const NewTaskDialog: React.FC<{
               <Controller
                 control={control}
                 name="tags"
-                render={() => (
+                render={({ field }) => (
                   <div>
                     <Input
                       type="text"
                       placeholder="Urgent, Homework, Killer Teacher"
+                      onChange={(e) => {
+                        const tagsArray = e.target.value
+                          .split(",")
+                          .map((tag) => tag.trim())
+                          .filter((tag) => tag.length > 0);
+
+                        field.onChange(tagsArray.length > 0 ? tagsArray : []);
+                      }}
                     />
                   </div>
                 )}
