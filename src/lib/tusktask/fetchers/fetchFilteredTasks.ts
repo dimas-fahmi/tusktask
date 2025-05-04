@@ -4,10 +4,10 @@ import { createResponse } from "../utils/createApiResponse";
 export const fetchFilteredTasks = async (
   filter: TasksGetApiRequest
 ): Promise<TasksGetApiResponse> => {
-  if (!filter.ownerId || !filter.createdById) {
+  if (!filter.ownerId && !filter.createdById) {
     return createResponse({
       status: 500,
-      message: "Missing important parameters",
+      message: "Missing important parameters, did not leave the client.",
       userFriendly: false,
     });
   }

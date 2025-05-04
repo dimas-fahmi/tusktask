@@ -6,10 +6,10 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import React, { createContext, useEffect, useState } from "react";
-import { fetchMyTasks } from "../lib/tusktask/fetchers/fetchMyTasks";
 import { useCategorizeTasks } from "../lib/tusktask/hooks/data/useCategorizeTasks";
 import NewTaskDialog from "../ui/components/shadcn/dialogs/NewTaskDialog";
 import TaskTimeUpdateDialog from "../ui/components/tusktask/dialogs/TaskTimeUpdateDialog";
+import { fetchFilteredTasks } from "../lib/tusktask/fetchers/fetchFilteredTasks";
 
 export interface TasksContextValue {
   overdue: TasksGetApiData[];
@@ -53,7 +53,10 @@ export const TasksContextProvider = ({
   const { data, isFetching } = useQuery({
     queryKey: ["tasks", "personal"],
     queryFn: () => {
-      return fetchMyTasks({ ownerId: session?.user.id });
+      return fetchFilteredTasks({
+        status: "not_started",
+        ownerId: session?.user.id,
+      });
     },
     enabled: !!session,
   });
