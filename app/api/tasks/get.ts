@@ -47,7 +47,7 @@ export const tasksGet = async (req: Request) => {
   }
 
   if (body.tags) {
-    const tags = (body.tags as unknown as string).split(",");
+    const tags = body.tags.split(",");
     where.push(inArray(tasks.tags, [tags]));
   }
 
@@ -63,7 +63,24 @@ export const tasksGet = async (req: Request) => {
     const now = new Date();
     where.push(lt(tasks.deadlineAt, now));
   }
-  // End of filter construction
+
+  // Pagination Constants
+  let limit: number = 10;
+  if (body.limit) {
+    limit = parseInt(body.limit, 10);
+  }
+
+  let offset: number = 0;
+  if (body.offset) {
+    offset = parseInt(body.offset, 10);
+  }
+
+  if (isNaN(limit) || isNaN(offset)) {
+    return createNextResponse(400, {
+      message: "Invalid limit or offset value",
+      userFriendly: false,
+    });
+  }
 
   // Fetching
   try {
@@ -86,6 +103,8 @@ export const tasksGet = async (req: Request) => {
           },
         },
       },
+      limit: limit,
+      offset: offset,
     });
 
     if (result.length < 1) {

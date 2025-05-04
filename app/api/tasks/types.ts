@@ -2,8 +2,11 @@ import { TaskInsertType, TaskType } from "@/src/db/schema/tasks";
 import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
 import { StandardUserData } from "@/src/types/api";
 
-export interface TasksGetApiRequest extends Partial<TaskType> {
+export interface TasksGetApiRequest extends Partial<Omit<TaskType, "tags">> {
   overdue?: boolean;
+  tags?: string;
+  limit?: string;
+  offset?: string;
 }
 
 export interface Assignee {

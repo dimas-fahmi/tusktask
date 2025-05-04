@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Activity,
   BadgePlus,
   Calendar1,
   CalendarArrowUp,
@@ -41,17 +42,12 @@ const items = [
     url: "/dashboard",
     icon: LayoutDashboard,
   },
-  {
-    title: "Pomodoro",
-    url: "/dashboard/pomodoro     ",
-    icon: Timer,
-  },
+
   {
     title: "Today",
     url: "/dashboard/tasks/today",
     icon: Calendar1,
   },
-
   {
     title: "Tomorrow",
     url: "/dashboard/tasks/tomorrow",
@@ -71,6 +67,16 @@ const items = [
     title: "Projects",
     url: "/dashboard/projects",
     icon: Folder,
+  },
+  {
+    title: "Pomodoro",
+    url: "/dashboard/pomodoro     ",
+    icon: Timer,
+  },
+  {
+    title: "Activity Logs",
+    url: "/dashboard/logs",
+    icon: Activity,
   },
 ];
 
