@@ -90,8 +90,8 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
           taskId,
           newValue: {
             completedAt: isDone ? null : new Date(),
-            completedById: session.user.id,
-            status: "completed",
+            completedById: isDone ? null : session.user.id,
+            status: isDone ? "not_started" : "completed",
           },
         };
         setIsDone((prev) => !prev);

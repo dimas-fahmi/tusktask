@@ -1,15 +1,10 @@
 "use client";
 
-import { fetchMyTasks } from "@/src/lib/tusktask/fetchers/fetchMyTasks";
 import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
-import { useCategorizeTasks } from "@/src/lib/tusktask/hooks/data/useCategorizeTasks";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
-import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
 import SectionCard from "@/src/ui/components/tusktask/cards/SectionCard";
-import StatusOverviewCard from "@/src/ui/components/tusktask/cards/StatusOverviewCard";
 import TaskCard from "@/src/ui/components/tusktask/cards/TaskCard";
 import StatusOverview from "@/src/ui/components/tusktask/generics/StatusOverview";
-import { useQuery } from "@tanstack/react-query";
 import {
   Circle,
   CircleAlert,

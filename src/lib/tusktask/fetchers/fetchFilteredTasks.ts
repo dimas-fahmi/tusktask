@@ -1,21 +1,21 @@
-import { TasksGetApiResponse } from "@/app/api/tasks/types";
+import { TasksGetApiRequest, TasksGetApiResponse } from "@/app/api/tasks/types";
 import { createResponse } from "../utils/createApiResponse";
 
-export type FetchFilteredTasksProps = Record<string, string>;
-
 export const fetchFilteredTasks = async (
-  filter: FetchFilteredTasksProps
+  filter: TasksGetApiRequest
 ): Promise<TasksGetApiResponse> => {
-  if (!filter) {
+  if (!filter.ownerId && !filter.createdById) {
     return createResponse({
       status: 500,
-      message: "Missing important parameters",
+      message: "Missing important parameters, did not leave the client.",
       userFriendly: false,
     });
   }
 
   try {
-    const queryString = new URLSearchParams(filter).toString();
+    const queryString = new URLSearchParams(
+      filter as Record<string, string>
+    ).toString();
     const response = await fetch(`/api/tasks?${queryString}`, {
       method: "GET",
       headers: {
