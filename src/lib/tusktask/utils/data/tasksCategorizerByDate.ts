@@ -1,7 +1,6 @@
 import { TasksGetApiData } from "@/app/api/tasks/types";
 
 export type TasksCategorizerByDate = Record<string, TasksGetApiData[]>;
-
 export type CategorizeBy = "creation" | "start" | "completed" | "deadline";
 
 const formatDate = (dateString: string | Date): string => {
@@ -15,7 +14,9 @@ const tasksCategorizerByDate = (
 ): TasksCategorizerByDate => {
   if (!data) return {};
 
-  return data.reduce<TasksCategorizerByDate>((acc, task) => {
+  const grouped: TasksCategorizerByDate = {};
+
+  for (const task of data) {
     let targetDate: string | Date | null | undefined;
 
     switch (categorizeBy) {
@@ -35,13 +36,25 @@ const tasksCategorizerByDate = (
 
     const dateKey = targetDate ? formatDate(targetDate) : "Not Set";
 
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
+    if (!grouped[dateKey]) {
+      grouped[dateKey] = [];
     }
-    acc[dateKey].push(task);
+    grouped[dateKey].push(task);
+  }
 
-    return acc;
-  }, {});
+  // Sort the keys: latest date first, then "Not Set" at the end
+  const sortedKeys = Object.keys(grouped).sort((a, b) => {
+    if (a === "Not Set") return 1;
+    if (b === "Not Set") return -1;
+    return new Date(b).getTime() - new Date(a).getTime(); // descending
+  });
+
+  const sortedResult: TasksCategorizerByDate = {};
+  for (const key of sortedKeys) {
+    sortedResult[key] = grouped[key];
+  }
+
+  return sortedResult;
 };
 
 export default tasksCategorizerByDate;
