@@ -56,16 +56,41 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
         }
       );
 
+      if (newData.newValue.tags?.includes("pomodoro")) {
+        queryClient.setQueryData(
+          ["tasks", "pomodoro"],
+          (old: StandardApiResponse<TasksGetApiData[] | null> | undefined) => {
+            const oldData = old?.data as TasksGetApiData[];
+            if (!oldData) return old;
+
+            const optimisticData = oldData.map((task) =>
+              task.id === newData.taskId
+                ? { ...task, completedAt: newData.newValue.completedAt }
+                : task
+            );
+
+            return {
+              ...old,
+              data: optimisticData,
+            };
+          }
+        );
+      }
+
       // Return to context
       return { previousTasks };
     },
 
-    onError: (err, data, context) => {
+    onError: (_, __, context) => {
       setIsDone((prev) => !prev);
 
       // rollback on error
       if (context?.previousTasks) {
         queryClient.setQueryData(["tasks", "personal"], context.previousTasks);
+      }
+
+      if (context?.previousTasks) {
+        queryClient.setQueryData(["tasks", "pomodoro"], context.previousTasks);
       }
     },
 

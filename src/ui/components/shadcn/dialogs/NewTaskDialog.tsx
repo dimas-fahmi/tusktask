@@ -89,6 +89,31 @@ const NewTaskDialog: React.FC<{
         }
       );
 
+      if (data.tags?.includes("pomodoro")) {
+        queryClient.setQueryData(
+          ["tasks", "pomodoro"],
+          (old: StandardApiResponse<TasksGetApiData[] | null> | undefined) => {
+            const oldData = old?.data ?? [];
+            setOpen(false);
+
+            return {
+              ...old,
+              data: [
+                ...(oldData as TasksGetApiData[]),
+                {
+                  id: crypto.randomUUID(),
+                  name: data.name,
+                  createdAt: new Date(),
+                  deadlineAt: data.deadlineAt,
+                  startAt: data.startAt,
+                  createdByOptimisticUpdate: true,
+                },
+              ],
+            };
+          }
+        );
+      }
+
       // Return to context
       return { previousData };
     },
@@ -114,6 +139,9 @@ const NewTaskDialog: React.FC<{
       // Rollback on error
       if (context?.previousData) {
         queryClient.setQueryData(["tasks", "personal"], context.previousData);
+        if (data.tags?.includes("pomodoro")) {
+          queryClient.setQueryData(["tasks", "pomodoro"], context.previousData);
+        }
       }
 
       setOpen(true);
