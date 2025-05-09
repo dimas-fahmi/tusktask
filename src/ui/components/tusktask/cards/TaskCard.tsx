@@ -7,6 +7,12 @@ import { truncateText } from "@/src/lib/tusktask/utils/text/truncateText";
 import { useRouter } from "next/navigation";
 import TaskCheckButton from "../buttons/TaskCheckButton";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../shadcn/ui/popover";
+import { Button } from "../../shadcn/ui/button";
 
 export interface TaskCardProps {
   name: string;
@@ -51,9 +57,29 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <h4 className="tracking-tight text-sm font-semibold capitalize">
             {name}
           </h4>
-          <button className="text-tt-primary-foreground/50 cursor-pointer hover:text-tt-primary-foreground transition-all duration-300 opacity-0 group-hover:opacity-100">
-            <Ellipsis />
-          </button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="text-tt-primary-foreground/50 cursor-pointer hover:text-tt-primary-foreground transition-all duration-300 opacity-0 group-hover:opacity-100"
+              >
+                <Ellipsis />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <header>
+                <h4 className="font-bold mb-3 uppercase text-sm">Menu</h4>
+              </header>
+              <div className="grid grid-cols-1 gap-2">
+                <Button variant={"outline"}>Assign</Button>
+                <Button variant={"outline"}>Details</Button>
+                <Separator />
+                <Button variant={"destructive"}>Delete</Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </header>
 

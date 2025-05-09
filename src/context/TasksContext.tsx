@@ -23,7 +23,8 @@ export interface TasksContextValue {
   setTaskTimeUpdateDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   specificTask: SpecificTask | null;
   setSpecificTask: React.Dispatch<React.SetStateAction<SpecificTask | null>>;
-  data: TasksGetApiResponse | undefined;
+  personal: TasksGetApiResponse | undefined;
+  trash: TasksGetApiResponse | undefined;
   isFetching: boolean;
   isPomodoroTask: boolean;
   setIsPomodoroTask: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,7 +51,7 @@ export const TasksContextProvider = ({
   const [isPomodoroTask, setIsPomodoroTask] = useState(false);
 
   // Global Query
-  const { data, isFetching } = useQuery({
+  const { data: personal, isFetching } = useQuery({
     queryKey: ["tasks", "personal"],
     queryFn: () => {
       return fetchFilteredTasks({
@@ -61,8 +62,20 @@ export const TasksContextProvider = ({
     enabled: !!session,
   });
 
+  // Trash Bin Query
+  const { data: trash } = useQuery({
+    queryKey: ["tasks", "trash"],
+    queryFn: () => {
+      return fetchFilteredTasks({
+        ownerId: session?.user.id,
+        deletedAt: true,
+      });
+    },
+    enabled: !!session,
+  });
+
   const { completed, overdue, today, upcoming, tomorrow } = useCategorizeTasks(
-    data && Array.isArray(data.data) ? data.data : null
+    personal && Array.isArray(personal.data) ? personal.data : null
   );
 
   // Listen to newTaskDialogOpen
@@ -82,7 +95,7 @@ export const TasksContextProvider = ({
         tomorrow,
         setNewTaskDialogOpen,
         newTaskDialogOpen,
-        data,
+        personal,
         isFetching,
         taskTimeUpdateDialogOpen,
         setTaskTimeUpdateDialogOpen,
@@ -90,6 +103,7 @@ export const TasksContextProvider = ({
         setSpecificTask,
         isPomodoroTask,
         setIsPomodoroTask,
+        trash,
       }}
     >
       {children}
