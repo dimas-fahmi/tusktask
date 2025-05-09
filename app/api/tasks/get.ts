@@ -1,9 +1,8 @@
 import { db } from "@/src/db";
-import { tasks, tasksToUsers } from "@/src/db/schema/tasks";
-import { and, eq, ilike, inArray, lt } from "drizzle-orm";
+import { tasks } from "@/src/db/schema/tasks";
+import { and, eq, exists, ilike, inArray, lt } from "drizzle-orm";
 import { filterFields, TasksGetApiRequest } from "./types";
 import { getSearchParams } from "@/src/lib/tusktask/utils/url/getSearchParams";
-import { NextResponse } from "next/server";
 import { createStandardLog } from "@/src/lib/tusktask/utils/api/createStandardLog";
 import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
 
@@ -62,6 +61,10 @@ export const tasksGet = async (req: Request) => {
   if (body.overdue) {
     const now = new Date();
     where.push(lt(tasks.deadlineAt, now));
+  }
+
+  if (body.deletedAt) {
+    where.push(exists(tasks.deletedAt));
   }
 
   // Pagination Constants

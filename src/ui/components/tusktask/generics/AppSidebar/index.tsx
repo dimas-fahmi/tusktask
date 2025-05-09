@@ -12,6 +12,7 @@ import {
   Settings,
   SidebarClose,
   Timer,
+  Trash,
 } from "lucide-react";
 
 import {
@@ -77,6 +78,11 @@ const items = [
     title: "Activity Logs",
     url: "/dashboard/logs",
     icon: Activity,
+  },
+  {
+    title: "Trash Bin",
+    url: "/dashboard/trash",
+    icon: Trash,
   },
 ];
 
