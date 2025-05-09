@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TuskTask
+
+TuskTask is a modern, full-stack task management application built with Next.js, React, Drizzle ORM, and TypeScript. It features Pomodoro timers, activity logs, user authentication, and a beautiful, responsive UI.
+
+## Features
+
+- User authentication (Google, GitHub, Discord)
+- Task management (CRUD, tags, deadlines, reminders)
+- Pomodoro timer integration
+- Activity logs and analytics
+- Responsive sidebar navigation
+- Customizable user profiles and avatars
+- Notification system with sound and browser support
+
+## Tech Stack
+
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **Backend:** Next.js API routes, Drizzle ORM, PGSQL with NeonDB
+- **Authentication:** AuthJS
+- **UI Components:** shadcn/ui, Lucide Icons
+- **State Management:** React Context, React Query
+
+## Screenshot
+
+![Screenshot of TuskTask dashboard showing tasks](https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/screenshots/Screenshot%202025-05-09%20093605-zS6LB3l40qzcllii4rr1YZtuX5U7Ov.png)
+
+_Figure: A sample view of the TuskTask interface with task lists._
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js (v18+)
+- pnpm (recommended) or npm/yarn
+
+### Installation
+
+_Clone This Repository, make sure you installed Github CLI_
+
+```sh
+gh repo clone dimas-fahmi/tusktask
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+_Install Dependencies_
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Environment Variables
 
-## Learn More
+Copy `.env.example` to `.env` and fill in the required values.
 
-To learn more about Next.js, take a look at the following resources:
+### Running the Development Server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+### Building for Production
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```sh
+pnpm build
+pnpm start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project Structure
+
+- `app/` - Next.js app directory (routes, API, pages)
+- `src/` - Source code (components, hooks, utils, db, zod schemas)
+- `public/` - Static assets
+- `components.json` - shadcn/ui component registry
+
+## Scripts
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+
+## License
+
+[MIT](LICENSE)
+
+---
+
+Made with ❤️ by Dimas Fahmi.
