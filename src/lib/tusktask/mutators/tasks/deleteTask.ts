@@ -3,13 +3,14 @@ import {
   createResponse,
   StandardApiResponse,
 } from "../../utils/createApiResponse";
+import { TaskDeleteRequest } from "@/app/api/tasks/delete";
 
 const deleteTask = async ({
   taskId,
   method,
 }: {
   taskId: string;
-  method: "soft" | "hard" | "restore";
+  method: TaskDeleteRequest["method"];
 }): Promise<StandardApiResponse<TaskType | null>> => {
   if (!taskId || !method) {
     return createResponse({
