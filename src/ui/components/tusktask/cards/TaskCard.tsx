@@ -1,7 +1,7 @@
 "use client";
 
-import { Check, Ellipsis, Hash, LoaderCircle } from "lucide-react";
-import React from "react";
+import { Ellipsis, Hash, LoaderCircle, Trash } from "lucide-react";
+import React, { useRef } from "react";
 import { Separator } from "../../shadcn/ui/separator";
 import { truncateText } from "@/src/lib/tusktask/utils/text/truncateText";
 import { useRouter } from "next/navigation";
@@ -13,26 +13,40 @@ import {
   PopoverTrigger,
 } from "../../shadcn/ui/popover";
 import { Button } from "../../shadcn/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import deleteTask from "@/src/lib/tusktask/mutators/tasks/deleteTask";
+import { TasksGetApiData } from "@/app/api/tasks/types";
 
 export interface TaskCardProps {
-  name: string;
-  id: string;
-  description?: string | undefined | null;
-  tags?: string[] | null;
-  completedAt: Date | null | undefined;
-  createdByOptimisticUpdate: boolean | null;
+  task: TasksGetApiData;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({
-  name,
-  id,
-  description,
-  tags = [],
-  completedAt,
-  createdByOptimisticUpdate = false,
-}) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+  const {
+    name,
+    id,
+    completedAt,
+    tags,
+    description,
+    createdByOptimisticUpdate,
+    deletedAt,
+  } = task;
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { triggerToast } = useNotificationContext();
+  const popoverTriggerRef = useRef<HTMLButtonElement>(null);
+
+  const { triggerSound } = useNotificationContext();
+
+  const { mutate: deleteTaskMutate, isPending: isDeleting } = useMutation({
+    mutationFn: deleteTask,
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+        exact: false,
+      });
+    },
+  });
 
   return (
     <div
@@ -60,6 +74,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <Popover>
             <PopoverTrigger asChild>
               <button
+                ref={popoverTriggerRef}
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
@@ -73,10 +88,36 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 <h4 className="font-bold mb-3 uppercase text-sm">Menu</h4>
               </header>
               <div className="grid grid-cols-1 gap-2">
-                <Button variant={"outline"}>Assign</Button>
-                <Button variant={"outline"}>Details</Button>
+                <Button
+                  variant={"outline"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  Assign
+                </Button>
+                <Button
+                  variant={"outline"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  Details
+                </Button>
                 <Separator />
-                <Button variant={"destructive"}>Delete</Button>
+                <Button
+                  variant={"destructive"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    triggerSound("negative");
+                    deleteTaskMutate({ taskId: id, method: "soft" });
+                    if (popoverTriggerRef.current) {
+                      popoverTriggerRef.current.click();
+                    }
+                  }}
+                >
+                  Delete
+                </Button>
               </div>
             </PopoverContent>
           </Popover>
@@ -88,6 +129,20 @@ const TaskCard: React.FC<TaskCardProps> = ({
       </p>
       <Separator />
       <div className="flex items-center gap-2">
+        {isDeleting && (
+          <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
+            <LoaderCircle className="w-3 h-3 animate-spin" />
+            <span>Deleting</span>
+          </span>
+        )}
+
+        {deletedAt && (
+          <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
+            <Trash className="w-3 h-3" />
+            <span>Deleted</span>
+          </span>
+        )}
+
         {createdByOptimisticUpdate ? (
           <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-1">
             <LoaderCircle className="w-3 h-3 animate-spin" />

@@ -1,4 +1,4 @@
-import { Trash } from "lucide-react";
+import { Info, Trash } from "lucide-react";
 import { Metadata } from "next";
 import React from "react";
 import TrashBinIndex from "./TrashBinIndex";
@@ -16,9 +16,10 @@ const TrashPage = () => {
             <Trash className="w-9 h-9" /> Trash Bin
           </h1>
         </div>
-        <p className="text-sm">
-          Once you remove a task, it will be relocated here. You have the option
-          to either permanently delete it or restore it.
+        <p className="flex text-sm text-muted-foreground items-center gap-2">
+          <Info size={"1rem"} />
+          Once you deleted a task, the task will relocated here. You can delete
+          it permanently or restore it.
         </p>
       </header>
       <TrashBinIndex />

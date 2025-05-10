@@ -13,17 +13,7 @@ const TrashBinIndex = () => {
   return (
     <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
       {trashTasks &&
-        trashTasks.map((task) => (
-          <TaskCard
-            id={task.id}
-            name={task.name}
-            key={task.id}
-            completedAt={task.completedAt}
-            createdByOptimisticUpdate={task.createdByOptimisticUpdate}
-            description={task.description}
-            tags={task.tags}
-          />
-        ))}
+        trashTasks.map((task) => <TaskCard task={task} key={task.id} />)}
     </div>
   );
 };

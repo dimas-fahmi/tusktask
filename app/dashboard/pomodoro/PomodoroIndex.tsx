@@ -130,17 +130,7 @@ const PomodoroIndex = () => {
         <div className="flex flex-col gap-3 justify-center">
           {data &&
             Array.isArray(data.data) &&
-            data.data.map((task) => (
-              <TaskCard
-                completedAt={task.completedAt}
-                id={task.id}
-                name={task.name}
-                description={task.description}
-                key={task.id}
-                tags={task.tags ?? []}
-                createdByOptimisticUpdate={task.createdByOptimisticUpdate}
-              />
-            ))}
+            data.data.map((task) => <TaskCard key={task.id} task={task} />)}
 
           {/* null if 404 */}
           {data && !data.data && (

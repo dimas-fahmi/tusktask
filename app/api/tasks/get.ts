@@ -1,6 +1,6 @@
 import { db } from "@/src/db";
 import { tasks } from "@/src/db/schema/tasks";
-import { and, eq, exists, ilike, inArray, lt } from "drizzle-orm";
+import { and, eq, ilike, inArray, isNotNull, isNull, lt } from "drizzle-orm";
 import { filterFields, TasksGetApiRequest } from "./types";
 import { getSearchParams } from "@/src/lib/tusktask/utils/url/getSearchParams";
 import { createStandardLog } from "@/src/lib/tusktask/utils/api/createStandardLog";
@@ -64,7 +64,9 @@ export const tasksGet = async (req: Request) => {
   }
 
   if (body.deletedAt) {
-    where.push(exists(tasks.deletedAt));
+    where.push(isNotNull(tasks.deletedAt));
+  } else {
+    where.push(isNull(tasks.deletedAt));
   }
 
   // Pagination Constants
