@@ -88,15 +88,7 @@ const ActivityLogsIndex = () => {
             <h2 className="font-bold">{date}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {tasks.map((task) => (
-                <TaskCard
-                  id={task.id}
-                  name={task.name}
-                  description={task.description}
-                  completedAt={task.completedAt}
-                  createdByOptimisticUpdate={task.createdByOptimisticUpdate}
-                  key={task.id}
-                  tags={task.tags}
-                />
+                <TaskCard key={task.id} task={task} />
               ))}
             </div>
           </div>

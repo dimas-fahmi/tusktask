@@ -78,17 +78,7 @@ const TaskFilteredIndex = ({ filter }: { filter: TaskFilters }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {data &&
-          data.map((task, index) => (
-            <TaskCard
-              id={task.id}
-              key={task.id}
-              name={task.name}
-              description={task.description}
-              completedAt={task.completedAt}
-              tags={task.tags ?? []}
-              createdByOptimisticUpdate={task.createdByOptimisticUpdate ?? null}
-            />
-          ))}
+          data.map((task, index) => <TaskCard key={task.id} task={task} />)}
       </div>
     </div>
   );

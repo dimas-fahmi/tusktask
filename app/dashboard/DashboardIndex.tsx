@@ -103,16 +103,7 @@ const DashboardIndex = () => {
         {overdue.length > 0 && (
           <SectionCard title="overdue">
             {overdue.map((task) => (
-              <TaskCard
-                key={task.id}
-                name={task.name}
-                completedAt={task.completedAt}
-                id={task.id}
-                description={task.description}
-                createdByOptimisticUpdate={
-                  task.createdByOptimisticUpdate ?? null
-                }
-              />
+              <TaskCard key={task.id} task={task} />
             ))}
           </SectionCard>
         )}
@@ -120,17 +111,7 @@ const DashboardIndex = () => {
         {today.length > 0 && (
           <SectionCard title="Today">
             {today.map((task) => (
-              <TaskCard
-                key={task.id}
-                name={task.name}
-                completedAt={task.completedAt}
-                id={task.id}
-                description={task.description}
-                createdByOptimisticUpdate={
-                  task.createdByOptimisticUpdate ?? null
-                }
-                tags={task.tags}
-              />
+              <TaskCard key={task.id} task={task} />
             ))}
           </SectionCard>
         )}
@@ -138,16 +119,7 @@ const DashboardIndex = () => {
         {tomorrow.length > 0 && (
           <SectionCard title="Tomorrow">
             {tomorrow.map((task) => (
-              <TaskCard
-                key={task.id}
-                name={task.name}
-                completedAt={task.completedAt}
-                id={task.id}
-                description={task.description}
-                createdByOptimisticUpdate={
-                  task.createdByOptimisticUpdate ?? null
-                }
-              />
+              <TaskCard key={task.id} task={task} />
             ))}
           </SectionCard>
         )}
@@ -155,16 +127,7 @@ const DashboardIndex = () => {
         {upcoming.length > 0 && (
           <SectionCard title="upcoming">
             {upcoming.map((task) => (
-              <TaskCard
-                key={task.id}
-                name={task.name}
-                completedAt={task.completedAt}
-                id={task.id}
-                description={task.description}
-                createdByOptimisticUpdate={
-                  task.createdByOptimisticUpdate ?? null
-                }
-              />
+              <TaskCard key={task.id} task={task} />
             ))}
           </SectionCard>
         )}
