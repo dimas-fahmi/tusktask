@@ -6,9 +6,45 @@ import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse
 import { getSearchParams } from "@/src/lib/tusktask/utils/url/getSearchParams";
 import { eq } from "drizzle-orm";
 
-export interface TaskDeleteRequest {
+interface TaskDeleteRequest {
   taskId: string;
   method: "soft" | "hard" | "restore";
+}
+
+async function performTaskOperation(
+  operation: "soft" | "hard" | "restore",
+  taskId: string
+) {
+  try {
+    let response;
+    if (operation === "soft") {
+      response = await db
+        .update(tasks)
+        .set({ deletedAt: new Date() })
+        .where(eq(tasks.id, taskId))
+        .returning();
+    } else if (operation === "hard") {
+      response = await db.delete(tasks).where(eq(tasks.id, taskId)).returning();
+    } else if (operation === "restore") {
+      response = await db
+        .update(tasks)
+        .set({ deletedAt: null })
+        .where(eq(tasks.id, taskId))
+        .returning();
+    }
+
+    if (!response || response.length === 0) {
+      return {
+        success: false,
+        message: "Task not found or operation not applicable",
+      };
+    }
+
+    return { success: true, data: response[0] };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "Database operation failed" };
+  }
 }
 
 export async function taskDelete(req: Request) {
@@ -16,23 +52,24 @@ export async function taskDelete(req: Request) {
 
   const url = new URL(req.url);
   const params = getSearchParams(url, ["taskId", "method"]);
-  const body: TaskDeleteRequest = {
+  const requestParams: TaskDeleteRequest = {
     taskId: params.taskId ?? "",
     method:
-      params.method === "soft" || params.method === "hard"
+      params.method === "soft" ||
+      params.method === "hard" ||
+      params.method === "restore"
         ? params.method
         : "soft",
   };
 
-  const session = await auth();
-
-  if (!body.taskId || !body.method) {
+  if (!requestParams.taskId || !requestParams.method) {
     return createNextResponse(400, {
       message: "Missing Important Parameters",
       userFriendly: false,
     });
   }
 
+  const session = await auth();
   if (!session || !session.user) {
     return createNextResponse(401, {
       message: "Invalid session, please log out and log back in",
@@ -41,12 +78,11 @@ export async function taskDelete(req: Request) {
   }
 
   let task: TaskType;
-
   try {
     [task] = await db
       .select()
       .from(tasks)
-      .where(eq(tasks.id, body.taskId))
+      .where(eq(tasks.id, requestParams.taskId))
       .limit(1);
 
     if (!task) {
@@ -64,92 +100,53 @@ export async function taskDelete(req: Request) {
 
   if (task.ownerId !== session.user.id) {
     return createNextResponse(403, {
-      message: "Only the owner of the task can do this operation",
+      message: "Only the owner of the task can perform this operation",
       userFriendly: true,
     });
   }
 
-  if (body.method === "soft") {
-    try {
-      const response = await db
-        .update(tasks)
-        .set({ deletedAt: new Date() })
-        .where(eq(tasks.id, body.taskId))
-        .returning();
+  if (requestParams.method === "soft" && task.deletedAt) {
+    return createNextResponse(400, {
+      message: "Task is already in the trash bin",
+      userFriendly: true,
+    });
+  }
 
-      if (!response) {
-        return createNextResponse(500, {
-          message: "Unexpected Error, Please Try Again.",
-          userFriendly: true,
-        });
-      }
+  if (requestParams.method === "restore" && !task.deletedAt) {
+    return createNextResponse(400, {
+      message: "Task is not in the trash bin",
+      userFriendly: true,
+    });
+  }
 
-      return createNextResponse(200, {
-        message: `${task.name} is successfully moved to trash bin`,
-        userFriendly: true,
-        data: response,
-      });
-    } catch (error) {
-      return createNextResponse(405, {
-        message: "Something Went Wrong, Please Try Again",
-        userFriendly: true,
-      });
-    }
-  } else if (body.method === "hard") {
-    try {
-      const response = await db
-        .delete(tasks)
-        .where(eq(tasks.id, body.taskId))
-        .returning();
-
-      if (!response) {
-        return createNextResponse(500, {
-          message: "Unexpected Error, Please Try Again.",
-          userFriendly: true,
-        });
-      }
-      return createNextResponse(200, {
-        message: `${task.name} is successfully moved to trash bin`,
-        userFriendly: true,
-        data: response,
-      });
-    } catch (error) {
-      return createNextResponse(500, {
-        message: "Something Went Wrong, Please Try Again",
-        userFriendly: true,
-      });
-    }
-  } else if (body.method === "restore") {
-    try {
-      const response = await db
-        .update(tasks)
-        .set({ deletedAt: null })
-        .where(eq(tasks.id, body.taskId))
-        .returning();
-
-      if (!response) {
-        return createNextResponse(500, {
-          message: "Unexpected Error, please try again!",
-          userFriendly: true,
-          data: null,
-        });
-      }
-
-      return createNextResponse(200, {
-        message: `${task.name} is successfully restored`,
-        userFriendly: true,
-        data: response,
-      });
-    } catch (error) {
-      return createNextResponse(500, {
-        message: "Something Went Wrong, Please Try Again",
-        userFriendly: true,
-      });
-    }
-  } else {
+  const operation = requestParams.method;
+  if (!operation) {
     return createNextResponse(400, {
       message: "Invalid deletion method",
       userFriendly: false,
     });
   }
+
+  const result = await performTaskOperation(operation, requestParams.taskId);
+  if (!result.success) {
+    return createNextResponse(500, {
+      message: result.message || "Something went wrong, please try again",
+      userFriendly: true,
+    });
+  }
+
+  let message: string = "Operation completed successfully";
+  if (operation === "soft") {
+    message = `${task.name} is successfully moved to trash bin`;
+  } else if (operation === "hard") {
+    message = `${task.name} is successfully deleted permanently`;
+  } else if (operation === "restore") {
+    message = `${task.name} is successfully restored`;
+  }
+
+  return createNextResponse(200, {
+    message,
+    userFriendly: true,
+    data: result.data,
+  });
 }

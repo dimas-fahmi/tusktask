@@ -1,7 +1,7 @@
 "use client";
 
 import { Ellipsis, Hash, LoaderCircle, Trash } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Separator } from "../../shadcn/ui/separator";
 import { truncateText } from "@/src/lib/tusktask/utils/text/truncateText";
 import { useRouter } from "next/navigation";
@@ -21,7 +21,10 @@ export interface TaskCardProps {
   task: TasksGetApiData;
 }
 
+type MutateType = false | "softDelete" | "hardDelete" | "restoreDeletion";
+
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
+  // Task Values
   const {
     name,
     id,
@@ -31,13 +34,23 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     createdByOptimisticUpdate,
     deletedAt,
   } = task;
+
+  // Pull query client
   const queryClient = useQueryClient();
+
+  // Initialize router
   const router = useRouter();
-  const { triggerToast } = useNotificationContext();
+
+  // Pull trigger from notification context
+  const { triggerToast, triggerSound } = useNotificationContext();
+
+  // Popover Trigger Button Ref
   const popoverTriggerRef = useRef<HTMLButtonElement>(null);
 
-  const { triggerSound } = useNotificationContext();
+  // Mutation Method State
+  const [mutateMethod, setMutateMethod] = useState<MutateType>(false);
 
+  // Deletion Mutation
   const { mutate: deleteTaskMutate, isPending: isDeleting } = useMutation({
     mutationFn: deleteTask,
     onSuccess: async () => {
@@ -45,6 +58,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         queryKey: ["tasks"],
         exact: false,
       });
+      setMutateMethod(false);
     },
   });
 
@@ -105,18 +119,45 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
                   Details
                 </Button>
                 <Separator />
+
+                {/* Restore Button If Task Already Deleted */}
+                {deletedAt && (
+                  <Button
+                    variant={"outline"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerSound("positive");
+                      setMutateMethod("restoreDeletion");
+                      deleteTaskMutate({
+                        taskId: id,
+                        method: "restore",
+                      });
+                      if (popoverTriggerRef.current) {
+                        popoverTriggerRef.current.click();
+                      }
+                    }}
+                  >
+                    Restore
+                  </Button>
+                )}
+
+                {/* Soft And Hard Deletion Button */}
                 <Button
                   variant={"destructive"}
                   onClick={(e) => {
                     e.stopPropagation();
                     triggerSound("negative");
-                    deleteTaskMutate({ taskId: id, method: "soft" });
+                    setMutateMethod(deletedAt ? "hardDelete" : "softDelete");
+                    deleteTaskMutate({
+                      taskId: id,
+                      method: deletedAt ? "hard" : "soft",
+                    });
                     if (popoverTriggerRef.current) {
                       popoverTriggerRef.current.click();
                     }
                   }}
                 >
-                  Delete
+                  {deletedAt ? "Delete Forever" : "Delete"}
                 </Button>
               </div>
             </PopoverContent>
@@ -132,7 +173,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         {isDeleting && (
           <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
             <LoaderCircle className="w-3 h-3 animate-spin" />
-            <span>Deleting</span>
+            <span>
+              {(mutateMethod === "softDelete" ||
+                mutateMethod === "hardDelete") &&
+                "Deleting"}
+              {mutateMethod === "restoreDeletion" && "Restoring"}
+            </span>
           </span>
         )}
 

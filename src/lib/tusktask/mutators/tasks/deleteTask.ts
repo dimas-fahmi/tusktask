@@ -9,7 +9,7 @@ const deleteTask = async ({
   method,
 }: {
   taskId: string;
-  method: "soft" | "hard";
+  method: "soft" | "hard" | "restore";
 }): Promise<StandardApiResponse<TaskType | null>> => {
   if (!taskId || !method) {
     return createResponse({
