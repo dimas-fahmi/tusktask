@@ -190,7 +190,7 @@ export function AppSidebar() {
               </span>
               <Separator className="mt-2" />
               <span className="text-sm flex justify-center mt-2 uppercase font-bold">
-                Focus
+                {cycle}
               </span>
             </div>
           )}
