@@ -31,10 +31,13 @@ import { SidebarHeader as SidebarTTHeader } from "./SidebarHeader";
 
 import Link from "next/link";
 import { cn } from "@/src/lib/shadcn/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import StatusOverview from "../StatusOverview";
 import { Button } from "../../../shadcn/ui/button";
 import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
+import { formatTime } from "@/src/lib/tusktask/utils/format/formatTIme";
+import usePomodoroContext from "@/src/lib/tusktask/hooks/context/usePomodoroContext";
+import { Separator } from "../../../shadcn/ui/separator";
 
 // Menu items.
 const items = [
@@ -120,13 +123,22 @@ const NavLink = ({
 };
 
 export function AppSidebar() {
+  // Pull Setters from sidebar context
   const { setOpenMobile, setOpen } = useSidebar();
+
+  // Pull setters and text from task context
   const { setNewTaskDialogOpen, overdue, today, tomorrow, upcoming } =
     useTasksContext();
 
+  // Pull states from pomodoro context
+  const { time, isRunning, cycle } = usePomodoroContext();
+
+  // Initialized Router
+  const router = useRouter();
+
   return (
     <Sidebar>
-      <SidebarHeader className="pt-6 space-y-2 mb-4">
+      <SidebarHeader className="pt-6 space-y-2 ">
         <SidebarTTHeader />
         <div className="md:hidden">
           <StatusOverview
@@ -163,12 +175,31 @@ export function AppSidebar() {
               Hide Menu
             </Button>
           </div>
+          {isRunning && (
+            <div
+              className="p-4 border rounded-md shadow-xl cursor-pointer hover:shadow-2xl"
+              onClick={() => router.push("/dashboard/pomodoro")}
+              title="Click to open Pomodoro page."
+            >
+              <span className="flex items-center gap-0.5 justify-center text-xs">
+                <Timer className="w-4 h-4" />
+                Pomodoro Timer
+              </span>
+              <span className="text-center text-xl font-bold flex items-center justify-center">
+                {formatTime(time)}
+              </span>
+              <Separator className="mt-2" />
+              <span className="text-sm flex justify-center mt-2 uppercase font-bold">
+                {cycle}
+              </span>
+            </div>
+          )}
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className={`${isRunning && "pb-16"}`}>
               {items.map((item) => (
                 <SidebarMenuItem
                   key={item.title}
