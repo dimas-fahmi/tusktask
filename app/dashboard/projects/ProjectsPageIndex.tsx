@@ -1,20 +1,26 @@
+"use client";
+
+import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
+import ProjectCard from "@/src/ui/components/tusktask/cards/ProjectCard";
 import { CirclePlus, Folder, MessageCircleMore } from "lucide-react";
 import React from "react";
 
 const ProjectsPageIndex = () => {
+  // Pull setters from task context
+  const { newProjectDialogOpen, setNewProjectDialogOpen } = useTasksContext();
+
   return (
     <div>
-      {" "}
       <header className="grid grid-cols-1 gap-4">
         <div className="flex items-center justify-between">
           <h1 className="flex items-center gap-2 text-2xl md:text-3xl font-bold text-tt-primary-foreground/80">
             <Folder size={"2rem"} />
             Projects
           </h1>
-          <Button>
+          <Button onClick={() => setNewProjectDialogOpen(true)}>
             <CirclePlus className="hidden md:inline" />
-            New Task
+            New Project
           </Button>
         </div>
         <p className="flex text-sm text-muted-foreground items-center gap-2">
@@ -23,6 +29,9 @@ const ProjectsPageIndex = () => {
           projects!
         </p>
       </header>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* <ProjectCard /> */}
+      </div>
     </div>
   );
 };
