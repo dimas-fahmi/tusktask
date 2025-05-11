@@ -1,66 +1,117 @@
-import { or, eq, and, isNull, inArray } from "drizzle-orm";
+import { or, eq, and, isNotNull, exists } from "drizzle-orm";
 import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
 import { auth } from "@/auth";
-import { projects, projectsToUsers } from "@/src/db/schema/projects";
+import {
+  projects,
+  projectsToUsers,
+  ProjectType,
+} from "@/src/db/schema/projects";
 import { db } from "@/src/db";
+import { getSearchParams } from "@/src/lib/tusktask/utils/url/getSearchParams";
+import { tasks } from "@/src/db/schema/tasks";
+
+export interface ProjectsGetRequest {
+  completedAt?: boolean;
+  withTask?: boolean; // default false
+  limit?: number; // default 50
+  offset?: number; // default 0
+}
+
+// Interface for the data array elements in the response
+export interface ProjectsGetResponseData extends ProjectType {
+  tasks?: Array<{
+    name: string;
+    completedAt: Date | null;
+  }>;
+}
 
 export const ProjectsGet = async (req: Request) => {
-  try {
-    // Retrieve the current user's session (adjust based on your authentication method)
-    const session = await auth();
-    const currentUserId = session?.user?.id;
+  const url = new URL(req.url);
+  const requestParameters: ProjectsGetRequest = getSearchParams(url, [
+    "limit",
+    "offset",
+    "withTask",
+    "completedAt",
+  ]);
 
-    let query;
+  // Set default values
+  const limit = requestParameters.limit ?? 50;
+  const offset = requestParameters.offset ?? 0;
+  const withTask = requestParameters.withTask ?? false;
+  const completedAtFilter = requestParameters.completedAt ?? false;
 
-    if (currentUserId) {
-      // Subquery to get project IDs where the user is associated via projectsToUsers
-      const userProjectsSubquery = db
-        .select({ projectId: projectsToUsers.projectId })
-        .from(projectsToUsers)
-        .where(eq(projectsToUsers.userId, currentUserId));
+  // Session Authentication
+  const session = await auth();
+  if (!session || !session.user || !session.user.id) {
+    return createNextResponse(401, {
+      message: "Invalid session, please log out and log back in",
+      userFriendly: false,
+    });
+  }
 
-      // Query for authenticated users: public projects, owned projects, or associated projects
-      query = db
+  const userId = session.user.id;
+
+  // Filter States
+  let where = [];
+  let withRelations: Record<string, any> = {};
+
+  // Project filter: user is owner or associated via projectsToUsers
+  const projectFilter = or(
+    eq(projects.ownerId, userId),
+    exists(
+      db
         .select()
-        .from(projects)
+        .from(projectsToUsers)
         .where(
           and(
-            or(
-              eq(projects.visibility, "public"), // Public projects
-              eq(projects.ownerId, currentUserId), // Projects owned by the user
-              inArray(projects.id, userProjectsSubquery) // Projects user is associated with
-            ),
-            isNull(projects.deletedAt) // Exclude deleted projects
+            eq(projectsToUsers.projectId, projects.id),
+            eq(projectsToUsers.userId, userId)
           )
-        );
-    } else {
-      // Query for unauthenticated users: only public projects
-      query = db
-        .select()
-        .from(projects)
-        .where(
-          and(eq(projects.visibility, "public"), isNull(projects.deletedAt))
-        );
-    }
+        )
+    )
+  );
+  where.push(projectFilter);
 
-    // Execute the query to fetch the projects
-    const projectsList = await query;
+  // Filter projects with completed tasks if completedAt is true
+  if (completedAtFilter) {
+    const completedTasksSubquery = db
+      .select()
+      .from(tasks)
+      .where(
+        and(eq(tasks.projectId, projects.id), isNotNull(tasks.completedAt))
+      );
+    where.push(exists(completedTasksSubquery));
+  }
 
-    // Return a successful response with the projects data
+  // Include tasks if withTask is true
+  if (withTask) {
+    withRelations.tasks = {
+      columns: {
+        name: true,
+        completedAt: true,
+      },
+    };
+  }
+
+  // Fetching
+  try {
+    const response = await db.query.projects.findMany({
+      where: and(...where),
+      with: withRelations,
+      limit,
+      offset,
+    });
+
     return createNextResponse(200, {
       message: "Projects fetched successfully",
       userFriendly: true,
-      data: projectsList,
+      data: response,
     });
   } catch (error) {
-    // Log the error for debugging purposes
     console.error("Error fetching projects:", error);
-
-    // Return an error response with a 500 status code
     return createNextResponse(500, {
       message: "An error occurred while fetching projects",
       userFriendly: false,
-      data: null,
     });
   }
 };

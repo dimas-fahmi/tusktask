@@ -11,6 +11,9 @@ import NewTaskDialog from "../ui/components/shadcn/dialogs/NewTaskDialog";
 import TaskTimeUpdateDialog from "../ui/components/tusktask/dialogs/TaskTimeUpdateDialog";
 import { fetchFilteredTasks } from "../lib/tusktask/fetchers/fetchFilteredTasks";
 import NewProjectDialog from "../ui/components/tusktask/dialogs/NewProjectDialog";
+import { fetchFilteredProjects } from "../lib/tusktask/fetchers/fetchFilteredProjects";
+import { StandardApiResponse } from "../lib/tusktask/utils/createApiResponse";
+import { ProjectsGetResponseData } from "@/app/api/projects/get";
 
 export interface TasksContextValue {
   overdue: TasksGetApiData[];
@@ -31,6 +34,9 @@ export interface TasksContextValue {
   setIsPomodoroTask: React.Dispatch<React.SetStateAction<boolean>>;
   newProjectDialogOpen: boolean;
   setNewProjectDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  projects:
+    | StandardApiResponse<ProjectsGetResponseData[] | undefined>
+    | undefined;
 }
 
 export const TasksContext = createContext<TasksContextValue | null>(null);
@@ -80,6 +86,13 @@ export const TasksContextProvider = ({
     enabled: !!session,
   });
 
+  const { data: projects } = useQuery({
+    queryKey: ["projects", "personal"],
+    queryFn: () => {
+      return fetchFilteredProjects();
+    },
+  });
+
   const { completed, overdue, today, upcoming, tomorrow } = useCategorizeTasks(
     personal && Array.isArray(personal.data) ? personal.data : null
   );
@@ -112,6 +125,7 @@ export const TasksContextProvider = ({
         trash,
         newProjectDialogOpen,
         setNewProjectDialogOpen,
+        projects,
       }}
     >
       {children}

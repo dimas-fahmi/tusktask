@@ -9,15 +9,17 @@ import {
 import { ProjectType } from "@/src/db/schema/projects";
 
 const ProjectCard = ({ projects }: { projects: ProjectType }) => {
+  const { name, description } = projects;
+
   return (
     <div className="border shadow-xl max-w-[380px] rounded-xl">
       <header className="p-4">
         <h1 className="flex items-center gap-1.5 font-primary text-xl">
           <Folder />
-          TuskTask Projects
+          {name}
         </h1>
         <p className="text-xs text-tt-primary-foreground/70 mt-2 min-h-[80px] max-h-[80px]">
-          No Description
+          {description ? description : "No Description"}
         </p>
       </header>
       <Separator />
