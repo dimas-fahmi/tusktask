@@ -1,7 +1,12 @@
 import React from "react";
+import ProjectsPageIndex from "./ProjectsPageIndex";
 
 const ProjectsPage = () => {
-  return <div>ProjectsPage</div>;
+  return (
+    <div>
+      <ProjectsPageIndex />
+    </div>
+  );
 };
 
 export default ProjectsPage;

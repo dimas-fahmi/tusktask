@@ -8,7 +8,7 @@ import {
   unique,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { tasks } from "./tasks";
 
 // Projects table
@@ -109,3 +109,5 @@ export const projectsToUsersRelations = relations(
     }),
   })
 );
+
+export type ProjectType = InferSelectModel<typeof projects>;

@@ -10,6 +10,10 @@ import { useCategorizeTasks } from "../lib/tusktask/hooks/data/useCategorizeTask
 import NewTaskDialog from "../ui/components/shadcn/dialogs/NewTaskDialog";
 import TaskTimeUpdateDialog from "../ui/components/tusktask/dialogs/TaskTimeUpdateDialog";
 import { fetchFilteredTasks } from "../lib/tusktask/fetchers/fetchFilteredTasks";
+import NewProjectDialog from "../ui/components/tusktask/dialogs/NewProjectDialog";
+import { fetchFilteredProjects } from "../lib/tusktask/fetchers/fetchFilteredProjects";
+import { StandardApiResponse } from "../lib/tusktask/utils/createApiResponse";
+import { ProjectsGetResponseData } from "@/app/api/projects/get";
 
 export interface TasksContextValue {
   overdue: TasksGetApiData[];
@@ -28,6 +32,11 @@ export interface TasksContextValue {
   isFetching: boolean;
   isPomodoroTask: boolean;
   setIsPomodoroTask: React.Dispatch<React.SetStateAction<boolean>>;
+  newProjectDialogOpen: boolean;
+  setNewProjectDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  projects:
+    | StandardApiResponse<ProjectsGetResponseData[] | undefined>
+    | undefined;
 }
 
 export const TasksContext = createContext<TasksContextValue | null>(null);
@@ -49,6 +58,9 @@ export const TasksContextProvider = ({
 
   // Pomodoro Mode Task
   const [isPomodoroTask, setIsPomodoroTask] = useState(false);
+
+  // New Project Dialog State
+  const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
 
   // Global Query
   const { data: personal, isFetching } = useQuery({
@@ -72,6 +84,13 @@ export const TasksContextProvider = ({
       });
     },
     enabled: !!session,
+  });
+
+  const { data: projects } = useQuery({
+    queryKey: ["projects", "personal"],
+    queryFn: () => {
+      return fetchFilteredProjects();
+    },
   });
 
   const { completed, overdue, today, upcoming, tomorrow } = useCategorizeTasks(
@@ -104,13 +123,25 @@ export const TasksContextProvider = ({
         isPomodoroTask,
         setIsPomodoroTask,
         trash,
+        newProjectDialogOpen,
+        setNewProjectDialogOpen,
+        projects,
       }}
     >
       {children}
+      {/* New Task Dialog */}
       <NewTaskDialog open={newTaskDialogOpen} setOpen={setNewTaskDialogOpen} />
+
+      {/* Task Time Update Dialog */}
       <TaskTimeUpdateDialog
         open={taskTimeUpdateDialogOpen}
         setOpen={setTaskTimeUpdateDialogOpen}
+      />
+
+      {/* New Project Dialog */}
+      <NewProjectDialog
+        open={newProjectDialogOpen}
+        setOpen={setNewProjectDialogOpen}
       />
     </TasksContext.Provider>
   );
