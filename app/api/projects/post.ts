@@ -1,8 +1,13 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
-import { ProjectInsertType, projects } from "@/src/db/schema/projects";
+import {
+  ProjectInsertType,
+  projects,
+  projectsToUsers,
+} from "@/src/db/schema/projects";
 import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
 import { projectSchema } from "@/src/zod/projectSchema";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 // POST handler for creating a new project
@@ -49,6 +54,28 @@ export const projectsPost = async (req: Request) => {
       .insert(projects)
       .values(newProject)
       .returning();
+
+    if (!createdProject) {
+      return createNextResponse(500, {
+        message: "Failed to create your project",
+        userFriendly: true,
+      });
+    }
+
+    const [createdProjectRelation] = await db
+      .insert(projectsToUsers)
+      .values({ projectId: createdProject.id, userId: session.user.id! })
+      .returning();
+
+    if (!createdProjectRelation) {
+      await db.delete(projects).where(eq(projects.id, createdProject.id));
+
+      return createNextResponse(500, {
+        message:
+          "Failed to link your account to new project, please try again!",
+        userFriendly: true,
+      });
+    }
 
     // Return a successful response with the created project
     return createNextResponse(201, {

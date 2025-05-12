@@ -3,6 +3,7 @@ import { db } from "@/src/db";
 import { projects } from "@/src/db/schema/projects";
 import { eq } from "drizzle-orm";
 import React from "react";
+import ProjectPageIndex from "./ProjectPageIndex";
 
 export async function generateMetadata({
   params,
@@ -30,7 +31,7 @@ export async function generateMetadata({
 
 const ProjectPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  return <div>ProjectPage {id}</div>;
+  return <ProjectPageIndex id={id} />;
 };
 
 export default ProjectPage;
