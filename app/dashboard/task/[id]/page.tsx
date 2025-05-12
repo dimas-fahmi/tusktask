@@ -1,10 +1,5 @@
 import { Metadata } from "next";
 import React from "react";
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
 import TaskPageIndex from "./TaskPageIndex";
 import { getTaskById } from "@/src/lib/tusktask/server/tasks";
 import { auth } from "@/auth";
