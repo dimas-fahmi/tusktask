@@ -9,7 +9,7 @@ export interface UseCategorizeTasks {
 }
 
 export const useCategorizeTasks = (
-  data: TasksGetApiData[] | null
+  data: TasksGetApiData[] | null | undefined
 ): UseCategorizeTasks => {
   if (!data) {
     return {

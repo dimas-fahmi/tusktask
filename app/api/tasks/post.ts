@@ -12,6 +12,8 @@ import { parseRequestBody } from "@/src/lib/tusktask/utils/api/parseRequestBody"
 import { validateSession } from "@/src/lib/tusktask/utils/api/validateSession";
 import { checkProtectedFields } from "@/src/lib/tusktask/utils/api/checkProtectedFields";
 import { normalizeDateFields } from "@/src/lib/tusktask/utils/api/normalizeDateFields";
+import { projectsToUsers } from "@/src/db/schema/projects";
+import { and, eq } from "drizzle-orm";
 
 export const tasksPost = async (req: Request) => {
   console.log(createStandardLog("tasks", null, "POST", "INCOMING_REQUEST"));
@@ -106,6 +108,41 @@ export const tasksPost = async (req: Request) => {
         });
       }
 
+      let project;
+      if (newTask.projectId) {
+        try {
+          [project] = await db
+            .select()
+            .from(projectsToUsers)
+            .where(
+              and(
+                eq(projectsToUsers.projectId, newTask.projectId),
+                eq(projectsToUsers.userId, session.user.id!)
+              )
+            )
+            .limit(1);
+        } catch (error) {
+          return createNextResponse(500, {
+            message: "Unexpected error, please try again.",
+            userFriendly: true,
+            data: null,
+          });
+        }
+
+        // Abort if the user is not authorized!
+        if (!project) {
+          await db.delete(tasks).where(eq(tasks.id, newTask.id));
+
+          return createNextResponse(403, {
+            message:
+              "You don't have permission to create a task for this projecta",
+            userFriendly: true,
+            data: null,
+          });
+        }
+      }
+
+      // assign relations
       await db
         .insert(tasksToUsers)
         .values({ taskId: newTask.id!, userId: session.user.id! });
