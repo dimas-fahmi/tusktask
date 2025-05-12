@@ -1,5 +1,5 @@
-import { ProjectsGet } from "./get";
-import { ProjectsPost } from "./post";
+import { projectsGet } from "./get";
+import { projectsPost } from "./post";
 
-export { ProjectsGet as GET };
-export { ProjectsPost as POST };
+export { projectsGet as GET };
+export { projectsPost as POST };
