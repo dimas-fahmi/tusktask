@@ -1,12 +1,13 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
 import { projects, ProjectType } from "@/src/db/schema/projects";
-import { TaskType } from "@/src/db/schema/tasks";
 import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
 import { eq } from "drizzle-orm";
+import { userConfigs } from "../../tasks/get";
+import { TasksGetApiData } from "../../tasks/types";
 
 export interface SpecificProjectGetData extends ProjectType {
-  tasks: TaskType[];
+  tasks: TasksGetApiData[];
   user: { id: string; name: string; username: string; image: string }[];
 }
 
@@ -41,7 +42,25 @@ export async function GET(
             },
           },
         },
-        tasks: {},
+        tasks: {
+          with: {
+            owner: {
+              columns: userConfigs,
+            },
+            creator: {
+              columns: userConfigs,
+            },
+            project: true,
+            tasksToUsers: {
+              columns: {},
+              with: {
+                user: {
+                  columns: userConfigs,
+                },
+              },
+            },
+          },
+        },
       },
     });
 

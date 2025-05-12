@@ -37,7 +37,13 @@ export interface TasksContextValue {
   projects:
     | StandardApiResponse<ProjectsGetResponseData[] | undefined>
     | undefined;
+  isProjectTask: IsProjectTask;
+  setIsProjectTask: React.Dispatch<React.SetStateAction<IsProjectTask>>;
 }
+
+export type IsProjectTask =
+  | { isProject: true; projectId: string }
+  | { isProject: false; projectId: null };
 
 export const TasksContext = createContext<TasksContextValue | null>(null);
 
@@ -58,6 +64,12 @@ export const TasksContextProvider = ({
 
   // Pomodoro Mode Task
   const [isPomodoroTask, setIsPomodoroTask] = useState(false);
+
+  // Project Mode Task
+  const [isProjectTask, setIsProjectTask] = useState<IsProjectTask>({
+    isProject: false,
+    projectId: null,
+  });
 
   // New Project Dialog State
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
@@ -129,6 +141,8 @@ export const TasksContextProvider = ({
         newProjectDialogOpen,
         setNewProjectDialogOpen,
         projects,
+        isProjectTask,
+        setIsProjectTask,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "../ui/dialog";
 import SelectInput from "../../tusktask/inputs/SelectInput";
 import { Button } from "../ui/button";
@@ -28,7 +28,8 @@ const NewTaskDialog: React.FC<{
   const { triggerToast } = useNotificationContext();
 
   // Pull setters from TaskContext
-  const { setIsPomodoroTask, isPomodoroTask } = useTasksContext();
+  const { setIsPomodoroTask, isPomodoroTask, isProjectTask, setIsProjectTask } =
+    useTasksContext();
 
   // Advance mode
   const [advanceExpand, setAdvanceExpanse] = useState(false);
@@ -119,6 +120,7 @@ const NewTaskDialog: React.FC<{
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"], exact: false });
+      queryClient.invalidateQueries({ queryKey: ["projects"], exact: false });
     },
     onSuccess: () => {
       triggerToast({
@@ -148,6 +150,13 @@ const NewTaskDialog: React.FC<{
     },
   });
 
+  useEffect(() => {
+    if (!open) {
+      setIsPomodoroTask(false);
+      setIsProjectTask({ isProject: false, projectId: null });
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
@@ -168,6 +177,10 @@ const NewTaskDialog: React.FC<{
 
             if (isPomodoroTask) {
               data["tags"] = [...(data["tags"] ?? []), "pomodoro"];
+            }
+
+            if (isProjectTask.isProject) {
+              data["projectId"] = isProjectTask.projectId;
             }
 
             // @ts-ignore null | undefine & null overlap
@@ -469,6 +482,7 @@ const NewTaskDialog: React.FC<{
                 variant={"outline"}
                 onClick={() => {
                   setIsPomodoroTask(false);
+                  setIsProjectTask({ isProject: false, projectId: null });
                   setAdvanceExpanse(false);
                   setOpen(false);
                 }}
