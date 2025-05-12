@@ -1,25 +1,12 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
-import { projects } from "@/src/db/schema/projects";
+import { ProjectInsertType, projects } from "@/src/db/schema/projects";
 import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
+import { projectSchema } from "@/src/zod/projectSchema";
 import { z } from "zod";
 
-// Define the schema for the request body
-const projectSchema = z.object({
-  name: z.string().min(1, "Project name is required"),
-  description: z.string().optional(),
-  estimatedHours: z.number().int().nonnegative().optional(),
-  estimatedMinutes: z.number().int().nonnegative().optional(),
-  status: z
-    .enum(["not_started", "in_progress", "completed", "archived"])
-    .default("not_started"),
-  visibility: z.enum(["private", "public", "shared"]).default("private"),
-  startAt: z.string().optional(), // Assuming date strings are provided
-  deadlineAt: z.string().optional(),
-});
-
 // POST handler for creating a new project
-export const ProjectsPost = async (req: Request) => {
+export const projectsPost = async (req: Request) => {
   try {
     // Retrieve the current user's session
     const session = await auth();
@@ -39,7 +26,7 @@ export const ProjectsPost = async (req: Request) => {
     const validatedData = projectSchema.parse(body);
 
     // Prepare the project data for insertion
-    const newProject = {
+    const newProject: ProjectInsertType = {
       name: validatedData.name,
       description: validatedData.description,
       createdById: currentUserId,
@@ -54,6 +41,7 @@ export const ProjectsPost = async (req: Request) => {
       deadlineAt: validatedData.deadlineAt
         ? new Date(validatedData.deadlineAt)
         : undefined,
+      createdAt: new Date(),
     };
 
     // Insert the new project into the database

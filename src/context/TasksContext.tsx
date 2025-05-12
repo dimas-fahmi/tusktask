@@ -89,7 +89,10 @@ export const TasksContextProvider = ({
   const { data: projects } = useQuery({
     queryKey: ["projects", "personal"],
     queryFn: () => {
-      return fetchFilteredProjects();
+      return fetchFilteredProjects({
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      });
     },
   });
 
