@@ -33,10 +33,6 @@ const NewProjectDialog = ({ open, setOpen }: NewProjectDialogProps) => {
 
   const name = watch("name");
 
-  useEffect(() => {
-    console.log(formState);
-  }, [name, formState]);
-
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({

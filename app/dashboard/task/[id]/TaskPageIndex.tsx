@@ -11,6 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Clock9, ClockAlert, ClockArrowUp, Text } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect } from "react";
+import TaskPageContent from "./TaskPageContent";
+import TaskPageAside from "./TaskPageAside";
 
 const TaskPageIndex = ({ id }: { id: string }) => {
   // pull setters from task context
@@ -40,71 +42,8 @@ const TaskPageIndex = ({ id }: { id: string }) => {
     </div>
   ) : (
     <div className="grid grid-cols-1 md:grid-cols-[auto_280px] gap-6 md:gap-0">
-      <div className="space-y-6">
-        <header className="grid grid-cols-1 gap-4">
-          <div className="flex items-center justify-between">
-            <h1 className="flex items-center gap-2 text-lg md:text-3xl font-bold text-tt-primary-foreground/80 capitalize">
-              <TaskCheckButton
-                taskId={taskData?.id ?? ""}
-                completedAt={taskData?.completedAt}
-              />
-              {taskData?.name}
-            </h1>
-          </div>
-        </header>
-        <div>
-          <section id="description">
-            <p className="flex items-center gap-2 text-sm text-tt-primary-foreground/70">
-              <Text className="w-4 h-4" />{" "}
-              {taskData &&
-              taskData.description &&
-              taskData?.description?.length > 0
-                ? taskData?.description
-                : "description"}
-            </p>
-          </section>
-        </div>
-      </div>
-      <div className="space-y-6">
-        <section id="asignees">
-          <h4 className="font-semibold">Assignee</h4>
-
-          <div className="space-y-2">
-            {taskData?.users.map((user) => (
-              <AssigneeCard
-                key={user?.id}
-                name={user.name ?? ""}
-                username={user.userName ?? ""}
-                avatar={user.image ?? ""}
-              />
-            ))}
-          </div>
-        </section>
-
-        <section id="timestamps" className="space-y-2">
-          <h4 className="font-semibold">Timestamps</h4>
-
-          <div className="space-y-2">
-            <TimeInfoCard
-              icon={Clock9}
-              label="Created At"
-              date={taskData?.createdAt}
-            />
-            <TimeInfoCard
-              icon={ClockArrowUp}
-              label="Start At"
-              date={taskData?.startAt}
-              onClick={() => setTaskTimeUpdateDialogOpen(true)}
-            />
-            <TimeInfoCard
-              icon={ClockAlert}
-              label="Deadline At"
-              date={taskData?.deadlineAt}
-              onClick={() => setTaskTimeUpdateDialogOpen(true)}
-            />
-          </div>
-        </section>
-      </div>
+      {taskData && <TaskPageContent taskData={taskData} />}
+      {taskData && <TaskPageAside taskData={taskData} />}
     </div>
   );
 };

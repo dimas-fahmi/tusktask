@@ -124,7 +124,6 @@ const UsernamePhase = () => {
       setOnContinue(() =>
         handleSubmit((formData) => {
           setLoading(true);
-          console.log("Submitted data:", formData);
 
           const request: UsersPatchApiRequest = {
             userId: session!.user!.id!,

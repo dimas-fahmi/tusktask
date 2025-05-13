@@ -88,7 +88,6 @@ const PersonalPhase = () => {
         handleSubmit((data) => {
           if (!session || !session.user.id) return;
           setLoading(true);
-          console.log(data);
           const request: UsersPatchApiRequest = {
             userId: session.user.id,
             trigger: "personal",
