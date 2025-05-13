@@ -29,7 +29,6 @@ export const getDaysInMonths = (
   );
 
   if (monthIndex === -1) {
-    console.log("invalid");
     return initialDays;
   }
 
