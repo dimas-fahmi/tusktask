@@ -1,5 +1,6 @@
 import { TaskPatchApiRequest } from "@/app/api/tasks/patch";
 import { SpecificTask } from "@/app/api/tasks/types";
+import { TaskType } from "@/src/db/schema/tasks";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { mutateTaskData } from "@/src/lib/tusktask/mutators/tasks/mutateTaskData";
 import TaskCheckButton from "@/src/ui/components/tusktask/buttons/TaskCheckButton";
@@ -23,7 +24,8 @@ const TaskTitle = ({ taskData }: { taskData: SpecificTask }) => {
     control,
     handleSubmit,
     getValues,
-    formState: { isValid, isDirty },
+    formState: { isValid, isDirty, errors },
+    setValue,
     reset,
   } = useForm({
     resolver: zodResolver(titleSchema),
@@ -77,9 +79,13 @@ const TaskTitle = ({ taskData }: { taskData: SpecificTask }) => {
         title: "Changes Saved",
         description: "Name is successfully updated",
       });
+
+      if (typeof window !== "undefined") {
+        document.title = `${taskData.name} | TuskTask`;
+      }
     },
     onSettled: () => {
-      reset();
+      setValue("name", taskData.name);
       setIsEditMode(false);
       queryClient.invalidateQueries({
         queryKey: ["tasks"],
@@ -113,6 +119,14 @@ const TaskTitle = ({ taskData }: { taskData: SpecificTask }) => {
         if (isValid && isDirty && values.name !== taskData.name) {
           performUpdate(values);
         } else {
+          console.log(errors);
+          if (errors.name) {
+            triggerToast({
+              type: "error",
+              title: "Invalid Name",
+              description: errors.name.message,
+            });
+          }
           reset();
           setIsEditMode(false);
         }
@@ -126,7 +140,7 @@ const TaskTitle = ({ taskData }: { taskData: SpecificTask }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isValid, isDirty, getValues, taskData.name, reset, isEditMode]);
+  }, [isValid, isDirty, getValues, taskData.name, reset, isEditMode, errors]);
 
   //   Pull Trigger From Notification context
   const { triggerToast } = useNotificationContext();
@@ -134,7 +148,7 @@ const TaskTitle = ({ taskData }: { taskData: SpecificTask }) => {
   return (
     <>
       <h1
-        className="flex items-center gap-2 text-lg md:text-3xl font-bold text-tt-primary-foreground/80 capitalize"
+        className={`flex items-center gap-2 text-lg md:text-3xl font-bold text-tt-primary-foreground/80 capitalize ${isPending ? "animate-pulse cursor-wait" : ""}`}
         title="Click to edit"
         onClick={() => {
           setIsEditMode(true);
@@ -160,7 +174,7 @@ const TaskTitle = ({ taskData }: { taskData: SpecificTask }) => {
                 <input
                   {...field}
                   autoFocus
-                  className={`${isValid ? "" : "border-tt-tertiary outline-tt-tertiary text-tt-tertiary"}`}
+                  className={`${isValid ? "" : "border-tt-tertiary outline-tt-tertiary text-tt-tertiary"} capitalize`}
                 />
               )}
             />
