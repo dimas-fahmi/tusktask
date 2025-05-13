@@ -64,7 +64,7 @@ const TaskInformation = ({ taskData }: { taskData: SpecificTask }) => {
     },
     onSuccess: () => {
       triggerToast({
-        type: "default",
+        type: "success",
         title: "Changes Saved",
         description: "Description changes saved successfully!",
       });
@@ -150,7 +150,7 @@ const TaskInformation = ({ taskData }: { taskData: SpecificTask }) => {
               <textarea
                 rows={3}
                 {...field}
-                className="border-0 text-sm block outline-0 ring-0 focus:ring-0 focus:border-0 w-full resize-none field-sizing-content min-h-11 max-h-60"
+                className={`border-0 text-sm block outline-0 ring-0 focus:ring-0 focus:border-0 w-full resize-none field-sizing-content min-h-11 max-h-60 ${isValid ? "" : "text-tt-tertiary underline"}`}
                 placeholder="Description (optional)"
                 autoFocus
               />
