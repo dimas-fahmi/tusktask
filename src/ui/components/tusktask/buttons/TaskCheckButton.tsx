@@ -96,7 +96,7 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
 
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ["task", taskId],
+        queryKey: ["task"],
         exact: false,
       });
       queryClient.invalidateQueries({ queryKey: ["tasks"], exact: false });

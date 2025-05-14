@@ -95,6 +95,16 @@ export const tasksRelations = relations(tasks, ({ many, one }) => ({
     fields: [tasks.projectId],
     references: [projects.id],
   }),
+
+  // SUB-TASK
+  parent: one(tasks, {
+    fields: [tasks.parentId],
+    references: [tasks.id],
+    relationName: "task_subtasks",
+  }),
+  subTasks: many(tasks, {
+    relationName: "task_subtasks",
+  }),
 }));
 
 // Tasks To Users Joint Table
