@@ -9,7 +9,7 @@ import React from "react";
 
 const ProjectsPageIndex = () => {
   // Pull setters from task context
-  const { newProjectDialogOpen, setNewProjectDialogOpen } = useTasksContext();
+  const { setNewProjectDialogOpen } = useTasksContext();
 
   // Pull data, setters and states from task context
   const { projects } = useTasksContext();

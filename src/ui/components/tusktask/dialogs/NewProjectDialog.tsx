@@ -39,8 +39,8 @@ const NewProjectDialog = ({ open, setOpen }: NewProjectDialogProps) => {
     mutationFn: createNewProject,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["projects"],
-        exact: false,
+        queryKey: ["projects", "personal"],
+        exact: true,
       });
       reset();
       setOpen(false);
