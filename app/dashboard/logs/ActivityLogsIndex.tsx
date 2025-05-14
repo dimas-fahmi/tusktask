@@ -31,7 +31,7 @@ const ActivityLogsIndex = () => {
       return await fetchFilteredTasks({
         status: "completed",
         ownerId: session!.user!.id,
-        limit: "50",
+        limit: "1000",
       });
     },
     enabled: !!session,

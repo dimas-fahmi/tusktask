@@ -2,14 +2,28 @@
 
 import { SpecificTask, TasksPostApiRequest } from "@/app/api/tasks/types";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import useCategorizeTasksByStatus from "@/src/lib/tusktask/hooks/data/useCategorizeTasksByStatus";
 import { createNewTask } from "@/src/lib/tusktask/mutators/creators/createNewTask";
-import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/src/ui/components/shadcn/ui/collapsible";
 import TaskCheckButton from "@/src/ui/components/tusktask/buttons/TaskCheckButton";
+import TaskGroup from "@/src/ui/components/tusktask/group/TaskGroup";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
-import React, { useState } from "react";
+import {
+  ChevronDown,
+  CornerDownRight,
+  ExternalLink,
+  Pencil,
+  Plus,
+  Trash,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -26,6 +40,10 @@ const newTaskSchema = z.object({
 const SubTasks = ({ taskData }: { taskData: SpecificTask }) => {
   // New Task State [show form if true]
   const [newTaskMode, setNewTaskMode] = useState(false);
+
+  // Group Collapse State
+  const [notStartedCollapse, setNewStartedCollapse] = useState(true);
+  const [completedCollapse, setCompletedCollapse] = useState(false);
 
   // Initialize Form
   const {
@@ -48,10 +66,19 @@ const SubTasks = ({ taskData }: { taskData: SpecificTask }) => {
   // Pull triggers from notification context
   const { triggerToast } = useNotificationContext();
 
+  // Categorize SubTask
+  let { completed, not_started } = useCategorizeTasksByStatus(
+    taskData.subTasks
+  );
+
   //   Initialize mutation
   const { mutate } = useMutation({
     mutationFn: createNewTask,
     onMutate: async (newTask) => {
+      setNewStartedCollapse(true);
+      reset();
+      setNewTaskMode(false);
+
       // Cancel Queries
       queryClient.cancelQueries({
         queryKey: ["task", taskData.id],
@@ -69,13 +96,16 @@ const SubTasks = ({ taskData }: { taskData: SpecificTask }) => {
             ...data,
             subTasks: [
               ...data.subTasks,
-              { id: "", ...newTask, createdByOptimisticUpdate: true },
+              {
+                id: crypto.randomUUID(),
+                ...newTask,
+                createdByOptimisticUpdate: true,
+                status: "not_started",
+              },
             ],
           },
         };
       });
-
-      console.log(queryClient.getQueryData(["task", taskData.id]));
 
       // Return previousData to context
       return { previousData };
@@ -88,12 +118,8 @@ const SubTasks = ({ taskData }: { taskData: SpecificTask }) => {
         title: "Failed To Create A Sub-Task",
         description: "Something went wrong, please try again.",
       });
-
-      setNewTaskMode(true);
     },
     onSuccess: () => {
-      reset();
-
       triggerToast({
         type: "success",
         title: "New Sub-Task Is Created",
@@ -104,40 +130,71 @@ const SubTasks = ({ taskData }: { taskData: SpecificTask }) => {
       queryClient.invalidateQueries({
         queryKey: ["task", taskData.id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+        exact: false,
+      });
     },
   });
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isMac = navigator.userAgent.includes("Mac");
+      const ctrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+
+      if (ctrlOrCmd && e.shiftKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        setNewTaskMode(true);
+      }
+
+      if (ctrlOrCmd && e.shiftKey && e.key.toLowerCase() === "c") {
+        e.preventDefault();
+        setNewTaskMode(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const router = useRouter();
+
   return (
     <div>
-      {/* Sub Task Loop */}
-      <div className="grid grid-cols-1 mb-4">
-        {taskData.subTasks &&
-          taskData.subTasks.map((subTask, index) => (
-            <div
-              key={index}
-              className="p-2 text-tt-muted-foreground flex items-center gap-1.5 hover:bg-tt-muted rounded-md"
-            >
-              <TaskCheckButton
-                taskId={subTask.id}
-                completedAt={subTask.completedAt}
-              />
-              <span className="text-sm">{subTask.name}</span>
-            </div>
-          ))}
+      <div className="grid grid-cols-1 gap-4">
+        {/* Sub Task Loop [not_started] */}
+        <TaskGroup
+          data={not_started}
+          label="Sub-Tasks"
+          open={notStartedCollapse}
+          setOpen={setNewStartedCollapse}
+        />
+
+        {/* Sub Task Loop [completed] */}
+        <TaskGroup
+          data={completed}
+          label="Completed Sub-Tasks"
+          open={completedCollapse}
+          setOpen={setCompletedCollapse}
+        />
       </div>
+
       {/* New Task Form */}
       <div>
         {!newTaskMode && (
+          // New Task Button
           <button
             onClick={() => setNewTaskMode(true)}
-            className="text-sm hover:px-4 cursor-pointer transition-all duration-300 rounded-md active:scale-95 py-2 hover:bg-tt-muted text-tt-muted-foreground flex items-center gap-1"
+            className={`text-sm hover:px-4 cursor-pointer transition-all duration-300 rounded-md active:scale-95 py-2 hover:bg-tt-muted text-tt-muted-foreground flex items-center gap-1 ${taskData.subTasks.length > 0 ? "mt-4" : "mt-0"}`}
           >
             <Plus className="w-3 h-3" /> Add sub-task
           </button>
         )}
         {newTaskMode && (
           <form
-            className="border p-4 rounded-md"
+            className={`border p-4 rounded-md ${taskData.subTasks.length > 0 && "mt-4"}`}
             onSubmit={handleSubmit((data) => {
               const request: TasksPostApiRequest = {
                 ...data,
@@ -157,6 +214,7 @@ const SubTasks = ({ taskData }: { taskData: SpecificTask }) => {
                     className="font-semibold outline-0 mb-1 text-xl capitalize"
                     placeholder="Task Name"
                     autoComplete="off"
+                    autoFocus
                   />
                 )}
               />

@@ -160,6 +160,10 @@
   }
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 @layer utilities {
   .underline-effect {
     position: relative;
