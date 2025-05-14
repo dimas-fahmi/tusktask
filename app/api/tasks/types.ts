@@ -19,7 +19,7 @@ export interface SpecificTask extends TaskType {
   creator: StandardUserData;
   owner: StandardUserData;
   users: StandardUserData[];
-  subTasks: TaskType[];
+  subTasks: TasksGetApiData[];
 }
 
 export interface TasksGetApiData extends TaskType {

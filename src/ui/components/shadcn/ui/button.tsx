@@ -16,8 +16,7 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         quaternary: "bg-tt-quaternary text-tt-quaternary-foreground",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        ghost: "border-0 shadow-none",
         link: "text-tt-secondary shadow-none hover:shadow-none bg-transparent underline-effect",
         oAuth:
           "border shadow-lg hover:shadow-xl hover:scale-105 active:scale-90 transition-all duration-300",

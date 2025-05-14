@@ -13,11 +13,13 @@ import React, { useState } from "react";
 export interface TaskCheckButtonProps {
   completedAt: Date | null | undefined;
   taskId: string;
+  createdByOptimisticUpdate?: boolean;
 }
 
 const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
   completedAt,
   taskId,
+  createdByOptimisticUpdate = false,
 }) => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -105,7 +107,7 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
 
   return (
     <button
-      className="group/tcb cursor-pointer"
+      className={`group/tcb cursor-pointer ${createdByOptimisticUpdate && "cursor-wait animate-pulse"}`}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         if (!session || !session.user) return;
@@ -123,6 +125,7 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
 
         mutate(request);
       }}
+      disabled={createdByOptimisticUpdate}
     >
       {!isDone ? (
         <>
