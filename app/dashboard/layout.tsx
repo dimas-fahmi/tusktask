@@ -6,11 +6,17 @@ import { AppSidebar } from "@/src/ui/components/tusktask/generics/AppSidebar";
 import LayoutHeader from "./LayoutHeader";
 import { TasksContextProvider } from "@/src/context/TasksContext";
 import { PomodoroContextProvider } from "@/src/context/PomodoroContext";
+import { useSession } from "next-auth/react";
+import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
 
 const DashboardLayout = ({
   children,
 }: Readonly<{ children: React.ReactNode }>) => {
-  return (
+  const { status } = useSession();
+
+  return status === "loading" ? (
+    <MainLoader />
+  ) : (
     <div id={"dashboardLayout"}>
       <TasksContextProvider>
         <PomodoroContextProvider>

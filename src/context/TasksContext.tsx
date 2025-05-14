@@ -75,7 +75,7 @@ export const TasksContextProvider = ({
   const [newProjectDialogOpen, setNewProjectDialogOpen] = useState(false);
 
   // Global Query
-  const { data: personal, isFetching } = useQuery({
+  const { data: personal, isFetching: taskFetching } = useQuery({
     queryKey: ["tasks", "personal"],
     queryFn: () => {
       return fetchFilteredTasks({
@@ -87,7 +87,7 @@ export const TasksContextProvider = ({
   });
 
   // Trash Bin Query
-  const { data: trash } = useQuery({
+  const { data: trash, isFetching: trashFetching } = useQuery({
     queryKey: ["tasks", "trash"],
     queryFn: () => {
       return fetchFilteredTasks({
@@ -98,7 +98,8 @@ export const TasksContextProvider = ({
     enabled: !!session,
   });
 
-  const { data: projects } = useQuery({
+  // Project Fetching
+  const { data: projects, isFetching: projectFetching } = useQuery({
     queryKey: ["projects", "personal"],
     queryFn: () => {
       return fetchFilteredProjects({
@@ -107,6 +108,9 @@ export const TasksContextProvider = ({
       });
     },
   });
+
+  // isFetching Logics
+  const isFetching = taskFetching || trashFetching || projectFetching;
 
   const { completed, overdue, today, upcoming, tomorrow } = useCategorizeTasks(
     personal && Array.isArray(personal.data) ? personal.data : null

@@ -6,13 +6,14 @@ import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
 import { useCategorizeTasks } from "@/src/lib/tusktask/hooks/data/useCategorizeTasks";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import { Separator } from "@/src/ui/components/shadcn/ui/separator";
-import TaskCheckButton from "@/src/ui/components/tusktask/buttons/TaskCheckButton";
+import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
 import AssigneeCard from "@/src/ui/components/tusktask/cards/AssigneeCard";
 import TaskCard from "@/src/ui/components/tusktask/cards/TaskCard";
 import StatusOverview from "@/src/ui/components/tusktask/generics/StatusOverview";
 import { useQuery } from "@tanstack/react-query";
 import { Folder, MessageCircleMore, Text } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -30,6 +31,7 @@ const ProjectPageIndex = ({ id }: { id: string }) => {
       return fetchSpecificProject(id);
     },
     enabled: !!id,
+    staleTime: 10 * 60 * 1000,
   });
 
   const projectData =
@@ -48,11 +50,24 @@ const ProjectPageIndex = ({ id }: { id: string }) => {
     setNewTaskDialogOpen(true);
   };
 
-  const { completed, overdue, today, tomorrow, upcoming } = useCategorizeTasks(
+  const { overdue, today, tomorrow, upcoming } = useCategorizeTasks(
     projectData?.tasks
   );
 
-  return (
+  return isFetching ? (
+    <div className="flex flex-col items-center justify-center">
+      <Image
+        width={150}
+        height={150}
+        src={"/images/loader.gif"}
+        alt="Loading Animation"
+        unoptimized
+      />
+      <span className="text-tt-muted-foreground animate-pulse">
+        Fetching Your Data
+      </span>
+    </div>
+  ) : (
     <div className="grid gric-cols-1 md:grid-cols-[auto_320px] gap-4">
       <div>
         <header className="grid grid-cols-1 gap-4 mb-4">
@@ -64,7 +79,7 @@ const ProjectPageIndex = ({ id }: { id: string }) => {
           </div>
           <p className="flex text-sm text-muted-foreground items-center gap-2">
             <Text size={"1rem"} />
-            {projectData?.description}
+            {projectData?.description ?? "No Description"}
           </p>
         </header>
         <Separator />
