@@ -21,6 +21,8 @@ export interface TasksContextValue {
   tomorrow: TasksGetApiData[];
   upcoming: TasksGetApiData[];
   completed: TasksGetApiData[];
+  parents: TasksGetApiData[];
+  childrens: TasksGetApiData[];
   newTaskDialogOpen: boolean;
   setNewTaskDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   taskTimeUpdateDialogOpen: boolean;
@@ -39,6 +41,8 @@ export interface TasksContextValue {
     | undefined;
   isProjectTask: IsProjectTask;
   setIsProjectTask: React.Dispatch<React.SetStateAction<IsProjectTask>>;
+  hideChildren: boolean;
+  setHideChildren: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export type IsProjectTask =
@@ -52,7 +56,11 @@ export const TasksContextProvider = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
+  // Pull session from auth
   const { data: session } = useSession();
+
+  // Hide children state
+  const [hideChildren, setHideChildren] = useState(false);
 
   // Dialog States
   const [newTaskDialogOpen, setNewTaskDialogOpen] = useState(false);
@@ -112,9 +120,12 @@ export const TasksContextProvider = ({
   // isFetching Logics
   const isFetching = taskFetching || trashFetching || projectFetching;
 
-  const { completed, overdue, today, upcoming, tomorrow } = useCategorizeTasks(
-    personal && Array.isArray(personal.data) ? personal.data : null
-  );
+  // Categorize Personal tasks
+  const { completed, overdue, today, upcoming, tomorrow, parents, childrens } =
+    useCategorizeTasks(
+      personal && Array.isArray(personal.data) ? personal.data : null,
+      hideChildren
+    );
 
   // Listen to newTaskDialogOpen
   useEffect(() => {
@@ -147,6 +158,10 @@ export const TasksContextProvider = ({
         projects,
         isProjectTask,
         setIsProjectTask,
+        hideChildren,
+        setHideChildren,
+        parents,
+        childrens,
       }}
     >
       {children}

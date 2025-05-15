@@ -107,6 +107,7 @@ export const tasksGet = async (req: Request) => {
             },
           },
         },
+        parent: {},
       },
       limit: limit,
       offset: offset,

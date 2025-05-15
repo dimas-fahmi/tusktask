@@ -6,10 +6,19 @@ export interface UseCategorizeTasks {
   tomorrow: TasksGetApiData[];
   upcoming: TasksGetApiData[];
   completed: TasksGetApiData[];
+  parents: TasksGetApiData[];
+  childrens: TasksGetApiData[];
 }
 
+const getStartOfDay = (date: Date): Date => {
+  const newDate = new Date(date);
+  newDate.setHours(0, 0, 0, 0);
+  return newDate;
+};
+
 export const useCategorizeTasks = (
-  data: TasksGetApiData[] | null | undefined
+  data: TasksGetApiData[] | null | undefined,
+  hideChildren = false
 ): UseCategorizeTasks => {
   if (!data) {
     return {
@@ -18,15 +27,14 @@ export const useCategorizeTasks = (
       tomorrow: [],
       upcoming: [],
       completed: [],
+      parents: [],
+      childrens: [],
     };
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
+  const today = getStartOfDay(new Date());
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
-
   const dayAfterTomorrow = new Date(today);
   dayAfterTomorrow.setDate(today.getDate() + 2);
 
@@ -36,26 +44,33 @@ export const useCategorizeTasks = (
     tomorrow: [] as TasksGetApiData[],
     upcoming: [] as TasksGetApiData[],
     completed: [] as TasksGetApiData[],
+    parents: [] as TasksGetApiData[],
+    childrens: [] as TasksGetApiData[],
   };
 
-  for (const task of data) {
-    const completedAt = task.completedAt ? new Date(task.completedAt) : null;
-    if (completedAt) {
+  // Populate parents and childrens with all tasks
+  categorized.parents = data.filter((task) => task.parentId === null);
+  categorized.childrens = data.filter((task) => task.parentId !== null);
+
+  // Apply hideChildren filter only to date-based categories
+  const tasksToCategorize = hideChildren
+    ? data.filter((task) => task.parentId === null)
+    : data;
+
+  for (const task of tasksToCategorize) {
+    if (task.completedAt) {
       categorized.completed.push(task);
       continue;
     }
 
-    const deadlineOrCreatedAt = new Date(task.deadlineAt ?? task.createdAt!);
-    deadlineOrCreatedAt.setHours(23, 59, 59, 999); // deadline is end of that day
+    const relevantDateStr = task.startAt ?? task.deadlineAt ?? task.createdAt!;
+    const relevantDate = getStartOfDay(new Date(relevantDateStr));
 
-    if (deadlineOrCreatedAt < today) {
+    if (relevantDate < today) {
       categorized.overdue.push(task);
-    } else if (deadlineOrCreatedAt >= today && deadlineOrCreatedAt < tomorrow) {
+    } else if (relevantDate >= today && relevantDate < tomorrow) {
       categorized.today.push(task);
-    } else if (
-      deadlineOrCreatedAt >= tomorrow &&
-      deadlineOrCreatedAt < dayAfterTomorrow
-    ) {
+    } else if (relevantDate >= tomorrow && relevantDate < dayAfterTomorrow) {
       categorized.tomorrow.push(task);
     } else {
       categorized.upcoming.push(task);
