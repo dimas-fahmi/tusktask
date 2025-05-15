@@ -1,6 +1,12 @@
 "use client";
 
-import { Ellipsis, Hash, LoaderCircle, Trash } from "lucide-react";
+import {
+  CornerDownRight,
+  Ellipsis,
+  Hash,
+  LoaderCircle,
+  Trash,
+} from "lucide-react";
 import React, { useRef, useState } from "react";
 import { Separator } from "../../shadcn/ui/separator";
 import { truncateText } from "@/src/lib/tusktask/utils/text/truncateText";
@@ -33,6 +39,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     description,
     createdByOptimisticUpdate,
     deletedAt,
+    parentId,
   } = task;
 
   // Pull query client
@@ -170,6 +177,13 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
       </p>
       <Separator />
       <div className="flex items-center gap-2">
+        {parentId && (
+          <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
+            <CornerDownRight className="w-3 h-3" />
+            <span>{task.parent.name}</span>
+          </span>
+        )}
+
         {isDeleting && (
           <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
             <LoaderCircle className="w-3 h-3 animate-spin" />
@@ -197,7 +211,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
         ) : (
           <span className="text-tt-primary-foreground/70 text-xs flex items-center gap-0.5">
             <Hash className="w-3 h-3" />
-            <span>Task</span>
+            <span>{task.type}</span>
           </span>
         )}
 

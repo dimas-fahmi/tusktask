@@ -8,18 +8,27 @@ import StatusOverview from "@/src/ui/components/tusktask/generics/StatusOverview
 import {
   Circle,
   CircleAlert,
-  CircleCheckBig,
   CirclePlus,
   Clock7,
   ClockAlert,
+  CornerDownRight,
+  Eye,
+  EyeClosed,
   LayoutDashboard,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import React from "react";
 
 const DashboardIndex = () => {
-  const { data: session } = useSession();
-  const { overdue, today, tomorrow, upcoming } = useTasksContext();
+  const {
+    overdue,
+    today,
+    tomorrow,
+    upcoming,
+    setHideChildren,
+    hideChildren,
+    childrens,
+    parents,
+  } = useTasksContext();
   const { setNewTaskDialogOpen } = useTasksContext();
 
   return (
@@ -37,10 +46,38 @@ const DashboardIndex = () => {
         </div>
 
         <div className="hidden md:flex gap-4 items-center">
+          {childrens.length > 0 && !hideChildren && (
+            <button
+              className="flex text-sm text-muted-foreground items-center gap-2 cursor-pointer hover:text-tt-primary-foreground transition-all duration-300"
+              onClick={() => setHideChildren(true)}
+            >
+              <EyeClosed size={"1rem"} />
+              Hide subtasks
+            </button>
+          )}
+
+          {childrens.length > 0 && hideChildren && (
+            <button
+              className="flex text-sm text-muted-foreground items-center gap-2 cursor-pointer hover:text-tt-primary-foreground transition-all duration-300"
+              onClick={() => setHideChildren(false)}
+            >
+              <Eye size={"1rem"} />
+              Show subtasks
+            </button>
+          )}
+
           {overdue.length > 0 && (
             <p className="flex text-sm text-tt-tertiary font-semibold items-center gap-2">
               <ClockAlert size={"1rem"} />
               You have {overdue.length} overdue tasks
+            </p>
+          )}
+
+          {childrens.length > 0 && (
+            <p className="flex text-sm text-muted-foreground items-center gap-2">
+              <CornerDownRight size={"1rem"} />
+              You have {childrens.length}{" "}
+              {childrens.length > 1 ? "subtasks" : "subtask"}
             </p>
           )}
 
