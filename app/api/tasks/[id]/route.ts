@@ -47,7 +47,11 @@ export async function GET(
             },
           },
         },
-        subTasks: {},
+        subTasks: {
+          with: {
+            subTasks: {},
+          },
+        },
         parent: {
           with: {
             parent: {
