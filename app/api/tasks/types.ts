@@ -15,11 +15,16 @@ export interface Assignee {
   user: StandardUserData;
 }
 
+export interface ParentType extends TaskType {
+  parent: TaskType;
+}
+
 export interface SpecificTask extends TaskType {
   creator: StandardUserData;
   owner: StandardUserData;
   users: StandardUserData[];
   subTasks: TasksGetApiData[];
+  parent: ParentType;
 }
 
 export interface TasksGetApiData extends TaskType {
