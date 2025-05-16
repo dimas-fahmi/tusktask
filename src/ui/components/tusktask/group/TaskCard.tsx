@@ -48,9 +48,11 @@ const TaskCard = ({ data }: { data: TasksGetApiData[] }) => {
                 subTask.createdByOptimisticUpdate ?? false
               }
               prevent={
-                subTask.subTasks &&
-                subTask.subTasks.filter((task) => task.status === "completed")
-                  .length !== subTask.subTasks.length
+                subTask?.subTasks && subTask.subTasks.length > 0
+                  ? subTask.subTasks.filter(
+                      (task) => task.status !== "completed"
+                    ).length !== subTask.subTasks.length
+                  : false
               }
               preventMessage="You have to finish all sub-tasks of this task before you can mark this task completed!"
               preventTitle="You can't do this yet"
@@ -104,25 +106,23 @@ const TaskCard = ({ data }: { data: TasksGetApiData[] }) => {
                     <div className="px-4 py-2 grid grid-cols-3 gap-2">
                       <StatusOverviewCard
                         title="Sub-Tasks"
-                        number={subTask.subTasks && subTask.subTasks.length}
+                        number={subTask?.subTasks.length ?? 0}
                         icon={ClockAlert}
                       />
                       <StatusOverviewCard
                         title="Completed"
                         number={
-                          subTask.subTasks &&
-                          subTask.subTasks.filter((task) => task.completedAt)
-                            .length
+                          subTask?.subTasks?.filter((task) => task.completedAt)
+                            .length ?? 0
                         }
                         icon={ClockAlert}
                       />
                       <StatusOverviewCard
                         title="Today"
                         number={
-                          subTask.subTasks &&
-                          subTask.subTasks.filter(
+                          subTask?.subTasks?.filter(
                             (task) => task.status !== "completed"
-                          ).length
+                          ).length ?? 0
                         }
                         icon={Circle}
                       />

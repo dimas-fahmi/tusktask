@@ -28,7 +28,7 @@ export interface SpecificTask extends TaskType {
 }
 
 export interface SubTasksType extends TasksGetApiData {
-  subTask: TasksGetApiData[];
+  subTasks: TasksGetApiData[] | null;
 }
 
 export interface TasksGetApiData extends TaskType {
@@ -37,7 +37,7 @@ export interface TasksGetApiData extends TaskType {
   tasksToUsers: Assignee[];
   createdByOptimisticUpdate: boolean | null;
   parent: TaskType;
-  subTasks: SubTasksType[];
+  subTasks: SubTasksType[] | null;
 }
 
 export type TasksGetApiResponse = StandardApiResponse<TasksGetApiData[] | null>;
