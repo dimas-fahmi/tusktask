@@ -5,6 +5,7 @@ import { TasksGetApiData } from "@/app/api/tasks/types";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { mutateTaskData } from "@/src/lib/tusktask/mutators/tasks/mutateTaskData";
 import { StandardApiResponse } from "@/src/lib/tusktask/utils/createApiResponse";
+import { triggerToast } from "@/src/lib/tusktask/utils/triggerToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Circle, CircleCheckBig } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -14,12 +15,18 @@ export interface TaskCheckButtonProps {
   completedAt: Date | null | undefined;
   taskId: string;
   createdByOptimisticUpdate?: boolean;
+  prevent?: boolean;
+  preventMessage?: string;
+  preventTitle?: string;
 }
 
 const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
   completedAt,
   taskId,
   createdByOptimisticUpdate = false,
+  prevent = false,
+  preventMessage = "Action-Prevented",
+  preventTitle = "Action-Prevented",
 }) => {
   const { data: session } = useSession();
   const queryClient = useQueryClient();
@@ -110,6 +117,17 @@ const TaskCheckButton: React.FC<TaskCheckButtonProps> = ({
       className={`group/tcb cursor-pointer ${createdByOptimisticUpdate && "cursor-wait animate-pulse"}`}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
+
+        if (prevent) {
+          triggerToast({
+            type: "error",
+            title: preventTitle,
+            description: preventMessage,
+          });
+
+          return;
+        }
+
         if (!session || !session.user) return;
         triggerSound(!isDone ? "positive" : "negative");
 

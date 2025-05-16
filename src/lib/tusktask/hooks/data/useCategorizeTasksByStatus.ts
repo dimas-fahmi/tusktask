@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { TasksGetApiData } from "@/app/api/tasks/types";
+import { SubTasksType, TasksGetApiData } from "@/app/api/tasks/types";
 
 export type UseCategorizeTasksByStatus = TasksGetApiData[] | null;
 

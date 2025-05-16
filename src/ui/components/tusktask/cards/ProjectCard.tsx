@@ -20,7 +20,7 @@ import {
 import { ProjectsGetResponseData } from "@/app/api/projects/get";
 import { useRouter } from "next/navigation";
 
-const PopoverButton = ({
+export const ProjectCardPopoverButton = ({
   Icon,
   text,
   onClick,
@@ -104,7 +104,7 @@ const ProjectCard = ({ projects }: { projects: ProjectsGetResponseData }) => {
             </button>
           </PopoverTrigger>
           <PopoverContent className="grid grid-cols-1 px-0 py-1">
-            <PopoverButton
+            <ProjectCardPopoverButton
               Icon={ExternalLink}
               text="Open Project"
               onClick={() => {
@@ -112,10 +112,10 @@ const ProjectCard = ({ projects }: { projects: ProjectsGetResponseData }) => {
               }}
             />
             <Separator />
-            <PopoverButton Icon={CirclePlus} text="New Task" />
+            <ProjectCardPopoverButton Icon={CirclePlus} text="New Task" />
             <Separator />
-            <PopoverButton Icon={Archive} text="Archive Project" />
-            <PopoverButton Icon={Trash} text="Delete Project" />
+            <ProjectCardPopoverButton Icon={Archive} text="Archive Project" />
+            <ProjectCardPopoverButton Icon={Trash} text="Delete Project" />
           </PopoverContent>
         </Popover>
       </footer>
