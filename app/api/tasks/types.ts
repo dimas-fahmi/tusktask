@@ -19,16 +19,16 @@ export interface ParentType extends TaskType {
   parent: TaskType;
 }
 
-export interface SubTasksType extends TaskType {
-  subTask: TasksGetApiData[];
-}
-
 export interface SpecificTask extends TaskType {
   creator: StandardUserData;
   owner: StandardUserData;
   users: StandardUserData[];
-  subTasks: SubTasksType;
+  subTasks: SubTasksType[];
   parent: ParentType;
+}
+
+export interface SubTasksType extends TasksGetApiData {
+  subTask: TasksGetApiData[];
 }
 
 export interface TasksGetApiData extends TaskType {

@@ -3,12 +3,7 @@
 import { SpecificTask } from "@/app/api/tasks/types";
 import { fetchSpecificTask } from "@/src/lib/tusktask/fetchers/fetchSpecificTask";
 import useTasksContext from "@/src/lib/tusktask/hooks/context/useTasksContext";
-import MainLoader from "@/src/ui/components/tusktask/animation/MainLoader";
-import TaskCheckButton from "@/src/ui/components/tusktask/buttons/TaskCheckButton";
-import AssigneeCard from "@/src/ui/components/tusktask/cards/AssigneeCard";
-import TimeInfoCard from "@/src/ui/components/tusktask/cards/TimeInfoCard";
 import { useQuery } from "@tanstack/react-query";
-import { Clock9, ClockAlert, ClockArrowUp, Text } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import TaskPageContent from "./TaskPageContent";
@@ -16,7 +11,7 @@ import TaskPageAside from "./TaskPageAside";
 
 const TaskPageIndex = ({ id }: { id: string }) => {
   // pull setters from task context
-  const { setTaskTimeUpdateDialogOpen, setSpecificTask } = useTasksContext();
+  const { setSpecificTask } = useTasksContext();
 
   const { data, isFetching } = useQuery({
     queryKey: ["task", id],
