@@ -1,5 +1,5 @@
 import generateRandomUsername from "@/src/lib/tusktask/generator/generateRandomUsername";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import {
   boolean,
   timestamp,
@@ -31,6 +31,11 @@ export const users = pgTable(
     email: text("email").unique(),
     timezone: text("timezone").default("Asia/Jakarta").notNull(),
     emailVerified: timestamp("emailVerified", TIMESTAMP_CONFIGS),
+    registration: text("registration", {
+      enum: ["username", "email", "avatar", "preferences", "complete"],
+    })
+      .default("username")
+      .notNull(),
     image: text("image"),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow().notNull(),
     updatedAt: timestamp("updatedAt", TIMESTAMP_CONFIGS).$onUpdateFn(
@@ -78,3 +83,5 @@ export const usersRelations = relations(users, ({ many }) => ({
     relationName: "messages_receiver",
   }),
 }));
+
+export type UserType = InferSelectModel<typeof users>;

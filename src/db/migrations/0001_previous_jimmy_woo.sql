@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "registration" text DEFAULT 'username' NOT NULL;
