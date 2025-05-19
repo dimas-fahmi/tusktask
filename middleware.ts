@@ -7,6 +7,13 @@ export default auth((req) => {
   const { pathname, origin } = req.nextUrl;
   const user = req.auth?.user;
 
+  if (
+    process.env.NODE_MAINTENANCE === "maintenance" &&
+    pathname !== "/maintenance"
+  ) {
+    return NextResponse.redirect(new URL("/maintenance", origin));
+  }
+
   if (!user && pathname !== "/" && !publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/", origin));
   }
