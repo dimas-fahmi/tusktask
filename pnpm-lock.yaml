@@ -89,6 +89,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      postcss:
+        specifier: ^8.5.3
+        version: 8.5.3
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -110,9 +113,6 @@ importers:
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.2.0
-      tw-animate-css:
-        specifier: ^1.2.5
-        version: 1.2.5
       zod:
         specifier: ^3.24.2
         version: 3.24.2
@@ -141,6 +141,9 @@ importers:
       tsx:
         specifier: ^4.19.3
         version: 4.19.3
+      tw-animate-css:
+        specifier: ^1.2.5
+        version: 1.2.5
       typescript:
         specifier: ^5
         version: 5.8.3
