@@ -1,13 +1,7 @@
 import generateRandomUsername from "@/src/lib/tusktask/generator/generateRandomUsername";
-import { InferSelectModel, relations } from "drizzle-orm";
-import {
-  boolean,
-  timestamp,
-  pgTable,
-  text,
-  index,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
+import { boolean, timestamp, pgTable, text, index } from "drizzle-orm/pg-core";
+import { createUpdateSchema } from "drizzle-zod";
 import { teamMembers } from "./teams";
 import { notifications } from "./notifications";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
@@ -85,3 +79,6 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 
 export type UserType = InferSelectModel<typeof users>;
+export type UserInsertType = InferInsertModel<typeof users>;
+
+export const UserUpdateSchema = createUpdateSchema(users);
