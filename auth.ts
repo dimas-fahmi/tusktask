@@ -9,6 +9,7 @@ import { verificationTokens } from "./src/db/schema/verificationTokens";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import Discord from "next-auth/providers/discord";
+import { eq } from "drizzle-orm";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db, {
@@ -20,7 +21,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   }),
   providers: [Google, GitHub, Discord],
   callbacks: {
-    session: async ({ session }) => {
+    session: async ({ session, trigger }) => {
+      if (trigger === "update") {
+        const [newSession] = await db
+          .select()
+          .from(users)
+          .where(eq(users.id, session.user.id));
+
+        // @ts-ignore
+        session.user = newSession;
+      }
       return session;
     },
   },

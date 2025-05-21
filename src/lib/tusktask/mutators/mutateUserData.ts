@@ -28,7 +28,7 @@ const mutateUserData = async (
 
     return data;
   } catch (error) {
-    return createResponse(500, {
+    throw createResponse(500, {
       messages: "Something went wrong, please try again",
       userFriendly: true,
     });

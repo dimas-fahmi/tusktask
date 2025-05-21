@@ -5,6 +5,8 @@ import "@/src/ui/css/globals.tailwind.css";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NotificationContextProvider } from "@/src/lib/tusktask/context/NotificationContext";
+import { PersonalContextProvider } from "@/src/lib/tusktask/context/PersonalContext";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +25,13 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <QueryClientProvider client={queryClient}>
-          <SessionProvider>{children}</SessionProvider>
+          <SessionProvider>
+            <PersonalContextProvider>
+              <NotificationContextProvider>
+                {children}
+              </NotificationContextProvider>
+            </PersonalContextProvider>
+          </SessionProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>

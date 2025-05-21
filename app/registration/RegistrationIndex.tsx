@@ -9,6 +9,7 @@ import Preferences from "./stages/Preferences";
 import StageIndicator from "./StageIndicator";
 import Image from "next/image";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
+import MainLoader from "@/src/ui/components/tusktask/prefabs/MainLoader";
 
 const RegistrationIndex = () => {
   // Pull values from registration context
@@ -46,7 +47,7 @@ const RegistrationIndex = () => {
   const render = stageObject[stage].render;
 
   return stage === "loading" ? (
-    "loading"
+    <MainLoader />
   ) : (
     <div className={`max-w-[380px] px-4 md:px-0`}>
       {/* Stage Indicator */}

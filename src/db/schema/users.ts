@@ -30,6 +30,9 @@ export const users = pgTable(
     })
       .default("username")
       .notNull(),
+    theme: text("theme", { enum: ["default", "dark", "cassandra"] })
+      .default("default")
+      .notNull(),
     image: text("image"),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow().notNull(),
     updatedAt: timestamp("updatedAt", TIMESTAMP_CONFIGS).$onUpdateFn(
