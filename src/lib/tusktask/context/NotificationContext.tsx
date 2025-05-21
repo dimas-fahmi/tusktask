@@ -99,7 +99,7 @@ const NotificationContextProvider = ({
     const sonnerVariants = cva("!cursor-pointer !shadow-xl select-none", {
       variants: {
         variant: {
-          default: "!text-primary-foreground !border !shadow-xl",
+          default: "",
           error: "!bg-destructive !text-destructive-foreground ",
           success: "",
           reminder: "",

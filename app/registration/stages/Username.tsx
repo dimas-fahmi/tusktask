@@ -10,6 +10,7 @@ import fetchUsers from "@/src/lib/tusktask/fetchers/fetchUsers";
 import mutateUserData from "@/src/lib/tusktask/mutators/mutateUserData";
 import { UsersPatchRequest } from "@/app/api/users/patch";
 import { useSession } from "next-auth/react";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 const Username = () => {
   // pull session
@@ -49,16 +50,36 @@ const Username = () => {
     enabled: !!usernameKey,
   });
 
+  // Pull Trigger From Notification context
+  const { triggerToast } = useNotificationContext();
+
   // Mutation
   const { mutate, isPending } = useMutation({
     mutationFn: mutateUserData,
     onMutate: () => {
+      triggerToast({
+        type: "default",
+        title: "Saving Your Changes",
+        description: "We're saving your changes on background",
+      });
       setStage("email");
       setCanContinue(false);
     },
     onError: () => {
       setStage("username");
       setCanContinue(true);
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: "We're failed to save your changes, please try again.",
+      });
+    },
+    onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "Changes Saved Successfully",
+        description: `Your username now is ${usernameKey}`,
+      });
     },
   });
 

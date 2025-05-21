@@ -1,10 +1,10 @@
 import { UsersPatchRequest } from "@/app/api/users/patch";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import usePersonalContext from "@/src/lib/tusktask/hooks/context/usePersonalContext";
 import useRegistrationContext from "@/src/lib/tusktask/hooks/context/useRegistrationContext";
 import mutateUserData from "@/src/lib/tusktask/mutators/mutateUserData";
 import PreferencePanel from "@/src/ui/components/tusktask/prefabs/PreferencePanel";
 import { useMutation } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -16,12 +16,7 @@ const Preferences = () => {
 
   const { setStage, setCanContinue, setOnContinue } = useRegistrationContext();
 
-  const {
-    control,
-    watch,
-    handleSubmit,
-    formState: { isValid },
-  } = useForm({
+  const { control, watch, handleSubmit } = useForm({
     defaultValues: {
       notificationSoundEnable: personal?.notificationSoundEnable,
       reminderSoundEnable: personal?.reminderSoundEnable,
@@ -32,17 +27,36 @@ const Preferences = () => {
   const notification = watch("notificationSoundEnable");
   const reminder = watch("reminderSoundEnable");
 
+  // Pull trigers from notification context
+  const { triggerToast } = useNotificationContext();
+
   // Mutation
   const { mutate } = useMutation({
     mutationKey: ["personal", "update", "preferences"],
     mutationFn: mutateUserData,
     onMutate: () => {
+      triggerToast({
+        type: "default",
+        title: "Saving Changes",
+        description: "We're saving your changes on background",
+      });
       setStage("loading");
     },
     onError: () => {
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: "Failed to save your changes, please try again.",
+      });
       setStage("preferences");
     },
     onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "Changes Saved Successfully",
+        description:
+          "Your preferences is saved and we'll take you to dashboard",
+      });
       router.refresh();
     },
   });

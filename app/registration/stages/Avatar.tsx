@@ -1,4 +1,5 @@
 import { UsersPersonalPatchRequest } from "@/app/api/users/personal/patch";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useRegistrationContext from "@/src/lib/tusktask/hooks/context/useRegistrationContext";
 import mutatePersonalData from "@/src/lib/tusktask/mutators/mutatePersonalData";
 import mutateUserData from "@/src/lib/tusktask/mutators/mutateUserData";
@@ -19,6 +20,9 @@ const Avatar = () => {
   const { personal, setCanContinue, setOnContinue, setStage } =
     useRegistrationContext();
 
+  // Pull triggers from notification context
+  const { triggerToast } = useNotificationContext();
+
   useEffect(() => {
     const convertImageToBase64 = async () => {
       if (personal && personal.image) {
@@ -26,6 +30,12 @@ const Avatar = () => {
           const base64 = await imageUrlToBase64(personal.image);
           setImage(base64);
         } catch (error) {
+          triggerToast({
+            type: "error",
+            title: "Something Went Wrong",
+            description:
+              "Failed to render your original avatar, please upload a new one. We'll store it in our own server.",
+          });
           const base64 = await imageUrlToBase64(
             "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/defaults/defaults-avatar.jpg"
           );
@@ -43,15 +53,30 @@ const Avatar = () => {
     mutationKey: ["personal", "update", "avatar"],
     mutationFn: mutatePersonalData,
     onMutate: () => {
+      triggerToast({
+        type: "default",
+        title: "Saving Your Changes",
+        description: "We're saving your changes on background",
+      });
       setStage("preferences");
       setCanContinue(false);
       setOnContinue(() => {});
     },
     onError: () => {
+      triggerToast({
+        type: "error",
+        title: "Failed To Save Changes",
+        description: "Failed to save changes on background, please try again.",
+      });
       setStage("avatar");
       setCanContinue(true);
     },
     onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "Changes Saved Successfully",
+        description: "Your changes has been saved successfully",
+      });
       registration({
         userId: session!.user.id!,
         newValue: {

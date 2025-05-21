@@ -2,6 +2,7 @@
 
 import { UsersPatchRequest } from "@/app/api/users/patch";
 import fetchUsers from "@/src/lib/tusktask/fetchers/fetchUsers";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useRegistrationContext from "@/src/lib/tusktask/hooks/context/useRegistrationContext";
 import mutateUserData from "@/src/lib/tusktask/mutators/mutateUserData";
 import { userSchema } from "@/src/zod/user";
@@ -49,16 +50,36 @@ const Email = () => {
     enabled: !!emailKey,
   });
 
+  // Pull Triggers from notification context
+  const { triggerToast } = useNotificationContext();
+
   // Mutation
   const { mutate, isPending } = useMutation({
     mutationFn: mutateUserData,
     onMutate: () => {
+      triggerToast({
+        type: "default",
+        title: "Saving Your Changes",
+        description: "We're saving your changes on background",
+      });
       setCanContinue(false);
       setStage("avatar");
     },
     onError: () => {
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: "We're failed to save your changes, please try again.",
+      });
       setCanContinue(true);
       setStage("email");
+    },
+    onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "Changes Saved Successfully",
+        description: `Your email is set to ${emailKey}`,
+      });
     },
   });
 
