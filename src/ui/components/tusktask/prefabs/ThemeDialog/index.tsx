@@ -34,7 +34,9 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({ open, setOpen }) => {
             active={activeTheme === "default"}
             onClick={() => {
               setThemeDialogOpen(false);
-              handleChangePersonalTheme("default");
+              if (activeTheme !== "default") {
+                handleChangePersonalTheme("default");
+              }
             }}
           />
           <ThemePreviewCard
@@ -43,7 +45,9 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({ open, setOpen }) => {
             active={activeTheme === "dark"}
             onClick={() => {
               setThemeDialogOpen(false);
-              handleChangePersonalTheme("dark");
+              if (activeTheme !== "dark") {
+                handleChangePersonalTheme("dark");
+              }
             }}
           />
           <ThemePreviewCard
@@ -52,7 +56,9 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({ open, setOpen }) => {
             image="/images/theme/cassandra.png"
             onClick={() => {
               setThemeDialogOpen(false);
-              handleChangePersonalTheme("cassandra");
+              if (activeTheme !== "cassandra") {
+                handleChangePersonalTheme("cassandra");
+              }
             }}
           />
           <ThemePreviewCard
@@ -61,7 +67,9 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({ open, setOpen }) => {
             image="/images/theme/nebula.png"
             onClick={() => {
               setThemeDialogOpen(false);
-              handleChangePersonalTheme("nebula");
+              if (activeTheme !== "nebula") {
+                handleChangePersonalTheme("nebula");
+              }
             }}
           />
         </div>
