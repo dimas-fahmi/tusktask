@@ -1,4 +1,5 @@
 import { UsersPersonalPatchRequest } from "@/app/api/users/personal/patch";
+import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useRegistrationContext from "@/src/lib/tusktask/hooks/context/useRegistrationContext";
 import mutatePersonalData from "@/src/lib/tusktask/mutators/mutatePersonalData";
@@ -36,9 +37,7 @@ const Avatar = () => {
             description:
               "Failed to render your original avatar, please upload a new one. We'll store it in our own server.",
           });
-          const base64 = await imageUrlToBase64(
-            "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/defaults/defaults-avatar.jpg"
-          );
+          const base64 = await imageUrlToBase64(DEFAULT_AVATAR);
           setImage(base64);
           console.error("Failed to convert image to base64:", error);
         }

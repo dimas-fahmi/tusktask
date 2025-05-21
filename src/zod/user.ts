@@ -9,6 +9,7 @@ export const userSchema = z.object({
   username: z
     .string()
     .min(7, "Username must contain at least 7 character(s)")
+    .max(38)
     .regex(usernameRegex, {
       message: `Invalid username:<br/>
 1. Must be at least 3 characters<br/>

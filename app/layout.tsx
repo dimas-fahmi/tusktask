@@ -20,10 +20,7 @@ export default function RootLayout({
       <head>
         <link rel="preload" href="/sounds/notify.mp3" as="audio" />
       </head>
-      <body
-        className={`primary antialiased bg-tt-primary`}
-        suppressHydrationWarning
-      >
+      <body className={`antialiase`} suppressHydrationWarning>
         <QueryClientProvider client={queryClient}>
           <SessionProvider>
             <PersonalContextProvider>
