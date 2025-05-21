@@ -5,14 +5,23 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/src/ui/components/shadcn/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/src/ui/components/shadcn/ui/dialog";
 import { useSidebar } from "@/src/ui/components/shadcn/ui/sidebar";
 import { Bell, PanelLeft, SwatchBook } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
+import ThemePreviewCard from "../../ThemePreviewCard";
+import useThemeContext from "@/src/lib/tusktask/hooks/context/useThemeContext";
 
 const NavBar = () => {
   // Pull states from sidebar context
-  const { open, setOpen } = useSidebar();
+  const { open, setOpen, openMobile, setOpenMobile, isMobile } = useSidebar();
 
   // Pull personal data
   const { personal } = usePersonalContext();
@@ -20,10 +29,22 @@ const NavBar = () => {
   // Initialize Router
   const router = useRouter();
 
+  // Pull setters from Theme context
+  const { setThemeDialogOpen } = useThemeContext();
+
   return (
     <nav className="flex items-center justify-between">
       {/* Sidebar Controller */}
-      <button className="cursor-pointer" onClick={() => setOpen(!open)}>
+      <button
+        className="cursor-pointer"
+        onClick={() => {
+          if (isMobile) {
+            setOpenMobile(!openMobile);
+          } else {
+            setOpen(!open);
+          }
+        }}
+      >
         <PanelLeft />
       </button>
 
@@ -36,7 +57,10 @@ const NavBar = () => {
           >
             <Bell />
           </button>
-          <button className="cursor-pointer" onClick={() => setOpen(!open)}>
+          <button
+            className="cursor-pointer"
+            onClick={() => setThemeDialogOpen(true)}
+          >
             <SwatchBook />
           </button>
         </div>

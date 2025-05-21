@@ -105,14 +105,88 @@
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
-  --sidebar-background: 240 5.9% 10%;
-  --sidebar-foreground: oklch(0.2 0 0);
-  --sidebar-primary: oklch(0.3 0.1 270); /* Matches primary */
+  --sidebar-background: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.95 0 0);
+  --sidebar-primary: oklch(0.3 0.1 270);
   --sidebar-primary-foreground: oklch(0.95 0 0);
   --sidebar-accent: oklch(0.85 0 0);
   --sidebar-accent-foreground: oklch(0.2 0 0);
   --sidebar-border: oklch(0.8 0 0);
   --sidebar-ring: oklch(0.3 0.1 270);
+}
+
+/* Cassandra Theme: Pink, Subtle, Minimalist Feminism */
+.cassandra {
+  --background: oklch(0.98 0.02 300);
+  --foreground: oklch(0.2 0.05 300);
+  --card: oklch(0.99 0.005 300);
+  --card-foreground: oklch(0.2 0.05 300);
+  --popover: oklch(0.99 0.005 300);
+  --popover-foreground: oklch(0.2 0.05 300);
+  --primary: oklch(0.75 0.1 330);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.9 0.02 320);
+  --secondary-foreground: oklch(0.2 0.05 300);
+  --muted: oklch(0.95 0.01 300);
+  --muted-foreground: oklch(0.4 0.02 300);
+  --accent: oklch(0.85 0.15 340);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.6 0.2 0);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.9 0.01 300);
+  --input: oklch(0.97 0.01 300);
+  --ring: oklch(0.75 0.1 330);
+  --chart-1: oklch(0.8 0.12 330);
+  --chart-2: oklch(0.7 0.1 320);
+  --chart-3: oklch(0.9 0.05 310);
+  --chart-4: oklch(0.85 0.08 340);
+  --chart-5: oklch(0.95 0.02 300);
+  --sidebar: oklch(0.98 0.02 300);
+  --sidebar-background: oklch(0.98 0.02 300);
+  --sidebar-foreground: oklch(0.2 0.05 300);
+  --sidebar-primary: oklch(0.75 0.1 330);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.9 0.02 320);
+  --sidebar-accent-foreground: oklch(0.2 0.05 300);
+  --sidebar-border: oklch(0.9 0.01 300);
+  --sidebar-ring: oklch(0.75 0.1 330);
+}
+
+/* Nebula Theme: Cosmic Depths, Purples and Blues */
+.nebula {
+  --background: oklch(0.12 0.02 260);
+  --foreground: oklch(0.95 0.01 250);
+  --card: oklch(0.18 0.02 260);
+  --card-foreground: oklch(0.95 0.01 250);
+  --popover: oklch(0.18 0.02 260);
+  --popover-foreground: oklch(0.95 0.01 250);
+  --primary: oklch(0.6 0.2 270);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.5 0.15 240);
+  --secondary-foreground: oklch(0.95 0.01 250);
+  --muted: oklch(0.25 0.02 260);
+  --muted-foreground: oklch(0.7 0.02 260);
+  --accent: oklch(0.7 0.25 280);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.6 0.2 0);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.2 0.02 260);
+  --input: oklch(0.15 0.02 260);
+  --ring: oklch(0.6 0.15 270);
+  --chart-1: oklch(0.65 0.18 280);
+  --chart-2: oklch(0.55 0.17 250);
+  --chart-3: oklch(0.75 0.2 300);
+  --chart-4: oklch(0.5 0.12 230);
+  --chart-5: oklch(0.4 0.1 270);
+  --sidebar: oklch(0.18 0.02 260);
+  --sidebar-background: oklch(0.18 0.02 260);
+  --sidebar-foreground: oklch(0.95 0.01 250);
+  --sidebar-primary: oklch(0.6 0.2 270);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.5 0.15 240);
+  --sidebar-accent-foreground: oklch(0.95 0.01 250);
+  --sidebar-border: oklch(0.2 0.02 260);
+  --sidebar-ring: oklch(0.6 0.15 270);
 }
 
 @layer base {

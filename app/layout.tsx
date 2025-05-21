@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationContextProvider } from "@/src/lib/tusktask/context/NotificationContext";
 import { PersonalContextProvider } from "@/src/lib/tusktask/context/PersonalContext";
+import { ThemeContextProvider } from "@/src/lib/tusktask/context/ThemeContext";
 
 const queryClient = new QueryClient();
 
@@ -25,11 +26,11 @@ export default function RootLayout({
           <SessionProvider>
             <PersonalContextProvider>
               <NotificationContextProvider>
-                {children}
+                <ThemeContextProvider>{children}</ThemeContextProvider>
               </NotificationContextProvider>
             </PersonalContextProvider>
           </SessionProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
       </body>
     </html>

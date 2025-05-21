@@ -96,19 +96,22 @@ const NotificationContextProvider = ({
 
     triggerSound(sound ?? "notification");
 
-    const sonnerVariants = cva("!cursor-pointer !shadow-xl select-none", {
-      variants: {
-        variant: {
-          default: "",
-          error: "!bg-destructive !text-destructive-foreground ",
-          success: "",
-          reminder: "",
+    const sonnerVariants = cva(
+      "!bg-background !text-foreground !cursor-pointer !shadow-xl select-none",
+      {
+        variants: {
+          variant: {
+            default: "",
+            error: "!bg-destructive !text-destructive-foreground ",
+            success: "",
+            reminder: "",
+          },
         },
-      },
-      defaultVariants: {
-        variant: "default",
-      },
-    });
+        defaultVariants: {
+          variant: "default",
+        },
+      }
+    );
 
     const icons = {
       default: Bell,
@@ -127,6 +130,7 @@ const NotificationContextProvider = ({
         toast: `${cn(sonnerVariants({ variant: type, className }))}`,
         description: `${cn(sonnerVariants({ variant: type, className }))} !border-0`,
         content: "ms-2",
+        title: "!capitalize",
       },
       icon: <Icon />,
       ...options,

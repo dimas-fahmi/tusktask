@@ -30,7 +30,7 @@ export const users = pgTable(
     })
       .default("username")
       .notNull(),
-    theme: text("theme", { enum: ["default", "dark", "cassandra"] })
+    theme: text("theme", { enum: ["default", "dark", "cassandra", "nebula"] })
       .default("default")
       .notNull(),
     image: text("image"),
