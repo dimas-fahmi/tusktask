@@ -123,7 +123,8 @@ const Username = () => {
       <header>
         <h1 className={`text-2xl font-bold`}>Username</h1>
         <p className={`text-sm text-muted-foreground`}>
-          Pick your personal username, this is how your friends will find you.
+          Choose a unique username for yourself; this is how your friends will
+          be able to locate you.
         </p>
       </header>
       <div className={"mt-4"}>

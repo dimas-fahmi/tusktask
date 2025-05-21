@@ -124,8 +124,7 @@ const Email = () => {
       <header>
         <h1 className={`text-2xl font-bold`}>Email</h1>
         <p className={`text-sm text-muted-foreground`}>
-          We'll send you an email notification to remind you about your tasks
-          and events.
+          We'll drop you an email reminder about your tasks and events.
         </p>
       </header>
       <div className="mt-4">
