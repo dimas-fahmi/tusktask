@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationContextProvider } from "@/src/lib/tusktask/context/NotificationContext";
 import { PersonalContextProvider } from "@/src/lib/tusktask/context/PersonalContext";
 import { ThemeContextProvider } from "@/src/lib/tusktask/context/ThemeContext";
+import { TaskContextProvider } from "@/src/lib/tusktask/context/TaskContext";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +27,9 @@ export default function RootLayout({
           <SessionProvider>
             <PersonalContextProvider>
               <NotificationContextProvider>
-                <ThemeContextProvider>{children}</ThemeContextProvider>
+                <ThemeContextProvider>
+                  <TaskContextProvider>{children}</TaskContextProvider>
+                </ThemeContextProvider>
               </NotificationContextProvider>
             </PersonalContextProvider>
           </SessionProvider>
