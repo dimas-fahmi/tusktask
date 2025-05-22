@@ -51,7 +51,9 @@ export const teamMembers = pgTable(
     userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
     userRole: text("userRole", {
       enum: ["owner", "admin", "assignee"],
-    }).default("assignee"),
+    })
+      .default("assignee")
+      .notNull(),
     joinAt: timestamp("joinAt", TIMESTAMP_CONFIGS).defaultNow(),
   },
   (t) => [

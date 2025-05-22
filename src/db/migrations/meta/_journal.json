@@ -22,6 +22,27 @@
       "when": 1747808214649,
       "tag": "0002_unusual_namor",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1747876511911,
+      "tag": "0003_tough_deathbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1747879357353,
+      "tag": "0004_curved_mastermind",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1747879972599,
+      "tag": "0005_bitter_johnny_storm",
+      "breakpoints": true
     }
   ]
 }

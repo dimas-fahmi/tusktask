@@ -8,7 +8,8 @@ import {
 import { users } from "./users";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { teams } from "./teams";
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
 
 export const tasks = pgTable(
   "tasks",
@@ -24,7 +25,9 @@ export const tasks = pgTable(
     ownerId: text("ownerId")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
-    teamId: text("teamId").references(() => teams.id),
+    teamId: text("teamId")
+      .references(() => teams.id)
+      .notNull(),
     parentId: text("parentId"),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
     updatedAt: timestamp("updatedAt", TIMESTAMP_CONFIGS).$onUpdateFn(
@@ -32,7 +35,9 @@ export const tasks = pgTable(
     ),
     status: text("status", {
       enum: ["not_started", "on_process", "completed", "archived"],
-    }).default("not_started"),
+    })
+      .default("not_started")
+      .notNull(),
     claimedById: text("claimedById").references(() => users.id, {
       onDelete: "set null",
     }),
@@ -64,11 +69,14 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
     fields: [tasks.teamId],
     references: [teams.id],
   }),
-  parentTask: one(tasks, {
+  parent: one(tasks, {
     fields: [tasks.parentId],
     references: [tasks.id],
+    relationName: "task_subtasks",
   }),
-  subtasks: many(tasks, { relationName: "parentTask" }),
+  subtasks: many(tasks, {
+    relationName: "task_subtasks",
+  }),
   creator: one(users, {
     fields: [tasks.createdById],
     references: [users.id],
@@ -90,3 +98,8 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
     relationName: "task_claimedBy",
   }),
 }));
+
+export type TaskType = InferSelectModel<typeof tasks>;
+export type TaskInsertType = InferInsertModel<typeof tasks>;
+
+export const TaskInsertSchema = createInsertSchema(tasks);
