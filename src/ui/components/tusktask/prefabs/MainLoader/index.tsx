@@ -3,7 +3,7 @@ import React from "react";
 
 const MainLoader = () => {
   return (
-    <div className="absolute inset-0 flex items-center justify-center">
+    <div className="absolute bg-background inset-0 flex items-center justify-center">
       <div>
         <Image
           width={80}

@@ -3,6 +3,8 @@
 import { SidebarProvider } from "@/src/ui/components/shadcn/ui/sidebar";
 import { AppSidebar } from "@/src/ui/components/tusktask/prefabs/AppSidebar";
 import NavBar from "@/src/ui/components/tusktask/prefabs/Dashboard/NavBar";
+import MainLoader from "@/src/ui/components/tusktask/prefabs/MainLoader";
+import { useSession } from "next-auth/react";
 import React from "react";
 
 const DashboardLayout = ({
@@ -10,7 +12,11 @@ const DashboardLayout = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
-  return (
+  const { status } = useSession();
+
+  return status === "loading" ? (
+    <MainLoader />
+  ) : (
     <div>
       <SidebarProvider>
         <AppSidebar />
