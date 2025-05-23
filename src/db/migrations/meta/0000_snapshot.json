@@ -1,5 +1,5 @@
 {
-  "id": "13d1b41c-d147-4ef2-8e09-e786b0bb5e1f",
+  "id": "88175640-fc8e-4b6e-8ed8-2f29a98d9bb2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -489,7 +489,7 @@
           "name": "teamId",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "parentId": {
           "name": "parentId",
@@ -514,7 +514,7 @@
           "name": "status",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "'not_started'"
         },
         "claimedById": {
@@ -747,7 +747,7 @@
           "name": "userRole",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "'assignee'"
         },
         "joinAt": {
@@ -1007,6 +1007,20 @@
           "type": "timestamp (6) with time zone",
           "primaryKey": false,
           "notNull": false
+        },
+        "registration": {
+          "name": "registration",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'username'"
+        },
+        "theme": {
+          "name": "theme",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'default'"
         },
         "image": {
           "name": "image",

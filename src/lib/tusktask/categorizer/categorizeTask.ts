@@ -21,7 +21,7 @@ const categorizeTask = <T extends TaskType | TaskWithSubtasks>({
   field,
 }: CategorizeTask<T>): CategorizeTaskOutput<T> => {
   // If tasks is null or undefined, return empty arrays for all categories
-  if (!tasks) {
+  if (!tasks || tasks.length === 0) {
     return {
       overdue: [],
       today: [],
@@ -58,6 +58,7 @@ const categorizeTask = <T extends TaskType | TaskWithSubtasks>({
   };
 
   // Categorize each task
+  console.log(tasks);
   tasks.forEach((task) => {
     const dateValue = task[field];
 

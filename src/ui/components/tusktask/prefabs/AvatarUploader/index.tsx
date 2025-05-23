@@ -149,7 +149,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({ image, setImage }) => {
                 onCropComplete={onCropComplete}
               />
               <div className="absolute bottom-2 right-2 rounded-md bg-muted px-4 py-2 flex gap-2 items-center justify-center opacity-30 hover:opacity-100 transition-all duration-300">
-                <Button variant={"ghost"} onClick={handleCrop}>
+                <Button variant="ghost" onClick={handleCrop}>
                   <Crop />
                 </Button>
                 <Button variant="ghost" onClick={() => setOpen(false)}>

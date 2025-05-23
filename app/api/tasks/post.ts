@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
 import {
-  TaskInsertSchema,
+  taskInsertSchema,
   TaskInsertType,
   tasks,
   TaskType,
@@ -12,7 +12,9 @@ import { includeFields } from "@/src/lib/tusktask/utils/includeFields";
 import { normalizeDateFields } from "@/src/lib/tusktask/utils/normalizeDateFields";
 import { and, eq } from "drizzle-orm";
 
-export interface TasksPostRequest extends TaskInsertType {}
+export interface TasksPostRequest extends Omit<TaskInsertType, "ownerId"> {
+  ownerId?: string;
+}
 
 export async function tasksPost(req: Request) {
   let body: TasksPostRequest;
@@ -129,7 +131,7 @@ export async function tasksPost(req: Request) {
   normalizeDateFields(body, allowedDateFields);
 
   // Validate Request
-  const validation = TaskInsertSchema.safeParse(body);
+  const validation = taskInsertSchema.safeParse(body);
 
   if (!validation.success) {
     return createNextResponse(400, {

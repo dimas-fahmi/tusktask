@@ -30,6 +30,7 @@ export interface SubtaskType extends TaskType {
 export interface TaskWithSubtasks extends TaskType {
   subtasks: SubtaskType[];
   team: TeamType;
+  createdByOptimisticUpdate?: boolean;
 }
 
 export async function tasksGet(req: Request) {

@@ -102,4 +102,4 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
 export type TaskType = InferSelectModel<typeof tasks>;
 export type TaskInsertType = InferInsertModel<typeof tasks>;
 
-export const TaskInsertSchema = createInsertSchema(tasks);
+export const taskInsertSchema = createInsertSchema(tasks);

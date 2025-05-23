@@ -3,9 +3,11 @@ import { createContext } from "react";
 
 import { TeamsGetResponse } from "@/app/api/teams/get";
 import { fetchPersonalTeams } from "../fetchers/fetchPersonalTeams";
+import { extractFieldValues } from "../utils/extractFieldValues";
+import { TeamType } from "@/src/db/schema/teams";
 
 export interface TeamContextValues {
-  teams?: TeamsGetResponse;
+  teams?: TeamType[];
   isFetchingTeams: boolean;
 }
 
@@ -17,10 +19,14 @@ const TeamContextProvider = ({
   children: Readonly<React.ReactNode>;
 }) => {
   // Query Teams
-  const { data: teams, isFetching: isFetchingTeams } = useQuery({
+  const { data: teamsResponse, isFetching: isFetchingTeams } = useQuery({
     queryKey: ["teams"],
     queryFn: () => fetchPersonalTeams(),
   });
+
+  const teams = teamsResponse?.data
+    ? (extractFieldValues(teamsResponse.data, "team") as TeamType[])
+    : ([] as TeamType[]);
 
   return (
     <TeamContext.Provider value={{ teams, isFetchingTeams }}>

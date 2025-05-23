@@ -56,11 +56,11 @@ CREATE TABLE "tasks" (
 	"description" text,
 	"createdById" text,
 	"ownerId" text NOT NULL,
-	"teamId" text,
+	"teamId" text NOT NULL,
 	"parentId" text,
 	"createdAt" timestamp (6) with time zone DEFAULT now(),
 	"updatedAt" timestamp (6) with time zone,
-	"status" text DEFAULT 'not_started',
+	"status" text DEFAULT 'not_started' NOT NULL,
 	"claimedById" text,
 	"completedById" text,
 	"startAt" timestamp (6) with time zone DEFAULT now(),
@@ -71,7 +71,7 @@ CREATE TABLE "tasks" (
 CREATE TABLE "teamMembers" (
 	"teamId" text,
 	"userId" text,
-	"userRole" text DEFAULT 'assignee',
+	"userRole" text DEFAULT 'assignee' NOT NULL,
 	"joinAt" timestamp (6) with time zone DEFAULT now(),
 	CONSTRAINT "TEAM_MEMBERS_PRIMARY_KEYS" PRIMARY KEY("teamId","userId")
 );
@@ -96,6 +96,8 @@ CREATE TABLE "users" (
 	"email" text,
 	"timezone" text DEFAULT 'Asia/Jakarta' NOT NULL,
 	"emailVerified" timestamp (6) with time zone,
+	"registration" text DEFAULT 'username' NOT NULL,
+	"theme" text DEFAULT 'default' NOT NULL,
 	"image" text,
 	"createdAt" timestamp (6) with time zone DEFAULT now() NOT NULL,
 	"updatedAt" timestamp (6) with time zone,

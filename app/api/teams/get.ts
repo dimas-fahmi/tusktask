@@ -9,7 +9,7 @@ export interface TeamMembersWithTeam extends TeamMembersType {
   team: TeamType;
 }
 
-export type TeamsGetResponse = StandardResponse<TeamMembersWithTeam | null>;
+export type TeamsGetResponse = StandardResponse<TeamMembersWithTeam[] | null>;
 
 export async function teamsGet(req: Request) {
   // Pull session and validate

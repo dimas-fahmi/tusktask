@@ -1,1 +1,0 @@
-ALTER TABLE "teamMembers" ALTER COLUMN "userRole" SET NOT NULL;

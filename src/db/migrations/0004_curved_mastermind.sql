@@ -1,1 +1,0 @@
-ALTER TABLE "tasks" ALTER COLUMN "teamId" SET NOT NULL;

@@ -46,7 +46,7 @@ const DashboardPageIndex = () => {
       </header>
 
       <div
-        className={`grid grid-cols-1 gap-3 ${!open ? "md:grid-cols-4" : "md:grid-cols-3 "} gap-y-6`}
+        className={`grid grid-cols-1 gap-3 ${!open ? "xl:grid-cols-4 md:grid-cols-2" : "xl:grid-cols-3 md:grid-cols-1"} gap-y-6`}
       >
         {/* Overdue Sections */}
         {overdue.length !== 0 && (
