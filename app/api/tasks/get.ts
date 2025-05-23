@@ -1,8 +1,9 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
 import { tasks, TaskType } from "@/src/db/schema/tasks";
-import { teamMembers } from "@/src/db/schema/teams";
+import { teamMembers, TeamType } from "@/src/db/schema/teams";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { extractFieldValues } from "@/src/lib/tusktask/utils/extractFieldValues";
 import { getSearchParams } from "@/src/lib/tusktask/utils/getSearchParams";
 import { and, eq, gte, ilike, inArray, isNull, or, param } from "drizzle-orm";
@@ -20,6 +21,15 @@ export interface TaskGetRequest {
   team?: string;
   limit?: string;
   offset?: string;
+}
+
+export interface SubtaskType extends TaskType {
+  subtasks: TaskType[];
+}
+
+export interface TaskWithSubtasks extends TaskType {
+  subtasks: SubtaskType[];
+  team: TeamType;
 }
 
 export async function tasksGet(req: Request) {
@@ -165,8 +175,20 @@ export async function tasksGet(req: Request) {
   // With mechanism
   let withRelations: any = {};
 
+  // Always return with team
+  withRelations.team = {};
+
+  // Dynamic return with subtasks relations
   if (params?.withSubtasks === "true") {
-    withRelations.subtasks = {};
+    withRelations.subtasks = {
+      with: {
+        subtasks: {
+          with: {
+            subtasks: {},
+          },
+        },
+      },
+    };
   }
 
   //  Fetching

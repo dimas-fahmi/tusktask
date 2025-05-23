@@ -1,6 +1,14 @@
 import { SetStateAction } from "@/src/types/types";
 import NewTaskDialog from "@/src/ui/components/tusktask/prefabs/NewTaskDialog";
+import { useQuery } from "@tanstack/react-query";
 import { createContext, useEffect, useState } from "react";
+import useTeamContext from "../hooks/context/useTeamContext";
+import { fetchPersonalTasks } from "../fetchers/fetchPersonalTasks";
+import { TaskType } from "@/src/db/schema/tasks";
+import { SubtaskType, TaskWithSubtasks } from "@/app/api/tasks/get";
+import categorizeTask, {
+  CategorizeTaskOutput,
+} from "../categorizer/categorizeTask";
 
 export interface NewTaskDialogOpenType {
   open: boolean;
@@ -12,6 +20,9 @@ export interface TaskContextValues {
   newTaskDialog: NewTaskDialogOpenType;
   setNewTaskDialog: SetStateAction<NewTaskDialogOpenType>;
   handleResetNewTaskDialog: () => void;
+  tasks: TaskType[] | TaskWithSubtasks[] | null | undefined;
+  isFetchingTasks: boolean;
+  categorizedTasks: CategorizeTaskOutput<TaskWithSubtasks>;
 }
 
 const TaskContext = createContext<TaskContextValues | null>(null);
@@ -33,6 +44,22 @@ const TaskContextProvider = ({
     parentId: null,
   });
 
+  // Query Tasks
+  const { data: tasksResponse, isFetching: isFetchingTasks } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: () =>
+      fetchPersonalTasks({ withSubtasks: "true", onlyTopLevel: "true" }),
+  });
+
+  // Extract Tasks
+  const tasks = tasksResponse?.data;
+
+  // Categorized Tasks
+  const categorizedTasks = categorizeTask<TaskWithSubtasks>({
+    tasks: tasks as TaskWithSubtasks[],
+    field: "deadlineAt",
+  });
+
   // Reset everytime newTaskDialog open set to false
   const handleResetNewTaskDialog = () => {
     setNewTaskDialog(newTaskDialogInitial);
@@ -40,7 +67,14 @@ const TaskContextProvider = ({
 
   return (
     <TaskContext.Provider
-      value={{ newTaskDialog, setNewTaskDialog, handleResetNewTaskDialog }}
+      value={{
+        newTaskDialog,
+        setNewTaskDialog,
+        handleResetNewTaskDialog,
+        tasks,
+        isFetchingTasks,
+        categorizedTasks,
+      }}
     >
       {children}
       <NewTaskDialog />

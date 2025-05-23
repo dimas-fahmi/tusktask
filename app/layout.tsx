@@ -9,6 +9,7 @@ import { NotificationContextProvider } from "@/src/lib/tusktask/context/Notifica
 import { PersonalContextProvider } from "@/src/lib/tusktask/context/PersonalContext";
 import { ThemeContextProvider } from "@/src/lib/tusktask/context/ThemeContext";
 import { TaskContextProvider } from "@/src/lib/tusktask/context/TaskContext";
+import { TeamContextProvider } from "@/src/lib/tusktask/context/TeamContext";
 
 const queryClient = new QueryClient();
 
@@ -28,12 +29,14 @@ export default function RootLayout({
             <PersonalContextProvider>
               <NotificationContextProvider>
                 <ThemeContextProvider>
-                  <TaskContextProvider>{children}</TaskContextProvider>
+                  <TeamContextProvider>
+                    <TaskContextProvider>{children}</TaskContextProvider>
+                  </TeamContextProvider>
                 </ThemeContextProvider>
               </NotificationContextProvider>
             </PersonalContextProvider>
           </SessionProvider>
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>
     </html>

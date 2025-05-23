@@ -1,5 +1,6 @@
 "use client";
 
+import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import { useSidebar } from "@/src/ui/components/shadcn/ui/sidebar";
 import TaskCard from "@/src/ui/components/tusktask/prefabs/TaskCard";
 import {
@@ -14,6 +15,12 @@ import React from "react";
 const DashboardPageIndex = () => {
   // Pull state from sidebar
   const { open } = useSidebar();
+
+  // Pull TaskContext Values
+  const { categorizedTasks } = useTaskContext();
+
+  // Destructure Categorized tasks
+  const { notSet, overdue, today, tomorrow, upcoming } = categorizedTasks;
 
   return (
     <div>
@@ -41,36 +48,66 @@ const DashboardPageIndex = () => {
       <div
         className={`grid grid-cols-1 gap-3 ${!open ? "md:grid-cols-4" : "md:grid-cols-3 "} gap-y-6`}
       >
-        <section>
-          <h1 className="font-bold mb-2">Overdue</h1>
+        {/* Overdue Sections */}
+        {overdue.length !== 0 && (
+          <section>
+            <h1 className="font-bold mb-2">Overdue</h1>
 
-          <div className="grid grid-cols-1 gap-3">
-            <TaskCard />
-            <TaskCard />
-            <TaskCard />
-          </div>
-        </section>
-        <section>
-          <h1 className="font-bold mb-2">Today</h1>
+            <div className="grid grid-cols-1 gap-3">
+              {overdue.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
+          </section>
+        )}
 
-          <div className="grid grid-cols-1 gap-3">
-            <TaskCard />
-          </div>
-        </section>
-        <section>
-          <h1 className="font-bold mb-2">Upcoming</h1>
+        {today.length !== 0 && (
+          <section>
+            <h1 className="font-bold mb-2">Today</h1>
 
-          <div className="grid grid-cols-1 gap-3">
-            <TaskCard />
-          </div>
-        </section>
-        <section>
-          <h1 className="font-bold mb-2">Uncategorized</h1>
+            <div className="grid grid-cols-1 gap-3">
+              {today.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
+          </section>
+        )}
 
-          <div className="grid grid-cols-1 gap-3">
-            <TaskCard />
-          </div>
-        </section>
+        {tomorrow.length !== 0 && (
+          <section>
+            <h1 className="font-bold mb-2">Tomorrow</h1>
+
+            <div className="grid grid-cols-1 gap-3">
+              {tomorrow.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {upcoming.length !== 0 && (
+          <section>
+            <h1 className="font-bold mb-2">Upcoming</h1>
+
+            <div className="grid grid-cols-1 gap-3">
+              {upcoming.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {notSet.length !== 0 && (
+          <section>
+            <h1 className="font-bold mb-2">Uncategorized</h1>
+
+            <div className="grid grid-cols-1 gap-3">
+              {notSet.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

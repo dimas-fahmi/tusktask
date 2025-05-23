@@ -6,8 +6,9 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import { relations } from "drizzle-orm";
+import { InferSelectModel, relations } from "drizzle-orm";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
+import { tasks } from "./tasks";
 
 // TEAMS TABLE
 export const teams = pgTable(
@@ -41,6 +42,7 @@ export const teams = pgTable(
 // RELATIONS : teams table
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
+  tasks: many(tasks),
 }));
 
 // TEAMS MEMBERS TABLE : (many-to-many relationship -> users & teams)
@@ -77,3 +79,6 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
     references: [teams.id],
   }),
 }));
+
+export type TeamType = InferSelectModel<typeof teams>;
+export type TeamMembersType = InferSelectModel<typeof teamMembers>;

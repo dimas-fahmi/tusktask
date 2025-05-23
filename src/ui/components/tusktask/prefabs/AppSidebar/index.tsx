@@ -12,7 +12,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
   SidebarHeader,
 } from "../../../shadcn/ui/sidebar";
 import HeaderNavigation from "../Sidebar/HeaderNavigation";
@@ -57,7 +56,7 @@ export function AppSidebar() {
   return (
     <Sidebar className="">
       {/* Sidebar Header */}
-      <SidebarHeader className="p-2">
+      <SidebarHeader className="p-2 pt-4">
         <UserProfileCard />
         <HeaderNavigation />
         <Separator className="mt-3" />

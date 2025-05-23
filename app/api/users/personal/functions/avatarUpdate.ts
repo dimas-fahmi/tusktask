@@ -11,7 +11,7 @@ import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { resizeImageBlob } from "@/src/lib/tusktask/utils/resizeImageBlob";
 import { validateImageBlob } from "@/src/lib/tusktask/utils/validateImageBlob";
 import { eq } from "drizzle-orm";
-import { del, put } from "@vercel/blob";
+import { del, list, ListBlobResult, put } from "@vercel/blob";
 
 export async function avatarUpdate(newAvatar: string) {
   const session = await auth();
@@ -97,11 +97,39 @@ export async function avatarUpdate(newAvatar: string) {
   }
 
   let uploadedImageUrl: string;
+
+  // Delete if there's an exist avatar in blob server
+  let exist_blobs: ListBlobResult;
   try {
-    const blob = await put(`/tusktask/avatars/${user.id}.webp`, resized_image, {
-      access: "public",
-      addRandomSuffix: true,
+    exist_blobs = await list({
+      prefix: `tusktask/avatars/${session?.user.id}-avatar`,
     });
+  } catch (error) {
+    return createNextResponse(500, {
+      messages: "Failed testing",
+    });
+  }
+
+  if (exist_blobs.blobs.length !== 0) {
+    try {
+      await del(exist_blobs.blobs[0].url);
+    } catch (error) {
+      return createNextResponse(500, {
+        messages: "Failed to delete your last avatar, please try again",
+        userFriendly: true,
+      });
+    }
+  }
+
+  try {
+    const blob = await put(
+      `/tusktask/avatars/${user.id}-avatar.webp`,
+      resized_image,
+      {
+        access: "public",
+        addRandomSuffix: true,
+      }
+    );
 
     if (!blob.url) {
       return createNextResponse(500, {
@@ -116,17 +144,6 @@ export async function avatarUpdate(newAvatar: string) {
       messages: "Failed when uploading your picture",
       userFriendly: true,
     });
-  }
-
-  if (user.image && user.image?.includes(VERCEL_BLOB_ID)) {
-    try {
-      await del(user.image!);
-    } catch (error) {
-      return createNextResponse(500, {
-        messages: "Failed when deleting your old avatar, please try again.",
-        userFriendly: true,
-      });
-    }
   }
 
   try {

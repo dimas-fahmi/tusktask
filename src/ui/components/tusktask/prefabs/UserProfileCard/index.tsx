@@ -9,7 +9,7 @@ const UserProfileCard = () => {
   const { personal } = usePersonalContext();
 
   return (
-    <div className="flex gap-3 bg-sidebar-bakcground hover:bg-accent text-sidebar-foreground hover:text-accent-foreground transition-all duration-300 p-2 border rounded-md cursor-pointer">
+    <div className="flex gap-3 bg-sidebar-bakcground hover:bg-accent text-sidebar-foreground hover:text-accent-foreground transition-all duration-300 hover:p-2 hover:border rounded-md cursor-pointer">
       {/* Avatar */}
       <div>
         <Avatar className="w-14 h-14">
