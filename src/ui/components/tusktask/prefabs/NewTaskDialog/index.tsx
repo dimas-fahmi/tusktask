@@ -33,7 +33,7 @@ import { usePathname, useRouter } from "next/navigation";
 const newTaskSchema = z.object({
   name: z.string().min(3).max(100),
   description: z.string().max(255).optional(),
-  teamId: z.string().min(3),
+  teamId: z.string(),
   startAt: z.date().optional(),
   deadlineAt: z.date().optional(),
 });
@@ -164,6 +164,7 @@ const NewTaskDialog = () => {
     },
     onSuccess: () => {
       reset();
+      setValue("teamId", teams && teams.length !== 0 ? teams[0].id : "");
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -190,8 +191,16 @@ const NewTaskDialog = () => {
                   description: "Name should be at least 3 character(s)",
                 });
 
-                console.log(errors);
+                if (!data.teamId || data.teamId.length < 3) {
+                  triggerToast({
+                    type: "error",
+                    title: "Team Is Empty",
+                    description:
+                      "Click advance, then assign this task to a team.",
+                  });
 
+                  return;
+                }
                 return;
               }
 
