@@ -8,21 +8,35 @@ import {
 } from "../../../shadcn/ui/dialog";
 import { Input } from "../Input";
 import { Button } from "../../../shadcn/ui/button";
-import { FileSlidersIcon, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import { motion } from "motion/react";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
-import { Select } from "../Select";
-import { SelectItem } from "../../../shadcn/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../shadcn/ui/select";
 import { DatePicker } from "../DatePicker";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { taskInsertSchema } from "@/src/db/schema/tasks";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { TasksPostRequest } from "@/app/api/tasks/post";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNewTask } from "@/src/lib/tusktask/mutators/createNewTask";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { TaskWithSubtasks } from "@/app/api/tasks/get";
+import { z } from "zod";
+import { usePathname, useRouter } from "next/navigation";
+
+const newTaskSchema = z.object({
+  name: z.string().min(3).max(100),
+  description: z.string().max(255).optional(),
+  teamId: z.string().min(3),
+  startAt: z.date().optional(),
+  deadlineAt: z.date().optional(),
+});
 
 const NewTaskDialog = () => {
   // Advance Mode State
@@ -51,17 +65,10 @@ const NewTaskDialog = () => {
     handleSubmit,
     reset,
     setValue,
-    formState: { isValid },
+    watch,
+    formState: { isValid, errors },
   } = useForm({
-    resolver: zodResolver(
-      taskInsertSchema.pick({
-        name: true,
-        description: true,
-        teamId: true,
-        startAt: true,
-        deadlineAt: true,
-      })
-    ),
+    resolver: zodResolver(newTaskSchema),
     mode: "onChange",
     defaultValues: {
       name: "",
@@ -91,6 +98,14 @@ const NewTaskDialog = () => {
     }
   }, [open]);
 
+  useEffect(() => {
+    console.log(errors);
+  }, [errors, open]);
+
+  // Pathname
+  const pathname = usePathname();
+  const router = useRouter();
+
   // Pull Triggers From Notification Context
   const { triggerToast } = useNotificationContext();
 
@@ -98,7 +113,7 @@ const NewTaskDialog = () => {
   const queryClient = useQueryClient();
 
   // Mutation
-  const { mutate: create } = useMutation({
+  const { mutate: create, isPending: isCreating } = useMutation({
     mutationKey: ["tasks", "new"],
     mutationFn: createNewTask,
     onMutate: async (data) => {
@@ -132,6 +147,9 @@ const NewTaskDialog = () => {
           data: [...(oldTasks?.data ?? []), newTask],
         };
       });
+
+      // Scroll to new task
+      router.push(`${pathname}#${newTask.id}`);
 
       // Return to context
       return { oldTasks };
@@ -171,6 +189,8 @@ const NewTaskDialog = () => {
                   title: "Name Requirement",
                   description: "Name should be at least 3 character(s)",
                 });
+
+                console.log(errors);
 
                 return;
               }
@@ -245,13 +265,21 @@ const NewTaskDialog = () => {
                   control={control}
                   name="teamId"
                   render={({ field }) => (
-                    <Select placeholder="Team" {...field}>
-                      {teams &&
-                        teams.map((team) => (
-                          <SelectItem value={team.id} key={team.id}>
-                            {team.name}
-                          </SelectItem>
-                        ))}
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="w-full border">
+                        <SelectValue placeholder="Team" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {teams &&
+                          teams.map((team) => (
+                            <SelectItem value={team.id} key={team.id}>
+                              {team.name}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
                     </Select>
                   )}
                 />
@@ -312,7 +340,7 @@ const NewTaskDialog = () => {
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={!isValid}>
+                  <Button type="submit" disabled={!isValid || isCreating}>
                     Save
                   </Button>
                 </div>

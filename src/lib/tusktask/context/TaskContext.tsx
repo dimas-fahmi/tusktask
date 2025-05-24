@@ -1,11 +1,10 @@
 import { SetStateAction } from "@/src/types/types";
 import NewTaskDialog from "@/src/ui/components/tusktask/prefabs/NewTaskDialog";
 import { useQuery } from "@tanstack/react-query";
-import { createContext, useEffect, useState } from "react";
-import useTeamContext from "../hooks/context/useTeamContext";
+import { createContext, useState } from "react";
 import { fetchPersonalTasks } from "../fetchers/fetchPersonalTasks";
 import { TaskType } from "@/src/db/schema/tasks";
-import { SubtaskType, TaskWithSubtasks } from "@/app/api/tasks/get";
+import { TaskWithSubtasks } from "@/app/api/tasks/get";
 import categorizeTask, {
   CategorizeTaskOutput,
 } from "../categorizer/categorizeTask";

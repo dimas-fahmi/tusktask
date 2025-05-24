@@ -58,7 +58,6 @@ const categorizeTask = <T extends TaskType | TaskWithSubtasks>({
   };
 
   // Categorize each task
-  console.log(tasks);
   tasks.forEach((task) => {
     const dateValue = task[field];
 
@@ -68,17 +67,16 @@ const categorizeTask = <T extends TaskType | TaskWithSubtasks>({
       return;
     }
 
-    // Ensure dateValue is a string before parsing (robustness)
-    if (typeof dateValue !== "string") {
-      result.notSet.push(task);
-      return;
+    // Ensure dateValue is a parsed Date object
+    let deadlineDate: Date | undefined;
+    if (dateValue instanceof Date) {
+      deadlineDate = dateValue;
+    } else if (typeof dateValue === "string") {
+      deadlineDate = new Date(dateValue);
     }
 
-    // Parse the date string
-    const deadlineDate = new Date(dateValue);
-
     // Check if the date is valid
-    if (isNaN(deadlineDate.getTime())) {
+    if (!deadlineDate || isNaN(deadlineDate.getTime())) {
       result.notSet.push(task);
       return;
     }

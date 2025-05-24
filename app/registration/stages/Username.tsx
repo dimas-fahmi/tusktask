@@ -100,7 +100,6 @@ const Username = () => {
   }, [username, isValid]);
 
   useEffect(() => {
-    console.log(data);
     if (isFetching) {
       return;
     }
@@ -119,7 +118,6 @@ const Username = () => {
 
   // Listen to validation
   useEffect(() => {
-    console.log(isValid);
     setCanContinue(isValid && usernameAvailable && !isPending);
 
     if (isValid) {

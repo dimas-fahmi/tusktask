@@ -45,6 +45,7 @@ const TaskCard = ({ task }: { task: TaskWithSubtasks }) => {
 
   return (
     <article
+      id={task.id}
       className={`${task.createdByOptimisticUpdate ? "animate-pulse cursor-wait" : "md:hover:scale-105 cursor-pointer hover:shadow-2xl"} border max-w-[768px] rounded-md transition-all duration-300 shadow-lg `}
       aria-labelledby={`task-title-${task.id}`}
       role="group"
