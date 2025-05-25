@@ -2,6 +2,7 @@ import { foreignKey, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { relations } from "drizzle-orm";
+import { teams } from "./teams";
 
 // MESSAGES TABLE
 export const messages = pgTable(
@@ -19,6 +20,7 @@ export const messages = pgTable(
       .notNull(),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
     respondToId: text("respondToId"),
+    teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }),
   },
   (t) => [
     foreignKey({

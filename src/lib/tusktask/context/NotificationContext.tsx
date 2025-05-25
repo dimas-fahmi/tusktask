@@ -4,6 +4,8 @@ import { ExternalToast, toast, Toaster } from "sonner";
 import { cn } from "../../shadcn/utils";
 import { AlarmClock, Bell, CircleAlert, CircleCheckBig } from "lucide-react";
 import usePersonalContext from "../hooks/context/usePersonalContext";
+import NotificationsDialog from "@/src/ui/components/tusktask/prefabs/NotificationsDialog";
+import { SetStateAction } from "@/src/types/types";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -14,6 +16,8 @@ interface TriggerToastProps extends ExternalToast {
 interface NotificationContextValues {
   triggerToast: (options: TriggerToastProps) => void;
   triggerSound: (type: PlaySoundType) => void;
+  notificationsDialogOpen: boolean;
+  setNotificationsDialogOpen: SetStateAction<boolean>;
 }
 
 export type PlaySoundType =
@@ -33,6 +37,9 @@ const NotificationContextProvider = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
+  // Notifications Dialog State
+  const [notificationsDialogOpen, setNotificationsDialogOpen] = useState(false);
+
   // Sound Context State
   const [notificationSoundEnable, setNotificationSoundEnable] = useState(false);
   const [reminderSoundEnable, setReminderSoundEnable] = useState(true);
@@ -138,8 +145,17 @@ const NotificationContextProvider = ({
   };
 
   return (
-    <NotificationContext.Provider value={{ triggerToast, triggerSound }}>
+    <NotificationContext.Provider
+      value={{
+        triggerToast,
+        triggerSound,
+        notificationsDialogOpen,
+        setNotificationsDialogOpen,
+      }}
+    >
       {children}
+
+      <NotificationsDialog />
       <Toaster />
     </NotificationContext.Provider>
   );

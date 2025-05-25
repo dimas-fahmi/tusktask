@@ -54,7 +54,7 @@ const navigationLinks = [
 
 export function AppSidebar() {
   return (
-    <Sidebar className="">
+    <Sidebar className="!text-sidebar-foreground">
       {/* Sidebar Header */}
       <SidebarHeader className="p-2 pt-4">
         <UserProfileCard />

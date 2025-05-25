@@ -2,11 +2,12 @@ import { cn } from "@/src/lib/shadcn/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 
-const InputVariants = cva("px-4 py-2 rounded-md", {
+const InputVariants = cva("px-4 py-2 rounded-md border border-border", {
   variants: {
     variant: {
-      default: "border outline-0",
+      default: "outline-0",
       ghost: "border-0 ring-0 outline-0",
+      error: "border-destructive text-destructive",
     },
     size: {
       default: "text-base",

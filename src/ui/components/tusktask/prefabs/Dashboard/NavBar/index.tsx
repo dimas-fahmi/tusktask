@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import ThemePreviewCard from "../../ThemePreviewCard";
 import useThemeContext from "@/src/lib/tusktask/hooks/context/useThemeContext";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 const NavBar = () => {
   // Pull states from sidebar context
@@ -31,6 +32,9 @@ const NavBar = () => {
 
   // Pull setters from Theme context
   const { setThemeDialogOpen } = useThemeContext();
+
+  // Pull setters from notifications context
+  const { setNotificationsDialogOpen } = useNotificationContext();
 
   return (
     <nav className="flex items-center justify-between">
@@ -53,7 +57,7 @@ const NavBar = () => {
         <div className="space-x-3">
           <button
             className="cursor-pointer"
-            onClick={() => router.push("/dashboard/notifications")}
+            onClick={() => setNotificationsDialogOpen(true)}
           >
             <Bell />
           </button>

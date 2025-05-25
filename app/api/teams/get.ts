@@ -1,17 +1,25 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
+import { TaskType } from "@/src/db/schema/tasks";
 import { teamMembers, TeamMembersType, TeamType } from "@/src/db/schema/teams";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { eq } from "drizzle-orm";
 
+export interface TeamWithTasksAndMembers extends TeamType {
+  tasks: TaskType[];
+  teamMembers: TeamMembersType[];
+  createdByOptimisticUpdate?: boolean;
+}
+
 export interface TeamMembersWithTeam extends TeamMembersType {
-  team: TeamType;
+  team: TeamWithTasksAndMembers;
+  createdByOptimisticUpdate?: boolean;
 }
 
 export type TeamsGetResponse = StandardResponse<TeamMembersWithTeam[] | null>;
 
-export async function teamsGet(req: Request) {
+export async function teamsGet() {
   // Pull session and validate
   const session = await auth();
 
@@ -26,7 +34,12 @@ export async function teamsGet(req: Request) {
     teams = await db.query.teamMembers.findMany({
       where: eq(teamMembers.userId, session.user.id),
       with: {
-        team: {},
+        team: {
+          with: {
+            tasks: {},
+            teamMembers: {},
+          },
+        },
       },
     });
 

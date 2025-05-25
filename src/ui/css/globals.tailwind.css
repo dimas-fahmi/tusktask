@@ -96,7 +96,7 @@
   --accent-foreground: oklch(0.95 0 0); /* White for contrast */
   --destructive: oklch(0.6 0.2 0); /* Retain red for destructive actions */
   --destructive-foreground: oklch(0.95 0 0); /* White for contrast */
-  --border: oklch(0.25 0.005 0 / 20%); /* Subtle gray border */
+  --border: oklch(0.6 0.0085 17.39 / 0.2); /* Subtle gray border */
   --input: oklch(0.25 0.005 0 / 20%); /* Matching gray for inputs */
   --ring: oklch(0.3 0.01 0); /* Dark gray for focus rings */
   --chart-1: oklch(0.3 0.01 0); /* Dark gray for chart 1 */
@@ -172,7 +172,7 @@
   --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.6 0.2 0);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.2 0.02 260);
+  --border: oklch(0.24 0.0272 262.52);
   --input: oklch(0.15 0.02 260);
   --ring: oklch(0.6 0.15 270);
   --chart-1: oklch(0.65 0.18 280);
@@ -191,10 +191,61 @@
   --sidebar-ring: oklch(0.6 0.15 270);
 }
 
+/* Terracotta Theme: Warm earth tones, inspired by rich browns and caramel */
+.terracotta {
+  --background: oklch(0.98 0.02 90); /* Soft ivory backdrop */
+  --foreground: oklch(0.25 0.05 90); /* Deep chocolate text */
+  --card: oklch(0.92 0.02 90); /* Light tan cards */
+  --card-foreground: oklch(0.25 0.05 90); /* Chocolate text on cards */
+  --popover: oklch(0.92 0.02 90); /* Matching tan popovers */
+  --popover-foreground: oklch(0.25 0.05 90); /* Chocolate text */
+
+  --primary: oklch(0.45 0.12 90); /* Rich terracotta primary */
+  --primary-foreground: oklch(0.98 0 0); /* Crisp white text */
+  --secondary: oklch(0.6 0.08 90); /* Warm caramel secondary */
+  --secondary-foreground: oklch(0.25 0.05 90); /* Chocolate text */
+
+  --muted: oklch(0.85 0.03 90); /* Gentle biscuit muted */
+  --muted-foreground: oklch(0.45 0.05 90); /* Softer brown text */
+
+  --accent: oklch(0.7 0.1 90); /* Golden ochre accent */
+  --accent-foreground: oklch(0.98 0 0); /* White for contrast */
+
+  --destructive: oklch(0.6 0.2 0); /* Standard red destructive */
+  --destructive-foreground: oklch(0.98 0 0); /* White text */
+
+  --border: oklch(0.85 0.02 90 / 20%); /* Subtle tan border */
+  --input: oklch(0.85 0.02 90 / 20%); /* Matching input backgrounds */
+  --ring: oklch(0.45 0.12 90); /* Terracotta focus ring */
+
+  /* Chart palette: gradient from deep to light earth tones */
+  --chart-1: oklch(0.45 0.12 90); /* Deep terracotta */
+  --chart-2: oklch(0.55 0.1 90); /* Burnt sienna */
+  --chart-3: oklch(0.65 0.08 90); /* Caramel */
+  --chart-4: oklch(0.75 0.06 90); /* Pale tan */
+  --chart-5: oklch(0.85 0.04 90); /* Very light biscuit */
+
+  /* Sidebar for consistency */
+  --sidebar: var(--card);
+  --sidebar-background: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    scrollbar-gutter: stable;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -202,4 +253,32 @@
 
 .currentColor {
   color: currentColor !important;
+}
+
+@layer utilities {
+  .underline-effect {
+    position: relative;
+    text-decoration: none;
+  }
+
+  .underline-effect::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .underline-effect:hover::after {
+    transform: scaleX(1);
+  }
+
+  .underline-effect.active::after {
+    transform: scaleX(1);
+  }
 }

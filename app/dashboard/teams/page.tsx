@@ -1,7 +1,8 @@
 import React from "react";
+import TeamsPageIndex from "./TeamsPageIndex";
 
 const TeamsPage = () => {
-  return <div>TeamsPage</div>;
+  return <TeamsPageIndex />;
 };
 
 export default TeamsPage;

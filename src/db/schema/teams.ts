@@ -6,9 +6,10 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import { InferSelectModel, relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { tasks } from "./tasks";
+import { createInsertSchema } from "drizzle-zod";
 
 // TEAMS TABLE
 export const teams = pgTable(
@@ -81,4 +82,7 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
 }));
 
 export type TeamType = InferSelectModel<typeof teams>;
+export type TeamInsertType = InferInsertModel<typeof teams>;
 export type TeamMembersType = InferSelectModel<typeof teamMembers>;
+
+export const teamSchema = createInsertSchema(teams);
