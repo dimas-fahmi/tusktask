@@ -22,6 +22,31 @@ import {
 import { FullTask } from "@/src/types/task";
 import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "@radix-ui/react-select";
+import { Skeleton } from "../../../shadcn/ui/skeleton";
+
+export const ItemCardSkeleton = () => {
+  return (
+    <div className="p-4 pe-2.5 flex justify-between items-center">
+      <div className="flex gap-1.5">
+        <div className="flex gap-1.5">
+          <Skeleton className="w-4 h-4" />
+        </div>
+        <div className="space-y-2">
+          <Skeleton className="w-40 h-4" />
+          <div className="flex gap-1">
+            <Skeleton className="w-10 h-4" />
+            <Skeleton className="w-10 h-4" />
+            <Skeleton className="w-10 h-4" />
+            <Skeleton className="w-10 h-4" />
+          </div>
+        </div>
+      </div>
+      <div>
+        <Skeleton className="w-6 h-4" />
+      </div>
+    </div>
+  );
+};
 
 const ItemCard = ({ task }: { task: FullTask }) => {
   const Icon = task?.type === "shopping_list" ? ShoppingCart : Hash;

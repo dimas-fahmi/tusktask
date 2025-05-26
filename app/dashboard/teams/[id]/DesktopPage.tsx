@@ -3,12 +3,15 @@ import OverviewSection from "./fragments/OverviewSection";
 import ActionsSection from "./fragments/ActionsSection";
 import FilterSection from "./fragments/FilterSection";
 import { ScrollArea } from "@/src/ui/components/shadcn/ui/scroll-area";
-import ItemCard from "@/src/ui/components/tusktask/prefabs/ItemCard";
+import ItemCard, {
+  ItemCardSkeleton,
+} from "@/src/ui/components/tusktask/prefabs/ItemCard";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import MainLoader from "@/src/ui/components/tusktask/prefabs/MainLoader";
 import { FolderGit2 } from "lucide-react";
 import { filterTasks, FilterType } from "@/src/lib/tusktask/utils/filterTasks";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
+import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
 
 const DesktopPage = ({ id }: { id: string }) => {
   // Filter States
@@ -33,18 +36,40 @@ const DesktopPage = ({ id }: { id: string }) => {
         <div className="">
           {/* Header */}
           <header className="mb-6">
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <FolderGit2 />
-              {teamDetail?.name}
-            </h1>
+            {teamDetail?.name ? (
+              <h1 className="text-3xl font-bold flex items-center gap-2">
+                <FolderGit2 />
+                {teamDetail?.name}
+              </h1>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-9 w-9" />
+                <Skeleton className="h-9 w-80" />
+              </div>
+            )}
           </header>
 
           {/* Items */}
           <ScrollArea className="h-[1000px]">
             <div className="space-y-3">
+              {!teamDetail && (
+                <>
+                  <ItemCardSkeleton />
+                  <ItemCardSkeleton />
+                  <ItemCardSkeleton />
+                  <ItemCardSkeleton />
+                </>
+              )}
+
               {tasks.map((task) => (
                 <ItemCard task={task} key={task.id} />
               ))}
+
+              {teamDetail && tasks.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center">
+                  No items, create a new one.
+                </p>
+              )}
             </div>
           </ScrollArea>
         </div>
