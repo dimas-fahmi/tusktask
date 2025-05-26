@@ -17,11 +17,13 @@ import {
   PopoverTrigger,
 } from "../../../shadcn/ui/popover";
 import PopoverAction from "../Popover/PopoverAction";
-import { TeamWithTasksAndMembers } from "@/app/api/teams/get";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
+import { useRouter } from "next/navigation";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { FullTeam } from "@/src/types/team";
 
 export interface TeamCardProps {
-  team: TeamWithTasksAndMembers;
+  team: FullTeam;
 }
 
 const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
@@ -37,9 +39,28 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
   const completedTasks =
     tasks.length === 0 ? [] : tasks.filter((t) => t.status === "completed");
 
+  // Initialize router
+  const router = useRouter();
+
+  // Pull triggers from notification context
+  const { triggerToast } = useNotificationContext();
+
   return (
     <div
       className={`${team?.createdByOptimisticUpdate ? "cursor-wait animate-pulse" : "cursor-pointer hover:shadow-xl "} border rounded-md transition-all duration-300 shadow-md`}
+      onClick={() => {
+        if (team?.createdByOptimisticUpdate) {
+          triggerToast({
+            type: "default",
+            title: "Please Wait A Moment",
+            description:
+              "We're still saving your new team, please wait a moment.",
+          });
+          return;
+        }
+
+        router.push(`/dashboard/teams/${team?.id}`);
+      }}
     >
       {/* Card Information */}
       <div className="p-4">
@@ -84,10 +105,15 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
             <Separator orientation="vertical" />
             <span className="flex items-center justify-end flex-grow pe-2">
               <Popover>
-                <PopoverTrigger>
-                  <span className="opacity-50 hover:opacity-100 cursor-pointer">
+                <PopoverTrigger asChild>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="opacity-50 hover:opacity-100 cursor-pointer"
+                  >
                     <Ellipsis className="w-4 h-4" />
-                  </span>
+                  </button>
                 </PopoverTrigger>
                 <PopoverContent className="p-1 space-y-2">
                   <PopoverAction

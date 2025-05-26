@@ -36,6 +36,8 @@ const newTaskSchema = z.object({
   teamId: z.string(),
   startAt: z.date().optional(),
   deadlineAt: z.date().optional(),
+  type: z.enum(["task", "shopping_list"]),
+  price: z.string().optional(),
 });
 
 const NewTaskDialog = () => {
@@ -45,6 +47,9 @@ const NewTaskDialog = () => {
   // Pull states from TaskContext
   const { newTaskDialog, setNewTaskDialog, handleResetNewTaskDialog } =
     useTaskContext();
+
+  // Pull states from team key
+  const { teamDetailKey } = useTeamContext();
 
   // Open State
   const [open, setOpen] = useState(false);
@@ -66,6 +71,7 @@ const NewTaskDialog = () => {
     reset,
     setValue,
     watch,
+    getValues,
     formState: { isValid, errors },
   } = useForm({
     resolver: zodResolver(newTaskSchema),
@@ -73,9 +79,16 @@ const NewTaskDialog = () => {
     defaultValues: {
       name: "",
       description: "",
-      teamId: teams ? teams.filter((t) => t.type === "primary")[0]?.id : "",
+      teamId:
+        newTaskDialog.teamId && newTaskDialog.teamId.length > 0
+          ? newTaskDialog.teamId
+          : teams && teams.length > 0
+            ? teams.find((t) => t.type === "primary")?.id || ""
+            : "",
       deadlineAt: undefined,
       startAt: undefined,
+      type: "task",
+      price: undefined,
     },
   });
 
@@ -87,9 +100,20 @@ const NewTaskDialog = () => {
     const primaryTeam = teams.filter((t) => t.type === "primary")[0];
 
     if (primaryTeam) {
-      setValue("teamId", primaryTeam.id);
+      if (newTaskDialog?.teamId) {
+        setValue("teamId", newTaskDialog.teamId);
+        setValue("type", newTaskDialog.type);
+      } else {
+        setValue("teamId", primaryTeam.id);
+      }
+    } else {
+      triggerToast({
+        type: "error",
+        title: "Fatal Error",
+        description: "Somehow we can't find your primary team",
+      });
     }
-  }, [teams]);
+  }, [teams, newTaskDialog]);
 
   useEffect(() => {
     if (!open) {
@@ -149,7 +173,9 @@ const NewTaskDialog = () => {
       });
 
       // Scroll to new task
-      router.push(`${pathname}#${newTask.id}`);
+      if (pathname === "/dashboard") {
+        router.push(`${pathname}#${newTask.id}`);
+      }
 
       // Return to context
       return { oldTasks };
@@ -170,8 +196,17 @@ const NewTaskDialog = () => {
       queryClient.invalidateQueries({
         queryKey: ["tasks"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["team", teamDetailKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["teams"],
+      });
     },
   });
+
+  // listen to type changes
+  const type = watch("type");
 
   return (
     <Dialog open={newTaskDialog.open} onOpenChange={setOpen}>
@@ -204,7 +239,14 @@ const NewTaskDialog = () => {
                 return;
               }
 
-              const request: TasksPostRequest = data;
+              let price: string | undefined | number = data?.price;
+
+              price = price ? parseInt(price) : undefined;
+
+              const request: TasksPostRequest = {
+                ...data,
+                price: price,
+              };
 
               create(request);
             })}
@@ -292,6 +334,60 @@ const NewTaskDialog = () => {
                     </Select>
                   )}
                 />
+
+                {/* Type */}
+                <label htmlFor="#type" className="text-xs font-semibold">
+                  Type
+                </label>
+                <Controller
+                  control={control}
+                  name="type"
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <SelectTrigger className="w-full border">
+                        <SelectValue placeholder="Todo Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="task">Task</SelectItem>
+                        <SelectItem value="shopping_list">
+                          Shopping List
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+
+                {/* Price */}
+                <motion.div
+                  variants={{
+                    open: { height: "auto", opacity: 1 },
+                    closed: { height: 0, opacity: 0 },
+                  }}
+                  initial="closed"
+                  animate={type === "shopping_list" ? "open" : "closed"}
+                  transition={{ duration: 0.3 }}
+                  style={{ overflow: "hidden" }}
+                  className={`grid grid-cols-1 gap-2`}
+                >
+                  <label htmlFor="#team" className="text-xs font-semibold mt-3">
+                    Price
+                  </label>
+                  <Controller
+                    control={control}
+                    name={"price"}
+                    render={({ field: { value, ...fieldProps } }) => (
+                      <Input
+                        {...fieldProps}
+                        value={value ?? ""}
+                        type="number"
+                        placeholder="20000"
+                      />
+                    )}
+                  />
+                </motion.div>
 
                 {/* Start Time */}
                 <label htmlFor="#team" className="text-xs font-semibold mt-3">

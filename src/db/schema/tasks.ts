@@ -1,6 +1,7 @@
 import {
   foreignKey,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -29,6 +30,10 @@ export const tasks = pgTable(
       .references(() => teams.id)
       .notNull(),
     parentId: text("parentId"),
+    type: text("type", { enum: ["task", "shopping_list"] })
+      .default("task")
+      .notNull(),
+    price: integer("price"),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
     updatedAt: timestamp("updatedAt", TIMESTAMP_CONFIGS).$onUpdateFn(
       () => new Date()

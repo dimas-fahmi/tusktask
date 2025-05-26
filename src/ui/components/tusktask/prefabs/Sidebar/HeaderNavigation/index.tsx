@@ -15,7 +15,12 @@ const HeaderNavigation = () => {
     <div className="grid grid-cols-1 gap-2">
       <Button
         onClick={() =>
-          setNewTaskDialog({ open: true, teamId: null, parentId: null })
+          setNewTaskDialog({
+            open: true,
+            teamId: null,
+            parentId: null,
+            type: "task",
+          })
         }
       >
         <CirclePlus />

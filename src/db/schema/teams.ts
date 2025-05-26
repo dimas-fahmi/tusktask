@@ -41,9 +41,17 @@ export const teams = pgTable(
 );
 
 // RELATIONS : teams table
-export const teamsRelations = relations(teams, ({ many }) => ({
+export const teamsRelations = relations(teams, ({ many, one }) => ({
   teamMembers: many(teamMembers),
   tasks: many(tasks),
+  creator: one(users, {
+    fields: [teams.createdById],
+    references: [users.id],
+  }),
+  owner: one(users, {
+    fields: [teams.ownerId],
+    references: [users.id],
+  }),
 }));
 
 // TEAMS MEMBERS TABLE : (many-to-many relationship -> users & teams)

@@ -9,15 +9,16 @@ import categorizeTask, {
   CategorizeTaskOutput,
 } from "../categorizer/categorizeTask";
 
-export interface NewTaskDialogOpenType {
+export interface NewTaskDialogType {
   open: boolean;
   teamId: string | null;
   parentId: string | null;
+  type: "task" | "shopping_list";
 }
 
 export interface TaskContextValues {
-  newTaskDialog: NewTaskDialogOpenType;
-  setNewTaskDialog: SetStateAction<NewTaskDialogOpenType>;
+  newTaskDialog: NewTaskDialogType;
+  setNewTaskDialog: SetStateAction<NewTaskDialogType>;
   handleResetNewTaskDialog: () => void;
   tasks: TaskType[] | TaskWithSubtasks[] | null | undefined;
   isFetchingTasks: boolean;
@@ -32,16 +33,14 @@ const TaskContextProvider = ({
   children: Readonly<React.ReactNode>;
 }) => {
   // New Task Dialog
-  const newTaskDialogInitial = {
+  const newTaskDialogInitial: NewTaskDialogType = {
     open: false,
     teamId: null,
     parentId: null,
+    type: "task",
   };
-  const [newTaskDialog, setNewTaskDialog] = useState<NewTaskDialogOpenType>({
-    open: false,
-    teamId: null,
-    parentId: null,
-  });
+  const [newTaskDialog, setNewTaskDialog] =
+    useState<NewTaskDialogType>(newTaskDialogInitial);
 
   // Query Tasks
   const { data: tasksResponse, isFetching: isFetchingTasks } = useQuery({

@@ -1,23 +1,14 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
-import { TaskType } from "@/src/db/schema/tasks";
-import { teamMembers, TeamMembersType, TeamType } from "@/src/db/schema/teams";
+import { teamMembers } from "@/src/db/schema/teams";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
+import { TeamMembersWithFullTeam } from "@/src/types/team";
 import { eq } from "drizzle-orm";
 
-export interface TeamWithTasksAndMembers extends TeamType {
-  tasks: TaskType[];
-  teamMembers: TeamMembersType[];
-  createdByOptimisticUpdate?: boolean;
-}
-
-export interface TeamMembersWithTeam extends TeamMembersType {
-  team: TeamWithTasksAndMembers;
-  createdByOptimisticUpdate?: boolean;
-}
-
-export type TeamsGetResponse = StandardResponse<TeamMembersWithTeam[] | null>;
+export type TeamsGetResponse = StandardResponse<
+  TeamMembersWithFullTeam[] | null
+>;
 
 export async function teamsGet() {
   // Pull session and validate
