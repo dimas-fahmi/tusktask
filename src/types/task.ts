@@ -1,5 +1,6 @@
 import { TaskType } from "../db/schema/tasks";
 import { SanitizedUser } from "../lib/tusktask/utils/sanitizeUserData";
+import { CreatedByOptimisticUpdate } from "./types";
 
 export interface SubtaskType extends TaskType {
   subtasks: TaskType;
@@ -24,4 +25,5 @@ export interface TaskWithClaimer extends TaskType {
 export type FullTask = TaskWithCreator &
   TaskWithOwner &
   TaskWithSubtasks &
-  TaskWithClaimer;
+  TaskWithClaimer &
+  CreatedByOptimisticUpdate;

@@ -6,6 +6,7 @@ export type FilterType =
   | "todo"
   | "shopping"
   | "task"
+  | "createdByOptimisticUpdate"
   | "all";
 
 export const filterTasks = (
@@ -22,22 +23,35 @@ export const filterTasks = (
 
   switch (filter) {
     case "all":
-      result = data;
+      result = data.filter((t) => !t?.createdByOptimisticUpdate);
       break;
     case "archived":
-      result = data.filter((t) => t.status === "archived");
+      result = data.filter(
+        (t) => t.status === "archived" && !t.createdByOptimisticUpdate
+      );
       break;
     case "completed":
-      result = data.filter((t) => t.status === "completed");
+      result = data.filter(
+        (t) => t.status === "completed" && !t.createdByOptimisticUpdate
+      );
       break;
     case "shopping":
-      result = data.filter((t) => t.type === "shopping_list");
+      result = data.filter(
+        (t) => t.type === "shopping_list" && !t.createdByOptimisticUpdate
+      );
       break;
     case "todo":
-      result = data.filter((t) => t.status !== "completed");
+      result = data.filter(
+        (t) => t.status !== "completed" && !t.createdByOptimisticUpdate
+      );
       break;
     case "task":
-      result = data.filter((t) => t.type === "task");
+      result = data.filter(
+        (t) => t.type === "task" && !t.createdByOptimisticUpdate
+      );
+      break;
+    case "createdByOptimisticUpdate":
+      result = data.filter((t) => t?.createdByOptimisticUpdate);
       break;
     default:
       result = data;

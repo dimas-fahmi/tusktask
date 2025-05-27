@@ -69,25 +69,33 @@ const ItemCard = ({ task }: { task: FullTask }) => {
 
   return (
     <div
-      className={`${task.status === "completed" ? "" : ""} px-4 py-4 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md text-sm text-muted-foreground flex items-center justify-between`}
+      className={`${task?.createdByOptimisticUpdate ? "animate-pulse" : ""} px-4 py-4 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md text-sm text-muted-foreground flex items-center justify-between`}
     >
       {/* Information */}
       <div className="flex gap-1.5">
         <div className="flex items-start pt-1 gap-1.5">
           <span>
-            <Icon className="w-3.5 h-3.5" />
+            <Icon className={`w-3.5 h-3.5`} />
           </span>
         </div>
         <div className="flex flex-col gap-1">
-          <span className="">{task?.name}</span>
+          <span className="capitalize">{task?.name}</span>
           {/* Metadata */}
           <div className="gap-3 flex">
-            {taskDeleteKey === task.id ? (
+            {task?.createdByOptimisticUpdate && (
+              <div className="flex items-center gap-1">
+                <LoaderCircle className="w-3.5 h-3.5 animate-spin" />
+                <span className="text-xs">Saving</span>
+              </div>
+            )}
+
+            {taskDeleteKey === task?.id && (
               <div className="flex items-center gap-1">
                 <LoaderCircle className="w-3.5 h-3.5 animate-spin" />
                 <span className="text-xs">Deleting</span>
               </div>
-            ) : (
+            )}
+            {taskDeleteKey !== task?.id && !task?.createdByOptimisticUpdate && (
               <>
                 <div className="flex items-center gap-1">
                   <CircularProgress

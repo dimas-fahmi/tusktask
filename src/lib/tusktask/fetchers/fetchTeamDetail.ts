@@ -1,6 +1,9 @@
-import createResponse from "../utils/createResponse";
+import { TeamDetail } from "@/src/types/team";
+import createResponse, { StandardResponse } from "../utils/createResponse";
 
-export async function fetchTeamDetail(id: string) {
+export async function fetchTeamDetail(
+  id: string
+): Promise<StandardResponse<TeamDetail>> {
   if (!id) {
     return createResponse(500, {
       messages: "Missing important parameters",

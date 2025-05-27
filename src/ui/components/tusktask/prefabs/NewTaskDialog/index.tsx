@@ -29,6 +29,7 @@ import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { TaskWithSubtasks } from "@/app/api/tasks/get";
 import { z } from "zod";
 import { usePathname, useRouter } from "next/navigation";
+import { TeamDetail } from "@/src/types/team";
 
 const newTaskSchema = z.object({
   name: z.string().min(3).max(100),
@@ -152,6 +153,11 @@ const NewTaskDialog = () => {
         TaskWithSubtasks[]
       >;
 
+      const oldTeam = queryClient.getQueryData([
+        "team",
+        data.teamId,
+      ]) as StandardResponse<TeamDetail>;
+
       const newTask = {
         id: crypto.randomUUID(),
         name: data.name,
@@ -172,21 +178,41 @@ const NewTaskDialog = () => {
         };
       });
 
+      queryClient.setQueryData(["team", data.teamId], () => {
+        if (!oldTeam?.data) {
+          return oldTeam;
+        }
+
+        return {
+          ...oldTeam,
+          data: {
+            ...oldTeam.data,
+            tasks: [...oldTeam.data.tasks, newTask],
+          },
+        };
+      });
+
       // Scroll to new task
       if (pathname === "/dashboard") {
         router.push(`${pathname}#${newTask.id}`);
       }
 
       // Return to context
-      return { oldTasks };
+      return { oldTasks, oldTeam, data };
     },
     onError: (error, __, context) => {
       if (context?.oldTasks) {
         queryClient.setQueryData(["tasks"], context.oldTasks);
       }
 
+      if (context?.oldTeam && context?.data) {
+        queryClient.setQueryData(
+          ["team", context.data.teamId],
+          context.oldTeam
+        );
+      }
+
       setOpen(true);
-      console.log(error);
     },
     onSuccess: () => {
       reset();

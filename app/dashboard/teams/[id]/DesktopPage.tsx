@@ -25,6 +25,10 @@ const DesktopPage = ({ id }: { id: string }) => {
     ? filterTasks(teamDetail.tasks, filter, "createdAt", "desc")
     : [];
 
+  const createdByOptimisticUpdates = teamDetail?.tasks
+    ? filterTasks(teamDetail.tasks, "createdByOptimisticUpdate")
+    : [];
+
   // Trigger Fetch
   useEffect(() => {
     setTeamDetailKey(id);
@@ -51,7 +55,7 @@ const DesktopPage = ({ id }: { id: string }) => {
 
           {/* Items */}
           <ScrollArea className="h-[1000px]">
-            <div className="space-y-3">
+            <div className="space-y-1">
               {!teamDetail && (
                 <>
                   <ItemCardSkeleton />
@@ -60,6 +64,10 @@ const DesktopPage = ({ id }: { id: string }) => {
                   <ItemCardSkeleton />
                 </>
               )}
+
+              {createdByOptimisticUpdates.map((task) => (
+                <ItemCard task={task} key={task.id} />
+              ))}
 
               {tasks.map((task) => (
                 <ItemCard task={task} key={task.id} />
