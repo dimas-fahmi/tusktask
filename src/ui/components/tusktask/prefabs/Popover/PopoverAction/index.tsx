@@ -41,6 +41,7 @@ const PopoverAction: React.FC<PopoverActionProps> = ({
       title={title}
       role="button"
       aria-label={`${title} button`}
+      onClick={action}
     >
       <div className="flex items-center gap-2">
         <span>

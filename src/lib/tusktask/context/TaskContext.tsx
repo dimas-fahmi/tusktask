@@ -1,6 +1,6 @@
-import { SetStateAction } from "@/src/types/types";
+import { MutateFunction, SetStateAction } from "@/src/types/types";
 import NewTaskDialog from "@/src/ui/components/tusktask/prefabs/NewTaskDialog";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useState } from "react";
 import { fetchPersonalTasks } from "../fetchers/fetchPersonalTasks";
 import { TaskType } from "@/src/db/schema/tasks";
@@ -8,6 +8,8 @@ import { TaskWithSubtasks } from "@/app/api/tasks/get";
 import categorizeTask, {
   CategorizeTaskOutput,
 } from "../categorizer/categorizeTask";
+import { deleteTask as mutateDeleteTask } from "../mutators/deleteTask";
+import { TasksDeleteRequest } from "@/app/api/tasks/delete";
 
 export interface NewTaskDialogType {
   open: boolean;
@@ -23,6 +25,10 @@ export interface TaskContextValues {
   tasks: TaskType[] | TaskWithSubtasks[] | null | undefined;
   isFetchingTasks: boolean;
   categorizedTasks: CategorizeTaskOutput<TaskWithSubtasks>;
+  deleteTask: MutateFunction<TaskType | null, TasksDeleteRequest>;
+  isDeletingTask: boolean;
+  taskDeleteKey: string | null;
+  setTaskDeleteKey: SetStateAction<string | null>;
 }
 
 const TaskContext = createContext<TaskContextValues | null>(null);
@@ -49,6 +55,31 @@ const TaskContextProvider = ({
       fetchPersonalTasks({ withSubtasks: "true", onlyTopLevel: "true" }),
   });
 
+  // Query Client
+  const queryClient = useQueryClient();
+
+  // Mutation [delete task]
+  const [taskDeleteKey, setTaskDeleteKey] = useState<string | null>(null);
+  const { mutate: deleteTask, isPending: isDeletingTask } = useMutation({
+    mutationFn: mutateDeleteTask,
+    onMutate: () => {},
+    onSettled: (data, error, request) => {
+      queryClient.invalidateQueries({
+        queryKey: ["team", request.teamId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["task", request.taskId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["teams"],
+      });
+
+      setTaskDeleteKey(null);
+    },
+  });
+
   // Extract Tasks
   const tasks = tasksResponse?.data;
 
@@ -72,6 +103,10 @@ const TaskContextProvider = ({
         tasks,
         isFetchingTasks,
         categorizedTasks,
+        deleteTask,
+        taskDeleteKey,
+        setTaskDeleteKey,
+        isDeletingTask,
       }}
     >
       {children}

@@ -58,8 +58,12 @@ export const teamsRelations = relations(teams, ({ many, one }) => ({
 export const teamMembers = pgTable(
   "teamMembers",
   {
-    teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }), // delete all records if team is deleted
-    userId: text("userId").references(() => users.id, { onDelete: "cascade" }),
+    teamId: text("teamId")
+      .references(() => teams.id, { onDelete: "cascade" })
+      .notNull(), // delete all records if team is deleted
+    userId: text("userId")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
     userRole: text("userRole", {
       enum: ["owner", "admin", "assignee"],
     })
