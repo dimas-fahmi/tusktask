@@ -11,7 +11,7 @@ const ActionsSection = ({ teamId }: { teamId: string }) => {
     <section id="action" className="w-full gap-2 flex">
       <Button
         variant={"outline"}
-        className="flex-grow "
+        className="flex-grow"
         size={"default"}
         onClick={() =>
           setNewTaskDialog({

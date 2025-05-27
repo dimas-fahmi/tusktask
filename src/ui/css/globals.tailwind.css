@@ -256,6 +256,10 @@
 }
 
 @layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   .underline-effect {
     position: relative;
     text-decoration: none;

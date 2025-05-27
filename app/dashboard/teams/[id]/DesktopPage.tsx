@@ -7,13 +7,21 @@ import ItemCard, {
   ItemCardSkeleton,
 } from "@/src/ui/components/tusktask/prefabs/ItemCard";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
-import { FolderGit2 } from "lucide-react";
+import { FolderGit2, MessageCircle, UsersRound } from "lucide-react";
 import { filterTasks, FilterType } from "@/src/lib/tusktask/utils/filterTasks";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
 import { motion } from "motion/react";
 import ShoppingListOverview from "./fragments/ShoppingListOverview";
+import { SetStateAction } from "@/src/types/types";
+import { Button } from "@/src/ui/components/shadcn/ui/button";
 
-const DesktopPage = ({ id }: { id: string }) => {
+const DesktopPage = ({
+  id,
+  setTeamChatOpen,
+}: {
+  id: string;
+  setTeamChatOpen: SetStateAction<boolean>;
+}) => {
   // Filter States
   const [filter, setFilter] = useState<FilterType>("all");
 
@@ -109,6 +117,22 @@ const DesktopPage = ({ id }: { id: string }) => {
 
           {/* Overview Section */}
           <OverviewSection />
+
+          {/* Memberships & Co-Operation Actions */}
+          <div className="flex gap-2 w-full">
+            <Button
+              variant={"outline"}
+              className="flex-grow"
+              onClick={() => setTeamChatOpen(true)}
+            >
+              <MessageCircle />
+              Messages
+            </Button>
+            <Button variant={"outline"} className="flex-grow">
+              <UsersRound />
+              Members
+            </Button>
+          </div>
 
           {/* Filter Card */}
           <FilterSection filter={filter} setFilter={setFilter} />
