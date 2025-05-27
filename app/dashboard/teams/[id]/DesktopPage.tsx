@@ -73,11 +73,13 @@ const DesktopPage = ({ id }: { id: string }) => {
                 <ItemCard task={task} key={task.id} />
               ))}
 
-              {teamDetail && tasks.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center">
-                  No items, create a new one.
-                </p>
-              )}
+              {teamDetail &&
+                tasks.length === 0 &&
+                createdByOptimisticUpdates.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    No items, create a new one.
+                  </p>
+                )}
             </div>
           </ScrollArea>
         </div>
