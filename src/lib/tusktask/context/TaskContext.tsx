@@ -10,6 +10,7 @@ import categorizeTask, {
 } from "../categorizer/categorizeTask";
 import { deleteTask as mutateDeleteTask } from "../mutators/deleteTask";
 import { TasksDeleteRequest } from "@/app/api/tasks/delete";
+import useNotificationContext from "../hooks/context/useNotificationContext";
 
 export interface NewTaskDialogType {
   open: boolean;
@@ -58,11 +59,36 @@ const TaskContextProvider = ({
   // Query Client
   const queryClient = useQueryClient();
 
+  // Pull triggers from notification context
+  const { triggerToast } = useNotificationContext();
+
   // Mutation [delete task]
   const [taskDeleteKey, setTaskDeleteKey] = useState<string | null>(null);
   const { mutate: deleteTask, isPending: isDeletingTask } = useMutation({
     mutationFn: mutateDeleteTask,
-    onMutate: () => {},
+    onMutate: () => {
+      triggerToast({
+        type: "default",
+        title: "Deleting Task",
+        description: "Please wait a second",
+      });
+    },
+    onError: () => {
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: "Failed to delete task",
+      });
+
+      setTaskDeleteKey(null);
+    },
+    onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "Task Deleted",
+        description: "Task successfully deleted",
+      });
+    },
     onSettled: (data, error, request) => {
       queryClient.invalidateQueries({
         queryKey: ["team", request.teamId],
@@ -75,8 +101,6 @@ const TaskContextProvider = ({
       queryClient.invalidateQueries({
         queryKey: ["teams"],
       });
-
-      setTaskDeleteKey(null);
     },
   });
 

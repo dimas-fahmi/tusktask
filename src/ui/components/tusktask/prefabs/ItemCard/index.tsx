@@ -82,7 +82,7 @@ const ItemCard = ({ task }: { task: FullTask }) => {
           <span className="">{task?.name}</span>
           {/* Metadata */}
           <div className="gap-3 flex">
-            {taskDeleteKey === task.id && isDeletingTask ? (
+            {taskDeleteKey === task.id ? (
               <div className="flex items-center gap-1">
                 <LoaderCircle className="w-3.5 h-3.5 animate-spin" />
                 <span className="text-xs">Deleting</span>
