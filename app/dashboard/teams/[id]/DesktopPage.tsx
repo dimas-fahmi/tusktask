@@ -109,6 +109,7 @@ const DesktopPage = ({ id }: { id: string }) => {
 
           {/* Overview Section */}
           <OverviewSection />
+
           {/* Filter Card */}
           <FilterSection filter={filter} setFilter={setFilter} />
         </aside>

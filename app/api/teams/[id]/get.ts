@@ -3,7 +3,7 @@ import { db } from "@/src/db";
 import { teamMembers, TeamMembersType, teams } from "@/src/db/schema/teams";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { sanitizeUserColumns } from "@/src/lib/tusktask/utils/sanitizeUserData";
-import { TeamDetail, TeamWithTasks } from "@/src/types/team";
+import { FullTeam, TeamDetail, TeamWithTasks } from "@/src/types/team";
 import { and, eq } from "drizzle-orm";
 
 export async function teamGet(
@@ -49,7 +49,7 @@ export async function teamGet(
     });
   }
 
-  let team: TeamWithTasks | undefined;
+  let team: FullTeam | undefined;
   try {
     team = (await db.query.teams.findFirst({
       where: eq(teams.id, id),
@@ -68,8 +68,9 @@ export async function teamGet(
             },
           },
         },
+        teamMembers: {},
       },
-    })) as TeamWithTasks;
+    })) as FullTeam;
 
     if (!team) {
       return createNextResponse(404, {
@@ -86,6 +87,7 @@ export async function teamGet(
     ...team,
     membership: membership,
     tasks: team.tasks,
+    teamMembers: team.teamMembers,
   };
 
   return createNextResponse(200, {

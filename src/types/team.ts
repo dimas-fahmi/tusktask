@@ -30,4 +30,5 @@ export type FullTeamMembers = TeamMembersWithTasks & TeamMembersWithTeam;
 
 export interface TeamDetail extends TeamWithTasks {
   membership: TeamMembersType;
+  teamMembers: TeamMembersType[];
 }
