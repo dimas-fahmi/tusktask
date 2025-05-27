@@ -28,6 +28,7 @@ import { Separator } from "@radix-ui/react-select";
 import { Skeleton } from "../../../shadcn/ui/skeleton";
 import { useRouter } from "next/navigation";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
+import { formatNumber } from "@/src/lib/tusktask/utils/formatNumber";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -109,7 +110,7 @@ const ItemCard = ({ task }: { task: FullTask }) => {
                 {task?.type === "shopping_list" && task?.price && (
                   <div className="flex items-center gap-1">
                     <Wallet className="w-3.5 h-3.5" />
-                    <span className="text-xs">{task?.price}</span>
+                    <span className="text-xs">{formatNumber(task.price)}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-1">

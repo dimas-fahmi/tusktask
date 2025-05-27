@@ -7,11 +7,11 @@ import ItemCard, {
   ItemCardSkeleton,
 } from "@/src/ui/components/tusktask/prefabs/ItemCard";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
-import MainLoader from "@/src/ui/components/tusktask/prefabs/MainLoader";
 import { FolderGit2 } from "lucide-react";
 import { filterTasks, FilterType } from "@/src/lib/tusktask/utils/filterTasks";
-import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
+import { motion } from "motion/react";
+import ShoppingListOverview from "./fragments/ShoppingListOverview";
 
 const DesktopPage = ({ id }: { id: string }) => {
   // Filter States
@@ -20,13 +20,19 @@ const DesktopPage = ({ id }: { id: string }) => {
   // Query Team
   const { teamDetail, setTeamDetailKey, isFetchingTeams } = useTeamContext();
 
-  //
+  // Filter Task
   const tasks = teamDetail?.tasks
     ? filterTasks(teamDetail.tasks, filter, "createdAt", "desc")
     : [];
 
+  // Tasks createdByOptimisticUpdate
   const createdByOptimisticUpdates = teamDetail?.tasks
     ? filterTasks(teamDetail.tasks, "createdByOptimisticUpdate")
+    : [];
+
+  // Shopping Lists
+  const shoppingList = teamDetail?.tasks
+    ? filterTasks(teamDetail?.tasks, "shopping")
     : [];
 
   // Trigger Fetch
@@ -84,8 +90,23 @@ const DesktopPage = ({ id }: { id: string }) => {
           </ScrollArea>
         </div>
         <aside className="overflow-hidden space-y-4">
+          {/* Shopping List Overview */}
+          <motion.div
+            variants={{
+              open: { height: "auto", opacity: 1 },
+              closed: { height: 0, opacity: 0 },
+            }}
+            initial="closed"
+            animate={shoppingList.length !== 0 ? "open" : "closed"}
+            transition={{ duration: 0.3 }}
+            style={{ overflow: "hidden" }}
+          >
+            <ShoppingListOverview shoppingList={shoppingList} />
+          </motion.div>
+
           {/* Section Actions */}
           <ActionsSection teamId={id} />
+
           {/* Overview Section */}
           <OverviewSection />
           {/* Filter Card */}
