@@ -96,5 +96,7 @@ export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
 export type TeamType = InferSelectModel<typeof teams>;
 export type TeamInsertType = InferInsertModel<typeof teams>;
 export type TeamMembersType = InferSelectModel<typeof teamMembers>;
+export type TeamMembersInsertType = InferInsertModel<typeof teamMembers>;
 
 export const teamSchema = createInsertSchema(teams);
+export const teamMembersSchema = createInsertSchema(teamMembers);
