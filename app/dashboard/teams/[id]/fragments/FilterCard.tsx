@@ -1,7 +1,7 @@
+import { FilterType } from "@/src/lib/tusktask/utils/filterTasks";
 import { SetStateAction } from "@/src/types/types";
 import { LucideIcon } from "lucide-react";
 import React from "react";
-import { FilterType } from "../DesktopPage";
 
 interface FilterCardProps {
   Icon: LucideIcon;
