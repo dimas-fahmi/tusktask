@@ -8,7 +8,7 @@ interface PopoverActionProps {
   title: string;
   action: () => void;
   subTitle?: string;
-  variant?: "default" | "destructive";
+  variant?: "default" | "destructive" | "disabled";
 }
 
 const PopoverAction: React.FC<PopoverActionProps> = ({
@@ -27,6 +27,7 @@ const PopoverAction: React.FC<PopoverActionProps> = ({
           default: "hover:bg-accent hover:text-accent-foreground ",
           destructive:
             "text-destructive hover:bg-destructive hover:text-destructive-foreground",
+          disabled: "opacity-50 cursor-not-allowed",
         },
       },
       defaultVariants: {

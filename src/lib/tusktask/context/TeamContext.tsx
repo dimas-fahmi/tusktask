@@ -12,6 +12,8 @@ import {
   TeamDetail,
   TeamMembersWithFullTeam,
 } from "@/src/types/team";
+import TeamMembershipDialog from "@/src/ui/components/tusktask/prefabs/TeamMembershipDialog";
+import InviteMemberDialog from "@/src/ui/components/tusktask/prefabs/InviteMemberDialog";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -22,6 +24,10 @@ export interface TeamContextValues {
   teamDetail: TeamDetail | null;
   teamDetailKey: string | null;
   setTeamDetailKey: SetStateAction<string | null>;
+  teamMembershipDialog: boolean;
+  setTeamMembershipDialog: SetStateAction<boolean>;
+  inviteMemberDialog: boolean;
+  setInviteMemberDialog: SetStateAction<boolean>;
 }
 
 const TeamContext = createContext<TeamContextValues | null>(null);
@@ -55,6 +61,12 @@ const TeamContextProvider = ({
   // New Team Dialog State
   const [newTeamDialogOpen, setNewTeamDialogOpen] = useState(false);
 
+  // Team Membership Dialog State
+  const [teamMembershipDialog, setTeamMembershipDialog] = useState(false);
+
+  // Invite Member Dialog State
+  const [inviteMemberDialog, setInviteMemberDialog] = useState(false);
+
   // Extract Teams Memberships
   const teamsMemberships = teamsResponse?.data ? teamsResponse.data : [];
 
@@ -74,10 +86,16 @@ const TeamContextProvider = ({
         teamDetail,
         teamDetailKey,
         setTeamDetailKey,
+        teamMembershipDialog,
+        setTeamMembershipDialog,
+        inviteMemberDialog,
+        setInviteMemberDialog,
       }}
     >
       {children}
       <NewTeamDialog />
+      <TeamMembershipDialog />
+      <InviteMemberDialog />
     </TeamContext.Provider>
   );
 };

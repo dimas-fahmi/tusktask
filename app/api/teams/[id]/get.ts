@@ -68,7 +68,11 @@ export async function teamGet(
             },
           },
         },
-        teamMembers: {},
+        teamMembers: {
+          with: {
+            user: {},
+          },
+        },
       },
     })) as FullTeam;
 

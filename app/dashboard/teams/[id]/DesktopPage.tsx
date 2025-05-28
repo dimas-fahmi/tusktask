@@ -26,7 +26,8 @@ const DesktopPage = ({
   const [filter, setFilter] = useState<FilterType>("all");
 
   // Query Team
-  const { teamDetail, setTeamDetailKey, isFetchingTeams } = useTeamContext();
+  const { teamDetail, setTeamDetailKey, setTeamMembershipDialog } =
+    useTeamContext();
 
   // Filter Task
   const tasks = teamDetail?.tasks
@@ -128,7 +129,11 @@ const DesktopPage = ({
               <MessageCircle />
               Messages
             </Button>
-            <Button variant={"outline"} className="flex-grow">
+            <Button
+              variant={"outline"}
+              className="flex-grow"
+              onClick={() => setTeamMembershipDialog(true)}
+            >
               <UsersRound />
               Members
             </Button>

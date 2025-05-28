@@ -24,11 +24,11 @@ import {
 } from "../../../shadcn/ui/popover";
 import { FullTask } from "@/src/types/task";
 import PopoverAction from "../Popover/PopoverAction";
-import { Separator } from "@radix-ui/react-select";
 import { Skeleton } from "../../../shadcn/ui/skeleton";
 import { useRouter } from "next/navigation";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import { formatNumber } from "@/src/lib/tusktask/utils/formatNumber";
+import { Separator } from "../../../shadcn/ui/separator";
 
 export const ItemCardSkeleton = () => {
   return (
