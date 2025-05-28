@@ -1,5 +1,5 @@
-import NavBar from "@/src/ui/components/tusktask/layouts/public/NavBar";
 import React from "react";
+import NavBar from "./NavBar";
 
 const PublicLayout = ({
   children,

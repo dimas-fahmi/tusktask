@@ -5,21 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/src/lib/shadcn/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer shadow hover:shadow-xl",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer transition-all duration-300 border-border",
   {
     variants: {
       variant: {
         default:
-          "bg-tt-secondary text-tt-secondary-foreground shadow-xs hover:bg-tt-secondary/80",
-        destructive: "bg-tt-tertiary text-tt-tertiary-foreground",
-        outline: "border shadow-lg bg-transparent",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        outline:
+          "border bg-transparent text-foreground shadow-xs hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        quaternary: "bg-tt-quaternary text-tt-quaternary-foreground",
-        ghost: "border-0 shadow-none",
-        link: "text-tt-secondary shadow-none hover:shadow-none bg-transparent underline-effect",
+        ghost: "hover:text-accent-foreground hover:bg-accent",
+        link: "text-primary underline-offset-4 hover:underline",
         oAuth:
-          "border shadow-lg hover:shadow-xl hover:scale-105 active:scale-90 transition-all duration-300",
+          "border text-muted-foreground hover:text-foreground hover:border capitalize",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

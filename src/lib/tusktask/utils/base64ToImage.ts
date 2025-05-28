@@ -1,4 +1,4 @@
-import { SUPPORTED_MIME_IMAGE_TYPES } from "@/src/configs";
+import { SUPPORTED_MIME_IMAGE_TYPES } from "../constants/configs";
 
 export function base64ToImage(base64: string): Blob {
   const match = base64.match(/^data:(image\/[a-zA-Z+]+);base64,(.*)$/);

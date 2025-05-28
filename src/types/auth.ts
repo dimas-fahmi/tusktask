@@ -6,11 +6,10 @@ declare module "next-auth" {
     user: {
       registration: UserType["registration"];
       email: UserType["email"];
-      userName: UserType["userName"];
-      firstName: UserType["firstName"];
-      lastName: UserType["lastName"];
-      notificationSound: UserType["notificationSound"];
-      reminderSound: UserType["reminderSound"];
+      username: UserType["username"];
+      notificationSound: UserType["notificationSoundEnable"];
+      reminderSound: UserType["reminderSoundEnable"];
+      emailVerified: UserType["emailVerified"];
     } & DefaultSession["user"];
   }
 }

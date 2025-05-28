@@ -1,137 +1,220 @@
+import { auth } from "@/auth";
 import { db } from "@/src/db";
-import { tasks } from "@/src/db/schema/tasks";
-import { and, eq, ilike, inArray, isNotNull, isNull, lt } from "drizzle-orm";
-import { filterFields, TasksGetApiRequest } from "./types";
-import { getSearchParams } from "@/src/lib/tusktask/utils/url/getSearchParams";
-import { createStandardLog } from "@/src/lib/tusktask/utils/api/createStandardLog";
-import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
+import { tasks, TaskType } from "@/src/db/schema/tasks";
+import { teamMembers, TeamType } from "@/src/db/schema/teams";
+import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
+import { extractFieldValues } from "@/src/lib/tusktask/utils/extractFieldValues";
+import { getSearchParams } from "@/src/lib/tusktask/utils/getSearchParams";
+import { and, eq, gte, ilike, inArray, isNull, or, param } from "drizzle-orm";
 
-export const userConfigs = {
-  id: true,
-  name: true,
-  image: true,
-  userName: true,
-};
+export interface TaskGetRequest {
+  search?: string;
+  creator?: string;
+  owner?: string;
+  status?: TaskType["status"];
+  completedBy?: TaskType["completedAt"];
+  claimedBy?: TaskType["claimedById"];
+  withSubtasks?: string;
+  overdue?: string;
+  onlyTopLevel?: string;
+  team?: string;
+  limit?: string;
+  offset?: string;
+}
 
-export const tasksGet = async (req: Request) => {
-  console.log(createStandardLog("tasks", null, "GET", "INCOMING_REQUEST"));
+export interface SubtaskType extends TaskType {
+  subtasks: TaskType[];
+}
 
+export interface TaskWithSubtasks extends TaskType {
+  subtasks: SubtaskType[];
+  team: TeamType;
+  createdByOptimisticUpdate?: boolean;
+}
+
+export async function tasksGet(req: Request) {
+  // parameters construction
   const url = new URL(req.url);
-  const body: TasksGetApiRequest = getSearchParams(url, filterFields);
+  const params = getSearchParams(url, [
+    "search",
+    "creator",
+    "owner",
+    "team",
+    "status",
+    "completedBy",
+    "claimedBy",
+    "withSubtasks",
+    "overdue",
+    "limit",
+    "offset",
+    "onlyTopLevel",
+  ]);
 
-  const { ownerId, createdById } = body;
+  // Pull and Validate session
+  const session = await auth();
 
-  if (!ownerId && !createdById) {
-    console.error(createStandardLog("tasks", null, "GET", "BAD_REQUEST"));
-
-    return createNextResponse(400, {
-      message: "Missing important parameters",
+  if (!session || !session.user || !session.user.id) {
+    return createNextResponse(401, {
+      messages: "Invalid session",
       userFriendly: false,
     });
   }
 
-  const where = [];
+  // Query construction
+  let where = [];
 
-  if (ownerId) {
-    where.push(eq(tasks.ownerId, ownerId));
+  // Search by TaskName & Description
+  if (params?.search) {
+    where.push(
+      or(
+        ilike(tasks.name, `%${params.search}%`),
+        ilike(tasks.description, `%${tasks.description}%`)
+      )
+    );
   }
 
-  if (createdById) {
-    where.push(eq(tasks.createdById, createdById));
+  // Filter by creator
+  if (params?.creator) {
+    where.push(eq(tasks.id, params.creator));
   }
 
-  // Filter Construction
-  if (body.name) {
-    where.push(ilike(tasks.name, `%${body.name}%`));
+  //  Filter by owner
+  if (params?.owner) {
+    where.push(eq(tasks.ownerId, params?.owner));
   }
 
-  if (body.tags) {
-    const tags = body.tags.split(",");
-    where.push(inArray(tasks.tags, [tags]));
-  }
-
-  if (body.status) {
-    where.push(eq(tasks.status, body.status));
-  }
-
-  if (typeof body.overdue === "string") {
-    body.overdue = body.overdue === "true" ? true : false;
-  }
-
-  if (body.overdue) {
-    const now = new Date();
-    where.push(lt(tasks.deadlineAt, now));
-  }
-
-  if (body.deletedAt) {
-    where.push(isNotNull(tasks.deletedAt));
-  } else {
-    where.push(isNull(tasks.deletedAt));
-  }
-
-  // Pagination Constants
-  let limit: number = 10;
-  if (body.limit) {
-    limit = parseInt(body.limit, 10);
-  }
-
-  let offset: number = 0;
-  if (body.offset) {
-    offset = parseInt(body.offset, 10);
-  }
-
-  if (isNaN(limit) || isNaN(offset)) {
-    return createNextResponse(400, {
-      message: "Invalid limit or offset value",
-      userFriendly: false,
-    });
-  }
-
-  // Fetching
-  try {
-    const result = await db.query.tasks.findMany({
-      where: and(...where),
-      with: {
-        owner: {
-          columns: userConfigs,
-        },
-        creator: {
-          columns: userConfigs,
-        },
-        project: true,
-        tasksToUsers: {
-          columns: {},
-          with: {
-            user: {
-              columns: userConfigs,
-            },
-          },
-        },
-        parent: {},
-      },
-      limit: limit,
-      offset: offset,
-    });
-
-    if (result.length < 1) {
-      console.log(createStandardLog("tasks", null, "GET", "NOT_FOUND"));
-      return createNextResponse(404, {
-        message: "No such tasks is found",
-        userFriendly: false,
-        data: result,
+  // Filter by status
+  const allowed_status: TaskType["status"][] = [
+    "archived",
+    "completed",
+    "not_started",
+    "on_process",
+  ];
+  if (params?.status) {
+    if (!allowed_status.includes(params.status as TaskType["status"])) {
+      return createNextResponse(400, {
+        messages: "invalid status",
       });
     }
 
-    return createNextResponse(200, {
-      message: "SUCCESS, returning tasks",
-      userFriendly: false,
-      data: result,
+    where.push(eq(tasks.status, params.status as TaskType["status"]));
+  }
+
+  // Filter By Finisher
+  if (params?.completedBy) {
+    where.push(eq(tasks.completedById, params.completedBy));
+  }
+
+  // Filter By Claimer
+  if (params?.claimedBy) {
+    where.push(eq(tasks.claimedById, params.claimedBy));
+  }
+
+  // Filter overdue tasks
+  if (params?.overdue === "true") {
+    where.push(gte(tasks.deadlineAt, new Date()));
+  }
+
+  // Filter Top level task only
+  if (params?.onlyTopLevel === "true") {
+    where.push(isNull(tasks.parentId));
+  }
+
+  // Default Limits and Offset
+  let limit: number = 100;
+  let offset: number = 0;
+
+  if (params?.limit) {
+    const parsedLimit = parseInt(params.limit);
+    if (isNaN(parsedLimit)) {
+      return createNextResponse(400, {
+        messages: "Invalid limit configuration",
+      });
+    }
+
+    limit = parsedLimit;
+  }
+
+  if (params?.offset) {
+    const parsedOffset = parseInt(params.offset);
+    if (isNaN(parsedOffset)) {
+      return createNextResponse(400, {
+        messages: "Invalid offset configuration",
+      });
+    }
+
+    offset = parsedOffset;
+  }
+
+  // Get User's teams
+  let teams;
+
+  try {
+    teams = await db.query.teamMembers.findMany({
+      where: eq(teamMembers.userId, session.user.id),
     });
+
+    if (teams.length === 0) {
+      return createNextResponse(500, {
+        messages: "Fatal Error, please contact developer",
+        userFriendly: true,
+      });
+    }
   } catch (error) {
-    console.error(createStandardLog("tasks", null, "GET", "UNEXPECTED_ERROR"));
     return createNextResponse(500, {
-      message: "Something went wrong, please try again.",
+      messages: "Failed when fetching your teams, please try again.",
       userFriendly: true,
     });
   }
-};
+
+  // Get user teams' IDs
+  const teamIds = extractFieldValues(teams, "teamId");
+
+  where.push(inArray(teamMembers.teamId, teamIds));
+
+  // With mechanism
+  let withRelations: any = {};
+
+  // Always return with team
+  withRelations.team = {};
+
+  // Dynamic return with subtasks relations
+  if (params?.withSubtasks === "true") {
+    withRelations.subtasks = {
+      with: {
+        subtasks: {
+          with: {
+            subtasks: {},
+          },
+        },
+      },
+    };
+  }
+
+  //  Fetching
+  try {
+    const results = await db.query.tasks.findMany({
+      where: and(...where),
+      with: withRelations,
+      limit,
+      offset,
+    });
+
+    return createNextResponse(results.length === 0 ? 404 : 200, {
+      messages:
+        results.length === 0
+          ? "Fetched but nothing is found"
+          : "Fetched and found your tasks",
+      userFriendly: true,
+      data: results,
+    });
+  } catch (error) {
+    return createNextResponse(500, {
+      messages:
+        "Something went wrong when fetching your task, please try again!",
+      userFriendly: true,
+      data: error,
+    });
+  }
+}

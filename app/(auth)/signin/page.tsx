@@ -1,9 +1,9 @@
-import { Metadata } from "next";
 import React from "react";
-import SignInPageIndex from "./components";
+import SignInPageIndex from "./SignInPageIndex";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Continue to the app | TuskTask",
+  title: "Continue To TuskTask",
 };
 
 const SignInPage = () => {

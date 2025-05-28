@@ -1,5 +1,5 @@
-import { SUPPORTED_IMAGE_FORMATS } from "@/src/configs";
 import sharp from "sharp";
+import { SUPPORTED_IMAGE_FORMATS } from "../constants/configs";
 
 export async function validateImageBlob(blob: Blob): Promise<sharp.Metadata> {
   const buffer = await blob.arrayBuffer().then((buf) => Buffer.from(buf));

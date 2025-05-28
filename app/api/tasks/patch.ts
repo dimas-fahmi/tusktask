@@ -1,157 +1,163 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
-import {
-  TaskInsertType,
-  tasks,
-  tasksInsertSchema,
-  TaskType,
-} from "@/src/db/schema/tasks";
-import { checkProtectedFields } from "@/src/lib/tusktask/utils/api/checkProtectedFields";
-import { normalizeDateFields } from "@/src/lib/tusktask/utils/api/normalizeDateFields";
-import createNextResponse from "@/src/lib/tusktask/utils/json/createNextResponse";
-import { eq } from "drizzle-orm";
+import { taskInsertSchema, tasks, TaskType } from "@/src/db/schema/tasks";
+import { teamMembers, TeamMembersType } from "@/src/db/schema/teams";
+import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { includeFields } from "@/src/lib/tusktask/utils/includeFields";
+import { normalizeDateFields } from "@/src/lib/tusktask/utils/normalizeDateFields";
+import { and, eq } from "drizzle-orm";
 
-export interface TaskPatchApiRequest {
-  taskId: string;
-  newValue: Partial<TaskInsertType>;
+export interface TasksPatchRequest {
+  teamId: string;
+  id: string;
+  operation: "update" | "claim" | "complete";
+  newValues: TaskType;
 }
 
-export async function taskPatch(req: Request) {
-  let body: TaskPatchApiRequest;
+export async function tasksPatch(req: Request) {
+  let body: TasksPatchRequest;
+
+  //   Parse
+  try {
+    body = await req.json();
+  } catch (error) {
+    return createNextResponse(400, {
+      messages: "Invalid JSON body",
+    });
+  }
+
+  // Pull session
+  const session = await auth();
+
+  if (!session || !session.user.id) {
+    return createNextResponse(401, {
+      messages: "Invalid session",
+    });
+  }
+
+  //  Validate request
+  if (!body.id || !body.teamId || !body.newValues) {
+    return createNextResponse(400, {
+      messages: "Missing important parameters",
+    });
+  }
+
+  //  Check Membership
+  let membership: TeamMembersType | undefined;
 
   try {
-    // Parse request
-    try {
-      body = await req.json();
-    } catch (error) {
-      return createNextResponse(400, {
-        message: "Invalid JSON body",
-        userFriendly: false,
-      });
-    }
+    membership = await db.query.teamMembers.findFirst({
+      where: and(
+        eq(teamMembers.teamId, body.teamId),
+        eq(teamMembers.userId, session.user.id)
+      ),
+    });
 
-    const { newValue, taskId } = body;
-
-    // Validate parameters
-    if (!newValue || !taskId) {
-      return createNextResponse(400, {
-        message: "Missing important parameters",
-        userFriendly: false,
-      });
-    }
-
-    const session = await auth();
-
-    // Validate session
-    if (!session || !session.user) {
-      return createNextResponse(401, {
-        message: "Invalid session, please log back in",
-        userFriendly: true,
-      });
-    }
-
-    let task: TaskType | undefined;
-
-    // Fetch Current Task
-    try {
-      task = await db.query.tasks.findFirst({
-        where: eq(tasks.id, taskId),
-      });
-
-      if (!task) {
-        return createNextResponse(404, {
-          message: `No task with id: ${taskId} is found`,
-          userFriendly: false,
-        });
-      }
-    } catch (error) {
-      return createNextResponse(500, {
-        message: `Failed to contact Database, please try again.`,
-        userFriendly: true,
-      });
-    }
-
-    // Check ownership
-    const isOwner = task.ownerId === session.user.id;
-
-    if (!isOwner) {
+    if (!membership) {
       return createNextResponse(403, {
-        message: "Only owner of this task able to do this operation",
-        userFriendly: true,
-      });
-    }
-
-    // Check if new value contains protected fields
-    const protectedFields: (keyof TaskType)[] = [
-      "id",
-      "createdById",
-      "createdAt",
-      "deletedAt",
-    ];
-
-    const includedProtectedField = checkProtectedFields(
-      newValue,
-      protectedFields
-    );
-
-    if (includedProtectedField) {
-      return createNextResponse(403, {
-        message: `Forbidden, new value included protectedField: ${includedProtectedField}`,
-        userFriendly: false,
-      });
-    }
-
-    // Normalize Date fields
-    const allowedDateFields: (keyof Partial<TaskType>)[] = [
-      "deadlineAt",
-      "reminderAt",
-      "startAt",
-      "completedAt",
-    ];
-
-    normalizeDateFields(newValue, allowedDateFields);
-
-    // Parse from schema
-    const taskUpdateSchema = tasksInsertSchema.partial();
-    const validationResult = taskUpdateSchema.safeParse(newValue);
-
-    // Validate newValue
-    if (!validationResult.success) {
-      return createNextResponse(400, {
-        message: "Failed on new value validation phase",
-        userFriendly: false,
-      });
-    }
-
-    // Update task
-    try {
-      const [result] = await db
-        .update(tasks)
-        .set(validationResult.data)
-        .where(eq(tasks.id, taskId))
-        .returning();
-
-      if (!result) {
-        return createNextResponse(500, {
-          message: "Unexpected error when updating task, please try again",
-          userFriendly: true,
-        });
-      }
-
-      return createNextResponse(200, {
-        message: `Task with id: ${taskId} is updated successfully by its owner`,
-        userFriendly: false,
-      });
-    } catch (error) {
-      return createNextResponse(500, {
-        message: "Failed to update task, please try again",
-        userFriendly: true,
+        messages: "Membership is not found",
       });
     }
   } catch (error) {
     return createNextResponse(500, {
-      message: "Unexpected error, please try again",
-      userFriendly: true,
+      messages: "Failed when fetching team membership",
+    });
+  }
+
+  // Sterilize New values
+  let { newValues } = body;
+  const forbiddenFields: (keyof TaskType)[] = [
+    "id",
+    "createdById",
+    "createdAt",
+    "updatedAt",
+  ];
+  const forbiddenFieldsNonAdmin: (keyof TaskType)[] = [
+    "id",
+    "name",
+    "description",
+    "createdById",
+    "ownerId",
+    "teamId",
+    "parentId",
+    "type",
+    "createdAt",
+    "updatedAt",
+    "startAt",
+    "deadlineAt",
+  ];
+  const { userRole } = membership;
+  const includedForbiddenFields = includeFields(
+    newValues,
+    ["owner", "admin"].includes(userRole)
+      ? forbiddenFields
+      : forbiddenFieldsNonAdmin
+  );
+
+  if (includedForbiddenFields.length !== 0) {
+    return createNextResponse(403, {
+      messages: `Field [${includedForbiddenFields[0]}] is forbidden`,
+    });
+  }
+
+  // Parse dates
+  const allowedDateFields: (keyof TaskType)[] = [
+    "completedAt",
+    "deadlineAt",
+    "startAt",
+  ];
+
+  normalizeDateFields(body.newValues, allowedDateFields);
+
+  // Validate New Value
+  const validation = taskInsertSchema.partial().safeParse(body.newValues);
+
+  if (!validation.success) {
+    return createNextResponse(400, {
+      messages: "Failed validation",
+      data: validation.error,
+    });
+  }
+
+  // Validate to make sure task is exist
+  let task: TaskType | undefined;
+  try {
+    task = await db.query.tasks.findFirst({
+      where: and(eq(tasks.id, body.id), eq(tasks.teamId, body.teamId)),
+    });
+
+    if (!task) {
+      return createNextResponse(404, {
+        messages: "No such task registered for this team",
+      });
+    }
+  } catch (error) {
+    return createNextResponse(500, {
+      messages: "Failed when fetching your task",
+    });
+  }
+
+  // Mutate
+  try {
+    const response = await db
+      .update(tasks)
+      .set(validation.data)
+      .where(and(eq(tasks.teamId, membership.teamId), eq(tasks.id, task.id)))
+      .returning();
+
+    if (!response) {
+      return createNextResponse(500, {
+        messages: "Unexpected error when updating your task",
+      });
+    }
+
+    return createNextResponse(200, {
+      messages: "Update success",
+      data: response,
+    });
+  } catch (error) {
+    return createNextResponse(500, {
+      messages: "Failed when executing update",
     });
   }
 }

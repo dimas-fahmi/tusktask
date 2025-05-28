@@ -2,13 +2,14 @@
 
 import React from "react";
 import "@/src/ui/css/globals.tailwind.css";
-import { ThemeContextProvider } from "@/src/context/ThemeContext";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { poppins, quicksand } from "@/src/ui/fonts";
 import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/src/ui/components/shadcn/ui/sonner";
-import { NotificationContextProvider } from "@/src/context/NotificationContext";
+import { NotificationContextProvider } from "@/src/lib/tusktask/context/NotificationContext";
+import { PersonalContextProvider } from "@/src/lib/tusktask/context/PersonalContext";
+import { ThemeContextProvider } from "@/src/lib/tusktask/context/ThemeContext";
+import { TaskContextProvider } from "@/src/lib/tusktask/context/TaskContext";
+import { TeamContextProvider } from "@/src/lib/tusktask/context/TeamContext";
 
 const queryClient = new QueryClient();
 
@@ -22,18 +23,21 @@ export default function RootLayout({
       <head>
         <link rel="preload" href="/sounds/notify.mp3" as="audio" />
       </head>
-      <body
-        className={`${poppins.variable} ${quicksand.variable} antialiased bg-tt-primary`}
-      >
+      <body className={`antialiase`} suppressHydrationWarning>
         <QueryClientProvider client={queryClient}>
           <SessionProvider>
-            <NotificationContextProvider>
-              <ThemeContextProvider>{children}</ThemeContextProvider>
-            </NotificationContextProvider>
+            <PersonalContextProvider>
+              <NotificationContextProvider>
+                <ThemeContextProvider>
+                  <TeamContextProvider>
+                    <TaskContextProvider>{children}</TaskContextProvider>
+                  </TeamContextProvider>
+                </ThemeContextProvider>
+              </NotificationContextProvider>
+            </PersonalContextProvider>
           </SessionProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
-        <Toaster position="top-right" richColors visibleToasts={5} />
       </body>
     </html>
   );

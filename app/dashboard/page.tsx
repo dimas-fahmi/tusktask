@@ -1,13 +1,13 @@
 import { Metadata } from "next";
 import React from "react";
-import DashboardIndex from "./DashboardIndex";
+import DashboardPageIndex from "./DashboardPageIndex";
 
 export const metadata: Metadata = {
   title: "Dashboard | TuskTask",
 };
 
 const DashboardPage = () => {
-  return <DashboardIndex />;
+  return <DashboardPageIndex />;
 };
 
 export default DashboardPage;

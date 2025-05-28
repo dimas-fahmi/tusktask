@@ -1,16 +1,14 @@
-import { generateRandomString } from "@/src/lib/tusktask/utils/generateRandomString";
-import { InferSelectModel, relations } from "drizzle-orm";
-import { timestamp, pgTable, text, unique, boolean } from "drizzle-orm/pg-core";
-import { notificationsToUsers } from "./notifications";
-import { tasksToUsers } from "./tasks";
-import { projectsToUsers } from "./projects";
-import {
-  createSelectSchema,
-  createInsertSchema,
-  createUpdateSchema,
-} from "drizzle-zod";
+import generateRandomUsername from "@/src/lib/tusktask/generator/generateRandomUsername";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
+import { boolean, timestamp, pgTable, text, index } from "drizzle-orm/pg-core";
+import { createUpdateSchema } from "drizzle-zod";
+import { teamMembers } from "./teams";
+import { notifications } from "./notifications";
+import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
+import { tasks } from "./tasks";
+import { messages } from "./messages";
 
-// Users Table
+// USERS TABLE
 export const users = pgTable(
   "users",
   {
@@ -18,67 +16,72 @@ export const users = pgTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name"),
-    firstName: text("first_name"),
-    lastName: text("last_name"),
-    userName: text("user_name")
-      .$defaultFn(() => `user_${generateRandomString()}`)
-      .notNull(),
-    birthDate: timestamp("birth_date", { mode: "date" }),
+    username: text("username")
+      .$defaultFn(() => generateRandomUsername())
+      .notNull()
+      .unique(),
+    notificationSoundEnable: boolean("notificationSoundEnable").default(true),
+    reminderSoundEnable: boolean("reminderSoundEnable").default(true),
     email: text("email").unique(),
-    emailVerified: timestamp("email_verified", { mode: "date" }), // no "at" drizzle-adapter compatibility issue
-    image: text("image"),
-    theme: text("theme", { enum: ["default", "cassandra_pink"] })
+    timezone: text("timezone").default("Asia/Jakarta").notNull(),
+    emailVerified: timestamp("emailVerified", TIMESTAMP_CONFIGS),
+    registration: text("registration", {
+      enum: ["username", "email", "avatar", "preferences", "complete"],
+    })
+      .default("username")
+      .notNull(),
+    theme: text("theme", { enum: ["default", "dark", "cassandra", "nebula"] })
       .default("default")
       .notNull(),
-    registration: text("registration", {
-      enum: [
-        "birthDate",
-        "personal",
-        "username",
-        "email",
-        "avatar",
-        "final",
-        "done",
-      ],
-    })
-      .default("birthDate")
-      .notNull(),
-    notificationSound: boolean("notification_sound").default(true).notNull(),
-    reminderSound: boolean("reminder_sound").default(true).notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
-    updatedAt: timestamp("updated_at", {
-      mode: "date",
-      precision: 3,
-      withTimezone: true,
-    }).$onUpdate(() => new Date()),
-    deletedAt: timestamp("deleted_at", {
-      mode: "date",
-      precision: 3,
-      withTimezone: true,
-    }),
+    image: text("image"),
+    createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt", TIMESTAMP_CONFIGS).$onUpdateFn(
+      () => new Date()
+    ),
   },
-  (t) => [unique("users_user_name_idx").on(t.userName)]
+  (t) => [index("USERS_NAME_IDX").on(t.name)]
 );
 
-// Users Relations
+// RELATIONS : users table
 export const usersRelations = relations(users, ({ many }) => ({
-  notificationsToUsers: many(notificationsToUsers),
-  tasksToUsers: many(tasksToUsers),
-  projectsToUsers: many(projectsToUsers),
+  // Team Relations
+  teamMembers: many(teamMembers),
+
+  // Notifications Relations
+  notifications: many(notifications),
+  sentNotifications: many(notifications, {
+    relationName: "notification_sender",
+  }),
+  receivedNotifications: many(notifications, {
+    relationName: "notification_receiver",
+  }),
+
+  // Tasks Relations
+  tasks: many(tasks),
+  createdTasks: many(tasks, {
+    relationName: "task_creator",
+  }),
+  ownedTasks: many(tasks, {
+    relationName: "task_owner",
+  }),
+  completedTasks: many(tasks, {
+    relationName: "task_completedBy",
+  }),
+  claimedTasks: many(tasks, {
+    relationName: "task_claimedBy",
+  }),
+
+  // Messages Relations
+  messages: many(messages),
+  sendMessages: many(messages, {
+    relationName: "messages_sender",
+  }),
+  receivedMessages: many(messages, {
+    relationName: "messages_receiver",
+  }),
 }));
 
-// User Type
 export type UserType = InferSelectModel<typeof users>;
+export type UserInsertType = InferInsertModel<typeof users>;
 
-export type SensitiveUserFields =
-  | "email"
-  | "emailVerified"
-  | "deletedAt"
-  | "birthDate"
-  | "registration";
-
-export type SafeUserType = Omit<UserType, SensitiveUserFields>;
-
-export const userInsertSchema = createInsertSchema(users);
-export const userSelectSchema = createSelectSchema(users);
-export const userUpdateSchema = createUpdateSchema(users);
+export const UserUpdateSchema = createUpdateSchema(users);

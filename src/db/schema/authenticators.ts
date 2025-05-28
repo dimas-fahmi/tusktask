@@ -10,15 +10,15 @@ import { users } from "./users";
 export const authenticators = pgTable(
   "authenticators",
   {
-    credentialID: text("credential_id").notNull().unique(),
-    userId: text("user_id")
+    credentialID: text("credentialID").notNull().unique(),
+    userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    providerAccountId: text("provider_account_id").notNull(),
-    credentialPublicKey: text("credential_public_key").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
+    credentialPublicKey: text("credentialPublicKey").notNull(),
     counter: integer("counter").notNull(),
-    credentialDeviceType: text("credential_device_type").notNull(),
-    credentialBackedUp: boolean("credential_backed_up").notNull(),
+    credentialDeviceType: text("credentialDeviceType").notNull(),
+    credentialBackedUp: boolean("credentialBackedUp").notNull(),
     transports: text("transports"),
   },
   (authenticator) => [

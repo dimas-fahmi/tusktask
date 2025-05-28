@@ -1,80 +1,78 @@
-import {
-  index,
-  pgTable,
-  primaryKey,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { relations } from "drizzle-orm";
+import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
+import { teams } from "./teams";
 
-// Notifications Table
+// NOTIFICATIONS TABLE
 export const notifications = pgTable(
   "notifications",
   {
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    title: text("title").notNull(),
-    body: text("text").notNull(),
+    title: text("title"),
+    description: text("description"),
     type: text("type", {
-      enum: ["message", "friend_request", "sharing", "announcement"],
+      enum: [
+        "joinedATeam", // when someone joined a team, team members will be notified
+        "messages", // generic messages from DM to team chat
+        "teamInvitation", // team invitation
+        "transferOwnership", // when owner want to transfer team ownership
+        "adminRequest", // when someone request for administration role
+        "taskClaim", // when someone claimed a task
+        "taskCompletion", // when somone completed a task
+        "broadcastTeamInvitation", // when owner or admin invite someone, members will be notified
+        "assignNotification", // when someone request other user to claim a task
+        "reminder", // reminder notification for tasks deadline
+        "system", // system broadcast
+      ],
+    }).notNull(),
+    category: text("category", {
+      enum: ["tasks", "teams", "messages", "reminders", "generic"],
+    })
+      .default("generic")
+      .notNull(),
+    status: text("status", {
+      enum: ["not_read", "acknowledged", "accepted", "rejected"],
     }),
-    senderId: text("sender_id")
+    senderId: text("senderId")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    receiverId: text("receiverId")
       .references(() => users.id, {
         onDelete: "cascade",
       })
       .notNull(),
-    recipientId: text("recipient_id").references(() => users.id, {
-      onDelete: "cascade",
-    }),
-    createdAt: timestamp("created_at", {
-      mode: "date",
-      precision: 3,
-      withTimezone: true,
-    }).defaultNow(),
-    markReadAt: timestamp("mark_read_at", {
-      mode: "date",
-      precision: 3,
-      withTimezone: true,
-    }),
+    createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
+    markReadAt: timestamp("markReadAt", TIMESTAMP_CONFIGS),
+    teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }),
   },
   (t) => [
-    index("notifications_sender_id_idx").on(t.senderId),
-    index("notifications_recipient_id_idx").on(t.recipientId),
+    index("NOTIFICATIONS_SENDER_IDX").on(t.senderId),
+    index("NOTIFICATIONS_RECEIVER_IDX").on(t.receiverId),
+    index("NOTIFICATIONS_TYPE_IDX").on(t.type),
+    index("NOTIFICATIONS_STATUS_IDX").on(t.status),
+    index("NOTIFICATIONS_CATEGORY_IDX").on(t.category),
+    index("NOTIFICATIONS_TEAM_IDX").on(t.teamId),
   ]
 );
 
-// Notifications Relations
-export const notificationsRelations = relations(notifications, ({ many }) => ({
-  notificationsToUsers: many(notificationsToUsers),
+// RELATIONS : notifications
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  sender: one(users, {
+    fields: [notifications.senderId],
+    references: [users.id],
+    relationName: "notifications_sender",
+  }),
+  receiver: one(users, {
+    fields: [notifications.receiverId],
+    references: [users.id],
+    relationName: "notification_receiver",
+  }),
+  team: one(teams, {
+    fields: [notifications.teamId],
+    references: [teams.id],
+    relationName: "notifications_team",
+  }),
 }));
-
-// Notifications Join Table
-export const notificationsToUsers = pgTable(
-  "notificationsToUsers",
-  {
-    notificationId: text("notification_id")
-      .references(() => notifications.id, { onDelete: "cascade" })
-      .notNull(),
-    userId: text("user_id")
-      .references(() => users.id, { onDelete: "cascade" })
-      .notNull(),
-  },
-  (t) => [primaryKey({ columns: [t.notificationId, t.userId] })]
-);
-
-// NotificationsToUsers Joint Table Relations
-export const notificationsToUsersRelations = relations(
-  notificationsToUsers,
-  ({ one }) => ({
-    notification: one(notifications, {
-      fields: [notificationsToUsers.notificationId],
-      references: [notifications.id],
-    }),
-    user: one(users, {
-      fields: [notificationsToUsers.userId],
-      references: [users.id],
-    }),
-  })
-);
