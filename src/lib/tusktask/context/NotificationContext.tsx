@@ -6,6 +6,19 @@ import { AlarmClock, Bell, CircleAlert, CircleCheckBig } from "lucide-react";
 import usePersonalContext from "../hooks/context/usePersonalContext";
 import NotificationsDialog from "@/src/ui/components/tusktask/prefabs/NotificationsDialog";
 import { SetStateAction } from "@/src/types/types";
+import {
+  UseMutateFunction,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { fetchNotifications } from "../fetchers/fetchNotifications";
+import { FullNotification } from "@/src/types/notification";
+import {
+  joinTeamMutation,
+  TeamMembershipResponse,
+  TeamMembersRequest,
+} from "../mutators/joinTeam";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -18,6 +31,13 @@ interface NotificationContextValues {
   triggerSound: (type: PlaySoundType) => void;
   notificationsDialogOpen: boolean;
   setNotificationsDialogOpen: SetStateAction<boolean>;
+  notifications: FullNotification[];
+  joinTeam: UseMutateFunction<
+    TeamMembershipResponse,
+    Error,
+    TeamMembersRequest,
+    unknown
+  >;
 }
 
 export type PlaySoundType =
@@ -47,6 +67,17 @@ const NotificationContextProvider = ({
 
   // Pull personal data
   const { personal } = usePersonalContext();
+
+  // Notification Polling
+  const { data: notificationsResponse } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: fetchNotifications,
+    refetchInterval: 100 * 10, // 10 seconds intervar
+  });
+
+  const notifications = notificationsResponse?.data
+    ? notificationsResponse.data
+    : [];
 
   // Synchronize personal prefences with context
   useEffect(() => {
@@ -144,6 +175,27 @@ const NotificationContextProvider = ({
     });
   };
 
+  // Query queryClient
+  const queryClient = useQueryClient();
+
+  // Join team
+  const { mutate: joinTeam } = useMutation({
+    mutationFn: joinTeamMutation,
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["teams"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+    },
+  });
+
   return (
     <NotificationContext.Provider
       value={{
@@ -151,6 +203,8 @@ const NotificationContextProvider = ({
         triggerSound,
         notificationsDialogOpen,
         setNotificationsDialogOpen,
+        notifications,
+        joinTeam,
       }}
     >
       {children}

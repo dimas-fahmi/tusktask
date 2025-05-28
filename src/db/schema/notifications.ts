@@ -1,8 +1,9 @@
-import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { index, json, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { teams } from "./teams";
+import { createInsertSchema } from "drizzle-zod";
 
 // NOTIFICATIONS TABLE
 export const notifications = pgTable(
@@ -16,7 +17,8 @@ export const notifications = pgTable(
     type: text("type", {
       enum: [
         "joinedATeam", // when someone joined a team, team members will be notified
-        "messages", // generic messages from DM to team chat
+        "directMessage",
+        "groupChat",
         "teamInvitation", // team invitation
         "transferOwnership", // when owner want to transfer team ownership
         "adminRequest", // when someone request for administration role
@@ -47,6 +49,7 @@ export const notifications = pgTable(
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
     markReadAt: timestamp("markReadAt", TIMESTAMP_CONFIGS),
     teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }),
+    payload: json("payload").$type<Record<string, any>>(),
   },
   (t) => [
     index("NOTIFICATIONS_SENDER_IDX").on(t.senderId),
@@ -76,3 +79,8 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
     relationName: "notifications_team",
   }),
 }));
+
+export type NotificationType = InferSelectModel<typeof notifications>;
+export type NotificationInsertType = InferInsertModel<typeof notifications>;
+
+export const notificationSchema = createInsertSchema(notifications);

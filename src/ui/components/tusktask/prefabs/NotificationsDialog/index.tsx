@@ -35,11 +35,13 @@ const FilterButton = ({
 
 const NotificationsDialog = () => {
   // Pull states from notification contexttext === "all" ? "Show All" :
-  const { notificationsDialogOpen, setNotificationsDialogOpen } =
+  const { notificationsDialogOpen, setNotificationsDialogOpen, notifications } =
     useNotificationContext();
 
   // Filter State
   const [filter, setFilter] = useState<FilterType>("all");
+
+  console.log(notifications);
 
   return (
     <Dialog
@@ -79,7 +81,19 @@ const NotificationsDialog = () => {
 
           {/* Main */}
           <ScrollArea className="w-full h-[420px]">
-            <NotificationCard />
+            {notifications &&
+              notifications.map((notification) => (
+                <NotificationCard
+                  notification={notification}
+                  key={notification.id}
+                />
+              ))}
+
+            {notifications.length === 0 && (
+              <p className="text-center text-sm opacity-60 p-4">
+                No notifications
+              </p>
+            )}
           </ScrollArea>
         </div>
       </DialogContent>

@@ -22,6 +22,20 @@
       "when": 1748166256889,
       "tag": "0002_sweet_shadowcat",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1748406257844,
+      "tag": "0003_daffy_namora",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1748419522197,
+      "tag": "0004_many_mulholland_black",
+      "breakpoints": true
     }
   ]
 }

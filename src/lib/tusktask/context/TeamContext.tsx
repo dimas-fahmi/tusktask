@@ -1,9 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  UseMutateFunction,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { createContext, useState } from "react";
 
 import { fetchPersonalTeams } from "../fetchers/fetchPersonalTeams";
 import { extractFieldValues } from "../utils/extractFieldValues";
-import { TeamMembersType } from "@/src/db/schema/teams";
 import { SetStateAction } from "@/src/types/types";
 import NewTeamDialog from "@/src/ui/components/tusktask/prefabs/NewTeamDialog";
 import { fetchTeamDetail } from "../fetchers/fetchTeamDetail";
@@ -14,6 +18,11 @@ import {
 } from "@/src/types/team";
 import TeamMembershipDialog from "@/src/ui/components/tusktask/prefabs/TeamMembershipDialog";
 import InviteMemberDialog from "@/src/ui/components/tusktask/prefabs/InviteMemberDialog";
+import {
+  joinTeamMutation,
+  TeamMembershipResponse,
+  TeamMembersRequest,
+} from "../mutators/joinTeam";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -53,6 +62,8 @@ const TeamContextProvider = ({
       queryFn: () => fetchTeamDetail(teamDetailKey!),
       enabled: !!teamDetailKey,
     });
+
+  const queryClient = useQueryClient();
 
   const teamDetail: TeamDetail | null = teamDetailResponse?.data
     ? teamDetailResponse.data
