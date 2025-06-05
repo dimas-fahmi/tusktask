@@ -1,12 +1,14 @@
 import React from "react";
 import { Separator } from "../../../shadcn/ui/separator";
 import {
+  CircleAlert,
   CirclePlus,
   Ellipsis,
   ExternalLink,
   LoaderCircle,
   LogOut,
   MessageCircle,
+  Sparkle,
   Users,
   UsersRound,
 } from "lucide-react";
@@ -21,6 +23,12 @@ import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import { useRouter } from "next/navigation";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { FullTeam } from "@/src/types/team";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../../shadcn/ui/tooltip";
+import Link from "next/link";
 
 export interface TeamCardProps {
   team: FullTeam;
@@ -44,6 +52,8 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
 
   // Pull triggers from notification context
   const { triggerToast } = useNotificationContext();
+
+  const isPrimary = team?.type === "primary";
 
   return (
     <div
@@ -90,10 +100,36 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
               {completedTasks.length}/{tasks.length}
             </span>
             <Separator orientation="vertical" />
-            <span className="px-4 py-2 items-center justify-around flex gap-1.5">
-              <Users className="w-3 h-3" />{" "}
-              {team?.teamMembers && team.teamMembers.length}
-            </span>
+            {team?.type === "primary" ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="px-4 py-2 items-center justify-around flex gap-1.5">
+                    <Sparkle className="w-3 h-3" /> Primary
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="flex items-center gap-1">
+                  <CircleAlert className="w-4 h-4" />
+                  <span>
+                    This is your primary team,{" "}
+                    <Link
+                      href={"/"}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="underline hover:text-accent"
+                    >
+                      Read more about it
+                    </Link>
+                    .
+                  </span>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <span className="px-4 py-2 items-center justify-around flex gap-1.5">
+                <Users className="w-3 h-3" />{" "}
+                {team?.teamMembers && team.teamMembers.length}
+              </span>
+            )}
             {membership && (
               <>
                 <Separator orientation="vertical" />
@@ -116,31 +152,58 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="p-1 space-y-2">
-                  <PopoverAction
-                    Icon={ExternalLink}
-                    action={() => {}}
-                    title="Open Team"
-                  />
+                  <PopoverAction Icon={ExternalLink} title="Open Team" />
                   <Separator />
-                  <PopoverAction
-                    Icon={CirclePlus}
-                    action={() => {}}
-                    title="New Task"
-                  />
-                  <PopoverAction
-                    Icon={UsersRound}
-                    action={() => {}}
-                    title="Members"
-                  />
-                  <PopoverAction
-                    Icon={MessageCircle}
-                    action={() => {}}
-                    title="Chatroom"
-                  />
+                  <PopoverAction Icon={CirclePlus} title="New Task" />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverAction
+                        Icon={UsersRound}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isPrimary) return;
+                        }}
+                        title="Members"
+                        variant={isPrimary ? "disabled" : "default"}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className={`${isPrimary ? "" : "hidden"}`}>
+                      {isPrimary ? (
+                        <>
+                          This is your primary team, it should be private. Learn
+                          more
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverAction
+                        Icon={MessageCircle}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (isPrimary) return;
+                        }}
+                        title="Chatroom"
+                        variant={isPrimary ? "disabled" : "default"}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className={`${isPrimary ? "" : "hidden"}`}>
+                      {isPrimary ? (
+                        <>
+                          This is your primary team, it should be private. Learn
+                          more
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
                   <Separator />
                   <PopoverAction
                     Icon={LogOut}
-                    action={() => {}}
                     title="Leave Team"
                     variant="destructive"
                   />

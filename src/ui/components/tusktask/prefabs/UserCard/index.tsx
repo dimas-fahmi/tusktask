@@ -37,17 +37,9 @@ const UserCard = () => {
             </span>
           </PopoverTrigger>
           <PopoverContent className="p-1 space-y-2">
-            <PopoverAction
-              Icon={UserRoundPlus}
-              action={() => {}}
-              title="Invite To Team"
-            />
+            <PopoverAction Icon={UserRoundPlus} title="Invite To Team" />
             <Separator />
-            <PopoverAction
-              Icon={MessageCircle}
-              action={() => {}}
-              title="Send a message"
-            />
+            <PopoverAction Icon={MessageCircle} title="Send a message" />
           </PopoverContent>
         </Popover>
       </div>

@@ -31,33 +31,13 @@ const MembershipCard = ({ user }: { user: SanitizedUser }) => {
           </span>
         </PopoverTrigger>
         <PopoverContent className="p-1 space-y-2">
-          <PopoverAction
-            Icon={MessageCircle}
-            action={() => {}}
-            title="Send a message"
-          />
+          <PopoverAction Icon={MessageCircle} title="Send a message" />
           <Separator />
-          <PopoverAction
-            Icon={MessageCircle}
-            action={() => {}}
-            title="Send a message"
-          />
-          <PopoverAction
-            Icon={MessageCircle}
-            action={() => {}}
-            title="Send a message"
-          />
-          <PopoverAction
-            Icon={MessageCircle}
-            action={() => {}}
-            title="Send a message"
-          />
+          <PopoverAction Icon={MessageCircle} title="Send a message" />
+          <PopoverAction Icon={MessageCircle} title="Send a message" />
+          <PopoverAction Icon={MessageCircle} title="Send a message" />
           <Separator />
-          <PopoverAction
-            Icon={MessageCircle}
-            action={() => {}}
-            title="Send a message"
-          />
+          <PopoverAction Icon={MessageCircle} title="Send a message" />
         </PopoverContent>
       </Popover>
     </div>

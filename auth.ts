@@ -69,8 +69,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .from(users)
           .where(eq(users.id, session.user.id));
 
-        // @ts-ignore
-        session.user = newSession;
+        if (newSession) {
+          // @ts-ignore
+          session.user = newSession;
+        }
       }
       return session;
     },

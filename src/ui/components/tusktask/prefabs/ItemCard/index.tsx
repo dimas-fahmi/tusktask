@@ -144,38 +144,21 @@ const ItemCard = ({ task }: { task: FullTask }) => {
           <PopoverAction
             Icon={ExternalLink}
             title="Open Task"
-            action={() => {
+            onClick={() => {
               router.push(`/dashboard/tasks/id/${task?.id}`);
             }}
           />
-          <PopoverAction
-            Icon={CircleCheckBig}
-            title="Scratch This"
-            action={() => {}}
-          />
-          <PopoverAction
-            Icon={BaggageClaim}
-            title="Claim This"
-            action={() => {}}
-          />
+          <PopoverAction Icon={CircleCheckBig} title="Scratch This" />
+          <PopoverAction Icon={BaggageClaim} title="Claim This" />
           <Separator />
-          <PopoverAction Icon={Archive} title="Archive" action={() => {}} />
-          <PopoverAction
-            Icon={Tag}
-            title="Set Status"
-            subTitle={task.status}
-            action={() => {}}
-          />
-          <PopoverAction
-            Icon={CalendarSync}
-            title="Reschedule"
-            action={() => {}}
-          />
+          <PopoverAction Icon={Archive} title="Archive" onClick={() => {}} />
+          <PopoverAction Icon={Tag} title="Set Status" subTitle={task.status} />
+          <PopoverAction Icon={CalendarSync} title="Reschedule" />
           <Separator />
           <PopoverAction
             Icon={Trash}
             title="Delete This Task"
-            action={() => {
+            onClick={() => {
               setTaskDeleteKey(task.id);
 
               deleteTask({

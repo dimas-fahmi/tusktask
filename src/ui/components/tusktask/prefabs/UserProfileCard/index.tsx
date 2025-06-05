@@ -57,31 +57,27 @@ const UserProfileCard = () => {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="p-1">
-            <PopoverAction
-              Icon={GalleryVertical}
-              title="Open profile"
-              action={() => {}}
-            />
+            <PopoverAction Icon={GalleryVertical} title="Open profile" />
             <Separator />
-            <PopoverAction
-              Icon={MessageCircle}
-              title="Messages"
-              action={() => {}}
-            />
+            <PopoverAction Icon={MessageCircle} title="Messages" />
             <PopoverAction
               Icon={Bell}
               title="Notifications"
-              action={() => {
+              onClick={() => {
                 setNotificationsDialogOpen(true);
               }}
             />
-            <PopoverAction Icon={Settings} title="Settings" action={() => {}} />
+            <PopoverAction
+              Icon={Settings}
+              title="Settings"
+              onClick={() => {}}
+            />
             <Separator />
             <PopoverAction
               Icon={LogOut}
               variant="destructive"
               title="Log Out"
-              action={() => {
+              onClick={() => {
                 signOut();
               }}
             />
