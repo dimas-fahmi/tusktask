@@ -177,33 +177,19 @@ const TaskCard = ({ task }: { task: TaskWithSubtasks }) => {
                 </div>
               </PopoverTrigger>
               <PopoverContent className="!p-1 space-y-2">
-                <PopoverAction
-                  Icon={ExternalLink}
-                  title="Open Task"
-                  action={() => {}}
-                />
+                <PopoverAction Icon={ExternalLink} title="Open Task" />
                 <Separator />
-                <PopoverAction
-                  Icon={Archive}
-                  title="Archive"
-                  action={() => {}}
-                />
+                <PopoverAction Icon={Archive} title="Archive" />
                 <PopoverAction
                   Icon={Tag}
                   title="Set Status"
                   subTitle={task.status}
-                  action={() => {}}
                 />
-                <PopoverAction
-                  Icon={CalendarSync}
-                  title="Reschedule"
-                  action={() => {}}
-                />
+                <PopoverAction Icon={CalendarSync} title="Reschedule" />
                 <Separator />
                 <PopoverAction
                   Icon={Trash}
                   title="Move to trash"
-                  action={() => {}}
                   variant="destructive"
                 />
               </PopoverContent>

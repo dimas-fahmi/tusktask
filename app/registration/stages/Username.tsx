@@ -11,10 +11,11 @@ import mutateUserData from "@/src/lib/tusktask/mutators/mutateUserData";
 import { UsersPatchRequest } from "@/app/api/users/patch";
 import { useSession } from "next-auth/react";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { Session } from "next-auth";
 
 const Username = () => {
   // pull session
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   // Pull datas from registration context
   const { personal, setCanContinue, setOnContinue, setStage } =
@@ -57,6 +58,7 @@ const Username = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: mutateUserData,
     onMutate: () => {
+      update({ user: { registration: "email" } });
       triggerToast({
         type: "default",
         title: "Saving Your Changes",
@@ -67,6 +69,7 @@ const Username = () => {
     },
     onError: () => {
       setStage("username");
+      update({ user: { registration: "username" } });
       setCanContinue(true);
       triggerToast({
         type: "error",

@@ -1,48 +1,49 @@
 import { cn } from "@/src/lib/shadcn/utils";
-import { cva } from "class-variance-authority";
+import { cva, VariantProps } from "class-variance-authority";
 import { LucideIcon } from "lucide-react";
 import React from "react";
 
 interface PopoverActionProps {
   Icon: LucideIcon;
   title: string;
-  action: () => void;
   subTitle?: string;
   variant?: "default" | "destructive" | "disabled";
 }
 
-const PopoverAction: React.FC<PopoverActionProps> = ({
-  action,
+// Variant mechanism
+const PopoverActionVariant = cva(
+  " cursor-pointer w-full flex justify-between p-2 rounded-md items-center text-sm transition-all duration-200",
+  {
+    variants: {
+      variant: {
+        default: "hover:bg-accent hover:text-accent-foreground ",
+        destructive:
+          "text-destructive hover:bg-destructive hover:text-destructive-foreground",
+        disabled: "opacity-50 cursor-auto hover:animate-pulse",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+);
+
+const PopoverAction = ({
   Icon,
   title,
   subTitle,
   variant = "default",
-}) => {
-  // Variant mechanism
-  const PopoverActionVariant = cva(
-    " cursor-pointer w-full flex justify-between p-2 rounded-md items-center text-sm transition-all duration-200",
-    {
-      variants: {
-        variant: {
-          default: "hover:bg-accent hover:text-accent-foreground ",
-          destructive:
-            "text-destructive hover:bg-destructive hover:text-destructive-foreground",
-          disabled: "opacity-50 cursor-not-allowed",
-        },
-      },
-      defaultVariants: {
-        variant: "default",
-      },
-    }
-  );
-
+  ...props
+}: React.ComponentProps<"button"> &
+  PopoverActionProps &
+  VariantProps<typeof PopoverActionVariant>) => {
   return (
     <button
-      className={`${cn(PopoverActionVariant({ variant }))}`}
+      className={`${cn(PopoverActionVariant({ variant }))} cursor`}
       title={title}
       role="button"
       aria-label={`${title} button`}
-      onClick={action}
+      {...props}
     >
       <div className="flex items-center gap-2">
         <span>

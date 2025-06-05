@@ -5,12 +5,15 @@ import useRegistrationContext from "@/src/lib/tusktask/hooks/context/useRegistra
 import mutateUserData from "@/src/lib/tusktask/mutators/mutateUserData";
 import PreferencePanel from "@/src/ui/components/tusktask/prefabs/PreferencePanel";
 import { useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 const Preferences = () => {
   const router = useRouter();
+
+  const { update } = useSession();
 
   const { personal } = usePersonalContext();
 
@@ -35,6 +38,7 @@ const Preferences = () => {
     mutationKey: ["personal", "update", "preferences"],
     mutationFn: mutateUserData,
     onMutate: () => {
+      update({ registration: "complete" });
       triggerToast({
         type: "default",
         title: "Saving Changes",
@@ -49,6 +53,7 @@ const Preferences = () => {
         description: "Failed to save your changes, please try again.",
       });
       setStage("preferences");
+      update({ registration: "preferences" });
     },
     onSuccess: () => {
       triggerToast({
@@ -57,6 +62,8 @@ const Preferences = () => {
         description:
           "Your preferences is saved and we'll take you to dashboard",
       });
+    },
+    onSettled: () => {
       router.refresh();
     },
   });

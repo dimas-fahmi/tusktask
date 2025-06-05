@@ -46,7 +46,9 @@ const TeamMembershipDialog = () => {
               <Button
                 variant={"ghost"}
                 className="text-primary-foreground"
-                onClick={() => setInviteMemberDialog(true)}
+                onClick={() => {
+                  setInviteMemberDialog(true);
+                }}
               >
                 <UserRoundPlus />
               </Button>

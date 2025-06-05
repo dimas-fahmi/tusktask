@@ -111,7 +111,7 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({ image, setImage }) => {
           <div className="bg-muted w-32 h-32 rounded-full" />
         )}
         <Button
-          className="absolute right-0 bottom-0"
+          className="absolute right-0 bottom-0 bg-background"
           variant="outline"
           onClick={() => {
             if (inputRef.current) {

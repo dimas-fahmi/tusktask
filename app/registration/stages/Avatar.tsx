@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 
 const Avatar = () => {
   // Pull session
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   // State image
   const [image, setImage] = useState<string>("");
@@ -52,6 +52,7 @@ const Avatar = () => {
     mutationKey: ["personal", "update", "avatar"],
     mutationFn: mutatePersonalData,
     onMutate: () => {
+      update({ user: { registration: "preferences" } });
       triggerToast({
         type: "default",
         title: "Saving Your Changes",
@@ -62,6 +63,7 @@ const Avatar = () => {
       setOnContinue(() => {});
     },
     onError: () => {
+      update({ user: { registration: "avatar" } });
       triggerToast({
         type: "error",
         title: "Failed To Save Changes",

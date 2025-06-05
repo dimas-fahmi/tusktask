@@ -22,7 +22,7 @@ export const users = pgTable(
       .unique(),
     notificationSoundEnable: boolean("notificationSoundEnable").default(true),
     reminderSoundEnable: boolean("reminderSoundEnable").default(true),
-    email: text("email").unique(),
+    email: text("email").unique().notNull(),
     timezone: text("timezone").default("Asia/Jakarta").notNull(),
     emailVerified: timestamp("emailVerified", TIMESTAMP_CONFIGS),
     registration: text("registration", {
@@ -85,3 +85,11 @@ export type UserType = InferSelectModel<typeof users>;
 export type UserInsertType = InferInsertModel<typeof users>;
 
 export const UserUpdateSchema = createUpdateSchema(users);
+
+export const registrationPhases: UserType["registration"][] = [
+  "avatar",
+  "complete",
+  "email",
+  "preferences",
+  "username",
+];

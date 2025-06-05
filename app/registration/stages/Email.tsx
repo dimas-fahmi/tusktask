@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 
 const Email = () => {
   // Pull session
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   // Pull datas and setters from registration context
   const { personal, setCanContinue, setOnContinue, setStage } =
@@ -57,6 +57,7 @@ const Email = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: mutateUserData,
     onMutate: () => {
+      update({ user: { registration: "avatar" } });
       triggerToast({
         type: "default",
         title: "Saving Your Changes",
@@ -66,6 +67,7 @@ const Email = () => {
       setStage("avatar");
     },
     onError: () => {
+      update({ user: { registration: "email" } });
       triggerToast({
         type: "error",
         title: "Something Went Wrong",
@@ -90,7 +92,9 @@ const Email = () => {
     }
 
     const debouncer = setTimeout(() => {
-      setEmailKey(email);
+      if (email) {
+        setEmailKey(email);
+      }
     }, 800);
 
     return () => {
@@ -117,6 +121,8 @@ const Email = () => {
     if (isValid && emailAvailable && !isFetching && !isPending) {
       setOnContinue(() =>
         handleSubmit((data) => {
+          if (!data?.email) return;
+
           const request: UsersPatchRequest = {
             userId: session!.user.id!,
             newValue: {
