@@ -27,7 +27,6 @@ const TeamMembershipDialog = () => {
       ? extractFieldValues(teamDetail.teamMembers, "user")
       : [];
 
-  console.log(members);
   return (
     <Dialog open={teamMembershipDialog} onOpenChange={setTeamMembershipDialog}>
       <DialogHeader>

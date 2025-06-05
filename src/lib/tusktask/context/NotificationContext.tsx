@@ -31,7 +31,10 @@ interface NotificationContextValues {
   triggerSound: (type: PlaySoundType) => void;
   notificationsDialogOpen: boolean;
   setNotificationsDialogOpen: SetStateAction<boolean>;
-  notifications: FullNotification[];
+  received: FullNotification[];
+  sent: FullNotification[];
+  sentInvitation: FullNotification[];
+  receivedInvitation: FullNotification[];
   joinTeam: UseMutateFunction<
     TeamMembershipResponse,
     Error,
@@ -69,15 +72,21 @@ const NotificationContextProvider = ({
   const { personal } = usePersonalContext();
 
   // Notification Polling
-  const { data: notificationsResponse } = useQuery({
+  const { data: ntfBundle } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
     refetchInterval: 100 * 10, // 10 seconds intervar
   });
 
-  const notifications = notificationsResponse?.data
-    ? notificationsResponse.data
-    : [];
+  // Get received and sent notifications
+  const received = ntfBundle?.data ? ntfBundle.data.received : [];
+  const sent = ntfBundle?.data ? ntfBundle.data.sent : [];
+
+  // Get received and sent team Invitation
+  const sentInvitation = sent.filter((n) => n.type === "teamInvitation");
+  const receivedInvitation = received.filter(
+    (n) => n.type === "teamInvitation"
+  );
 
   // Synchronize personal prefences with context
   useEffect(() => {
@@ -203,8 +212,11 @@ const NotificationContextProvider = ({
         triggerSound,
         notificationsDialogOpen,
         setNotificationsDialogOpen,
-        notifications,
         joinTeam,
+        received,
+        sent,
+        receivedInvitation,
+        sentInvitation,
       }}
     >
       {children}

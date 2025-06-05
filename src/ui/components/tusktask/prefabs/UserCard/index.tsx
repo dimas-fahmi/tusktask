@@ -11,9 +11,12 @@ import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "../../../shadcn/ui/separator";
 import { SanitizedUser } from "@/src/lib/tusktask/utils/sanitizeUserData";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTeamInvitation } from "@/src/lib/tusktask/mutators/createTeamInvitation";
 import { useSession } from "next-auth/react";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
+import { FullNotification, NotificationBundle } from "@/src/types/notification";
 
 const UserCard = ({ user }: { user: SanitizedUser }) => {
   // Pull session
@@ -25,10 +28,73 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
   const members = teamDetail?.teamMembers ? teamDetail.teamMembers : [];
   const isAMember = members.filter((m) => m.userId === user.id);
 
+  // Pull all sent Invitation
+  const { sentInvitation } = useNotificationContext();
+
+  const isAlreadyInvited =
+    sentInvitation.filter(
+      (n) => n.receiverId === user.id && n.teamId && teamDetail?.id
+    ).length !== 0;
+
+  const queryClient = useQueryClient();
+
   // mutators [Invitation]
   const { mutate: invite } = useMutation({
     mutationKey: ["teamInvitation", user.id],
     mutationFn: createTeamInvitation,
+    onMutate: () => {
+      queryClient.cancelQueries();
+
+      const oldNotifications = queryClient.getQueryData([
+        "notifications",
+      ]) as StandardResponse<NotificationBundle>;
+
+      if (oldNotifications?.data) {
+        queryClient.setQueryData(["notifications"], () => {
+          if (!oldNotifications?.data || !teamDetail || !session?.user?.id)
+            return oldNotifications;
+
+          const newNotification: Omit<
+            FullNotification,
+            "sender" | "receiver" | "team"
+          > = {
+            id: crypto.randomUUID(),
+            type: "teamInvitation",
+            teamId: teamDetail?.id,
+            senderId: session?.user.id,
+            receiverId: user.id,
+            title: "Team Invitation",
+            category: "teams",
+            createdByOptimisticUpdate: true,
+            createdAt: new Date(),
+            description: "Registering this invitation",
+            markReadAt: null,
+            payload: null,
+            status: "not_read",
+          };
+
+          return {
+            ...oldNotifications,
+            data: {
+              ...oldNotifications.data,
+              sent: [...oldNotifications.data.sent, newNotification],
+            },
+          };
+        });
+      }
+
+      return { oldNotifications };
+    },
+    onError: (_, __, context) => {
+      if (context?.oldNotifications) {
+        queryClient.setQueryData(["notifications"], context.oldNotifications);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+    },
   });
 
   return (
@@ -59,8 +125,16 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
           <PopoverContent className="p-1 space-y-2">
             <PopoverAction
               Icon={UserRoundPlus}
-              title={`Invite To ${teamDetail?.name}`}
-              variant={isAMember.length > 0 ? "disabled" : "default"}
+              title={
+                isAlreadyInvited
+                  ? "Already invited"
+                  : `Invite To ${teamDetail?.name}`
+              }
+              variant={
+                isAMember.length > 0 || isAlreadyInvited
+                  ? "disabled"
+                  : "default"
+              }
               onClick={() => {
                 invite({
                   receiverId: user.id,
