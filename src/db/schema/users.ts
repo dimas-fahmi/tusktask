@@ -85,3 +85,11 @@ export type UserType = InferSelectModel<typeof users>;
 export type UserInsertType = InferInsertModel<typeof users>;
 
 export const UserUpdateSchema = createUpdateSchema(users);
+
+export const registrationPhases: UserType["registration"][] = [
+  "avatar",
+  "complete",
+  "email",
+  "preferences",
+  "username",
+];

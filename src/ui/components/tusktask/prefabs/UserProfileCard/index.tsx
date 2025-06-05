@@ -3,13 +3,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
 import usePersonalContext from "@/src/lib/tusktask/hooks/context/usePersonalContext";
 import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
+import { signOut } from "next-auth/react";
 
 const UserProfileCard = () => {
   // Pull personal data
   const { personal } = usePersonalContext();
 
   return (
-    <div className="flex gap-3 bg-sidebar-bakcground hover:bg-accent text-sidebar-foreground hover:text-accent-foreground transition-all duration-300 hover:p-2 hover:border rounded-md cursor-pointer">
+    // TODO : Finish popover menu
+    <div
+      className="flex gap-3 bg-sidebar-bakcground hover:bg-accent text-sidebar-foreground hover:text-accent-foreground transition-all duration-300 hover:p-2 hover:border rounded-md cursor-pointer"
+      onClick={() => signOut()}
+    >
       {/* Avatar */}
       <div>
         <Avatar className="w-14 h-14">

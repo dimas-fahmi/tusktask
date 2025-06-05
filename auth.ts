@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "./src/db";
-import { users } from "./src/db/schema/users";
+import { registrationPhases, users } from "./src/db/schema/users";
 import { sessions } from "./src/db/schema/sessions";
 import { accounts } from "./src/db/schema/accounts";
 import { authenticators } from "./src/db/schema/authenticators";
@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   }),
   providers: [Google, GitHub, Discord],
   callbacks: {
-    session: async ({ session, trigger }) => {
+    session: async ({ session, trigger, newSession }) => {
       if (session.user.registration !== "complete") {
         const primaryTeam = await db.query.teamMembers.findMany({
           where: eq(teamMembers.userId, session.user.id),
@@ -46,6 +46,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               userRole: "owner",
               joinAt: new Date(),
             });
+          }
+        }
+      }
+
+      // Check if new session is exist
+      if (newSession && newSession?.user) {
+        // Check if registration phase is updated
+        if (newSession?.user?.registration) {
+          const newRegistrationPhase = newSession.user.registration;
+          // Validate new registration phase
+          if (registrationPhases.includes(newRegistrationPhase)) {
+            console.log(`${newRegistrationPhase} is valid`);
+            session.user.registration = newRegistrationPhase;
           }
         }
       }
