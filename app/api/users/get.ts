@@ -7,12 +7,13 @@ import { getSearchParams } from "@/src/lib/tusktask/utils/getSearchParams";
 import sanitizeUserData, {
   SanitizedUser,
 } from "@/src/lib/tusktask/utils/sanitizeUserData";
-import { and, eq, ilike } from "drizzle-orm";
+import { and, eq, ilike, or } from "drizzle-orm";
 
 interface SearchParams {
   name?: string;
   username?: string;
   email?: string;
+  search?: string;
 }
 
 export type UsersGetResponse = StandardResponse<SanitizedUser[] | null>;
@@ -24,13 +25,14 @@ export async function usersGet(req: Request) {
     "name",
     "username",
     "email",
+    "search",
   ]) as SearchParams;
 
   // parameters destructure
-  const { email, name, username } = params;
+  const { email, name, username, search } = params;
 
   // Validate Request
-  if (!email && !name && !username) {
+  if (!email && !name && !username && !search) {
     return createNextResponse(400, {
       messages: "Missing important parameters",
       userFriendly: false,
@@ -66,13 +68,20 @@ export async function usersGet(req: Request) {
     where.push(ilike(users.name, `%${name}%`));
   }
 
+  // Search
+  if (search) {
+    where.push(
+      or(ilike(users.name, `%${search}%`), ilike(users.username, `%${search}%`))
+    );
+  }
+
   // Fetching
   try {
     const result = await db.query.users.findMany({
       where: and(...where),
     });
 
-    return createNextResponse(result.length === 0 ? 404 : 200, {
+    return createNextResponse(200, {
       messages:
         result.length === 0 ? "Data Fetched And Not Found" : "Data Fetched",
       userFriendly: false,

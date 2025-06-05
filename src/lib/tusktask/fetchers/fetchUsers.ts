@@ -1,14 +1,9 @@
 import { UsersGetResponse } from "@/app/api/users/get";
 import createResponse from "../utils/createResponse";
+import { SearchParams } from "next/dist/server/request/search-params";
 
-export interface FetchUsers {
-  name?: string;
-  username?: string;
-  email?: string;
-}
-
-const fetchUsers = async (params: FetchUsers): Promise<UsersGetResponse> => {
-  if (!params.name && !params.username && !params.email) {
+const fetchUsers = async (params: SearchParams): Promise<UsersGetResponse> => {
+  if (!params.name && !params.username && !params.email && !params.search) {
     return createResponse(400, {
       messages: "Missing important parameters, didn't leave the client.",
       userFriendly: false,
