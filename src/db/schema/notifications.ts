@@ -37,7 +37,9 @@ export const notifications = pgTable(
       .notNull(),
     status: text("status", {
       enum: ["not_read", "acknowledged", "accepted", "rejected"],
-    }),
+    })
+      .default("not_read")
+      .notNull(),
     senderId: text("senderId")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),

@@ -42,7 +42,7 @@ const InviteMemberDialog = () => {
   useEffect(() => {
     const debouncer = setTimeout(() => {
       setSearchkey(search);
-    }, 1200);
+    }, 600);
 
     return () => clearTimeout(debouncer);
   }, [search]);

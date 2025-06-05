@@ -136,6 +136,10 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
                   : "default"
               }
               onClick={() => {
+                if (isAMember || isAlreadyInvited) {
+                  return;
+                }
+
                 invite({
                   receiverId: user.id,
                   senderId: session!.user.id!,
