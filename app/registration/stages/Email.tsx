@@ -92,7 +92,9 @@ const Email = () => {
     }
 
     const debouncer = setTimeout(() => {
-      setEmailKey(email);
+      if (email) {
+        setEmailKey(email);
+      }
     }, 800);
 
     return () => {
@@ -119,6 +121,8 @@ const Email = () => {
     if (isValid && emailAvailable && !isFetching && !isPending) {
       setOnContinue(() =>
         handleSubmit((data) => {
+          if (!data?.email) return;
+
           const request: UsersPatchRequest = {
             userId: session!.user.id!,
             newValue: {
