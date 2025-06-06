@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1748005842202,
-      "tag": "0000_greedy_stepford_cuckoos",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1748056295257,
-      "tag": "0001_huge_toro",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1748166256889,
-      "tag": "0002_sweet_shadowcat",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1748406257844,
-      "tag": "0003_daffy_namora",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1748419522197,
-      "tag": "0004_many_mulholland_black",
+      "when": 1749133604214,
+      "tag": "0000_friendly_patch",
       "breakpoints": true
     }
   ]

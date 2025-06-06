@@ -1,5 +1,5 @@
 {
-  "id": "88175640-fc8e-4b6e-8ed8-2f29a98d9bb2",
+  "id": "e2f9c5ca-5667-46a4-824b-af6ebb60abdb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -220,6 +220,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -248,6 +254,19 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "messages_teamId_teams_id_fk": {
+          "name": "messages_teamId_teams_id_fk",
+          "tableFrom": "messages",
+          "tableTo": "teams",
+          "columnsFrom": [
+            "teamId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "MESSAGES_RESPOND_TO_ID_FK": {
@@ -296,8 +315,21 @@
           "name": "type",
           "type": "text",
           "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
           "notNull": true,
-          "default": "'notification'"
+          "default": "'generic'"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'not_read'"
         },
         "senderId": {
           "name": "senderId",
@@ -321,6 +353,18 @@
         "markReadAt": {
           "name": "markReadAt",
           "type": "timestamp (6) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "teamId": {
+          "name": "teamId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payload": {
+          "name": "payload",
+          "type": "json",
           "primaryKey": false,
           "notNull": false
         }
@@ -370,6 +414,51 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "NOTIFICATIONS_STATUS_IDX": {
+          "name": "NOTIFICATIONS_STATUS_IDX",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "NOTIFICATIONS_CATEGORY_IDX": {
+          "name": "NOTIFICATIONS_CATEGORY_IDX",
+          "columns": [
+            {
+              "expression": "category",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "NOTIFICATIONS_TEAM_IDX": {
+          "name": "NOTIFICATIONS_TEAM_IDX",
+          "columns": [
+            {
+              "expression": "teamId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -392,6 +481,19 @@
           "tableTo": "users",
           "columnsFrom": [
             "receiverId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "notifications_teamId_teams_id_fk": {
+          "name": "notifications_teamId_teams_id_fk",
+          "tableFrom": "notifications",
+          "tableTo": "teams",
+          "columnsFrom": [
+            "teamId"
           ],
           "columnsTo": [
             "id"
@@ -494,6 +596,19 @@
         "parentId": {
           "name": "parentId",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'task'"
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -735,13 +850,13 @@
           "name": "teamId",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "userId": {
           "name": "userId",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "userRole": {
           "name": "userRole",
@@ -993,7 +1108,7 @@
           "name": "email",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "timezone": {
           "name": "timezone",

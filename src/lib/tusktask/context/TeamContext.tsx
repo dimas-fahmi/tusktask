@@ -1,9 +1,4 @@
-import {
-  UseMutateFunction,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useState } from "react";
 
 import { fetchPersonalTeams } from "../fetchers/fetchPersonalTeams";
@@ -18,11 +13,6 @@ import {
 } from "@/src/types/team";
 import TeamMembershipDialog from "@/src/ui/components/tusktask/prefabs/TeamMembershipDialog";
 import InviteMemberDialog from "@/src/ui/components/tusktask/prefabs/InviteMemberDialog";
-import {
-  joinTeamMutation,
-  TeamMembershipResponse,
-  TeamMembersRequest,
-} from "../mutators/joinTeam";
 
 export interface TeamContextValues {
   teams?: FullTeam[];

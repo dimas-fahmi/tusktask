@@ -1,8 +1,8 @@
-import { FullNotification } from "@/src/types/notification";
+import { NotificationBundle } from "@/src/types/notification";
 import { StandardResponse } from "../utils/createResponse";
 
 export const fetchNotifications = async (): Promise<
-  StandardResponse<FullNotification[] | null>
+  StandardResponse<NotificationBundle | null>
 > => {
   const response = await fetch("/api/notifications");
 

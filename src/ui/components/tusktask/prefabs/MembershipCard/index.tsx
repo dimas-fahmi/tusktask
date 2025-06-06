@@ -11,35 +11,48 @@ import {
 import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "../../../shadcn/ui/separator";
 
-const MembershipCard = ({ user }: { user: SanitizedUser }) => {
+const MembershipCard = ({
+  user,
+  pending = false,
+}: {
+  user: SanitizedUser;
+  pending?: boolean;
+}) => {
   return (
-    <div className="p-4 flex items-center gap-2">
+    <div
+      className={`px-4 ${pending && "opacity-60"} py-2 flex items-center gap-2`}
+      title={pending ? "Waiting invitation acceptance" : "Member"}
+    >
       <Avatar className="w-12 h-12">
         <AvatarImage src={user?.image ?? DEFAULT_AVATAR} alt="Avatar" />
       </Avatar>
       <div className="flex flex-col flex-grow">
-        <h1 className="text-base leading-5 font-semibold">{user?.name}</h1>
+        <h1 className="text-sm leading-5 font-semibold">{user?.name}</h1>
         <span className="text-xs">{user?.username}</span>
       </div>
-      <Popover>
-        <PopoverTrigger>
-          <span
-            aria-label="More options"
-            className="opacity-50 cursor-pointer hover:opacity-100 transition-all duration-300"
-          >
-            <Ellipsis />
-          </span>
-        </PopoverTrigger>
-        <PopoverContent className="p-1 space-y-2">
-          <PopoverAction Icon={MessageCircle} title="Send a message" />
-          <Separator />
-          <PopoverAction Icon={MessageCircle} title="Send a message" />
-          <PopoverAction Icon={MessageCircle} title="Send a message" />
-          <PopoverAction Icon={MessageCircle} title="Send a message" />
-          <Separator />
-          <PopoverAction Icon={MessageCircle} title="Send a message" />
-        </PopoverContent>
-      </Popover>
+      {pending ? (
+        <span className="text-xs opacity-60">Pending</span>
+      ) : (
+        <Popover>
+          <PopoverTrigger>
+            <span
+              aria-label="More options"
+              className="opacity-50 cursor-pointer hover:opacity-100 transition-all duration-300"
+            >
+              <Ellipsis />
+            </span>
+          </PopoverTrigger>
+          <PopoverContent className="p-1 space-y-2">
+            <PopoverAction Icon={MessageCircle} title="Send a message" />
+            <Separator />
+            <PopoverAction Icon={MessageCircle} title="Send a message" />
+            <PopoverAction Icon={MessageCircle} title="Send a message" />
+            <PopoverAction Icon={MessageCircle} title="Send a message" />
+            <Separator />
+            <PopoverAction Icon={MessageCircle} title="Send a message" />
+          </PopoverContent>
+        </Popover>
+      )}
     </div>
   );
 };

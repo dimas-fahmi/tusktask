@@ -12,6 +12,7 @@ import { Minimize, UserRoundPlus } from "lucide-react";
 import MembershipCard from "../MembershipCard";
 import { ScrollArea } from "../../../shadcn/ui/scroll-area";
 import { extractFieldValues } from "@/src/lib/tusktask/utils/extractFieldValues";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 const TeamMembershipDialog = () => {
   // Pull state from team context
@@ -22,12 +23,18 @@ const TeamMembershipDialog = () => {
     setInviteMemberDialog,
   } = useTeamContext();
 
+  // Pull state from notification context
+  const { sentInvitation } = useNotificationContext();
+
+  const invites = sentInvitation.filter(
+    (n) => n.teamId === teamDetail?.id && n.status === "not_read"
+  );
+
   const members =
     teamDetail && teamDetail?.teamMembers
       ? extractFieldValues(teamDetail.teamMembers, "user")
       : [];
 
-  console.log(members);
   return (
     <Dialog open={teamMembershipDialog} onOpenChange={setTeamMembershipDialog}>
       <DialogHeader>
@@ -70,12 +77,17 @@ const TeamMembershipDialog = () => {
               <MembershipCard key={member.id} user={member} />
             ))}
 
-          {members.length === 1 && (
+          {members.length === 1 && invites.length === 0 && (
             // Invite message
             <p className="text-center text-xs opacity-60">
               Invite your friends to join your team
             </p>
           )}
+
+          {invites &&
+            invites.map((member) => (
+              <MembershipCard key={member.id} pending user={member.receiver} />
+            ))}
         </ScrollArea>
       </DialogContent>
     </Dialog>

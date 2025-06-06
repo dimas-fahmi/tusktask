@@ -30,18 +30,23 @@ CREATE TABLE "messages" (
 	"senderId" text NOT NULL,
 	"receiverId" text NOT NULL,
 	"createdAt" timestamp (6) with time zone DEFAULT now(),
-	"respondToId" text
+	"respondToId" text,
+	"teamId" text
 );
 --> statement-breakpoint
 CREATE TABLE "notifications" (
 	"id" text PRIMARY KEY NOT NULL,
 	"title" text,
 	"description" text,
-	"type" text DEFAULT 'notification' NOT NULL,
+	"type" text NOT NULL,
+	"category" text DEFAULT 'generic' NOT NULL,
+	"status" text DEFAULT 'not_read' NOT NULL,
 	"senderId" text NOT NULL,
 	"receiverId" text NOT NULL,
 	"createdAt" timestamp (6) with time zone DEFAULT now(),
-	"markReadAt" timestamp (6) with time zone
+	"markReadAt" timestamp (6) with time zone,
+	"teamId" text,
+	"payload" json
 );
 --> statement-breakpoint
 CREATE TABLE "sessions" (
@@ -58,6 +63,8 @@ CREATE TABLE "tasks" (
 	"ownerId" text NOT NULL,
 	"teamId" text NOT NULL,
 	"parentId" text,
+	"type" text DEFAULT 'task' NOT NULL,
+	"price" integer,
 	"createdAt" timestamp (6) with time zone DEFAULT now(),
 	"updatedAt" timestamp (6) with time zone,
 	"status" text DEFAULT 'not_started' NOT NULL,
@@ -69,8 +76,8 @@ CREATE TABLE "tasks" (
 );
 --> statement-breakpoint
 CREATE TABLE "teamMembers" (
-	"teamId" text,
-	"userId" text,
+	"teamId" text NOT NULL,
+	"userId" text NOT NULL,
 	"userRole" text DEFAULT 'assignee' NOT NULL,
 	"joinAt" timestamp (6) with time zone DEFAULT now(),
 	CONSTRAINT "TEAM_MEMBERS_PRIMARY_KEYS" PRIMARY KEY("teamId","userId")
@@ -93,7 +100,7 @@ CREATE TABLE "users" (
 	"username" text NOT NULL,
 	"notificationSoundEnable" boolean DEFAULT true,
 	"reminderSoundEnable" boolean DEFAULT true,
-	"email" text,
+	"email" text NOT NULL,
 	"timezone" text DEFAULT 'Asia/Jakarta' NOT NULL,
 	"emailVerified" timestamp (6) with time zone,
 	"registration" text DEFAULT 'username' NOT NULL,
@@ -115,9 +122,11 @@ ALTER TABLE "accounts" ADD CONSTRAINT "accounts_userId_users_id_fk" FOREIGN KEY 
 ALTER TABLE "authenticators" ADD CONSTRAINT "authenticators_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "messages" ADD CONSTRAINT "messages_senderId_users_id_fk" FOREIGN KEY ("senderId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "messages" ADD CONSTRAINT "messages_receiverId_users_id_fk" FOREIGN KEY ("receiverId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "messages" ADD CONSTRAINT "messages_teamId_teams_id_fk" FOREIGN KEY ("teamId") REFERENCES "public"."teams"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "messages" ADD CONSTRAINT "MESSAGES_RESPOND_TO_ID_FK" FOREIGN KEY ("respondToId") REFERENCES "public"."messages"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_senderId_users_id_fk" FOREIGN KEY ("senderId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_receiverId_users_id_fk" FOREIGN KEY ("receiverId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_teamId_teams_id_fk" FOREIGN KEY ("teamId") REFERENCES "public"."teams"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_userId_users_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_createdById_users_id_fk" FOREIGN KEY ("createdById") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_ownerId_users_id_fk" FOREIGN KEY ("ownerId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -132,6 +141,9 @@ ALTER TABLE "teams" ADD CONSTRAINT "teams_ownerId_users_id_fk" FOREIGN KEY ("own
 CREATE INDEX "NOTIFICATIONS_SENDER_IDX" ON "notifications" USING btree ("senderId");--> statement-breakpoint
 CREATE INDEX "NOTIFICATIONS_RECEIVER_IDX" ON "notifications" USING btree ("receiverId");--> statement-breakpoint
 CREATE INDEX "NOTIFICATIONS_TYPE_IDX" ON "notifications" USING btree ("type");--> statement-breakpoint
+CREATE INDEX "NOTIFICATIONS_STATUS_IDX" ON "notifications" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "NOTIFICATIONS_CATEGORY_IDX" ON "notifications" USING btree ("category");--> statement-breakpoint
+CREATE INDEX "NOTIFICATIONS_TEAM_IDX" ON "notifications" USING btree ("teamId");--> statement-breakpoint
 CREATE INDEX "TASKS_CREATED_BY_IDX" ON "tasks" USING btree ("createdById");--> statement-breakpoint
 CREATE INDEX "TASKS_OWNER_ID_IDX" ON "tasks" USING btree ("ownerId");--> statement-breakpoint
 CREATE INDEX "TASKS_TEAM_ID_IDX" ON "tasks" USING btree ("teamId");--> statement-breakpoint

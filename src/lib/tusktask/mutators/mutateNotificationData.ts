@@ -1,22 +1,21 @@
 import {
-  TeamMembersPostRequest,
-  TeamMembersPostResponse,
-} from "@/app/api/memberships/post";
+  NotificationsPatchRequest,
+  NotificationsPatchResponse,
+} from "@/app/api/notifications/patch";
 import createResponse from "../utils/createResponse";
 
-export const joinTeam = async (
-  req: TeamMembersPostRequest
-): Promise<TeamMembersPostResponse> => {
-  const { administratorId, authorizationId, teamId } = req;
-  if (!administratorId || !authorizationId || !teamId) {
+export const mutateNotificationData = async (
+  req: NotificationsPatchRequest
+): Promise<NotificationsPatchResponse> => {
+  if (!req.notificationId || !req.newValue) {
     throw createResponse(500, {
       messages: "Missing important parameters",
     });
   }
 
   try {
-    const response = await fetch("/api/memberships", {
-      method: "POST",
+    const response = await fetch("/api/notifications", {
+      method: "PATCH",
       headers: {
         "content-type": "application/json",
       },
@@ -31,8 +30,9 @@ export const joinTeam = async (
 
     return data;
   } catch (error) {
+    console.log(error);
     throw createResponse(500, {
-      messages: "Something went wrong bray",
+      messages: "Something went wrong",
       data: error,
     });
   }

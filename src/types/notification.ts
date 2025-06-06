@@ -10,4 +10,20 @@ export interface NotificationWithSender extends NotificationType {
   sender: UserType;
 }
 
-export type FullNotification = NotificationWithSender & NotificationWithTeam;
+export interface NotificationWithReceiver extends NotificationType {
+  receiver: UserType;
+}
+
+export interface NotificationWithOptimisticUpdate extends NotificationType {
+  createdByOptimisticUpdate?: boolean;
+}
+
+export type FullNotification = NotificationWithSender &
+  NotificationWithTeam &
+  NotificationWithReceiver &
+  NotificationWithOptimisticUpdate;
+
+export interface NotificationBundle {
+  sent: FullNotification[];
+  received: FullNotification[];
+}

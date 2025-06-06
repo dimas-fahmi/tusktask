@@ -8,14 +8,23 @@ import {
 import { teamMembers, TeamMembersType } from "@/src/db/schema/teams";
 import { teams } from "@/src/db/schema/teams"; // Assuming teams table exists
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { TeamMembersWithUser } from "@/src/types/team";
 import { and, eq, count } from "drizzle-orm";
 
-export interface TeamMembersRequest {
+export interface TeamMembersPostRequest {
   authorizationId: string; // notification id
   administratorId: string; // who sent the invite
   teamId: string; // target team
 }
+
+export interface TeamMembersPostResponseData {
+  membership: TeamMembersType;
+  teamMemberCount: number;
+}
+
+export type TeamMembersPostResponse =
+  StandardResponse<TeamMembersPostRequest | null>;
 
 // Constants for configuration
 const MAX_TEAM_SIZE = 100; // Configurable team size limit
@@ -45,7 +54,7 @@ function isAuthorizedAdmin(member: any): member is TeamMembersWithUser {
 }
 
 export async function teamMembersPost(req: Request) {
-  let body: TeamMembersRequest;
+  let body: TeamMembersPostRequest;
 
   // Parse and validate request body
   try {

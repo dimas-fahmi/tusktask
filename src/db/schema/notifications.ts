@@ -3,7 +3,7 @@ import { users } from "./users";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { teams } from "./teams";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 
 // NOTIFICATIONS TABLE
 export const notifications = pgTable(
@@ -37,7 +37,9 @@ export const notifications = pgTable(
       .notNull(),
     status: text("status", {
       enum: ["not_read", "acknowledged", "accepted", "rejected"],
-    }),
+    })
+      .default("not_read")
+      .notNull(),
     senderId: text("senderId")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
@@ -84,3 +86,4 @@ export type NotificationType = InferSelectModel<typeof notifications>;
 export type NotificationInsertType = InferInsertModel<typeof notifications>;
 
 export const notificationSchema = createInsertSchema(notifications);
+export const notificationUpdateSchema = createUpdateSchema(notifications);
