@@ -20,6 +20,11 @@ import {
   TeamMembersPostResponse,
 } from "@/app/api/memberships/post";
 import { StandardResponse } from "../utils/createResponse";
+import { mutateNotificationData } from "../mutators/mutateNotificationData";
+import {
+  NotificationsPatchRequest,
+  NotificationsPatchResponse,
+} from "@/app/api/notifications/patch";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -40,6 +45,12 @@ interface NotificationContextValues {
     TeamMembersPostResponse,
     Error,
     TeamMembersPostRequest,
+    unknown
+  >;
+  updateNotification: UseMutateFunction<
+    NotificationsPatchResponse,
+    Error,
+    NotificationsPatchRequest,
     unknown
   >;
 }
@@ -255,6 +266,17 @@ const NotificationContextProvider = ({
     },
   });
 
+  // Update Notification
+  const { mutate: updateNotification } = useMutation({
+    mutationKey: ["notifications", "mutate"],
+    mutationFn: mutateNotificationData,
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+    },
+  });
+
   return (
     <NotificationContext.Provider
       value={{
@@ -267,6 +289,7 @@ const NotificationContextProvider = ({
         sent,
         receivedInvitation,
         sentInvitation,
+        updateNotification,
       }}
     >
       {children}

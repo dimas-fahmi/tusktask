@@ -11,7 +11,7 @@ const NotificationCard = ({
   notification: FullNotification;
 }) => {
   const { sender, team } = notification;
-  const { joinTeam } = useNotificationContext();
+  const { joinTeam, updateNotification } = useNotificationContext();
 
   // Dynamic Header
   const header: Record<FullNotification["type"], React.ReactNode> = {
@@ -91,7 +91,18 @@ const NotificationCard = ({
     ),
     joinedATeam: (
       <div className="space-x-3">
-        <Button variant={"outline"} size={"sm"} onClick={() => {}}>
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          onClick={() => {
+            updateNotification({
+              notificationId: notification.id,
+              newValue: {
+                status: "acknowledged",
+              },
+            });
+          }}
+        >
           Acknowledge
         </Button>
       </div>

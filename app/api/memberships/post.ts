@@ -56,12 +56,9 @@ function isAuthorizedAdmin(member: any): member is TeamMembersWithUser {
 export async function teamMembersPost(req: Request) {
   let body: TeamMembersPostRequest;
 
-  console.log(req);
-
   // Parse and validate request body
   try {
     body = await req.json();
-    console.log(body);
   } catch {
     return createNextResponse(400, {
       messages: "Invalid JSON body",
