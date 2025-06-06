@@ -23,7 +23,7 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
   const { data: session } = useSession();
 
   // Pull current team detail
-  const { teamDetail } = useTeamContext();
+  const { teamDetail, teamDetailKey } = useTeamContext();
 
   const members = teamDetail?.teamMembers ? teamDetail.teamMembers : [];
   const isAMember = members.filter((m) => m.userId === user.id).length !== 0;
@@ -33,7 +33,7 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
 
   const isAlreadyInvited =
     sentInvitation.filter(
-      (n) => n.receiverId === user.id && n.teamId && teamDetail?.id
+      (n) => n.receiverId === user.id && n.teamId && n.teamId === teamDetailKey
     ).length !== 0;
 
   const queryClient = useQueryClient();

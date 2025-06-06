@@ -13,12 +13,13 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { fetchNotifications } from "../fetchers/fetchNotifications";
-import { FullNotification } from "@/src/types/notification";
+import { FullNotification, NotificationBundle } from "@/src/types/notification";
+import { joinTeam as jointTeamMutators } from "../mutators/joinTeam";
 import {
-  joinTeamMutation,
-  TeamMembershipResponse,
-  TeamMembersRequest,
-} from "../mutators/joinTeam";
+  TeamMembersPostRequest,
+  TeamMembersPostResponse,
+} from "@/app/api/memberships/post";
+import { StandardResponse } from "../utils/createResponse";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -36,9 +37,9 @@ interface NotificationContextValues {
   sentInvitation: FullNotification[];
   receivedInvitation: FullNotification[];
   joinTeam: UseMutateFunction<
-    TeamMembershipResponse,
+    TeamMembersPostResponse,
     Error,
-    TeamMembersRequest,
+    TeamMembersPostRequest,
     unknown
   >;
 }
@@ -79,7 +80,13 @@ const NotificationContextProvider = ({
   });
 
   // Get received and sent notifications
-  const received = ntfBundle?.data ? ntfBundle.data.received : [];
+  const received = ntfBundle?.data
+    ? ntfBundle.data.received.sort((a, b) => {
+        const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bTime - aTime;
+      })
+    : [];
   const sent = ntfBundle?.data ? ntfBundle.data.sent : [];
 
   // Get received and sent team Invitation
@@ -189,7 +196,50 @@ const NotificationContextProvider = ({
 
   // Join team
   const { mutate: joinTeam } = useMutation({
-    mutationFn: joinTeamMutation,
+    mutationFn: jointTeamMutators,
+    onMutate: async (data) => {
+      const { authorizationId } = data;
+
+      await queryClient.cancelQueries({
+        queryKey: ["notifications"],
+      });
+
+      const oldNotifications = queryClient.getQueryData([
+        "notifications",
+      ]) as StandardResponse<NotificationBundle>;
+
+      console.log(oldNotifications);
+      if (oldNotifications?.data?.received) {
+        const received = [...oldNotifications.data.received];
+        const index = received.findIndex((t) => t.id === authorizationId);
+
+        if (index !== -1) {
+          received[index] = {
+            ...received[index],
+            status: "accepted",
+          };
+
+          const newData = {
+            ...oldNotifications,
+            data: {
+              ...oldNotifications.data,
+              received,
+            },
+          };
+
+          queryClient.setQueryData(["notifications"], newData);
+        }
+      }
+
+      return { oldNotifications };
+    },
+
+    onError: (error, __, context) => {
+      console.log(error);
+      if (context?.oldNotifications) {
+        queryClient.setQueryData(["notifications"], context.oldNotifications);
+      }
+    },
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["tasks"],

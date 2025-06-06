@@ -35,10 +35,13 @@ const FilterButton = ({
 
 const NotificationsDialog = () => {
   // Pull states from notification contexttext === "all" ? "Show All" :
-  const { notificationsDialogOpen, setNotificationsDialogOpen, received } =
-    useNotificationContext();
+  const {
+    notificationsDialogOpen,
+    setNotificationsDialogOpen,
+    received: _received,
+  } = useNotificationContext();
 
-  console.log(received);
+  const received = _received.filter((n) => n.status === "not_read");
 
   // Filter State
   const [filter, setFilter] = useState<FilterType>("all");

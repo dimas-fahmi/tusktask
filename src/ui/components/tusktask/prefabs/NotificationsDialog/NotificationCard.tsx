@@ -21,7 +21,12 @@ const NotificationCard = ({
         <span className="font-semibold">{team?.name}</span>
       </>
     ),
-    joinedATeam: undefined,
+    joinedATeam: (
+      <>
+        <span className="font-semibold">{sender.name}</span> Has joined{" "}
+        <span className="font-semibold">{team?.name}</span>
+      </>
+    ),
     directMessage: undefined,
     groupChat: undefined,
     transferOwnership: undefined,
@@ -43,7 +48,13 @@ const NotificationCard = ({
         <span>{notification?.team?.name}</span>
       </>
     ),
-    joinedATeam: undefined,
+    joinedATeam: (
+      <>
+        <span>4h ago</span>
+        <span>·</span>
+        <span>{notification?.team?.name}</span>
+      </>
+    ),
     directMessage: undefined,
     groupChat: undefined,
     transferOwnership: undefined,
@@ -78,7 +89,13 @@ const NotificationCard = ({
         </Button>
       </div>
     ),
-    joinedATeam: undefined,
+    joinedATeam: (
+      <div className="space-x-3">
+        <Button variant={"outline"} size={"sm"} onClick={() => {}}>
+          Acknowledge
+        </Button>
+      </div>
+    ),
     directMessage: undefined,
     groupChat: undefined,
     transferOwnership: undefined,
@@ -94,7 +111,7 @@ const NotificationCard = ({
   return (
     <div className="p-4 flex gap-2">
       {/* Icon */}
-      <div className="pt-2">
+      <div className="pt-0.5">
         <Avatar>
           <AvatarImage src={sender?.image ?? DEFAULT_AVATAR} />
           <AvatarFallback>DF</AvatarFallback>
