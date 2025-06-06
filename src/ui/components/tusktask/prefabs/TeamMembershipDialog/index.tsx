@@ -26,7 +26,9 @@ const TeamMembershipDialog = () => {
   // Pull state from notification context
   const { sentInvitation } = useNotificationContext();
 
-  const invites = sentInvitation.filter((n) => n.teamId === teamDetail?.id);
+  const invites = sentInvitation.filter(
+    (n) => n.teamId === teamDetail?.id && n.status === "not_read"
+  );
 
   const members =
     teamDetail && teamDetail?.teamMembers

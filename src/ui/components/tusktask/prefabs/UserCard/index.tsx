@@ -26,7 +26,7 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
   const { teamDetail } = useTeamContext();
 
   const members = teamDetail?.teamMembers ? teamDetail.teamMembers : [];
-  const isAMember = members.filter((m) => m.userId === user.id);
+  const isAMember = members.filter((m) => m.userId === user.id).length !== 0;
 
   // Pull all sent Invitation
   const { sentInvitation } = useNotificationContext();
@@ -130,13 +130,10 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
                   ? "Already invited"
                   : `Invite To ${teamDetail?.name}`
               }
-              variant={
-                isAMember.length > 0 || isAlreadyInvited
-                  ? "disabled"
-                  : "default"
-              }
+              variant={isAMember || isAlreadyInvited ? "disabled" : "default"}
               onClick={() => {
                 if (isAMember || isAlreadyInvited) {
+                  console.log(isAMember, isAlreadyInvited);
                   return;
                 }
 
