@@ -84,7 +84,18 @@ const NotificationCard = ({
         >
           Join
         </Button>
-        <Button variant={"destructive"} size={"sm"}>
+        <Button
+          variant={"destructive"}
+          onClick={() => {
+            updateNotification({
+              notificationId: notification.id,
+              newValue: {
+                status: "rejected",
+              },
+            });
+          }}
+          size={"sm"}
+        >
           Reject
         </Button>
       </div>
