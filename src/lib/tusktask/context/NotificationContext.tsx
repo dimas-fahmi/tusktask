@@ -266,6 +266,17 @@ const NotificationContextProvider = ({
     },
   });
 
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["teams"],
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: ["team"],
+      exact: false,
+    });
+  }, [sentInvitation, receivedInvitation]);
+
   // Update Notification
   const { mutate: updateNotification } = useMutation({
     mutationKey: ["notifications", "mutate"],

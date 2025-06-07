@@ -1,4 +1,9 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  UseMutateFunction,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { createContext, useState } from "react";
 
 import { fetchPersonalTeams } from "../fetchers/fetchPersonalTeams";
@@ -13,6 +18,11 @@ import {
 } from "@/src/types/team";
 import TeamMembershipDialog from "@/src/ui/components/tusktask/prefabs/TeamMembershipDialog";
 import InviteMemberDialog from "@/src/ui/components/tusktask/prefabs/InviteMemberDialog";
+import { deleteMembership as deleteMembershipFn } from "../mutators/deleteMembership";
+import {
+  TeamMembersDeleteRequest,
+  TeamMembersDeleteResponse,
+} from "@/app/api/memberships/delete";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -27,6 +37,14 @@ export interface TeamContextValues {
   setTeamMembershipDialog: SetStateAction<boolean>;
   inviteMemberDialog: boolean;
   setInviteMemberDialog: SetStateAction<boolean>;
+  deleteMembership: UseMutateFunction<
+    TeamMembersDeleteResponse,
+    Error,
+    TeamMembersDeleteRequest,
+    unknown
+  >;
+  userKey: string | null;
+  setUserKey: SetStateAction<string | null>;
 }
 
 const TeamContext = createContext<TeamContextValues | null>(null);
@@ -44,6 +62,7 @@ const TeamContextProvider = ({
 
   // Team Detail key
   const [teamDetailKey, setTeamDetailKey] = useState<string | null>(null);
+  const [userKey, setUserKey] = useState<string | null>(null);
 
   // Query team detail
   const { data: teamDetailResponse, isFetching: isFetchingTeamDetail } =
@@ -76,6 +95,60 @@ const TeamContextProvider = ({
     ? (extractFieldValues(teamsResponse.data, "team") as FullTeam[])
     : ([] as FullTeam[]);
 
+  // Mutation [delete membership]
+  const { mutate: deleteMembership } = useMutation({
+    mutationKey: ["teams", "membership", "delete", teamDetailKey, userKey],
+    mutationFn: deleteMembershipFn,
+    onMutate: async () => {
+      queryClient.invalidateQueries({});
+
+      const oldTeamDetail = teamDetailResponse;
+
+      if (oldTeamDetail?.data) {
+        queryClient.setQueryData(["team", teamDetailKey], () => {
+          let newTeamMembers = oldTeamDetail?.data?.teamMembers.filter(
+            (t) => t.user.id !== userKey
+          );
+
+          return {
+            ...oldTeamDetail,
+            data: {
+              ...oldTeamDetail.data,
+              teamMembers: newTeamMembers,
+            },
+          };
+        });
+      }
+
+      return { oldTeamDetail };
+    },
+    onError: (error, _, context) => {
+      console.log(error);
+
+      if (context?.oldTeamDetail) {
+        queryClient.setQueryData(
+          ["team", teamDetailKey],
+          context.oldTeamDetail
+        );
+      }
+    },
+    onSettled: () => {
+      setUserKey(null);
+
+      queryClient.invalidateQueries({
+        queryKey: ["team", teamDetailKey],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["teams"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+    },
+  });
+
   return (
     <TeamContext.Provider
       value={{
@@ -91,6 +164,9 @@ const TeamContextProvider = ({
         setTeamMembershipDialog,
         inviteMemberDialog,
         setInviteMemberDialog,
+        deleteMembership,
+        userKey,
+        setUserKey,
       }}
     >
       {children}

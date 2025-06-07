@@ -238,7 +238,6 @@ export async function teamMembersPost(req: Request) {
 
     // Handle transaction result
     if ("status" in result) {
-      // This is an error response from within the transaction
       return result;
     }
 

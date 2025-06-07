@@ -33,7 +33,11 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
 
   const isAlreadyInvited =
     sentInvitation.filter(
-      (n) => n.receiverId === user.id && n.teamId && n.teamId === teamDetailKey
+      (n) =>
+        n.receiverId === user.id &&
+        n.teamId &&
+        n.teamId === teamDetailKey &&
+        ["not_read", "accepted"].includes(n.status)
     ).length !== 0;
 
   const queryClient = useQueryClient();
