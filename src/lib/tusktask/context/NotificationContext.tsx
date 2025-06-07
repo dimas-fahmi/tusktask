@@ -61,7 +61,8 @@ export type PlaySoundType =
   | "negative"
   | "ping"
   | "error"
-  | "alarm";
+  | "alarm"
+  | "mute";
 
 const NotificationContext = createContext<NotificationContextValues | null>(
   null
@@ -87,7 +88,7 @@ const NotificationContextProvider = ({
   const { data: ntfBundle } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
-    refetchInterval: 100 * 10, // 10 seconds intervar
+    refetchInterval: 1000 * 5, // 10 seconds intervar
   });
 
   // Get received and sent notifications
@@ -118,7 +119,9 @@ const NotificationContextProvider = ({
   const playSound = (type: PlaySoundType = "notification") => {
     stopAllSounds();
 
-    const audioFiles: Record<PlaySoundType, string> = {
+    if (type === "mute") return;
+
+    const audioFiles: Record<Exclude<PlaySoundType, "mute">, string> = {
       error: "error.wav",
       negative: "negative.wav",
       notification: "notification.wav",
@@ -266,6 +269,29 @@ const NotificationContextProvider = ({
     },
   });
 
+  const [notificationLength, setNotificationLength] = useState(0);
+  const [invitationLength, setInvitationLength] = useState(0);
+
+  useEffect(() => {
+    if (received.length !== notificationLength) {
+      setNotificationLength(received.length);
+    }
+  }, [received]);
+
+  useEffect(() => {
+    const length =
+      sentInvitation.filter((t) => ["accepted", "rejected"].includes(t.status))
+        .length +
+      receivedInvitation.filter((t) => [
+        "accepted",
+        "rejected".includes(t.status),
+      ]).length;
+
+    if (length !== invitationLength) {
+      setInvitationLength(length);
+    }
+  }, [sentInvitation, receivedInvitation]);
+
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: ["teams"],
@@ -275,12 +301,37 @@ const NotificationContextProvider = ({
       queryKey: ["team"],
       exact: false,
     });
-  }, [sentInvitation, receivedInvitation]);
+  }, [invitationLength]);
 
   // Update Notification
   const { mutate: updateNotification } = useMutation({
     mutationKey: ["notifications", "mutate"],
     mutationFn: mutateNotificationData,
+    onMutate: async () => {
+      triggerToast({
+        type: "default",
+        title: "Saving Your Changes",
+        description: "We're saving your changes in the background",
+        sound: "mute",
+      });
+    },
+    onError: () => {
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: "Failed when saving your changes",
+        sound: "mute",
+      });
+    },
+    onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "Your Changes Is Saved",
+        description:
+          "Successfully saved your changes, everything is sync with cloud storage",
+        sound: "mute",
+      });
+    },
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["notifications"],

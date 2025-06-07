@@ -4,6 +4,7 @@ import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 import { Button } from "../../../shadcn/ui/button";
 import { FullNotification } from "@/src/types/notification";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 
 const NotificationCard = ({
   notification,
@@ -43,14 +44,14 @@ const NotificationCard = ({
   const subtitle: Record<FullNotification["type"], React.ReactNode> = {
     teamInvitation: (
       <>
-        <span>4h ago</span>
+        <span>{timePassed(notification.createdAt)}</span>
         <span>·</span>
         <span>{notification?.team?.name}</span>
       </>
     ),
     joinedATeam: (
       <>
-        <span>4h ago</span>
+        <span>{timePassed(notification.createdAt)}</span>
         <span>·</span>
         <span>{notification?.team?.name}</span>
       </>

@@ -42,11 +42,19 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
 
   const queryClient = useQueryClient();
 
+  const { triggerToast } = useNotificationContext();
+
   // mutators [Invitation]
   const { mutate: invite } = useMutation({
     mutationKey: ["teamInvitation", user.id],
     mutationFn: createTeamInvitation,
     onMutate: () => {
+      triggerToast({
+        type: "default",
+        title: "Invitation Sent",
+        description: `You've invited ${user.name} to ${teamDetail?.name}`,
+      });
+
       queryClient.cancelQueries();
 
       const oldNotifications = queryClient.getQueryData([
@@ -90,6 +98,12 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
       return { oldNotifications };
     },
     onError: (_, __, context) => {
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: `Failed to send invitation to ${user.name}`,
+      });
+
       if (context?.oldNotifications) {
         queryClient.setQueryData(["notifications"], context.oldNotifications);
       }

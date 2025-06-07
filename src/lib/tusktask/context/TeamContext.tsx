@@ -23,6 +23,7 @@ import {
   TeamMembersDeleteRequest,
   TeamMembersDeleteResponse,
 } from "@/app/api/memberships/delete";
+import useNotificationContext from "../hooks/context/useNotificationContext";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -70,6 +71,7 @@ const TeamContextProvider = ({
       queryKey: ["team", teamDetailKey],
       queryFn: () => fetchTeamDetail(teamDetailKey!),
       enabled: !!teamDetailKey,
+      staleTime: 1000,
     });
 
   const queryClient = useQueryClient();
@@ -95,20 +97,31 @@ const TeamContextProvider = ({
     ? (extractFieldValues(teamsResponse.data, "team") as FullTeam[])
     : ([] as FullTeam[]);
 
+  const { triggerToast } = useNotificationContext();
+
   // Mutation [delete membership]
   const { mutate: deleteMembership } = useMutation({
     mutationKey: ["teams", "membership", "delete", teamDetailKey, userKey],
     mutationFn: deleteMembershipFn,
-    onMutate: async () => {
+    onMutate: async (data) => {
+      triggerToast({
+        type: "default",
+        title: "Removing User",
+        description: `Removing a user from this team`,
+      });
+
       queryClient.invalidateQueries({});
 
       const oldTeamDetail = teamDetailResponse;
+      setUserKey(data.userId);
 
       if (oldTeamDetail?.data) {
         queryClient.setQueryData(["team", teamDetailKey], () => {
+          console.log(oldTeamDetail?.data?.teamMembers);
           let newTeamMembers = oldTeamDetail?.data?.teamMembers.filter(
-            (t) => t.user.id !== userKey
+            (t) => t.userId !== data.userId
           );
+          console.log(newTeamMembers);
 
           return {
             ...oldTeamDetail,
@@ -123,7 +136,11 @@ const TeamContextProvider = ({
       return { oldTeamDetail };
     },
     onError: (error, _, context) => {
-      console.log(error);
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: "Failed when deleting a user from a team.",
+      });
 
       if (context?.oldTeamDetail) {
         queryClient.setQueryData(
@@ -131,6 +148,13 @@ const TeamContextProvider = ({
           context.oldTeamDetail
         );
       }
+    },
+    onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "You Kicked A Member",
+        description: "You've just kicked a member from this team",
+      });
     },
     onSettled: () => {
       setUserKey(null);
