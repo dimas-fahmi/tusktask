@@ -61,7 +61,8 @@ export type PlaySoundType =
   | "negative"
   | "ping"
   | "error"
-  | "alarm";
+  | "alarm"
+  | "mute";
 
 const NotificationContext = createContext<NotificationContextValues | null>(
   null
@@ -118,7 +119,9 @@ const NotificationContextProvider = ({
   const playSound = (type: PlaySoundType = "notification") => {
     stopAllSounds();
 
-    const audioFiles: Record<PlaySoundType, string> = {
+    if (type === "mute") return;
+
+    const audioFiles: Record<Exclude<PlaySoundType, "mute">, string> = {
       error: "error.wav",
       negative: "negative.wav",
       notification: "notification.wav",
@@ -304,6 +307,31 @@ const NotificationContextProvider = ({
   const { mutate: updateNotification } = useMutation({
     mutationKey: ["notifications", "mutate"],
     mutationFn: mutateNotificationData,
+    onMutate: async () => {
+      triggerToast({
+        type: "default",
+        title: "Saving Your Changes",
+        description: "We're saving your changes in the background",
+        sound: "mute",
+      });
+    },
+    onError: () => {
+      triggerToast({
+        type: "error",
+        title: "Something Went Wrong",
+        description: "Failed when saving your changes",
+        sound: "mute",
+      });
+    },
+    onSuccess: () => {
+      triggerToast({
+        type: "success",
+        title: "Your Changes Is Saved",
+        description:
+          "Successfully saved your changes, everything is sync with cloud storage",
+        sound: "mute",
+      });
+    },
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["notifications"],
