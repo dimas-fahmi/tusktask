@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
+import { notifications } from "@/src/db/schema/notifications";
 import { teamMembers, TeamMembersType } from "@/src/db/schema/teams";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
@@ -111,26 +112,44 @@ export async function teamMembersDelete(req: Request) {
   }
 
   try {
-    const response = await db
-      .delete(teamMembers)
-      .where(
-        and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, userId))
-      )
-      .returning();
+    const result = await db.transaction(async (tx) => {
+      const response = await tx
+        .delete(teamMembers)
+        .where(
+          and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, userId))
+        )
+        .returning();
 
-    if (!response) {
-      return createNextResponse(500, {
-        messages: "Unexpected and unknown error",
+      if (!response) {
+        return createNextResponse(500, {
+          messages: "Unexpected and unknown error",
+        });
+      }
+
+      const notificationsResponse = await tx
+        .delete(notifications)
+        .where(
+          and(
+            eq(notifications.receiverId, userId),
+            eq(notifications.teamId, teamId)
+          )
+        )
+        .returning();
+
+      if (notificationsResponse.length === 0) {
+        return createNextResponse(500, {
+          messages: "Failed when deleting related authorization",
+        });
+      }
+
+      return createNextResponse(200, {
+        messages: "Success",
+        data: response,
       });
-    }
+    });
 
-    return createNextResponse(200, {
-      messages: "Success",
-      data: response,
-    });
+    return result;
   } catch (error) {
-    return createNextResponse(500, {
-      messages: "Failed when deleting user's membership",
-    });
+    return error;
   }
 }

@@ -99,8 +99,38 @@ const TeamContextProvider = ({
   const { mutate: deleteMembership } = useMutation({
     mutationKey: ["teams", "membership", "delete", teamDetailKey, userKey],
     mutationFn: deleteMembershipFn,
-    onError: (error) => {
+    onMutate: async () => {
+      queryClient.invalidateQueries({});
+
+      const oldTeamDetail = teamDetailResponse;
+
+      if (oldTeamDetail?.data) {
+        queryClient.setQueryData(["team", teamDetailKey], () => {
+          let newTeamMembers = oldTeamDetail?.data?.teamMembers.filter(
+            (t) => t.user.id !== userKey
+          );
+
+          return {
+            ...oldTeamDetail,
+            data: {
+              ...oldTeamDetail.data,
+              teamMembers: newTeamMembers,
+            },
+          };
+        });
+      }
+
+      return { oldTeamDetail };
+    },
+    onError: (error, _, context) => {
       console.log(error);
+
+      if (context?.oldTeamDetail) {
+        queryClient.setQueryData(
+          ["team", teamDetailKey],
+          context.oldTeamDetail
+        );
+      }
     },
     onSettled: () => {
       setUserKey(null);
