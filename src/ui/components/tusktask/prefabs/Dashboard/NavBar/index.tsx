@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@/src/ui/components/shadcn/ui/dialog";
 import { useSidebar } from "@/src/ui/components/shadcn/ui/sidebar";
-import { Bell, PanelLeft, SwatchBook } from "lucide-react";
+import { Bell, BellDot, PanelLeft, SwatchBook } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import ThemePreviewCard from "../../ThemePreviewCard";
@@ -34,7 +34,8 @@ const NavBar = () => {
   const { setThemeDialogOpen } = useThemeContext();
 
   // Pull setters from notifications context
-  const { setNotificationsDialogOpen } = useNotificationContext();
+  const { setNotificationsDialogOpen, newNotification } =
+    useNotificationContext();
 
   return (
     <nav className="flex items-center justify-between">
@@ -59,7 +60,7 @@ const NavBar = () => {
             className="cursor-pointer"
             onClick={() => setNotificationsDialogOpen(true)}
           >
-            <Bell />
+            {newNotification ? <BellDot /> : <Bell />}
           </button>
           <button
             className="cursor-pointer"
