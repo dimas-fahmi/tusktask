@@ -41,7 +41,6 @@ export async function teamMembersDelete(req: Request) {
   }
 
   // 3. Validate membership
-
   let membership: TeamMembersType | undefined;
 
   try {
@@ -101,7 +100,7 @@ export async function teamMembersDelete(req: Request) {
     });
   }
 
-  // 7. Only administrator and Owner can delete asignee
+  // 7. Only administrator and Owner can delete assignee
   if (
     userRole === "assignee" &&
     !["owner", "admin"].includes(membership.userRole)
@@ -120,13 +119,12 @@ export async function teamMembersDelete(req: Request) {
         )
         .returning();
 
-      if (!response) {
-        return createNextResponse(500, {
-          messages: "Unexpected and unknown error",
-        });
+      if (!response || response.length === 0) {
+        throw new Error("Failed to delete team member");
       }
 
-      const notificationsResponse = await tx
+      // Delete notifications - this is optional, so we don't fail if there are none
+      const ndel = await tx
         .delete(notifications)
         .where(
           and(
@@ -136,20 +134,20 @@ export async function teamMembersDelete(req: Request) {
         )
         .returning();
 
-      if (notificationsResponse.length === 0) {
-        return createNextResponse(500, {
-          messages: "Failed when deleting related authorization",
-        });
+      if (ndel.length === 0) {
+        throw new Error("Failed to delete related notifications");
       }
 
       return createNextResponse(200, {
         messages: "Success",
-        data: response,
+        data: response[0], // Return the first deleted record
       });
     });
 
     return result;
   } catch (error) {
-    return error;
+    return createNextResponse(500, {
+      messages: "Something went wrong on transaction",
+    });
   }
 }
