@@ -1,5 +1,5 @@
 import { cva } from "class-variance-authority";
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { ExternalToast, toast, Toaster } from "sonner";
 import { cn } from "../../shadcn/utils";
 import { AlarmClock, Bell, CircleAlert, CircleCheckBig } from "lucide-react";
@@ -53,6 +53,7 @@ interface NotificationContextValues {
     NotificationsPatchRequest,
     unknown
   >;
+  newNotification: boolean;
 }
 
 export type PlaySoundType =
@@ -85,7 +86,7 @@ const NotificationContextProvider = ({
   const { personal } = usePersonalContext();
 
   // Notification Polling
-  const { data: ntfBundle } = useQuery({
+  const { data: ntfBundle, isLoading: isLoadingNtfBundle } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
     refetchInterval: 1000 * 5, // 10 seconds intervar
@@ -271,10 +272,31 @@ const NotificationContextProvider = ({
 
   const [notificationLength, setNotificationLength] = useState(0);
   const [invitationLength, setInvitationLength] = useState(0);
+  const latestNotification = useRef<Date | null>(null);
+  const [newNotification, setNewNotification] = useState(false);
 
   useEffect(() => {
     if (received.length !== notificationLength) {
       setNotificationLength(received.length);
+    }
+
+    if (!isLoadingNtfBundle && received.length > 0) {
+      const latestFetched = received.reduce((latest, n) => {
+        return new Date(n.createdAt) > new Date(latest.createdAt) ? n : latest;
+      });
+
+      const lastSeen = latestNotification.current;
+
+      if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
+        setNewNotification(true);
+        triggerToast({
+          type: "default",
+          title: "New Notification",
+          description: "You have a new notification",
+        });
+      }
+
+      latestNotification.current = latestFetched.createdAt;
     }
   }, [received]);
 
@@ -339,6 +361,12 @@ const NotificationContextProvider = ({
     },
   });
 
+  useEffect(() => {
+    if (notificationsDialogOpen) {
+      setNewNotification(false);
+    }
+  }, [notificationsDialogOpen]);
+
   return (
     <NotificationContext.Provider
       value={{
@@ -352,6 +380,7 @@ const NotificationContextProvider = ({
         receivedInvitation,
         sentInvitation,
         updateNotification,
+        newNotification,
       }}
     >
       {children}

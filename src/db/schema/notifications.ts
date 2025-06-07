@@ -48,7 +48,7 @@ export const notifications = pgTable(
         onDelete: "cascade",
       })
       .notNull(),
-    createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
+    createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow().notNull(),
     markReadAt: timestamp("markReadAt", TIMESTAMP_CONFIGS),
     teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }),
     payload: json("payload").$type<Record<string, any>>(),
