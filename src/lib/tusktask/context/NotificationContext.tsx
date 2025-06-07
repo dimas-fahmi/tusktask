@@ -87,7 +87,7 @@ const NotificationContextProvider = ({
   const { data: ntfBundle } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
-    refetchInterval: 1000 * 10, // 10 seconds intervar
+    refetchInterval: 1000 * 5, // 10 seconds intervar
   });
 
   // Get received and sent notifications
