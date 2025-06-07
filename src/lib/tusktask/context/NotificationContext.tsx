@@ -87,7 +87,7 @@ const NotificationContextProvider = ({
   const { data: ntfBundle } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
-    refetchInterval: 100 * 10, // 10 seconds intervar
+    refetchInterval: 1000 * 10, // 10 seconds intervar
   });
 
   // Get received and sent notifications
@@ -266,6 +266,29 @@ const NotificationContextProvider = ({
     },
   });
 
+  const [notificationLength, setNotificationLength] = useState(0);
+  const [invitationLength, setInvitationLength] = useState(0);
+
+  useEffect(() => {
+    if (received.length !== notificationLength) {
+      setNotificationLength(received.length);
+    }
+  }, [received]);
+
+  useEffect(() => {
+    const length =
+      sentInvitation.filter((t) => ["accepted", "rejected"].includes(t.status))
+        .length +
+      receivedInvitation.filter((t) => [
+        "accepted",
+        "rejected".includes(t.status),
+      ]).length;
+
+    if (length !== invitationLength) {
+      setInvitationLength(length);
+    }
+  }, [sentInvitation, receivedInvitation]);
+
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: ["teams"],
@@ -275,7 +298,7 @@ const NotificationContextProvider = ({
       queryKey: ["team"],
       exact: false,
     });
-  }, [sentInvitation, receivedInvitation]);
+  }, [invitationLength]);
 
   // Update Notification
   const { mutate: updateNotification } = useMutation({

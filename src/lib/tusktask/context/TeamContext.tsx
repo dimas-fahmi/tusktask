@@ -99,16 +99,19 @@ const TeamContextProvider = ({
   const { mutate: deleteMembership } = useMutation({
     mutationKey: ["teams", "membership", "delete", teamDetailKey, userKey],
     mutationFn: deleteMembershipFn,
-    onMutate: async () => {
+    onMutate: async (data) => {
       queryClient.invalidateQueries({});
 
       const oldTeamDetail = teamDetailResponse;
+      setUserKey(data.userId);
 
       if (oldTeamDetail?.data) {
         queryClient.setQueryData(["team", teamDetailKey], () => {
+          console.log(oldTeamDetail?.data?.teamMembers);
           let newTeamMembers = oldTeamDetail?.data?.teamMembers.filter(
-            (t) => t.user.id !== userKey
+            (t) => t.userId !== data.userId
           );
+          console.log(newTeamMembers);
 
           return {
             ...oldTeamDetail,

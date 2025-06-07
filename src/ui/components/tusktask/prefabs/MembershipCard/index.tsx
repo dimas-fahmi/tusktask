@@ -21,7 +21,7 @@ const MembershipCard = ({
   pending?: boolean;
 }) => {
   // Pull team context values
-  const { deleteMembership, setUserKey, teamDetailKey } = useTeamContext();
+  const { deleteMembership, teamDetailKey } = useTeamContext();
 
   return (
     <div
@@ -60,7 +60,6 @@ const MembershipCard = ({
               title={`Remove ${truncateText(user.name ?? "", 1, false)} from this team`}
               onClick={() => {
                 if (!teamDetailKey || !user.id) return;
-                setUserKey(user.id);
                 deleteMembership({ teamId: teamDetailKey, userId: user.id });
               }}
             />
