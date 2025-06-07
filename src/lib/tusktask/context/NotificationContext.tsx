@@ -276,12 +276,14 @@ const NotificationContextProvider = ({
   const [newNotification, setNewNotification] = useState(false);
 
   useEffect(() => {
-    if (received.length !== notificationLength) {
-      setNotificationLength(received.length);
+    const nots = received.filter((t) => t.status === "not_read");
+
+    if (nots.length !== notificationLength) {
+      setNotificationLength(nots.length);
     }
 
-    if (!isLoadingNtfBundle && received.length > 0) {
-      const latestFetched = received.reduce((latest, n) => {
+    if (!isLoadingNtfBundle && nots.length > 0) {
+      const latestFetched = nots.reduce((latest, n) => {
         return new Date(n.createdAt) > new Date(latest.createdAt) ? n : latest;
       });
 
