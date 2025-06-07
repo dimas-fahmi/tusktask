@@ -9,6 +9,7 @@ import {
   Star,
   UserRoundX,
 } from "lucide-react";
+import { SanitizedUser } from "@/src/lib/tusktask/utils/sanitizeUserData";
 import {
   Popover,
   PopoverContent,
@@ -20,43 +21,36 @@ import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import { useSession } from "next-auth/react";
 import { Badge } from "../../../shadcn/ui/badge";
-import { FullTeamMembers } from "@/src/types/team";
 
-const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
-  // Pull session
+const MembershipCardPending = ({
+  user,
+  pending = false,
+}: {
+  user: SanitizedUser;
+  pending?: boolean;
+}) => {
   const { data: session } = useSession();
 
-  // Get user data
-  const { user } = membership;
-
   // Pull team context values
-  const { deleteMembership, teamDetailKey, updateMembership, setUserKey } =
-    useTeamContext();
+  const { deleteMembership, teamDetailKey } = useTeamContext();
 
   return (
-    <div className={`px-4 py-2 flex items-center gap-2`} title={"Member"}>
+    <div
+      className={`px-4 ${pending && "opacity-60"} py-2 flex items-center gap-2`}
+      title={pending ? "Waiting invitation acceptance" : "Member"}
+    >
       <Avatar className="w-12 h-12">
         <AvatarImage src={user?.image ?? DEFAULT_AVATAR} alt="Avatar" />
       </Avatar>
       <div className="flex flex-col flex-grow">
-        <h1 className="text-sm leading-5 font-semibold flex gap-2">
+        <h1 className="text-sm leading-5 font-semibold">
           <span>{user?.name}</span>
-          {membership?.userRole === "owner" && (
-            <Badge className="text-xs">
-              <Star /> Owner
-            </Badge>
-          )}
-
-          {membership?.userRole === "admin" && (
-            <Badge className="text-xs">
-              <ShieldUser /> Administrator
-            </Badge>
-          )}
         </h1>
         <span className="text-xs">{user?.username}</span>
       </div>
-
-      {user?.id !== session?.user?.id ? (
+      {pending ? (
+        <span className="text-xs opacity-60">Pending</span>
+      ) : user?.id !== session?.user?.id ? (
         <Popover>
           <PopoverTrigger>
             <span
@@ -70,21 +64,7 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
             <PopoverAction Icon={MessageCircle} title="Send a message" />
             <Separator />
             <PopoverAction Icon={Star} title="Transfer ownership" />
-            <PopoverAction
-              Icon={ShieldUser}
-              title="Promote as administrator"
-              onClick={() => {
-                if (!teamDetailKey || !user.id) return;
-                setUserKey(user.id);
-                updateMembership({
-                  teamId: membership.teamId,
-                  userId: membership.userId,
-                  newValue: {
-                    userRole: "admin",
-                  },
-                });
-              }}
-            />
+            <PopoverAction Icon={ShieldUser} title="Promote as administrator" />
             <PopoverAction Icon={Library} title="View claimed tasks" />
             <Separator />
             <PopoverAction
@@ -93,7 +73,6 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
               title={`Remove ${truncateText(user.name ?? "", 1, false)} from this team`}
               onClick={() => {
                 if (!teamDetailKey || !user.id) return;
-                setUserKey(user.id);
                 deleteMembership({ teamId: teamDetailKey, userId: user.id });
               }}
             />
@@ -106,4 +85,4 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
   );
 };
 
-export default MembershipCard;
+export default MembershipCardPending;

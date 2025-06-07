@@ -9,7 +9,7 @@ import { users } from "./users";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { tasks } from "./tasks";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 
 // TEAMS TABLE
 export const teams = pgTable(
@@ -69,7 +69,7 @@ export const teamMembers = pgTable(
     })
       .default("assignee")
       .notNull(),
-    joinAt: timestamp("joinAt", TIMESTAMP_CONFIGS).defaultNow(),
+    joinAt: timestamp("joinAt", TIMESTAMP_CONFIGS).defaultNow().notNull(),
   },
   (t) => [
     primaryKey({
@@ -100,3 +100,4 @@ export type TeamMembersInsertType = InferInsertModel<typeof teamMembers>;
 
 export const teamSchema = createInsertSchema(teams);
 export const teamMembersSchema = createInsertSchema(teamMembers);
+export const teamMembersUpdateSchema = createUpdateSchema(teamMembers);

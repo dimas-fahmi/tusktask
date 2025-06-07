@@ -24,6 +24,11 @@ import {
   TeamMembersDeleteResponse,
 } from "@/app/api/memberships/delete";
 import useNotificationContext from "../hooks/context/useNotificationContext";
+import { mutateMembership } from "../mutators/mutateMembership";
+import {
+  TeamMembersPatchRequest,
+  TeamMembersPatchResponse,
+} from "@/app/api/memberships/patch";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -46,6 +51,12 @@ export interface TeamContextValues {
   >;
   userKey: string | null;
   setUserKey: SetStateAction<string | null>;
+  updateMembership: UseMutateFunction<
+    TeamMembersPatchResponse,
+    Error,
+    TeamMembersPatchRequest,
+    unknown
+  >;
 }
 
 const TeamContext = createContext<TeamContextValues | null>(null);
@@ -113,7 +124,6 @@ const TeamContextProvider = ({
       queryClient.invalidateQueries({});
 
       const oldTeamDetail = teamDetailResponse;
-      setUserKey(data.userId);
 
       if (oldTeamDetail?.data) {
         queryClient.setQueryData(["team", teamDetailKey], () => {
@@ -173,6 +183,18 @@ const TeamContextProvider = ({
     },
   });
 
+  // Update : [membership]
+  const { mutate: updateMembership } = useMutation({
+    mutationKey: ["team", "membership", "update", teamDetailKey, userKey],
+    mutationFn: mutateMembership,
+    onSettled: () => {
+      setUserKey(null);
+      queryClient.invalidateQueries({
+        queryKey: ["team", teamDetailKey],
+      });
+    },
+  });
+
   return (
     <TeamContext.Provider
       value={{
@@ -191,6 +213,7 @@ const TeamContextProvider = ({
         deleteMembership,
         userKey,
         setUserKey,
+        updateMembership,
       }}
     >
       {children}

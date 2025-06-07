@@ -13,6 +13,7 @@ import MembershipCard from "../MembershipCard";
 import { ScrollArea } from "../../../shadcn/ui/scroll-area";
 import { extractFieldValues } from "@/src/lib/tusktask/utils/extractFieldValues";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import MembershipCardPending from "../MembershipCard/pending";
 
 const TeamMembershipDialog = () => {
   // Pull state from team context
@@ -31,9 +32,9 @@ const TeamMembershipDialog = () => {
   );
 
   const members =
-    teamDetail && teamDetail?.teamMembers
-      ? extractFieldValues(teamDetail.teamMembers, "user")
-      : [];
+    teamDetail && teamDetail?.teamMembers ? teamDetail.teamMembers : [];
+
+  console.log(members);
 
   return (
     <Dialog open={teamMembershipDialog} onOpenChange={setTeamMembershipDialog}>
@@ -74,7 +75,7 @@ const TeamMembershipDialog = () => {
         <ScrollArea className="h-[320px]">
           {members &&
             members.map((member) => (
-              <MembershipCard key={member.id} user={member} />
+              <MembershipCard key={member?.user?.id} membership={member} />
             ))}
 
           {members.length === 1 && invites.length === 0 && (
@@ -86,7 +87,11 @@ const TeamMembershipDialog = () => {
 
           {invites &&
             invites.map((member) => (
-              <MembershipCard key={member.id} pending user={member.receiver} />
+              <MembershipCardPending
+                key={member?.id}
+                pending
+                user={member?.receiver}
+              />
             ))}
         </ScrollArea>
       </DialogContent>
