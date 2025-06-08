@@ -29,6 +29,8 @@ import {
   TeamMembersPatchRequest,
   TeamMembersPatchResponse,
 } from "@/app/api/memberships/patch";
+import { useSession } from "next-auth/react";
+import { TeamMembersType } from "@/src/db/schema/teams";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -57,6 +59,7 @@ export interface TeamContextValues {
     TeamMembersPatchRequest,
     unknown
   >;
+  myMembership: TeamMembersType | null;
 }
 
 const TeamContext = createContext<TeamContextValues | null>(null);
@@ -66,6 +69,9 @@ const TeamContextProvider = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
+  // Pull session
+  const { data: session } = useSession();
+
   // Query Teams
   const { data: teamsResponse, isFetching: isFetchingTeams } = useQuery({
     queryKey: ["teams"],
@@ -89,6 +95,10 @@ const TeamContextProvider = ({
 
   const teamDetail: TeamDetail | null = teamDetailResponse?.data
     ? teamDetailResponse.data
+    : null;
+
+  const myMembership = teamDetail
+    ? teamDetail.teamMembers.filter((t) => t.userId === session?.user?.id)?.[0]
     : null;
 
   // New Team Dialog State
@@ -214,6 +224,7 @@ const TeamContextProvider = ({
         userKey,
         setUserKey,
         updateMembership,
+        myMembership,
       }}
     >
       {children}

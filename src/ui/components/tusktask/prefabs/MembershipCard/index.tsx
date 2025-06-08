@@ -5,6 +5,7 @@ import {
   Ellipsis,
   Library,
   MessageCircle,
+  ShieldOff,
   ShieldUser,
   Star,
   UserRoundX,
@@ -30,8 +31,57 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
   const { user } = membership;
 
   // Pull team context values
-  const { deleteMembership, teamDetailKey, updateMembership, setUserKey } =
-    useTeamContext();
+  const {
+    deleteMembership,
+    teamDetailKey,
+    updateMembership,
+    setUserKey,
+    myMembership,
+  } = useTeamContext();
+
+  // RBAC Helper Functions
+  const isOwner = (role: string) => role === "owner";
+  const isAdmin = (role: string) => role === "admin";
+  const isAssignee = (role: string) => role === "assignee";
+
+  const myRole = myMembership?.userRole ?? "";
+  const targetRole = membership.userRole;
+  const isCurrentUser = user?.id === session?.user?.id;
+
+  // Permission Checks
+  const canTransferOwnership = isOwner(myRole) && !isCurrentUser;
+
+  const canPromoteToAdmin =
+    isOwner(myRole) && isAssignee(targetRole) && !isCurrentUser;
+
+  const canRevokeAdmin =
+    isOwner(myRole) && isAdmin(targetRole) && !isCurrentUser;
+
+  const canKickMember =
+    !isCurrentUser &&
+    (isOwner(myRole) || // Owner can kick anyone
+      (isAdmin(myRole) && isAssignee(targetRole))); // Admin can only kick assignees
+
+  const canRequestAdminRights =
+    isAssignee(myRole) &&
+    (isAdmin(targetRole) || isOwner(targetRole)) &&
+    !isCurrentUser;
+
+  const canViewTasks = !isCurrentUser; // Anyone can view others' tasks
+
+  const canSendMessage = !isCurrentUser; // Anyone can message others
+
+  // Check if user has any management actions available
+  const hasManagementActions =
+    canTransferOwnership ||
+    canPromoteToAdmin ||
+    canRevokeAdmin ||
+    canKickMember;
+  const hasAnyActions =
+    hasManagementActions ||
+    canRequestAdminRights ||
+    canViewTasks ||
+    canSendMessage;
 
   return (
     <div className={`px-4 py-2 flex items-center gap-2`} title={"Member"}>
@@ -41,13 +91,13 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
       <div className="flex flex-col flex-grow">
         <h1 className="text-sm leading-5 font-semibold flex gap-2">
           <span>{user?.name}</span>
-          {membership?.userRole === "owner" && (
+          {isOwner(targetRole) && (
             <Badge className="text-xs">
               <Star /> Owner
             </Badge>
           )}
 
-          {membership?.userRole === "admin" && (
+          {isAdmin(targetRole) && (
             <Badge className="text-xs">
               <ShieldUser /> Administrator
             </Badge>
@@ -56,7 +106,7 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
         <span className="text-xs">{user?.username}</span>
       </div>
 
-      {user?.id !== session?.user?.id ? (
+      {!isCurrentUser && hasAnyActions ? (
         <Popover>
           <PopoverTrigger>
             <span
@@ -67,41 +117,114 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
             </span>
           </PopoverTrigger>
           <PopoverContent className="p-1 space-y-2">
-            <PopoverAction Icon={MessageCircle} title="Send a message" />
-            <Separator />
-            <PopoverAction Icon={Star} title="Transfer ownership" />
-            <PopoverAction
-              Icon={ShieldUser}
-              title="Promote as administrator"
-              onClick={() => {
-                if (!teamDetailKey || !user.id) return;
-                setUserKey(user.id);
-                updateMembership({
-                  teamId: membership.teamId,
-                  userId: membership.userId,
-                  newValue: {
-                    userRole: "admin",
-                  },
-                });
-              }}
-            />
-            <PopoverAction Icon={Library} title="View claimed tasks" />
-            <Separator />
-            <PopoverAction
-              Icon={UserRoundX}
-              variant="destructive"
-              title={`Remove ${truncateText(user.name ?? "", 1, false)} from this team`}
-              onClick={() => {
-                if (!teamDetailKey || !user.id) return;
-                setUserKey(user.id);
-                deleteMembership({ teamId: teamDetailKey, userId: user.id });
-              }}
-            />
+            {/* General Actions - Available to all roles */}
+            {canSendMessage && (
+              <PopoverAction
+                Icon={MessageCircle}
+                title="Send a message"
+                onClick={() => {
+                  // TODO: Implement send message functionality
+                }}
+              />
+            )}
+
+            {canViewTasks && (
+              <PopoverAction
+                Icon={Library}
+                title="View claimed tasks"
+                onClick={() => {
+                  // TODO: Implement view tasks functionality
+                }}
+              />
+            )}
+
+            {/* Separator if we have both general actions and other actions */}
+            {(canSendMessage || canViewTasks) &&
+              (hasManagementActions || canRequestAdminRights) && <Separator />}
+
+            {/* Owner-only Actions */}
+            {canTransferOwnership && (
+              <PopoverAction
+                Icon={Star}
+                title="Transfer ownership"
+                onClick={() => {
+                  // TODO: Implement transfer ownership functionality
+                }}
+              />
+            )}
+
+            {/* Admin Management Actions */}
+            {canPromoteToAdmin && (
+              <PopoverAction
+                Icon={ShieldUser}
+                title="Promote as administrator"
+                onClick={() => {
+                  if (!teamDetailKey || !user.id) return;
+                  setUserKey(user.id);
+                  updateMembership({
+                    teamId: membership.teamId,
+                    userId: membership.userId,
+                    newValue: {
+                      userRole: "admin",
+                    },
+                  });
+                }}
+              />
+            )}
+
+            {canRevokeAdmin && (
+              <PopoverAction
+                Icon={ShieldOff}
+                title="Revoke administration rights"
+                onClick={() => {
+                  if (!teamDetailKey || !user.id) return;
+                  setUserKey(user.id);
+                  updateMembership({
+                    teamId: membership.teamId,
+                    userId: membership.userId,
+                    newValue: {
+                      userRole: "assignee",
+                    },
+                  });
+                }}
+              />
+            )}
+
+            {/* Assignee Actions */}
+            {canRequestAdminRights && (
+              <PopoverAction
+                Icon={ShieldUser}
+                title="Request administration access"
+                onClick={() => {
+                  // TODO: Implement request admin access functionality
+                }}
+              />
+            )}
+
+            {/* Destructive Actions */}
+            {canKickMember && (
+              <>
+                {hasManagementActions && <Separator />}
+                <PopoverAction
+                  Icon={UserRoundX}
+                  variant="destructive"
+                  title={`Remove ${truncateText(user.name ?? "", 1, false)} from this team`}
+                  onClick={() => {
+                    if (!teamDetailKey || !user.id) return;
+                    setUserKey(user.id);
+                    deleteMembership({
+                      teamId: teamDetailKey,
+                      userId: user.id,
+                    });
+                  }}
+                />
+              </>
+            )}
           </PopoverContent>
         </Popover>
-      ) : (
+      ) : isCurrentUser ? (
         <span className="text-xs opacity-60">You</span>
-      )}
+      ) : null}
     </div>
   );
 };
