@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../../shadcn/ui/popover";
-import { Ellipsis, MessageCircle, UserRoundPlus } from "lucide-react";
+import { Ellipsis, MessageCircle, Send, UserRoundPlus } from "lucide-react";
 import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "../../../shadcn/ui/separator";
 import { SanitizedUser } from "@/src/lib/tusktask/utils/sanitizeUserData";
@@ -42,7 +42,7 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
 
   const queryClient = useQueryClient();
 
-  const { triggerToast } = useNotificationContext();
+  const { triggerToast, triggerAlertDialog } = useNotificationContext();
 
   // mutators [Invitation]
   const { mutate: invite } = useMutation({
@@ -155,10 +155,19 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
                   return;
                 }
 
-                invite({
-                  receiverId: user.id,
-                  senderId: session!.user.id!,
-                  teamId: teamDetail!.id,
+                triggerAlertDialog({
+                  title: `Invite To ${teamDetail?.name ?? "This Team"}`,
+                  description: `Send invitation to ${user.name}?`,
+                  showCancelButton: true,
+                  confirmText: "Send",
+                  icon: Send,
+                  confirm: () => {
+                    invite({
+                      receiverId: user.id,
+                      senderId: session!.user.id!,
+                      teamId: teamDetail!.id,
+                    });
+                  },
                 });
               }}
             />
