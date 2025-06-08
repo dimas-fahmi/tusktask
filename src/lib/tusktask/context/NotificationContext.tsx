@@ -2,7 +2,13 @@ import { cva } from "class-variance-authority";
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { ExternalToast, toast, Toaster } from "sonner";
 import { cn } from "../../shadcn/utils";
-import { AlarmClock, Bell, CircleAlert, CircleCheckBig } from "lucide-react";
+import {
+  AlarmClock,
+  Bell,
+  CircleAlert,
+  CircleCheckBig,
+  LucideIcon,
+} from "lucide-react";
 import usePersonalContext from "../hooks/context/usePersonalContext";
 import NotificationsDialog from "@/src/ui/components/tusktask/prefabs/NotificationsDialog";
 import { SetStateAction } from "@/src/types/types";
@@ -25,6 +31,7 @@ import {
   NotificationsPatchRequest,
   NotificationsPatchResponse,
 } from "@/app/api/notifications/patch";
+import AlertDialog from "@/src/ui/components/tusktask/prefabs/AlertDialog";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -54,6 +61,12 @@ interface NotificationContextValues {
     unknown
   >;
   newNotification: boolean;
+
+  // Alert Dialog
+  alertDialog: AlertDialogState;
+  setAlertDialog: SetStateAction<AlertDialogState>;
+  triggerAlertDialog: (props: Omit<AlertDialogState, "open">) => void;
+  handleResetAlertDialog: () => void;
 }
 
 export type PlaySoundType =
@@ -69,11 +82,47 @@ const NotificationContext = createContext<NotificationContextValues | null>(
   null
 );
 
+export type AlertDialogState = {
+  open: boolean;
+  title: string;
+  description: string;
+  icon?: LucideIcon;
+  confirmText?: string;
+  showCancelButton?: boolean;
+  confirm?: () => void;
+  cancel?: () => void;
+};
+
 const NotificationContextProvider = ({
   children,
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
+  // Alert dialog
+  const initialAlertDialog: AlertDialogState = {
+    open: false,
+    title: "",
+    confirmText: "confirm",
+    description: "",
+    showCancelButton: false,
+    cancel: () => {},
+    confirm: () => {},
+  };
+
+  const [alertDialog, setAlertDialog] =
+    useState<AlertDialogState>(initialAlertDialog);
+
+  const handleResetAlertDialog = () => {
+    setAlertDialog(initialAlertDialog);
+  };
+
+  const triggerAlertDialog = (props: Omit<AlertDialogState, "open">) => {
+    setAlertDialog({
+      open: true,
+      ...props,
+    });
+  };
+
   // Notifications Dialog State
   const [notificationsDialogOpen, setNotificationsDialogOpen] = useState(false);
 
@@ -383,11 +432,18 @@ const NotificationContextProvider = ({
         sentInvitation,
         updateNotification,
         newNotification,
+
+        // Alert Dialog
+        alertDialog,
+        setAlertDialog,
+        triggerAlertDialog,
+        handleResetAlertDialog,
       }}
     >
       {children}
 
       <NotificationsDialog />
+      <AlertDialog />
       <Toaster />
     </NotificationContext.Provider>
   );

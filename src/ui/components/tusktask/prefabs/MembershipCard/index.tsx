@@ -22,6 +22,7 @@ import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import { useSession } from "next-auth/react";
 import { Badge } from "../../../shadcn/ui/badge";
 import { FullTeamMembers } from "@/src/types/team";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
   // Pull session
@@ -38,6 +39,9 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
     setUserKey,
     myMembership,
   } = useTeamContext();
+
+  // Pull setters and triggers from Notification context
+  const { triggerAlertDialog } = useNotificationContext();
 
   // RBAC Helper Functions
   const isOwner = (role: string) => role === "owner";
@@ -160,12 +164,20 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
                 title="Promote as administrator"
                 onClick={() => {
                   if (!teamDetailKey || !user.id) return;
-                  setUserKey(user.id);
-                  updateMembership({
-                    teamId: membership.teamId,
-                    userId: membership.userId,
-                    newValue: {
-                      userRole: "admin",
+                  triggerAlertDialog({
+                    title: "Grant Administration Rights",
+                    description: `This will make ${truncateText(user.name ?? "", 1, false)}'s to have administrator access level`,
+                    confirmText: "Promote",
+                    showCancelButton: true,
+                    confirm: () => {
+                      setUserKey(user.id);
+                      updateMembership({
+                        teamId: membership.teamId,
+                        userId: membership.userId,
+                        newValue: {
+                          userRole: "admin",
+                        },
+                      });
                     },
                   });
                 }}
@@ -178,12 +190,20 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
                 title="Revoke administration rights"
                 onClick={() => {
                   if (!teamDetailKey || !user.id) return;
-                  setUserKey(user.id);
-                  updateMembership({
-                    teamId: membership.teamId,
-                    userId: membership.userId,
-                    newValue: {
-                      userRole: "assignee",
+                  triggerAlertDialog({
+                    title: "Revoke Administration Rights?",
+                    description: `Are you sure you want to revoke ${truncateText(user.name ?? "", 1, false)}'s admin rights?`,
+                    confirmText: "Revoke",
+                    showCancelButton: true,
+                    confirm: () => {
+                      setUserKey(user.id);
+                      updateMembership({
+                        teamId: membership.teamId,
+                        userId: membership.userId,
+                        newValue: {
+                          userRole: "assignee",
+                        },
+                      });
                     },
                   });
                 }}
@@ -211,10 +231,19 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
                   title={`Remove ${truncateText(user.name ?? "", 1, false)} from this team`}
                   onClick={() => {
                     if (!teamDetailKey || !user.id) return;
-                    setUserKey(user.id);
-                    deleteMembership({
-                      teamId: teamDetailKey,
-                      userId: user.id,
+
+                    triggerAlertDialog({
+                      icon: UserRoundX,
+                      title: `Remove This Membership`,
+                      description: `Are you sure you want kick ${user.name}?`,
+                      confirm: () => {
+                        setUserKey(user.id);
+                        deleteMembership({
+                          teamId: teamDetailKey,
+                          userId: user.id,
+                        });
+                      },
+                      showCancelButton: true,
                     });
                   }}
                 />
