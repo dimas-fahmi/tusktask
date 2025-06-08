@@ -6,6 +6,12 @@ import { FullNotification } from "@/src/types/notification";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 
+interface NotificationConfig {
+  header: React.ReactNode;
+  subtitle: React.ReactNode;
+  footer: React.ReactNode;
+}
+
 const NotificationCard = ({
   notification,
 }: {
@@ -14,122 +20,100 @@ const NotificationCard = ({
   const { sender, team } = notification;
   const { joinTeam, updateNotification } = useNotificationContext();
 
-  // Dynamic Header
-  const header: Record<FullNotification["type"], React.ReactNode> = {
-    teamInvitation: (
-      <>
-        <span className="font-semibold">{sender.name}</span> Invite You to join{" "}
-        <span className="font-semibold">{team?.name}</span>
-      </>
-    ),
-    joinedATeam: (
-      <>
-        <span className="font-semibold">{sender.name}</span> Has joined{" "}
-        <span className="font-semibold">{team?.name}</span>
-      </>
-    ),
-    directMessage: undefined,
-    groupChat: undefined,
-    transferOwnership: undefined,
-    adminRequest: undefined,
-    taskClaim: undefined,
-    taskCompletion: undefined,
-    broadcastTeamInvitation: undefined,
-    assignNotification: undefined,
-    reminder: undefined,
-    system: undefined,
+  // Helper function to create time and team subtitle
+  const createSubtitle = () => (
+    <>
+      <span>{timePassed(notification.createdAt)}</span>
+      <span>·</span>
+      <span>{notification?.team?.name}</span>
+    </>
+  );
+
+  // Configuration for supported notification types
+  const notificationConfigs: Partial<
+    Record<FullNotification["type"], NotificationConfig>
+  > = {
+    teamInvitation: {
+      header: (
+        <>
+          <span className="font-semibold">{sender.name}</span> Invite You to
+          join <span className="font-semibold">{team?.name}</span>
+        </>
+      ),
+      subtitle: createSubtitle(),
+      footer: (
+        <div className="space-x-3">
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            onClick={() =>
+              joinTeam({
+                administratorId: notification.senderId,
+                authorizationId: notification.id,
+                teamId: notification.teamId!,
+              })
+            }
+          >
+            Join
+          </Button>
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              updateNotification({
+                notificationId: notification.id,
+                newValue: {
+                  status: "rejected",
+                },
+              });
+            }}
+            size={"sm"}
+          >
+            Reject
+          </Button>
+        </div>
+      ),
+    },
+    joinedATeam: {
+      header: (
+        <>
+          <span className="font-semibold">{sender.name}</span> Has joined{" "}
+          <span className="font-semibold">{team?.name}</span>
+        </>
+      ),
+      subtitle: createSubtitle(),
+      footer: (
+        <div className="space-x-3">
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            onClick={() => {
+              updateNotification({
+                notificationId: notification.id,
+                newValue: {
+                  status: "acknowledged",
+                },
+              });
+            }}
+          >
+            Acknowledge
+          </Button>
+        </div>
+      ),
+    },
+    adminRequest: {
+      header: <></>,
+      subtitle: <></>,
+      footer: <></>,
+    },
   };
 
-  // Dynamic Subtitle
-  const subtitle: Record<FullNotification["type"], React.ReactNode> = {
-    teamInvitation: (
-      <>
-        <span>{timePassed(notification.createdAt)}</span>
-        <span>·</span>
-        <span>{notification?.team?.name}</span>
-      </>
-    ),
-    joinedATeam: (
-      <>
-        <span>{timePassed(notification.createdAt)}</span>
-        <span>·</span>
-        <span>{notification?.team?.name}</span>
-      </>
-    ),
-    directMessage: undefined,
-    groupChat: undefined,
-    transferOwnership: undefined,
-    adminRequest: undefined,
-    taskClaim: undefined,
-    taskCompletion: undefined,
-    broadcastTeamInvitation: undefined,
-    assignNotification: undefined,
-    reminder: undefined,
-    system: undefined,
-  };
+  // Get the configuration for the current notification type
+  const config = notificationConfigs[notification.type];
 
-  // Footer
-  const footer: Record<FullNotification["type"], React.ReactNode> = {
-    teamInvitation: (
-      <div className="space-x-3">
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          onClick={() =>
-            joinTeam({
-              administratorId: notification.senderId,
-              authorizationId: notification.id,
-              teamId: notification.teamId!,
-            })
-          }
-        >
-          Join
-        </Button>
-        <Button
-          variant={"destructive"}
-          onClick={() => {
-            updateNotification({
-              notificationId: notification.id,
-              newValue: {
-                status: "rejected",
-              },
-            });
-          }}
-          size={"sm"}
-        >
-          Reject
-        </Button>
-      </div>
-    ),
-    joinedATeam: (
-      <div className="space-x-3">
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          onClick={() => {
-            updateNotification({
-              notificationId: notification.id,
-              newValue: {
-                status: "acknowledged",
-              },
-            });
-          }}
-        >
-          Acknowledge
-        </Button>
-      </div>
-    ),
-    directMessage: undefined,
-    groupChat: undefined,
-    transferOwnership: undefined,
-    adminRequest: undefined,
-    taskClaim: undefined,
-    taskCompletion: undefined,
-    broadcastTeamInvitation: undefined,
-    assignNotification: undefined,
-    reminder: undefined,
-    system: undefined,
-  };
+  // If no configuration exists for this type, don't render anything
+  if (!config) {
+    return <></>;
+  }
 
   return (
     <div className="p-4 flex gap-2">
@@ -146,16 +130,16 @@ const NotificationCard = ({
         {/* Information */}
         <div>
           {/* Content */}
-          <div className="text-sm">{header[notification.type]}</div>
+          <div className="text-sm">{config.header}</div>
 
           {/* Metadata */}
           <div className="text-xs text-muted-foreground space-x-1">
-            {subtitle[notification?.type]}
+            {config.subtitle}
           </div>
         </div>
 
         {/* Action */}
-        <div>{footer[notification?.type]}</div>
+        <div>{config.footer}</div>
       </div>
     </div>
   );
