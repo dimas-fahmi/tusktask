@@ -42,7 +42,15 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
   } = useTeamContext();
 
   // Pull setters and triggers from Notification context
-  const { triggerAlertDialog } = useNotificationContext();
+  const { triggerAlertDialog, sent } = useNotificationContext();
+
+  const sentAdminRequests = sent.filter(
+    (s) =>
+      s.receiverId === user.id &&
+      s.type === "adminRequest" &&
+      s.teamId === teamDetailKey &&
+      s.status === "not_read"
+  );
 
   // RBAC Helper Functions
   const isOwner = (role: string) => role === "owner";
@@ -215,13 +223,21 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
             {canRequestAdminRights && (
               <PopoverAction
                 Icon={ShieldUser}
-                title="Request administration access"
+                title={
+                  sentAdminRequests.length === 0
+                    ? "Request administration access"
+                    : "Administration request sent"
+                }
                 onClick={() => {
+                  if (sentAdminRequests.length !== 0) return;
                   setAdminRequestDialog({
                     membership: membership,
                     open: true,
                   });
                 }}
+                variant={
+                  sentAdminRequests.length === 0 ? "default" : "disabled"
+                }
               />
             )}
 

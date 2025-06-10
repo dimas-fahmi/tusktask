@@ -34,6 +34,7 @@ import {
 import AlertDialog from "@/src/ui/components/tusktask/prefabs/AlertDialog";
 import { createNotification as createNotificationFn } from "../mutators/createtNotification";
 import { NotificationsPostRequest } from "@/app/api/notifications/post";
+import { Button } from "@/src/ui/components/shadcn/ui/button";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -354,6 +355,14 @@ const NotificationContextProvider = ({
           type: "default",
           title: "New Notification",
           description: "You have a new notification",
+          action: (
+            <Button
+              variant={"toaster"}
+              onClick={() => setNotificationsDialogOpen(true)}
+            >
+              Open
+            </Button>
+          ),
         });
       }
 
