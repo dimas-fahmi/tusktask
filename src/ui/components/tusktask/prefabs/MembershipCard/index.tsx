@@ -38,6 +38,7 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
     updateMembership,
     setUserKey,
     myMembership,
+    setAdminRequestDialog,
   } = useTeamContext();
 
   // Pull setters and triggers from Notification context
@@ -216,7 +217,10 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
                 Icon={ShieldUser}
                 title="Request administration access"
                 onClick={() => {
-                  // TODO: Implement request admin access functionality
+                  setAdminRequestDialog({
+                    membership: membership,
+                    open: true,
+                  });
                 }}
               />
             )}

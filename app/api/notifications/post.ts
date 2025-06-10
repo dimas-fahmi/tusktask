@@ -9,9 +9,13 @@ import {
 import { teamMembers, TeamMembersType } from "@/src/db/schema/teams";
 import { users, UserType } from "@/src/db/schema/users";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { and, eq } from "drizzle-orm";
 
 export interface NotificationsPostRequest extends NotificationInsertType {}
+
+export type NotificationsPostResponse =
+  StandardResponse<NotificationType | null>;
 
 export async function notificationsPost(req: Request) {
   //   Parse body

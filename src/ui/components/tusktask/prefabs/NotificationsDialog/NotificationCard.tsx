@@ -5,6 +5,12 @@ import { Button } from "../../../shadcn/ui/button";
 import { FullNotification } from "@/src/types/notification";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../../../shadcn/ui/collapsible";
+import { ChevronsUpDown, Mail } from "lucide-react";
 
 interface NotificationConfig {
   header: React.ReactNode;
@@ -101,9 +107,62 @@ const NotificationCard = ({
       ),
     },
     adminRequest: {
-      header: <></>,
-      subtitle: <></>,
-      footer: <></>,
+      header: (
+        <>
+          <span className="font-semibold">{sender.name}</span> Ask For
+          Administration Rights
+        </>
+      ),
+      subtitle: createSubtitle(),
+      footer: (
+        <div className="grid grid-cols-1 gap-2.5">
+          {notification?.title && (
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <h1 className="flex items-center gap-1 text-sm px-4 py-2 font-semibold border rounded-md w-full cursor-pointer hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+                  <Mail /> {notification.title}
+                </h1>
+              </CollapsibleTrigger>
+              {notification?.description && (
+                <CollapsibleContent>
+                  <div className="p-4 text-xs border rounded-md mt-2">
+                    {notification.description}
+                  </div>
+                </CollapsibleContent>
+              )}
+            </Collapsible>
+          )}
+          <div className="space-x-3">
+            <Button
+              variant={"outline"}
+              size={"sm"}
+              onClick={() =>
+                joinTeam({
+                  administratorId: notification.senderId,
+                  authorizationId: notification.id,
+                  teamId: notification.teamId!,
+                })
+              }
+            >
+              Approve
+            </Button>
+            <Button
+              variant={"destructive"}
+              onClick={() => {
+                updateNotification({
+                  notificationId: notification.id,
+                  newValue: {
+                    status: "rejected",
+                  },
+                });
+              }}
+              size={"sm"}
+            >
+              Reject
+            </Button>
+          </div>
+        </div>
+      ),
     },
   };
 
@@ -126,7 +185,7 @@ const NotificationCard = ({
       </div>
 
       {/* Information and action */}
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-4 w-full">
         {/* Information */}
         <div>
           {/* Content */}
