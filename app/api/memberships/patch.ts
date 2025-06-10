@@ -1,13 +1,22 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
 import {
+  NotificationInsertType,
+  notifications,
+} from "@/src/db/schema/notifications";
+import {
   teamMembers,
   TeamMembersType,
   teamMembersUpdateSchema,
 } from "@/src/db/schema/teams";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
+import { CustomError } from "@/src/lib/tusktask/utils/error";
 import { includeFields } from "@/src/lib/tusktask/utils/includeFields";
+import sanitizeUserData, {
+  SanitizedUser,
+} from "@/src/lib/tusktask/utils/sanitizeUserData";
+import { TeamMembersWithUser } from "@/src/types/team";
 import { and, eq } from "drizzle-orm";
 
 export interface TeamMembersPatchRequest {
@@ -17,6 +26,14 @@ export interface TeamMembersPatchRequest {
 }
 
 export type TeamMembersPatchResponse = StandardResponse<TeamMembersType | null>;
+
+export interface TeamMembersNotificationPayload {
+  type: "broadcast" | "notification";
+  promoter: SanitizedUser;
+  user: SanitizedUser;
+  roleBefore: TeamMembersType["userRole"];
+  roleNow: TeamMembersType["userRole"];
+}
 
 export async function teamMembersPatch(req: Request) {
   let body: TeamMembersPatchRequest;
@@ -72,7 +89,7 @@ export async function teamMembersPatch(req: Request) {
   const { userRole: currentUserRole } = membership;
 
   //   4. Validate target membership
-  let targetMembership: TeamMembersType | undefined;
+  let targetMembership: TeamMembersWithUser | undefined;
 
   try {
     targetMembership = await db.query.teamMembers.findFirst({
@@ -80,6 +97,9 @@ export async function teamMembersPatch(req: Request) {
         eq(teamMembers.teamId, teamId),
         eq(teamMembers.userId, userId)
       ),
+      with: {
+        user: true,
+      },
     });
 
     if (!targetMembership) {
@@ -136,27 +156,116 @@ export async function teamMembersPatch(req: Request) {
 
   // 9. Execute update
   try {
-    const response = await db
-      .update(teamMembers)
-      .set(validation.data)
-      .where(
-        and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, userId))
-      )
-      .returning();
+    const result = await db.transaction(async (tx) => {
+      // 10. Update membership
+      const newMembership = await tx
+        .update(teamMembers)
+        .set(validation.data)
+        .where(
+          and(eq(teamMembers.teamId, teamId), eq(teamMembers.userId, userId))
+        )
+        .returning();
 
-    if (response.length === 0) {
-      return createNextResponse(500, {
-        messages: "Unexpected error when updating membership",
+      if (newMembership.length === 0) {
+        throw new CustomError(
+          "databaseError",
+          "Failed when updating membership",
+          500
+        );
+      }
+
+      // 11. Fetch all members
+      const members = await tx.query.teamMembers.findMany({
+        where: eq(teamMembers.teamId, teamId),
       });
-    }
+
+      // 12. Construct Broadcast
+      let payload: TeamMembersNotificationPayload = {
+        promoter: sanitizeUserData([session.user])[0],
+        roleBefore: targetMembership.userRole,
+        type: "broadcast",
+        user: sanitizeUserData([targetMembership.user])[0],
+        roleNow: validation.data.userRole!,
+      };
+
+      const broadcast: NotificationInsertType[] = members
+        .filter((m) => m.userId !== userId)
+        .map((m) => ({
+          senderId: userId,
+          receiverId: m.userId,
+          type: "changesOnRole",
+          category: "teams",
+          payload,
+          teamId: teamId,
+        }));
+
+      // 13. Insert notifications
+      const broadcastResults = await tx
+        .insert(notifications)
+        .values(broadcast)
+        .returning();
+
+      if (broadcastResults.length === 0) {
+        throw new CustomError(
+          "databaseError",
+          "Failed when creating a broadcast",
+          500
+        );
+      }
+
+      // 14. Insert notifications for promoted user
+      payload.type = "notification";
+      await tx
+        .insert(notifications)
+        .values({
+          senderId: session.user.id,
+          receiverId: userId,
+          type: "changesOnRole",
+          category: "teams",
+          payload,
+          teamId: teamId,
+        })
+        .returning()
+        .execute()
+        .catch(() => {
+          console.log("Failed when creating notification");
+          return null;
+        });
+
+      // 15. remove all administration request if available
+      await tx
+        .update(notifications)
+        .set({
+          status: "accepted",
+          payload: { promoter: sanitizeUserData([session.user])[0] },
+        })
+        .where(
+          and(
+            eq(notifications.senderId, userId),
+            eq(notifications.type, "adminRequest")
+          )
+        )
+        .execute()
+        .catch(() => {
+          return null;
+        });
+
+      return newMembership[0];
+    });
 
     return createNextResponse(200, {
       messages: "success",
-      data: response,
+      data: result,
     });
   } catch (error) {
+    if (error instanceof CustomError) {
+      return createNextResponse(error.statusCode, {
+        messages: error.message,
+      });
+    }
+
     return createNextResponse(500, {
-      messages: "Failed when updating membership",
+      messages: "Internal server error",
     });
   }
 }
