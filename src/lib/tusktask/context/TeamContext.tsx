@@ -13,6 +13,7 @@ import NewTeamDialog from "@/src/ui/components/tusktask/prefabs/NewTeamDialog";
 import { fetchTeamDetail } from "../fetchers/fetchTeamDetail";
 import {
   FullTeam,
+  FullTeamMembers,
   TeamDetail,
   TeamMembersWithFullTeam,
 } from "@/src/types/team";
@@ -31,6 +32,8 @@ import {
 } from "@/app/api/memberships/patch";
 import { useSession } from "next-auth/react";
 import { TeamMembersType } from "@/src/db/schema/teams";
+import AdminRequestDialog from "@/src/ui/components/tusktask/prefabs/AdminRequestDialog";
+import { UserType } from "@/src/db/schema/users";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -60,6 +63,14 @@ export interface TeamContextValues {
     unknown
   >;
   myMembership: TeamMembersType | null;
+  adminRequestDialog: AdminDialog;
+  setAdminRequestDialog: SetStateAction<AdminDialog>;
+  handleResetAdminRequestDialog: () => void;
+}
+
+export interface AdminDialog {
+  membership?: FullTeamMembers;
+  open: boolean;
 }
 
 const TeamContext = createContext<TeamContextValues | null>(null);
@@ -109,6 +120,15 @@ const TeamContextProvider = ({
 
   // Invite Member Dialog State
   const [inviteMemberDialog, setInviteMemberDialog] = useState(false);
+
+  // Admin Request DIalog State
+  const initialAdminDialog = { user: undefined, open: false };
+  const [adminRequestDialog, setAdminRequestDialog] =
+    useState<AdminDialog>(initialAdminDialog);
+
+  const handleResetAdminRequestDialog = () => {
+    setAdminRequestDialog(initialAdminDialog);
+  };
 
   // Extract Teams Memberships
   const teamsMemberships = teamsResponse?.data ? teamsResponse.data : [];
@@ -200,6 +220,9 @@ const TeamContextProvider = ({
   const { mutate: updateMembership } = useMutation({
     mutationKey: ["team", "membership", "update", teamDetailKey, userKey],
     mutationFn: mutateMembership,
+    onError: (error) => {
+      console.log(error);
+    },
     onSettled: () => {
       setUserKey(null);
       queryClient.invalidateQueries({
@@ -228,12 +251,16 @@ const TeamContextProvider = ({
         setUserKey,
         updateMembership,
         myMembership,
+        adminRequestDialog,
+        handleResetAdminRequestDialog,
+        setAdminRequestDialog,
       }}
     >
       {children}
       <NewTeamDialog />
       <TeamMembershipDialog />
       <InviteMemberDialog />
+      <AdminRequestDialog />
     </TeamContext.Provider>
   );
 };

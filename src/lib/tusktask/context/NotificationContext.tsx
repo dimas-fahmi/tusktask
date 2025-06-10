@@ -32,6 +32,8 @@ import {
   NotificationsPatchResponse,
 } from "@/app/api/notifications/patch";
 import AlertDialog from "@/src/ui/components/tusktask/prefabs/AlertDialog";
+import { createNotification as createNotificationFn } from "../mutators/createtNotification";
+import { NotificationsPostRequest } from "@/app/api/notifications/post";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -61,6 +63,14 @@ interface NotificationContextValues {
     unknown
   >;
   newNotification: boolean;
+
+  // Create Notification
+  createNotification: UseMutateFunction<
+    NotificationsPatchResponse,
+    Error,
+    NotificationsPostRequest,
+    unknown
+  >;
 
   // Alert Dialog
   alertDialog: AlertDialogState;
@@ -418,6 +428,16 @@ const NotificationContextProvider = ({
     }
   }, [notificationsDialogOpen]);
 
+  // Create New Notification
+  const { mutate: createNotification } = useMutation({
+    mutationFn: createNotificationFn,
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
+    },
+  });
+
   return (
     <NotificationContext.Provider
       value={{
@@ -432,6 +452,9 @@ const NotificationContextProvider = ({
         sentInvitation,
         updateNotification,
         newNotification,
+
+        // Create Notification
+        createNotification,
 
         // Alert Dialog
         alertDialog,
