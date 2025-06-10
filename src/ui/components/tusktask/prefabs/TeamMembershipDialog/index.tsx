@@ -34,8 +34,6 @@ const TeamMembershipDialog = () => {
   const members =
     teamDetail && teamDetail?.teamMembers ? teamDetail.teamMembers : [];
 
-  console.log(members);
-
   return (
     <Dialog open={teamMembershipDialog} onOpenChange={setTeamMembershipDialog}>
       <DialogHeader>
@@ -73,6 +71,7 @@ const TeamMembershipDialog = () => {
 
         {/* Content */}
         <ScrollArea className="h-[320px]">
+          {/* Analyze where this members came from */}
           {members &&
             members.map((member) => (
               <MembershipCard key={member?.user?.id} membership={member} />

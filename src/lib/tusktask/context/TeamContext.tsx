@@ -131,7 +131,9 @@ const TeamContextProvider = ({
         description: `Removing a user from this team`,
       });
 
-      queryClient.invalidateQueries({});
+      queryClient.cancelQueries({
+        queryKey: ["team", teamDetailKey],
+      });
 
       const oldTeamDetail = teamDetailResponse;
 
@@ -179,6 +181,7 @@ const TeamContextProvider = ({
     onSettled: () => {
       setUserKey(null);
 
+      console.log("triggered");
       queryClient.invalidateQueries({
         queryKey: ["team", teamDetailKey],
       });
