@@ -10,6 +10,7 @@ declare module "next-auth" {
       notificationSound: UserType["notificationSoundEnable"];
       reminderSound: UserType["reminderSoundEnable"];
       emailVerified: UserType["emailVerified"];
-    } & DefaultSession["user"];
+    } & DefaultSession["user"] &
+      UserType;
   }
 }

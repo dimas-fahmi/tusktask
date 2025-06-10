@@ -13,7 +13,10 @@ import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { CustomError } from "@/src/lib/tusktask/utils/error";
 import { includeFields } from "@/src/lib/tusktask/utils/includeFields";
-import sanitizeUserData from "@/src/lib/tusktask/utils/sanitizeUserData";
+import sanitizeUserData, {
+  SanitizedUser,
+} from "@/src/lib/tusktask/utils/sanitizeUserData";
+import { TeamMembersWithUser } from "@/src/types/team";
 import { and, eq } from "drizzle-orm";
 
 export interface TeamMembersPatchRequest {
@@ -23,6 +26,14 @@ export interface TeamMembersPatchRequest {
 }
 
 export type TeamMembersPatchResponse = StandardResponse<TeamMembersType | null>;
+
+export interface TeamMembersNotificationPayload {
+  type: "broadcast" | "notification";
+  promoter: SanitizedUser;
+  user: SanitizedUser;
+  roleBefore: TeamMembersType["userRole"];
+  roleNow: TeamMembersType["userRole"];
+}
 
 export async function teamMembersPatch(req: Request) {
   let body: TeamMembersPatchRequest;
@@ -78,7 +89,7 @@ export async function teamMembersPatch(req: Request) {
   const { userRole: currentUserRole } = membership;
 
   //   4. Validate target membership
-  let targetMembership: TeamMembersType | undefined;
+  let targetMembership: TeamMembersWithUser | undefined;
 
   try {
     targetMembership = await db.query.teamMembers.findFirst({
@@ -86,6 +97,9 @@ export async function teamMembersPatch(req: Request) {
         eq(teamMembers.teamId, teamId),
         eq(teamMembers.userId, userId)
       ),
+      with: {
+        user: true,
+      },
     });
 
     if (!targetMembership) {
@@ -166,6 +180,14 @@ export async function teamMembersPatch(req: Request) {
       });
 
       // 12. Construct Broadcast
+      let payload: TeamMembersNotificationPayload = {
+        promoter: sanitizeUserData([session.user])[0],
+        roleBefore: targetMembership.userRole,
+        type: "broadcast",
+        user: sanitizeUserData([targetMembership.user])[0],
+        roleNow: validation.data.userRole!,
+      };
+
       const broadcast: NotificationInsertType[] = members
         .filter((m) => m.userId !== userId)
         .map((m) => ({
@@ -173,10 +195,8 @@ export async function teamMembersPatch(req: Request) {
           receiverId: m.userId,
           type: "changesOnRole",
           category: "teams",
-          payload: {
-            promoter: sanitizeUserData([session.user])[0],
-            type: "broadcast",
-          },
+          payload,
+          teamId: teamId,
         }));
 
       // 13. Insert notifications
@@ -194,6 +214,7 @@ export async function teamMembersPatch(req: Request) {
       }
 
       // 14. Insert notifications for promoted user
+      payload.type === "notification";
       await tx
         .insert(notifications)
         .values({
@@ -201,7 +222,8 @@ export async function teamMembersPatch(req: Request) {
           receiverId: userId,
           type: "changesOnRole",
           category: "teams",
-          payload: { type: "notification" },
+          payload,
+          teamId: teamId,
         })
         .returning()
         .execute()

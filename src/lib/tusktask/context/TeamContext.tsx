@@ -34,6 +34,8 @@ import { useSession } from "next-auth/react";
 import { TeamMembersType } from "@/src/db/schema/teams";
 import AdminRequestDialog from "@/src/ui/components/tusktask/prefabs/AdminRequestDialog";
 import { UserType } from "@/src/db/schema/users";
+import { TeamActions } from "@/src/types/contextBridge";
+import { useRegisterActions } from "../hooks/context/register";
 
 export interface TeamContextValues {
   teams?: FullTeam[];
@@ -228,8 +230,18 @@ const TeamContextProvider = ({
       queryClient.invalidateQueries({
         queryKey: ["team", teamDetailKey],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["notifications"],
+      });
     },
   });
+
+  const teamActions: TeamActions = {
+    updateMembership,
+  };
+
+  useRegisterActions("team", teamActions);
 
   return (
     <TeamContext.Provider

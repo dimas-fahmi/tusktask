@@ -8,6 +8,13 @@
       "when": 1749133604214,
       "tag": "0000_friendly_patch",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1749552400020,
+      "tag": "0001_pretty_pride",
+      "breakpoints": true
     }
   ]
 }
