@@ -98,7 +98,8 @@ const NotificationCard = ({
         ) : (
           <>
             <span className="font-semibold">{payload.promoter.name}</span> Just
-            promoted you as <span className="font-semibold">Administrator</span>
+            promoted you as{" "}
+            <span className="font-semibold">{payload.roleNow}</span>
           </>
         )}
       </>
