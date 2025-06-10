@@ -214,7 +214,7 @@ export async function teamMembersPatch(req: Request) {
       }
 
       // 14. Insert notifications for promoted user
-      payload.type === "notification";
+      payload.type = "notification";
       await tx
         .insert(notifications)
         .values({
