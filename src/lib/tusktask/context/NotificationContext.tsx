@@ -399,35 +399,69 @@ const NotificationContextProvider = ({
   const { mutate: updateNotification } = useMutation({
     mutationKey: ["notifications", "mutate"],
     mutationFn: mutateNotificationData,
-    onMutate: async () => {
+    onMutate: async (data) => {
       triggerToast({
         type: "default",
         title: "Saving Your Changes",
         description: "We're saving your changes in the background",
         sound: "mute",
       });
+
+      await queryClient.cancelQueries({ queryKey: ["notifications"] });
+
+      const oldNots = queryClient.getQueryData([
+        "notifications",
+      ]) as StandardResponse<NotificationBundle>;
+
+      if (oldNots?.data) {
+        queryClient.setQueryData(["notifications"], () => {
+          // ts squirk, asking for another validation
+          if (!oldNots.data) return;
+          const received = [...oldNots.data.received];
+          const index = received.findIndex((t) => t.id === data.notificationId);
+
+          if (index !== -1) {
+            received[index] = {
+              ...received[index],
+              ...data.newValue,
+            };
+          }
+
+          return {
+            ...oldNots,
+            data: {
+              ...oldNots.data,
+              received,
+            },
+          };
+        });
+      }
+
+      return { oldNots };
     },
-    onError: () => {
+    onError: (error, _, context) => {
       triggerToast({
         type: "error",
         title: "Something Went Wrong",
         description: "Failed when saving your changes",
         sound: "mute",
       });
+
+      if (context?.oldNots) {
+        queryClient.setQueryData(["notifications"], context.oldNots);
+      }
     },
     onSuccess: () => {
       triggerToast({
         type: "success",
-        title: "Your Changes Is Saved",
+        title: "Your Changes Are Saved",
         description:
           "Successfully saved your changes, everything is sync with cloud storage",
         sound: "mute",
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["notifications"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
   });
 

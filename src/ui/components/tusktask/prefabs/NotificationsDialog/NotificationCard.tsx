@@ -85,8 +85,8 @@ const NotificationCard = ({
           <>
             <span className="font-semibold">{payload.promoter.name}</span> Just{" "}
             {level[payload.roleBefore] > level[payload.roleNow]
-              ? "promote"
-              : "demote"}{" "}
+              ? "promoted"
+              : "demoted"}{" "}
             <span className="font-semibold">
               {payload.user.id === session?.user?.id
                 ? "you"
@@ -97,8 +97,11 @@ const NotificationCard = ({
           </>
         ) : (
           <>
-            <span className="font-semibold">{payload.promoter.name}</span> Just
-            promoted you as{" "}
+            <span className="font-semibold">{payload.promoter.name}</span> Just{" "}
+            {level[payload.roleBefore] > level[payload.roleNow]
+              ? "promoted"
+              : "demoted"}{" "}
+            you as{" "}
             <span className="font-semibold capitalize">{payload.roleNow}</span>
           </>
         )}
