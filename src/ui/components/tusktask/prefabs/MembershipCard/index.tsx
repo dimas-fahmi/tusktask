@@ -162,6 +162,23 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
                 title="Transfer ownership"
                 onClick={() => {
                   // TODO: Implement transfer ownership functionality
+                  triggerAlertDialog({
+                    title: "Transfer Ownership",
+                    description: `This will make ${truncateText(user.name ?? "", 1, false)} to be the new owner, you will be demoted to Administrator.`,
+                    showCancelButton: true,
+                    confirmText: "Transfer",
+                    icon: Star,
+                    confirm: () => {
+                      setUserKey(user.id);
+                      updateMembership({
+                        teamId: membership.teamId,
+                        userId: membership.userId,
+                        newValue: {
+                          userRole: "owner",
+                        },
+                      });
+                    },
+                  });
                 }}
               />
             )}

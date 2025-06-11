@@ -157,7 +157,20 @@ export async function teamMembersPatch(req: Request) {
   // 9. Execute update
   try {
     const result = await db.transaction(async (tx) => {
-      // 10. Update membership
+      // 10.1 Update membership [demote current user if it's transferOwnership operation]
+      if (validation.data.userRole === "owner") {
+        await tx
+          .update(teamMembers)
+          .set({ userRole: "admin" })
+          .where(
+            and(
+              eq(teamMembers.teamId, teamId),
+              eq(teamMembers.userId, session.user.id)
+            )
+          );
+      }
+
+      // 10.2 Update membership
       const newMembership = await tx
         .update(teamMembers)
         .set(validation.data)
