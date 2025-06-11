@@ -3,6 +3,7 @@ import {
   BaggageClaim,
   CalendarSync,
   CircleCheckBig,
+  Clock,
   Ellipsis,
   ExternalLink,
   Hash,
@@ -29,6 +30,7 @@ import { useRouter } from "next/navigation";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import { formatNumber } from "@/src/lib/tusktask/utils/formatNumber";
 import { Separator } from "../../../shadcn/ui/separator";
+import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -114,12 +116,12 @@ const ItemCard = ({ task }: { task: FullTask }) => {
                   </div>
                 )}
                 <div className="flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5" />
-                  <span className="text-xs">{task?.owner?.username}</span>
-                </div>
-                <div className="flex items-center gap-1">
                   <Signature className="w-3.5 h-3.5" />
                   <span className="text-xs">{task?.creator?.username}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span className="text-xs">{timePassed(task?.createdAt)}</span>
                 </div>
                 {task?.claimedById && (
                   <div className="flex items-center gap-1">

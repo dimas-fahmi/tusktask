@@ -8,6 +8,7 @@ import {
   teamMembers,
   TeamMembersType,
   teamMembersUpdateSchema,
+  teams,
 } from "@/src/db/schema/teams";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
@@ -157,7 +158,7 @@ export async function teamMembersPatch(req: Request) {
   // 9. Execute update
   try {
     const result = await db.transaction(async (tx) => {
-      // 10.1 Update membership [demote current user if it's transferOwnership operation]
+      // 10.1 Update membership [demote current user if it's transferOwnership operation] and change ownerId
       if (validation.data.userRole === "owner") {
         await tx
           .update(teamMembers)
@@ -168,6 +169,11 @@ export async function teamMembersPatch(req: Request) {
               eq(teamMembers.userId, session.user.id)
             )
           );
+
+        await tx
+          .update(teams)
+          .set({ ownerId: userId })
+          .where(eq(teams.id, teamId));
       }
 
       // 10.2 Update membership
