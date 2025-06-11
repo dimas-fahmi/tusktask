@@ -99,7 +99,7 @@ const NotificationCard = ({
           <>
             <span className="font-semibold">{payload.promoter.name}</span> Just
             promoted you as{" "}
-            <span className="font-semibold">{payload.roleNow}</span>
+            <span className="font-semibold capitalize">{payload.roleNow}</span>
           </>
         )}
       </>
