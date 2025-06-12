@@ -24,7 +24,7 @@ const ActionsSection = ({ teamId }: { teamId: string }) => {
     <section id="action" className="w-full gap-2 flex">
       <Button
         variant={"outline"}
-        className={`flex-grow ${!canCreateTask && "opacity-50"}`}
+        className={`flex-grow ${!canCreateTask ? "opacity-50" : ""}`}
         title={
           canCreateTask
             ? "Create new task"
@@ -68,7 +68,7 @@ const ActionsSection = ({ teamId }: { teamId: string }) => {
           });
         }}
         size={"default"}
-        className={`flex-grow ${!canCreateTask && "opacity-50"}`}
+        className={`flex-grow ${!canCreateTask ? "opacity-50" : ""}`}
       >
         <CirclePlus />
         Shopping List
