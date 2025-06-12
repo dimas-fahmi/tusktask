@@ -23,6 +23,7 @@ import { useSession } from "next-auth/react";
 import { Badge } from "../../../shadcn/ui/badge";
 import { FullTeamMembers } from "@/src/types/team";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { usePermission } from "@/src/lib/tusktask/hooks/membership/usePermission";
 
 const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
   // Pull session
@@ -55,46 +56,22 @@ const MembershipCard = ({ membership }: { membership: FullTeamMembers }) => {
   // RBAC Helper Functions
   const isOwner = (role: string) => role === "owner";
   const isAdmin = (role: string) => role === "admin";
-  const isAssignee = (role: string) => role === "assignee";
 
-  const myRole = myMembership?.userRole ?? "";
   const targetRole = membership.userRole;
   const isCurrentUser = user?.id === session?.user?.id;
 
   // Permission Checks
-  const canTransferOwnership = isOwner(myRole) && !isCurrentUser;
-
-  const canPromoteToAdmin =
-    isOwner(myRole) && isAssignee(targetRole) && !isCurrentUser;
-
-  const canRevokeAdmin =
-    isOwner(myRole) && isAdmin(targetRole) && !isCurrentUser;
-
-  const canKickMember =
-    !isCurrentUser &&
-    (isOwner(myRole) || // Owner can kick anyone
-      (isAdmin(myRole) && isAssignee(targetRole))); // Admin can only kick assignees
-
-  const canRequestAdminRights =
-    isAssignee(myRole) &&
-    (isAdmin(targetRole) || isOwner(targetRole)) &&
-    !isCurrentUser;
-
-  const canViewTasks = !isCurrentUser; // Anyone can view others' tasks
-
-  const canSendMessage = !isCurrentUser; // Anyone can message others
-
-  // Check if user has any management actions available
-  const hasManagementActions =
-    canTransferOwnership ||
-    canPromoteToAdmin ||
-    canRevokeAdmin ||
-    canKickMember;
-  const hasAnyActions =
-    hasManagementActions ||
-    canRequestAdminRights ||
-    canViewTasks ||
-    canSendMessage;
+  const {
+    canKickMember,
+    canPromoteToAdmin,
+    canRequestAdminRights,
+    canRevokeAdmin,
+    canSendMessage,
+    canTransferOwnership,
+    canViewTasks,
+    hasManagementActions,
+    hasAnyActions,
+  } = usePermission(myMembership, user?.id, targetRole);
 
   return (
     <div className={`px-4 py-2 flex items-center gap-2`} title={"Member"}>
