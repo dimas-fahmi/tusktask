@@ -138,7 +138,13 @@ export const usePermission = (
     permissions.hasManagementActions ||
     permissions.canRequestAdminRights ||
     permissions.canViewTasks ||
-    permissions.canSendMessage;
+    permissions.canSendMessage ||
+    permissions.canDeleteTask ||
+    permissions.canCreateTask ||
+    permissions.canUpdateTask ||
+    permissions.canClaimTask ||
+    permissions.canUpdatePrice ||
+    permissions.canReschedule;
 
   // Return
   return permissions;
