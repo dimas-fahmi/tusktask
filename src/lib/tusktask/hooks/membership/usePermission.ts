@@ -1,3 +1,5 @@
+"use client";
+
 import { TeamMembersType } from "@/src/db/schema/teams";
 import { useSession } from "next-auth/react";
 
