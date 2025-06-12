@@ -10,6 +10,11 @@ export interface UsePermission {
   canViewTasks: boolean;
   canSendMessage: boolean;
   canDeleteTask: boolean;
+  canCreateTask: boolean;
+  canUpdateTask: boolean;
+  canClaimTask: boolean;
+  canUpdatePrice: boolean;
+  canReschedule: boolean;
   hasManagementActions: boolean;
   hasAnyActions: boolean;
   roleLevel: number;
@@ -32,17 +37,29 @@ export const usePermission = (
 
   // Initial value
   let permissions: UsePermission = {
+    // Interactivity
     canTransferOwnership: false,
     canPromoteToAdmin: false,
     canRevokeAdmin: false,
     canKickMember: false,
     canRequestAdminRights: false,
-    canViewTasks: false,
     canSendMessage: false,
-    canDeleteTask: false,
+
+    // Level access
     roleLevel: membership?.userRole ? level[membership?.userRole] : 99,
+
+    // General Actions
     hasAnyActions: false,
     hasManagementActions: false,
+
+    // Task management
+    canViewTasks: false,
+    canDeleteTask: false,
+    canClaimTask: false,
+    canCreateTask: false,
+    canReschedule: false,
+    canUpdatePrice: false,
+    canUpdateTask: false,
   };
 
   // Check if membership exist
@@ -59,6 +76,7 @@ export const usePermission = (
   const isAssignee = (role?: string) => role === "assignee";
 
   const isCurrentUser = session.user.id === targetUserId;
+  const isManagement = isOwner(userRole) || isAdmin(userRole);
 
   // Permission [canTransferOwnership]
   permissions["canTransferOwnership"] = isOwner(userRole) && !isCurrentUser;
@@ -90,7 +108,22 @@ export const usePermission = (
   permissions["canSendMessage"] = !isCurrentUser; // Anyone can message others
 
   // Permission [canDeleteTask]
-  permissions["canDeleteTask"] = isAdmin(userRole) || isOwner(userRole);
+  permissions["canDeleteTask"] = isManagement;
+
+  // Permission [canClaimTask]
+  permissions["canClaimTask"] = isManagement;
+
+  // Permission [canCreateTask]
+  permissions["canUpdatePrice"] = isManagement;
+
+  // Permission [canUpdateTask]
+  permissions["canUpdateTask"] = isManagement;
+
+  // Permission [canReschedule]
+  permissions["canReschedule"] = isManagement;
+
+  // Permission [canCreateTask]
+  permissions["canCreateTask"] = isManagement;
 
   // Check user management action
   permissions["hasManagementActions"] =

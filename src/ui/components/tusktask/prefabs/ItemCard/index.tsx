@@ -11,7 +11,6 @@ import {
   Pickaxe,
   ShoppingCart,
   Signature,
-  Star,
   Tag,
   Trash,
   Wallet,
@@ -31,6 +30,9 @@ import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import { formatNumber } from "@/src/lib/tusktask/utils/formatNumber";
 import { Separator } from "../../../shadcn/ui/separator";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
+import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
+import { usePermission } from "@/src/lib/tusktask/hooks/membership/usePermission";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -67,8 +69,17 @@ const ItemCard = ({ task }: { task: FullTask }) => {
   const { deleteTask, isDeletingTask, taskDeleteKey, setTaskDeleteKey } =
     useTaskContext();
 
+  // Pull TeamContext
+  const { myMembership } = useTeamContext();
+
+  // Pull notification context
+  const { triggerToast } = useNotificationContext();
+
   // Popover state
   const [open, setOpen] = useState(false);
+
+  // Permission
+  const { canDeleteTask } = usePermission(myMembership);
 
   return (
     <div
@@ -161,16 +172,24 @@ const ItemCard = ({ task }: { task: FullTask }) => {
             Icon={Trash}
             title="Delete This Task"
             onClick={() => {
-              setTaskDeleteKey(task.id);
+              if (!canDeleteTask) {
+                triggerToast({
+                  type: "default",
+                  title: "Insufficient Access",
+                  description: "Only administrators can perform this action",
+                });
 
+                return;
+              }
+
+              setTaskDeleteKey(task.id);
               deleteTask({
                 taskId: task.id,
                 teamId: task.teamId,
               });
-
               setOpen(false);
             }}
-            variant="destructive"
+            variant={canDeleteTask ? "destructive" : "disabled"}
           />
         </PopoverContent>
       </Popover>

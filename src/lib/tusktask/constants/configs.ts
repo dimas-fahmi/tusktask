@@ -21,3 +21,8 @@ export const VERCEL_BLOB_ID = "zvgpixcwdvbogm3e";
 
 export const DEFAULT_AVATAR =
   "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/defaults/default_profile.png";
+
+export const TOAST_MANAGEMENT_ONLY = {
+  title: "Insuficient Access",
+  description: "Only administrator can perform this operation",
+};
