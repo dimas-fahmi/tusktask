@@ -33,6 +33,7 @@ import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import { usePermission } from "@/src/lib/tusktask/hooks/membership/usePermission";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { useSession } from "next-auth/react";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -66,20 +67,23 @@ const ItemCard = ({ task }: { task: FullTask }) => {
   const router = useRouter();
 
   // Pull TaskContext
-  const { deleteTask, isDeletingTask, taskDeleteKey, setTaskDeleteKey } =
+  const { deleteTask, updateTask, taskDeleteKey, setTaskDeleteKey } =
     useTaskContext();
 
   // Pull TeamContext
   const { myMembership } = useTeamContext();
 
   // Pull notification context
-  const { triggerToast } = useNotificationContext();
+  const { triggerToast, triggerAlertDialog } = useNotificationContext();
 
   // Popover state
   const [open, setOpen] = useState(false);
 
   // Permission
-  const { canDeleteTask } = usePermission(myMembership);
+  const { canDeleteTask, canScratchTask } = usePermission(myMembership);
+
+  // Pull Session
+  const { data: session } = useSession();
 
   return (
     <div
@@ -161,7 +165,38 @@ const ItemCard = ({ task }: { task: FullTask }) => {
               router.push(`/dashboard/tasks/id/${task?.id}`);
             }}
           />
-          <PopoverAction Icon={CircleCheckBig} title="Scratch This" />
+          <PopoverAction
+            className={`${!canScratchTask ? "opacity-50" : ""}`}
+            Icon={CircleCheckBig}
+            title="Scratch This"
+            onClick={() => {
+              if (!canScratchTask) {
+                return;
+              }
+
+              triggerAlertDialog({
+                title: "Scratch This Task?",
+                description:
+                  "Are you sure you want to mark this task as complete?",
+                showCancelButton: true,
+                confirmText: "Scratch",
+                confirm: () => {
+                  if (!session?.user?.id) return;
+
+                  updateTask({
+                    id: task.id,
+                    teamId: task.teamId,
+                    operation: "complete",
+                    newValues: {
+                      completedById: session?.user?.id,
+                      completedAt: new Date(),
+                      status: "completed",
+                    },
+                  });
+                },
+              });
+            }}
+          />
           <PopoverAction Icon={BaggageClaim} title="Claim This" />
           <Separator />
           <PopoverAction Icon={Archive} title="Archive" onClick={() => {}} />

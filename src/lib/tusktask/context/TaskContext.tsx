@@ -11,6 +11,10 @@ import categorizeTask, {
 import { deleteTask as mutateDeleteTask } from "../mutators/deleteTask";
 import { TasksDeleteRequest } from "@/app/api/tasks/delete";
 import useNotificationContext from "../hooks/context/useNotificationContext";
+import { useUpdateTask } from "../mutation/taskMutation";
+import useTeamContext from "../hooks/context/useTeamContext";
+import { StandardResponse } from "../utils/createResponse";
+import { TasksPatchRequest } from "@/app/api/tasks/patch";
 
 export interface NewTaskDialogType {
   open: boolean;
@@ -30,6 +34,7 @@ export interface TaskContextValues {
   isDeletingTask: boolean;
   taskDeleteKey: string | null;
   setTaskDeleteKey: SetStateAction<string | null>;
+  updateTask: MutateFunction<TaskType | null, TasksPatchRequest>;
 }
 
 const TaskContext = createContext<TaskContextValues | null>(null);
@@ -104,6 +109,12 @@ const TaskContextProvider = ({
     },
   });
 
+  // Pull team context
+  const { teamDetailKey } = useTeamContext();
+
+  // Mutation [update task]
+  const { mutate: updateTask } = useUpdateTask({ queryClient, teamDetailKey });
+
   // Extract Tasks
   const tasks = tasksResponse?.data;
 
@@ -131,6 +142,7 @@ const TaskContextProvider = ({
         taskDeleteKey,
         setTaskDeleteKey,
         isDeletingTask,
+        updateTask,
       }}
     >
       {children}

@@ -11,7 +11,7 @@ export interface TasksPatchRequest {
   teamId: string;
   id: string;
   operation: "update" | "claim" | "complete";
-  newValues: TaskType;
+  newValues: Partial<TaskType>;
 }
 
 export async function tasksPatch(req: Request) {

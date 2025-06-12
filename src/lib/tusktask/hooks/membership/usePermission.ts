@@ -17,6 +17,7 @@ export interface UsePermission {
   canClaimTask: boolean;
   canUpdatePrice: boolean;
   canReschedule: boolean;
+  canScratchTask: boolean;
   hasManagementActions: boolean;
   hasAnyActions: boolean;
   roleLevel: number;
@@ -62,6 +63,7 @@ export const usePermission = (
     canReschedule: false,
     canUpdatePrice: false,
     canUpdateTask: false,
+    canScratchTask: false,
   };
 
   // Check if membership exist
@@ -126,6 +128,9 @@ export const usePermission = (
 
   // Permission [canCreateTask]
   permissions["canCreateTask"] = isManagement;
+
+  // Permission [canScratchTask]
+  permissions["canScratchTask"] = true; // make sure membership is completed
 
   // Check user management action
   permissions["hasManagementActions"] =
