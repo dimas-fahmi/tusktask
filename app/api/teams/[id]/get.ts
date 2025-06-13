@@ -66,6 +66,9 @@ export async function teamGet(
             claimedBy: {
               columns: sanitizeUserColumns,
             },
+            completedBy: {
+              columns: sanitizeUserColumns,
+            },
           },
         },
         teamMembers: {

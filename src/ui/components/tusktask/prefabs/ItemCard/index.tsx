@@ -161,7 +161,7 @@ const ItemCard = ({
                   <div className="flex items-center gap-1">
                     <UserRoundCheck className="w-3.5 h-3.5" />
                     <span className="text-xs">
-                      Completed by {task?.creator?.username}
+                      Completed by {task?.completedBy?.username}
                     </span>
                   </div>
                 )}
@@ -228,8 +228,8 @@ const ItemCard = ({
                     teamId: task.teamId,
                     operation: !completed ? "complete" : "update",
                     newValues: {
-                      completedById: session?.user?.id,
-                      completedAt: new Date(),
+                      completedById: !completed ? session?.user?.id : null,
+                      completedAt: !completed ? new Date() : null,
                       status: !completed ? "completed" : "not_started",
                     },
                   });

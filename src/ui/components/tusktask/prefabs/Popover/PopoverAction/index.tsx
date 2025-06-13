@@ -40,7 +40,7 @@ const PopoverAction = ({
   VariantProps<typeof PopoverActionVariant>) => {
   return (
     <button
-      className={`${cn(PopoverActionVariant({ variant, className }))} cursor`}
+      className={`${cn(PopoverActionVariant({ variant }), className)} cursor`}
       title={title}
       role="button"
       aria-label={`${title} button`}

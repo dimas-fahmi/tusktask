@@ -22,8 +22,13 @@ export interface TaskWithClaimer extends TaskType {
   claimedBy: SanitizedUser;
 }
 
+export interface TaskWithFinisher extends TaskType {
+  completedBy: SanitizedUser;
+}
+
 export type FullTask = TaskWithCreator &
   TaskWithOwner &
   TaskWithSubtasks &
   TaskWithClaimer &
-  CreatedByOptimisticUpdate;
+  CreatedByOptimisticUpdate &
+  TaskWithFinisher;
