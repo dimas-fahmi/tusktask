@@ -128,7 +128,7 @@ const DesktopPage = ({
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   {completedTask.map((task) => (
-                    <ItemCard task={task} key={task.id} />
+                    <ItemCard task={task} key={task.id} completed />
                   ))}
                 </CollapsibleContent>
               </Collapsible>
