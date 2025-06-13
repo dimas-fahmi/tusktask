@@ -7,13 +7,24 @@ import ItemCard, {
   ItemCardSkeleton,
 } from "@/src/ui/components/tusktask/prefabs/ItemCard";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
-import { FolderGit2, MessageCircle, UsersRound } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  FolderGit2,
+  MessageCircle,
+  UsersRound,
+} from "lucide-react";
 import { filterTasks, FilterType } from "@/src/lib/tusktask/utils/filterTasks";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
 import { motion } from "motion/react";
 import ShoppingListOverview from "./fragments/ShoppingListOverview";
 import { SetStateAction } from "@/src/types/types";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/src/ui/components/shadcn/ui/collapsible";
 
 const DesktopPage = ({
   id,
@@ -22,8 +33,11 @@ const DesktopPage = ({
   id: string;
   setTeamChatOpen: SetStateAction<boolean>;
 }) => {
+  // CompletedTasks Collapsible state
+  const [completedOpen, setCompletedOpen] = useState(false);
+
   // Filter States
-  const [filter, setFilter] = useState<FilterType>("all");
+  const [filter, setFilter] = useState<FilterType>("todo");
 
   // Query Team
   const { teamDetail, setTeamDetailKey, setTeamMembershipDialog } =
@@ -32,6 +46,10 @@ const DesktopPage = ({
   // Filter Task
   const tasks = teamDetail?.tasks
     ? filterTasks(teamDetail.tasks, filter, "createdAt", "desc")
+    : [];
+
+  const completedTask = teamDetail?.tasks
+    ? filterTasks(teamDetail.tasks, "completed", "createdAt", "desc")
     : [];
 
   // Tasks createdByOptimisticUpdate
@@ -90,7 +108,35 @@ const DesktopPage = ({
 
               {teamDetail &&
                 tasks.length === 0 &&
-                createdByOptimisticUpdates.length === 0 && (
+                createdByOptimisticUpdates.length === 0 &&
+                completedTask.length !== 0 && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    All task is completed, good job!
+                  </p>
+                )}
+
+              <Collapsible open={completedOpen} onOpenChange={setCompletedOpen}>
+                <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
+                  <span>Completed Task</span>
+                  <span>
+                    {completedOpen ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </span>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  {completedTask.map((task) => (
+                    <ItemCard task={task} key={task.id} completed />
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+
+              {teamDetail &&
+                tasks.length === 0 &&
+                createdByOptimisticUpdates.length === 0 &&
+                completedTask.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center">
                     No items, create a new one.
                   </p>

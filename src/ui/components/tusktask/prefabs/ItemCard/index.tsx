@@ -2,6 +2,7 @@ import {
   Archive,
   BaggageClaim,
   CalendarSync,
+  Circle,
   CircleCheckBig,
   Clock,
   Ellipsis,
@@ -13,6 +14,7 @@ import {
   Signature,
   Tag,
   Trash,
+  UserRoundCheck,
   Wallet,
 } from "lucide-react";
 import React, { useState } from "react";
@@ -33,6 +35,7 @@ import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import { usePermission } from "@/src/lib/tusktask/hooks/membership/usePermission";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { useSession } from "next-auth/react";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -58,7 +61,13 @@ export const ItemCardSkeleton = () => {
   );
 };
 
-const ItemCard = ({ task }: { task: FullTask }) => {
+const ItemCard = ({
+  task,
+  completed = false,
+}: {
+  task: FullTask;
+  completed?: boolean;
+}) => {
   // Render Icon
   const Icon = task?.type === "shopping_list" ? ShoppingCart : Hash;
 
@@ -66,20 +75,23 @@ const ItemCard = ({ task }: { task: FullTask }) => {
   const router = useRouter();
 
   // Pull TaskContext
-  const { deleteTask, isDeletingTask, taskDeleteKey, setTaskDeleteKey } =
+  const { deleteTask, updateTask, taskDeleteKey, setTaskDeleteKey } =
     useTaskContext();
 
   // Pull TeamContext
   const { myMembership } = useTeamContext();
 
   // Pull notification context
-  const { triggerToast } = useNotificationContext();
+  const { triggerToast, triggerAlertDialog } = useNotificationContext();
 
   // Popover state
   const [open, setOpen] = useState(false);
 
   // Permission
-  const { canDeleteTask } = usePermission(myMembership);
+  const { canDeleteTask, canScratchTask } = usePermission(myMembership);
+
+  // Pull Session
+  const { data: session } = useSession();
 
   return (
     <div
@@ -93,7 +105,9 @@ const ItemCard = ({ task }: { task: FullTask }) => {
           </span>
         </div>
         <div className="flex flex-col gap-1">
-          <span className="capitalize">{task?.name}</span>
+          <span className={`capitalize ${completed ? "line-through" : ""}`}>
+            {task?.name}
+          </span>
           {/* Metadata */}
           <div className="gap-3 flex">
             {task?.createdByOptimisticUpdate && (
@@ -111,30 +125,57 @@ const ItemCard = ({ task }: { task: FullTask }) => {
             )}
             {taskDeleteKey !== task?.id && !task?.createdByOptimisticUpdate && (
               <>
-                <div className="flex items-center gap-1">
-                  <CircularProgress
-                    current={3}
-                    total={7}
-                    size={11}
-                    className=""
-                  />
-                  <span className="text-xs">3/7</span>
-                </div>
+                {!completed && (
+                  <div className="flex items-center gap-1">
+                    <CircularProgress
+                      current={3}
+                      total={7}
+                      size={11}
+                      className=""
+                    />
+                    <span className="text-xs">3/7</span>
+                  </div>
+                )}
                 {task?.type === "shopping_list" && task?.price && (
                   <div className="flex items-center gap-1">
                     <Wallet className="w-3.5 h-3.5" />
                     <span className="text-xs">{formatNumber(task.price)}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1">
-                  <Signature className="w-3.5 h-3.5" />
-                  <span className="text-xs">{task?.creator?.username}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span className="text-xs">{timePassed(task?.createdAt)}</span>
-                </div>
-                {task?.claimedById && (
+                {!completed && (
+                  <>
+                    <div className="flex items-center gap-1">
+                      <Signature className="w-3.5 h-3.5" />
+                      <span className="text-xs">{task?.creator?.username}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span className="text-xs">
+                        {timePassed(task?.createdAt)}
+                      </span>
+                    </div>
+                  </>
+                )}
+
+                {completed && task?.completedBy && (
+                  <div className="flex items-center gap-1">
+                    <UserRoundCheck className="w-3.5 h-3.5" />
+                    <span className="text-xs">
+                      Completed by {task.completedBy?.username}
+                    </span>
+                  </div>
+                )}
+
+                {completed && (
+                  <div className="flex items-center gap-1">
+                    <CircleCheckBig className="w-3.5 h-3.5" />
+                    <span className="text-xs">
+                      {timePassed(task?.completedAt)}
+                    </span>
+                  </div>
+                )}
+
+                {task?.claimedById && !completed && (
                   <div className="flex items-center gap-1">
                     <Pickaxe className="w-3.5 h-3.5" />
                     <span className="text-xs">{task?.claimedBy?.username}</span>
@@ -161,7 +202,41 @@ const ItemCard = ({ task }: { task: FullTask }) => {
               router.push(`/dashboard/tasks/id/${task?.id}`);
             }}
           />
-          <PopoverAction Icon={CircleCheckBig} title="Scratch This" />
+          <PopoverAction
+            className={`${!canScratchTask ? "opacity-50" : ""}`}
+            Icon={completed ? Circle : CircleCheckBig}
+            title={!completed ? "Scratch This" : "Unscratch This"}
+            onClick={() => {
+              if (!canScratchTask) {
+                return;
+              }
+
+              triggerAlertDialog({
+                title: !completed
+                  ? "Scratch This Task?"
+                  : "Mark This incomplete?",
+                description: !completed
+                  ? "Are you sure you want to mark this task as complete?"
+                  : "Are you sure you want to mark this task to incomplete?",
+                showCancelButton: true,
+                confirmText: !completed ? "Scratch" : "Continue",
+                confirm: () => {
+                  if (!session?.user?.id) return;
+
+                  updateTask({
+                    id: task.id,
+                    teamId: task.teamId,
+                    operation: !completed ? "complete" : "update",
+                    newValues: {
+                      completedById: !completed ? session?.user?.id : null,
+                      completedAt: !completed ? new Date() : null,
+                      status: !completed ? "completed" : "not_started",
+                    },
+                  });
+                },
+              });
+            }}
+          />
           <PopoverAction Icon={BaggageClaim} title="Claim This" />
           <Separator />
           <PopoverAction Icon={Archive} title="Archive" onClick={() => {}} />

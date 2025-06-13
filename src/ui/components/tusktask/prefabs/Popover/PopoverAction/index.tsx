@@ -33,13 +33,14 @@ const PopoverAction = ({
   title,
   subTitle,
   variant = "default",
+  className,
   ...props
 }: React.ComponentProps<"button"> &
   PopoverActionProps &
   VariantProps<typeof PopoverActionVariant>) => {
   return (
     <button
-      className={`${cn(PopoverActionVariant({ variant }))} cursor`}
+      className={`${cn(PopoverActionVariant({ variant }), className)} cursor`}
       title={title}
       role="button"
       aria-label={`${title} button`}
