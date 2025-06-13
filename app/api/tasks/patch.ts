@@ -14,6 +14,13 @@ export interface TasksPatchRequest {
   newValues: Partial<TaskType>;
 }
 
+/**
+ * Handles PATCH requests to update a task's fields for a specific team.
+ *
+ * Validates the request body, checks user authentication and team membership, enforces field-level update permissions based on user role, normalizes date fields, and applies partial updates to the task in the database. Returns appropriate HTTP responses for validation errors, permission issues, or database failures.
+ *
+ * @returns A `Response` object with status and message indicating the result of the update operation. On success, includes the updated task data.
+ */
 export async function tasksPatch(req: Request) {
   let body: TasksPatchRequest;
 
