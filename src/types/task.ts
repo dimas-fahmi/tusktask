@@ -23,7 +23,7 @@ export interface TaskWithClaimer extends TaskType {
 }
 
 export interface TaskWithFinisher extends TaskType {
-  completedBy: SanitizedUser;
+  completedBy?: SanitizedUser;
 }
 
 export type FullTask = TaskWithCreator &

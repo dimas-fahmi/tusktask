@@ -157,11 +157,11 @@ const ItemCard = ({
                   </>
                 )}
 
-                {completed && (
+                {completed && task?.completedBy && (
                   <div className="flex items-center gap-1">
                     <UserRoundCheck className="w-3.5 h-3.5" />
                     <span className="text-xs">
-                      Completed by {task?.completedBy?.username}
+                      Completed by {task.completedBy?.username}
                     </span>
                   </div>
                 )}
