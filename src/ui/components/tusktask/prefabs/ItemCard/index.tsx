@@ -237,11 +237,21 @@ const ItemCard = ({
               });
             }}
           />
-          <PopoverAction Icon={BaggageClaim} title="Claim This" />
+          {!completed && (
+            <PopoverAction Icon={BaggageClaim} title="Claim This" />
+          )}
           <Separator />
           <PopoverAction Icon={Archive} title="Archive" onClick={() => {}} />
-          <PopoverAction Icon={Tag} title="Set Status" subTitle={task.status} />
-          <PopoverAction Icon={CalendarSync} title="Reschedule" />
+          {!completed && (
+            <PopoverAction
+              Icon={Tag}
+              title="Set Status"
+              subTitle={task.status}
+            />
+          )}
+          {!completed && (
+            <PopoverAction Icon={CalendarSync} title="Reschedule" />
+          )}
           <Separator />
           <PopoverAction
             Icon={Trash}
