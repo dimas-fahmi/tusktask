@@ -211,6 +211,20 @@ const ItemCard = ({
                 return;
               }
 
+              if (task?.claimedById) {
+                triggerAlertDialog({
+                  title: "Oops, Miscomunication?",
+                  description: `${task?.completedBy?.username} already claimed this task, tell them you got it?`,
+                  showCancelButton: true,
+                  confirmText: "Send",
+                  confirm: () => {
+                    // Send notification to unclaim task
+                  },
+                });
+
+                return;
+              }
+
               triggerAlertDialog({
                 title: !completed
                   ? "Scratch This Task?"
@@ -238,7 +252,39 @@ const ItemCard = ({
             }}
           />
           {!completed && (
-            <PopoverAction Icon={BaggageClaim} title="Claim This" />
+            <PopoverAction
+              Icon={BaggageClaim}
+              onClick={async () => {
+                if (task.claimedById) {
+                  triggerAlertDialog({
+                    title: "Not Quick Enough Cowboy!",
+                    description: `${task?.claimedBy.username} claimed this task faster than you.`,
+                    confirmText: "SNAP!",
+                  });
+                  return;
+                }
+
+                triggerAlertDialog({
+                  title: "Guys, let me handle this one!",
+                  description:
+                    "Claim this task and tell your friends 'You got it'?",
+                  showCancelButton: true,
+                  confirmText: "Claim",
+                  icon: BaggageClaim,
+                  confirm: () => {
+                    updateTask({
+                      id: task.id,
+                      teamId: task.teamId,
+                      operation: "update",
+                      newValues: {
+                        claimedById: session?.user.id,
+                      },
+                    });
+                  },
+                });
+              }}
+              title="Claim This"
+            />
           )}
           <Separator />
           <PopoverAction Icon={Archive} title="Archive" onClick={() => {}} />
