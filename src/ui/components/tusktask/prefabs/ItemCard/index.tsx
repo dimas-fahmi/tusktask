@@ -7,6 +7,7 @@ import {
   Clock,
   Ellipsis,
   ExternalLink,
+  Hand,
   Hash,
   LoaderCircle,
   Pickaxe,
@@ -36,6 +37,11 @@ import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import { usePermission } from "@/src/lib/tusktask/hooks/membership/usePermission";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { useSession } from "next-auth/react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../../shadcn/ui/tooltip";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -92,6 +98,10 @@ const ItemCard = ({
 
   // Pull Session
   const { data: session } = useSession();
+
+  // Claim
+  const isClaimedByMe =
+    task?.claimedById && task.claimedById === session?.user.id;
 
   return (
     <div
@@ -176,10 +186,19 @@ const ItemCard = ({
                 )}
 
                 {task?.claimedById && !completed && (
-                  <div className="flex items-center gap-1">
-                    <Pickaxe className="w-3.5 h-3.5" />
-                    <span className="text-xs">{task?.claimedBy?.username}</span>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1">
+                        <Pickaxe className="w-3.5 h-3.5" />
+                        <span className="text-xs">
+                          {task?.claimedBy?.username ?? "processing..."}
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {task?.claimedBy?.username ?? "..."} claimed this task.
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               </>
             )}
@@ -211,7 +230,7 @@ const ItemCard = ({
                 return;
               }
 
-              if (task?.claimedById) {
+              if (task?.claimedById && !isClaimedByMe) {
                 triggerAlertDialog({
                   title: "Oops, Miscomunication?",
                   description: `${task?.completedBy?.username} already claimed this task, tell them you got it?`,
@@ -253,9 +272,12 @@ const ItemCard = ({
           />
           {!completed && (
             <PopoverAction
-              Icon={BaggageClaim}
+              Icon={isClaimedByMe ? Hand : BaggageClaim}
               onClick={async () => {
-                if (task.claimedById) {
+                if (
+                  task.claimedById &&
+                  task.claimedById !== session?.user?.id
+                ) {
                   triggerAlertDialog({
                     title: "Not Quick Enough Cowboy!",
                     description: `${task?.claimedBy.username} claimed this task faster than you.`,
@@ -264,26 +286,46 @@ const ItemCard = ({
                   return;
                 }
 
-                triggerAlertDialog({
-                  title: "Guys, let me handle this one!",
-                  description:
-                    "Claim this task and tell your friends 'You got it'?",
-                  showCancelButton: true,
-                  confirmText: "Claim",
-                  icon: BaggageClaim,
-                  confirm: () => {
-                    updateTask({
-                      id: task.id,
-                      teamId: task.teamId,
-                      operation: "update",
-                      newValues: {
-                        claimedById: session?.user.id,
-                      },
-                    });
-                  },
-                });
+                if (isClaimedByMe) {
+                  triggerAlertDialog({
+                    title: "Guys, I'm wrong. I can't handle it!",
+                    description:
+                      "Are you sure you want to tell the team you can't handle it?",
+                    showCancelButton: true,
+                    confirmText: "Surrender",
+                    confirm: () => {
+                      updateTask({
+                        id: task.id,
+                        teamId: task.teamId,
+                        operation: "update",
+                        newValues: {
+                          claimedById: null,
+                        },
+                      });
+                    },
+                  });
+                } else {
+                  triggerAlertDialog({
+                    title: "Guys, let me handle this one!",
+                    description:
+                      "Claim this task and tell your friends 'You got it'?",
+                    showCancelButton: true,
+                    confirmText: "Claim",
+                    icon: BaggageClaim,
+                    confirm: () => {
+                      updateTask({
+                        id: task.id,
+                        teamId: task.teamId,
+                        operation: "update",
+                        newValues: {
+                          claimedById: session?.user.id,
+                        },
+                      });
+                    },
+                  });
+                }
               }}
-              title="Claim This"
+              title={isClaimedByMe ? "Wave and Surrender" : "Claim This"}
             />
           )}
           <Separator />
