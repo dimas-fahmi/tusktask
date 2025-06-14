@@ -21,7 +21,7 @@ const updateTeamDetail = (
 
   if (oldTeamDetail?.data) {
     const { id, newValues } = data;
-    const updatedTasks = oldTeamDetail?.data.tasks.map((task) =>
+    const updatedTasks = (oldTeamDetail?.data.tasks ?? []).map((task) =>
       task.id === id ? { ...task, ...newValues } : task
     );
 
