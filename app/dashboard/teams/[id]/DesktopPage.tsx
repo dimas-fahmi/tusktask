@@ -115,23 +115,28 @@ const DesktopPage = ({
                   </p>
                 )}
 
-              <Collapsible open={completedOpen} onOpenChange={setCompletedOpen}>
-                <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
-                  <span>Completed Task</span>
-                  <span>
-                    {completedOpen ? (
-                      <ChevronUp className="w-4 h-4" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4" />
-                    )}
-                  </span>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  {completedTask.map((task) => (
-                    <ItemCard task={task} key={task.id} completed />
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
+              {completedTask.length !== 0 && (
+                <Collapsible
+                  open={completedOpen}
+                  onOpenChange={setCompletedOpen}
+                >
+                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
+                    <span>Completed Task</span>
+                    <span>
+                      {completedOpen ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </span>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    {completedTask.map((task) => (
+                      <ItemCard task={task} key={task.id} completed />
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
 
               {teamDetail &&
                 tasks.length === 0 &&
