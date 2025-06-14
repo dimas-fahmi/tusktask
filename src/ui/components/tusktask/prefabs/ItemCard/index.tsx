@@ -232,8 +232,8 @@ const ItemCard = ({
 
               if (task?.claimedById && !isClaimedByMe) {
                 triggerAlertDialog({
-                  title: "Oops, Miscomunication?",
-                  description: `${task?.completedBy?.username} already claimed this task, tell them you got it?`,
+                  title: "Oops, Miscommunication?",
+                  description: `${task?.claimedBy?.username} already claimed this task, tell them you got it?`,
                   showCancelButton: true,
                   confirmText: "Send",
                   confirm: () => {
