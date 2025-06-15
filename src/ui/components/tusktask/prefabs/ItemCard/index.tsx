@@ -329,7 +329,24 @@ const ItemCard = ({
             />
           )}
           <Separator />
-          <PopoverAction Icon={Archive} title="Archive" onClick={() => {}} />
+          <PopoverAction Icon={Archive} title="Archive" onClick={() => {
+            triggerAlertDialog({
+              title: "Archive This Task?",
+              description: "Are you sure you want to archive this task?",
+              showCancelButton:true,
+              confirmText: "Archive",
+              confirm: () => {
+                updateTask({
+                  id: task.id,
+                  operation: "update",
+                  teamId: task.teamId,
+                  newValues: {
+                    status: "archived"
+                  }
+                })
+              }
+            })
+          }} />
           {!completed && (
             <PopoverAction
               Icon={Tag}

@@ -33,8 +33,9 @@ const DesktopPage = ({
   id: string;
   setTeamChatOpen: SetStateAction<boolean>;
 }) => {
-  // CompletedTasks Collapsible state
+  // Collapsible State
   const [completedOpen, setCompletedOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
 
   // Filter States
   const [filter, setFilter] = useState<FilterType>("todo");
@@ -50,6 +51,10 @@ const DesktopPage = ({
 
   const completedTask = teamDetail?.tasks
     ? filterTasks(teamDetail.tasks, "completed", "createdAt", "desc")
+    : [];
+
+  const archivedTask = teamDetail?.tasks
+    ? filterTasks(teamDetail.tasks, "archived", "createdAt", "desc")
     : [];
 
   // Tasks createdByOptimisticUpdate
@@ -133,6 +138,26 @@ const DesktopPage = ({
                   <CollapsibleContent>
                     {completedTask.map((task) => (
                       <ItemCard task={task} key={task.id} completed />
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+
+              {archivedTask.length !== 0 && (
+                <Collapsible open={archiveOpen} onOpenChange={setArchiveOpen}>
+                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
+                    <span>Archived Task</span>
+                    <span>
+                      {completedOpen ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </span>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    {archivedTask.map((task) => (
+                      <ItemCard task={task} key={task.id} />
                     ))}
                   </CollapsibleContent>
                 </Collapsible>
