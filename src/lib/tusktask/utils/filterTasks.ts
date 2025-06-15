@@ -46,6 +46,11 @@ export const filterTasks = (
         (t) => t.status === "not_started" && !t.createdByOptimisticUpdate
       );
       break;
+    case "process":
+      result = data.filter(
+        (t) => t?.status === "on_process" && !t.createdByOptimisticUpdate
+      );
+      break;
     case "task":
       result = data.filter(
         (t) => t.type === "task" && !t.createdByOptimisticUpdate
@@ -54,9 +59,7 @@ export const filterTasks = (
     case "createdByOptimisticUpdate":
       result = data.filter((t) => t?.createdByOptimisticUpdate);
       break;
-    case "process":
-      result = data.filter((t) => t?.status === "on_process");
-      break;
+
     default:
       result = data;
       break;
