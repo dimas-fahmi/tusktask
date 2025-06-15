@@ -7,6 +7,7 @@ export type FilterType =
   | "shopping"
   | "task"
   | "createdByOptimisticUpdate"
+  | "process"
   | "all";
 
 export const filterTasks = (
@@ -42,7 +43,12 @@ export const filterTasks = (
       break;
     case "todo":
       result = data.filter(
-        (t) => t.status !== "completed" && !t.createdByOptimisticUpdate
+        (t) => t.status === "not_started" && !t.createdByOptimisticUpdate
+      );
+      break;
+    case "process":
+      result = data.filter(
+        (t) => t?.status === "on_process" && !t.createdByOptimisticUpdate
       );
       break;
     case "task":
@@ -53,6 +59,7 @@ export const filterTasks = (
     case "createdByOptimisticUpdate":
       result = data.filter((t) => t?.createdByOptimisticUpdate);
       break;
+
     default:
       result = data;
       break;

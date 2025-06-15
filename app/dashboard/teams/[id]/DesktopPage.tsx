@@ -33,8 +33,10 @@ const DesktopPage = ({
   id: string;
   setTeamChatOpen: SetStateAction<boolean>;
 }) => {
-  // CompletedTasks Collapsible state
+  // Collapsible State
+  const [onProcessOpen, setOnProcessOpen] = useState(false);
   const [completedOpen, setCompletedOpen] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
 
   // Filter States
   const [filter, setFilter] = useState<FilterType>("todo");
@@ -48,8 +50,16 @@ const DesktopPage = ({
     ? filterTasks(teamDetail.tasks, filter, "createdAt", "desc")
     : [];
 
+  const onProcessTask = teamDetail?.tasks
+    ? filterTasks(teamDetail?.tasks, "process", "createdAt", "desc")
+    : [];
+
   const completedTask = teamDetail?.tasks
     ? filterTasks(teamDetail.tasks, "completed", "createdAt", "desc")
+    : [];
+
+  const archivedTask = teamDetail?.tasks
+    ? filterTasks(teamDetail.tasks, "archived", "createdAt", "desc")
     : [];
 
   // Tasks createdByOptimisticUpdate
@@ -115,13 +125,36 @@ const DesktopPage = ({
                   </p>
                 )}
 
+              {onProcessTask.length !== 0 && (
+                <Collapsible
+                  open={onProcessOpen}
+                  onOpenChange={setOnProcessOpen}
+                >
+                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
+                    <span>On Process Tasks</span>
+                    <span>
+                      {onProcessOpen ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </span>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    {onProcessTask.map((task) => (
+                      <ItemCard task={task} key={task.id} />
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+
               {completedTask.length !== 0 && (
                 <Collapsible
                   open={completedOpen}
                   onOpenChange={setCompletedOpen}
                 >
                   <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
-                    <span>Completed Task</span>
+                    <span>Completed Tasks</span>
                     <span>
                       {completedOpen ? (
                         <ChevronUp className="w-4 h-4" />
@@ -133,6 +166,26 @@ const DesktopPage = ({
                   <CollapsibleContent>
                     {completedTask.map((task) => (
                       <ItemCard task={task} key={task.id} completed />
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+
+              {archivedTask.length !== 0 && (
+                <Collapsible open={archiveOpen} onOpenChange={setArchiveOpen}>
+                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
+                    <span>Archived Tasks</span>
+                    <span>
+                      {completedOpen ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </span>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    {archivedTask.map((task) => (
+                      <ItemCard task={task} key={task.id} />
                     ))}
                   </CollapsibleContent>
                 </Collapsible>
