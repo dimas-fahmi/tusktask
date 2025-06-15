@@ -133,7 +133,7 @@ const DesktopPage = ({
                   <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
                     <span>On Process Tasks</span>
                     <span>
-                      {completedOpen ? (
+                      {onProcessOpen ? (
                         <ChevronUp className="w-4 h-4" />
                       ) : (
                         <ChevronDown className="w-4 h-4" />
