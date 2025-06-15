@@ -10,6 +10,7 @@ import {
   ExternalLink,
   Hand,
   Hash,
+  Loader,
   LoaderCircle,
   Pickaxe,
   ShoppingCart,
@@ -362,11 +363,51 @@ const ItemCard = ({
             }}
           />
           {!completed && (
-            <PopoverAction
-              Icon={Tag}
-              title="Set Status"
-              subTitle={task.status}
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <PopoverAction
+                  Icon={Tag}
+                  title="Set Status"
+                  subTitle={task.status}
+                />
+              </PopoverTrigger>
+              <PopoverContent className="!p-1 space-y-2 shadow-2xl bg-background text-foreground">
+                {task?.status !== "on_process" && (
+                  <PopoverAction
+                    Icon={Loader}
+                    title="On Process"
+                    subTitle={"on_process"}
+                    onClick={() => {
+                      updateTask({
+                        id: task.id,
+                        teamId: task.teamId,
+                        operation: "update",
+                        newValues: {
+                          status: "on_process",
+                        },
+                      });
+                    }}
+                  />
+                )}
+                {task?.status !== "not_started" && (
+                  <PopoverAction
+                    Icon={Circle}
+                    title="Not Started"
+                    subTitle={"not_started"}
+                    onClick={() => {
+                      updateTask({
+                        id: task.id,
+                        teamId: task.teamId,
+                        operation: "update",
+                        newValues: {
+                          status: "not_started",
+                        },
+                      });
+                    }}
+                  />
+                )}
+              </PopoverContent>
+            </Popover>
           )}
           {!completed && (
             <PopoverAction Icon={CalendarSync} title="Reschedule" />

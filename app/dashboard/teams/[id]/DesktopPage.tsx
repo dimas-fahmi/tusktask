@@ -34,6 +34,7 @@ const DesktopPage = ({
   setTeamChatOpen: SetStateAction<boolean>;
 }) => {
   // Collapsible State
+  const [onProcessOpen, setOnProcessOpen] = useState(false);
   const [completedOpen, setCompletedOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
 
@@ -47,6 +48,10 @@ const DesktopPage = ({
   // Filter Task
   const tasks = teamDetail?.tasks
     ? filterTasks(teamDetail.tasks, filter, "createdAt", "desc")
+    : [];
+
+  const onProcessTask = teamDetail?.tasks
+    ? filterTasks(teamDetail?.tasks, "process", "createdAt", "desc")
     : [];
 
   const completedTask = teamDetail?.tasks
@@ -120,13 +125,36 @@ const DesktopPage = ({
                   </p>
                 )}
 
+              {onProcessTask.length !== 0 && (
+                <Collapsible
+                  open={onProcessOpen}
+                  onOpenChange={setOnProcessOpen}
+                >
+                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
+                    <span>On Process Tasks</span>
+                    <span>
+                      {completedOpen ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </span>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    {onProcessTask.map((task) => (
+                      <ItemCard task={task} key={task.id} />
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+
               {completedTask.length !== 0 && (
                 <Collapsible
                   open={completedOpen}
                   onOpenChange={setCompletedOpen}
                 >
                   <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
-                    <span>Completed Task</span>
+                    <span>Completed Tasks</span>
                     <span>
                       {completedOpen ? (
                         <ChevronUp className="w-4 h-4" />
@@ -146,7 +174,7 @@ const DesktopPage = ({
               {archivedTask.length !== 0 && (
                 <Collapsible open={archiveOpen} onOpenChange={setArchiveOpen}>
                   <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
-                    <span>Archived Task</span>
+                    <span>Archived Tasks</span>
                     <span>
                       {completedOpen ? (
                         <ChevronUp className="w-4 h-4" />
