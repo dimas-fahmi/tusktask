@@ -25,6 +25,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/src/ui/components/shadcn/ui/collapsible";
+import CollapsibleTaskSection from "@/src/ui/components/tusktask/prefabs/CollapsibleTaskSection";
 
 const DesktopPage = ({
   id,
@@ -126,69 +127,30 @@ const DesktopPage = ({
                 )}
 
               {onProcessTask.length !== 0 && (
-                <Collapsible
+                <CollapsibleTaskSection
+                  label="On Process Tasks"
+                  data={onProcessTask}
                   open={onProcessOpen}
-                  onOpenChange={setOnProcessOpen}
-                >
-                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
-                    <span>On Process Tasks</span>
-                    <span>
-                      {onProcessOpen ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
-                    </span>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    {onProcessTask.map((task) => (
-                      <ItemCard task={task} key={task.id} />
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
+                  setOpen={setOnProcessOpen}
+                />
               )}
 
               {completedTask.length !== 0 && (
-                <Collapsible
+                <CollapsibleTaskSection
+                  label="Completed Tasks"
+                  data={completedTask}
                   open={completedOpen}
-                  onOpenChange={setCompletedOpen}
-                >
-                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
-                    <span>Completed Tasks</span>
-                    <span>
-                      {completedOpen ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
-                    </span>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    {completedTask.map((task) => (
-                      <ItemCard task={task} key={task.id} completed />
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
+                  setOpen={setCompletedOpen}
+                />
               )}
 
               {archivedTask.length !== 0 && (
-                <Collapsible open={archiveOpen} onOpenChange={setArchiveOpen}>
-                  <CollapsibleTrigger className="border-b w-full text-start py-2 px-4 cursor-pointer text-sm flex justify-between">
-                    <span>Archived Tasks</span>
-                    <span>
-                      {completedOpen ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
-                    </span>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    {archivedTask.map((task) => (
-                      <ItemCard task={task} key={task.id} />
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
+                <CollapsibleTaskSection
+                  label="Archived Tasks"
+                  data={archivedTask}
+                  open={archiveOpen}
+                  setOpen={setArchiveOpen}
+                />
               )}
 
               {teamDetail &&

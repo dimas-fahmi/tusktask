@@ -14,6 +14,7 @@ import useNotificationContext from "../hooks/context/useNotificationContext";
 import { useUpdateTask } from "../mutation/taskMutation";
 import useTeamContext from "../hooks/context/useTeamContext";
 import { TasksPatchRequest } from "@/app/api/tasks/patch";
+import ReScheduleDialog from "@/src/ui/components/tusktask/prefabs/ReScheduleDialog";
 
 export interface NewTaskDialogType {
   open: boolean;
@@ -34,6 +35,14 @@ export interface TaskContextValues {
   taskDeleteKey: string | null;
   setTaskDeleteKey: SetStateAction<string | null>;
   updateTask: MutateFunction<TaskType | null, TasksPatchRequest>;
+  reScheduleDialog: ReScheduleDialog;
+  setReScheduleDialog: SetStateAction<ReScheduleDialog>;
+  handleResetReScheduleDialog: () => void;
+}
+
+export interface ReScheduleDialog {
+  open: boolean;
+  task: TaskType | null;
 }
 
 const TaskContext = createContext<TaskContextValues | null>(null);
@@ -52,6 +61,18 @@ const TaskContextProvider = ({
   };
   const [newTaskDialog, setNewTaskDialog] =
     useState<NewTaskDialogType>(newTaskDialogInitial);
+
+  // Reschedule Dialog
+  const reScheduleDialogInitial: ReScheduleDialog = {
+    open: false,
+    task: null,
+  };
+  const [reScheduleDialog, setReScheduleDialog] = useState<ReScheduleDialog>(
+    reScheduleDialogInitial
+  );
+
+  const handleResetReScheduleDialog = () =>
+    setReScheduleDialog(reScheduleDialogInitial);
 
   // Query Tasks
   const { data: tasksResponse, isFetching: isFetchingTasks } = useQuery({
@@ -142,10 +163,16 @@ const TaskContextProvider = ({
         setTaskDeleteKey,
         isDeletingTask,
         updateTask,
+
+        // ReScheduleDialog
+        reScheduleDialog,
+        setReScheduleDialog,
+        handleResetReScheduleDialog,
       }}
     >
       {children}
       <NewTaskDialog />
+      <ReScheduleDialog />
     </TaskContext.Provider>
   );
 };

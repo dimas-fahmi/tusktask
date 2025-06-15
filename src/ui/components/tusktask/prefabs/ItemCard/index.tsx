@@ -2,6 +2,7 @@ import {
   Archive,
   ArchiveRestore,
   BaggageClaim,
+  CalendarClock,
   CalendarSync,
   Circle,
   CircleCheckBig,
@@ -45,6 +46,10 @@ import {
   TooltipTrigger,
 } from "../../../shadcn/ui/tooltip";
 import { TasksPatchRequest } from "@/app/api/tasks/patch";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
+import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
+import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
+import { timeDistanceFromNow } from "@/src/lib/tusktask/utils/timeDistanceFromNow";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -84,8 +89,13 @@ const ItemCard = ({
   const router = useRouter();
 
   // Pull TaskContext
-  const { deleteTask, updateTask, taskDeleteKey, setTaskDeleteKey } =
-    useTaskContext();
+  const {
+    deleteTask,
+    updateTask,
+    taskDeleteKey,
+    setTaskDeleteKey,
+    setReScheduleDialog,
+  } = useTaskContext();
 
   // Pull TeamContext
   const { myMembership } = useTeamContext();
@@ -113,9 +123,42 @@ const ItemCard = ({
       {/* Information */}
       <div className="flex gap-1.5">
         <div className="flex items-start pt-1 gap-1.5">
-          <span>
-            <Icon className={`w-3.5 h-3.5`} />
-          </span>
+          {task?.claimedBy ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Avatar className="w-6 h-6">
+                  <AvatarImage
+                    src={task?.claimedBy?.image ?? DEFAULT_AVATAR}
+                    alt={`${task?.claimedBy?.name ?? "User"}'s Avatar`}
+                  />
+                  <AvatarFallback>
+                    {getUserInitials(task?.claimedBy?.name)}
+                  </AvatarFallback>
+                </Avatar>
+              </TooltipTrigger>
+              <TooltipContent>
+                This{" "}
+                <span className="font-bold">
+                  {task?.type === "shopping_list" ? "shopping list" : "task"}
+                </span>{" "}
+                is claimed by{" "}
+                <span className="font-bold">{task?.claimedBy?.name}</span>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-accent-foreground">
+                  <Icon className={`w-3.5 h-3.5`} />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>
+                  {task?.type === "shopping_list" ? "Shopping List" : "Task"}
+                </span>
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
         <div className="flex flex-col gap-1">
           <span className={`capitalize ${completed ? "line-through" : ""}`}>
@@ -188,20 +231,13 @@ const ItemCard = ({
                   </div>
                 )}
 
-                {task?.claimedById && !completed && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center gap-1">
-                        <Pickaxe className="w-3.5 h-3.5" />
-                        <span className="text-xs">
-                          {task?.claimedBy?.username ?? "processing..."}
-                        </span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {task?.claimedBy?.username ?? "..."} claimed this task.
-                    </TooltipContent>
-                  </Tooltip>
+                {!completed && task?.deadlineAt && (
+                  <div className="flex items-center gap-1">
+                    <CalendarClock className="w-3.5 h-3.5" />
+                    <span className="text-xs">
+                      {timeDistanceFromNow(task?.deadlineAt)}
+                    </span>
+                  </div>
                 )}
               </>
             )}
@@ -410,7 +446,16 @@ const ItemCard = ({
             </Popover>
           )}
           {!completed && (
-            <PopoverAction Icon={CalendarSync} title="Reschedule" />
+            <PopoverAction
+              Icon={CalendarSync}
+              title="Reschedule"
+              onClick={() => {
+                setReScheduleDialog({
+                  open: true,
+                  task: task,
+                });
+              }}
+            />
           )}
           <Separator />
           <PopoverAction
