@@ -1,5 +1,6 @@
 import {
   Archive,
+  ArchiveRestore,
   BaggageClaim,
   CalendarSync,
   Circle,
@@ -42,6 +43,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "../../../shadcn/ui/tooltip";
+import { TasksPatchRequest } from "@/app/api/tasks/patch";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -329,24 +331,36 @@ const ItemCard = ({
             />
           )}
           <Separator />
-          <PopoverAction Icon={Archive} title="Archive" onClick={() => {
-            triggerAlertDialog({
-              title: "Archive This Task?",
-              description: "Are you sure you want to archive this task?",
-              showCancelButton:true,
-              confirmText: "Archive",
-              confirm: () => {
-                updateTask({
-                  id: task.id,
-                  operation: "update",
-                  teamId: task.teamId,
-                  newValues: {
-                    status: "archived"
-                  }
-                })
+          <PopoverAction
+            Icon={task?.status === "archived" ? ArchiveRestore : Archive}
+            title={task?.status === "archived" ? "Restore" : "Archive"}
+            onClick={() => {
+              let req: TasksPatchRequest = {
+                id: task.id,
+                teamId: task.teamId,
+                operation: "update",
+                newValues: {
+                  status: "not_started",
+                },
+              };
+              if (task?.status === "archived") {
+                updateTask(req);
+                return;
               }
-            })
-          }} />
+
+              req.newValues.status = "archived";
+
+              triggerAlertDialog({
+                title: "Archive This Task?",
+                description: "Are you sure you want to archive this task?",
+                showCancelButton: true,
+                confirmText: "Archive",
+                confirm: () => {
+                  updateTask(req);
+                },
+              });
+            }}
+          />
           {!completed && (
             <PopoverAction
               Icon={Tag}

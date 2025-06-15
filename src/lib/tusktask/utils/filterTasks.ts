@@ -42,7 +42,7 @@ export const filterTasks = (
       break;
     case "todo":
       result = data.filter(
-        (t) => t.status !== "completed" && !t.createdByOptimisticUpdate
+        (t) => t.status === "not_started" && !t.createdByOptimisticUpdate
       );
       break;
     case "task":
