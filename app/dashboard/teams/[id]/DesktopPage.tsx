@@ -141,6 +141,7 @@ const DesktopPage = ({
                   data={completedTask}
                   open={completedOpen}
                   setOpen={setCompletedOpen}
+                  completed
                 />
               )}
 

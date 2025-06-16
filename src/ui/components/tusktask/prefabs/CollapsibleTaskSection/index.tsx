@@ -14,6 +14,7 @@ export interface CollapsibleTaskSectionProps {
   setOpen: SetStateAction<boolean>;
   data: FullTask[];
   label: string;
+  completed?: boolean;
 }
 
 const CollapsibleTaskSection: React.FC<CollapsibleTaskSectionProps> = ({
@@ -21,6 +22,7 @@ const CollapsibleTaskSection: React.FC<CollapsibleTaskSectionProps> = ({
   setOpen,
   data,
   label,
+  completed = false,
 }) => {
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
@@ -39,7 +41,7 @@ const CollapsibleTaskSection: React.FC<CollapsibleTaskSectionProps> = ({
       </CollapsibleTrigger>
       <CollapsibleContent>
         {data.map((task) => (
-          <ItemCard task={task} key={task.id} completed />
+          <ItemCard task={task} key={task.id} completed={completed} />
         ))}
       </CollapsibleContent>
     </Collapsible>
