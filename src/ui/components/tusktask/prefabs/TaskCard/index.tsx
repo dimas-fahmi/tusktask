@@ -30,6 +30,7 @@ import {
 import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "../../../shadcn/ui/separator";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { TASK_PAGE_DETAIL } from "@/src/lib/tusktask/constants/configs";
 // TaskCard component displays a summary of a task, including its name, description, subtasks progress, team, and deadline.
 const TaskCard = ({ task }: { task: TaskWithSubtasks }) => {
   const { subtasks, team } = task;
@@ -59,7 +60,7 @@ const TaskCard = ({ task }: { task: TaskWithSubtasks }) => {
           });
           return;
         }
-        router.push(`/dashboard/tasks/id/${task.id}`);
+        router.push(`${TASK_PAGE_DETAIL}/${task.id}`);
       }}
     >
       <header className="px-4 pt-4 flex items-center gap-2" title={task.name}>

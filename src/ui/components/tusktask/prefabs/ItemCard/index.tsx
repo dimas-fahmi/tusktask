@@ -46,7 +46,10 @@ import {
 } from "../../../shadcn/ui/tooltip";
 import { TasksPatchRequest } from "@/app/api/tasks/patch";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
-import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
+import {
+  DEFAULT_AVATAR,
+  TASK_PAGE_DETAIL,
+} from "@/src/lib/tusktask/constants/configs";
 import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
 import { timeDistanceFromNow } from "@/src/lib/tusktask/utils/timeDistanceFromNow";
 import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
@@ -264,7 +267,7 @@ const ItemCard = ({
             Icon={ExternalLink}
             title="Open Task"
             onClick={() => {
-              router.push(`/dashboard/tasks/id/${task?.id}`);
+              router.push(`${TASK_PAGE_DETAIL}/${task?.id}`);
             }}
           />
 

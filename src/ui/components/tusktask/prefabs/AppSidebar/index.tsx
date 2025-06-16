@@ -17,37 +17,42 @@ import {
 import HeaderNavigation from "../Sidebar/HeaderNavigation";
 import SidebarNavLink from "../Sidebar/SidebarNavLink";
 import UserProfileCard from "../UserProfileCard";
+import {
+  POMODORO_PAGE,
+  TASKS_PAGE_FILTER,
+  TEAMS_PAGE_INDEX,
+} from "@/src/lib/tusktask/constants/configs";
 
 const navigationLinks = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   {
     label: "Today",
-    href: "/dashboard/tasks/filter/today",
+    href: `${TASKS_PAGE_FILTER}/today`,
     icon: Calendar1,
   },
   {
     label: "Tomorrow",
-    href: "/dashboard/tasks/filter/tomorrow",
+    href: `${TASKS_PAGE_FILTER}/tomorrow`,
     icon: CalendarArrowUp,
   },
   {
     label: "Upcoming",
-    href: "/dashboard/tasks/filter/upcoming",
+    href: `${TASKS_PAGE_FILTER}/upcoming`,
     icon: CalendarFold,
   },
   {
     label: "Overdue",
-    href: "/dashboard/tasks/filter/overdue",
+    href: `${TASKS_PAGE_FILTER}/overdue`,
     icon: CalendarClock,
   },
   {
     label: "Pomodoro",
-    href: "/dashboard/pomodoro",
+    href: POMODORO_PAGE,
     icon: AlarmClock,
   },
   {
     label: "My Teams",
-    href: "/dashboard/teams",
+    href: TEAMS_PAGE_INDEX,
     icon: FolderGit2,
   },
 ];
