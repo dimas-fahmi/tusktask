@@ -3,6 +3,7 @@ import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
 import { Circle } from "lucide-react";
 import React from "react";
 import UserCard from "./components/UserCard";
+import TaskOverview from "./components/TaskOverview";
 
 const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
   return (
@@ -35,7 +36,12 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
       </div>
 
       {/* Sidebar */}
-      <aside>
+      <aside className="space-y-4">
+        {/* Task Overview */}
+        <section id="overview">
+          <TaskOverview />
+        </section>
+
         {/* User Section */}
         <section id="users" className="space-y-4">
           {/* Creator */}
