@@ -1,6 +1,7 @@
 import { fetchTaskData } from "@/src/lib/tusktask/server/fetchers/fetchTaskData";
 import { Metadata } from "next";
 import React from "react";
+import TaskPageIndex from "./TaskPageIndex";
 
 export const generateMetadata = async ({
   params,
@@ -15,8 +16,10 @@ export const generateMetadata = async ({
   };
 };
 
-const TaskPage = () => {
-  return <div>TaskPage</div>;
+const TaskPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+
+  return <TaskPageIndex id={id} />;
 };
 
 export default TaskPage;
