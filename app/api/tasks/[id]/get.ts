@@ -62,12 +62,12 @@ export async function taskGet(
             parent: true,
           },
         })) as DetailTask;
-
-        if (!task) {
-          throw new CustomError("Not Found", "Record's Not Found", 404);
-        }
       } catch (error) {
         throw databaseError;
+      }
+
+      if (!task) {
+        throw new CustomError("Not Found", "Record's Not Found", 404);
       }
 
       const { teamId } = task;
@@ -82,16 +82,16 @@ export async function taskGet(
             eq(teamMembers.userId, session.user.id)
           ),
         });
-
-        if (!membership) {
-          throw new CustomError(
-            "Forbidden",
-            "Unauthorized Access, Membership Not Found",
-            403
-          );
-        }
       } catch (error) {
         throw databaseError;
+      }
+
+      if (!membership) {
+        throw new CustomError(
+          "Forbidden",
+          "Unauthorized Access, Membership Not Found",
+          403
+        );
       }
 
       return task;
