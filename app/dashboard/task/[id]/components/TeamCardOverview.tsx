@@ -18,7 +18,12 @@ const TeamCardOverview = () => {
       <header className="pb-2">
         <div className="flex justify-between items-center">
           <h1 className="text-lg font-bold">{teamDetail?.name}</h1>
-          <Button variant={"ghost"} size={"sm"} asChild>
+          <Button
+            variant={"ghost"}
+            size={"sm"}
+            asChild
+            disabled={!teamDetail?.id}
+          >
             <Link href={`/dashboard/teams/${teamDetail?.id}`}>
               <ExternalLink />
             </Link>
