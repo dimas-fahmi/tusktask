@@ -31,7 +31,7 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
           )}
 
           {task?.description ? (
-            <p className="text-sm text-muted-foreground">Hello World</p>
+            <p className="text-sm text-muted-foreground">{task?.description}</p>
           ) : task?.name ? (
             <p className="text-sm text-muted-foreground">No Description</p>
           ) : (
