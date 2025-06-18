@@ -12,7 +12,7 @@ const TeamPageIndex = ({ id }: { id: string }) => {
 
   // Responsive Mechanism
   const isDesktopOrLaptop = useMediaQuery({
-    query: `(min-width:1224px)`,
+    query: `(min-width:1080px)`,
   });
 
   return (

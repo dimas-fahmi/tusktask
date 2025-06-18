@@ -25,6 +25,8 @@ const buttonVariants = cva(
           "bg-transparent border-0 opacity-50 hover:opacity-100 transition-all duration-300",
         toaster:
           "text-xs h-8 ms-auto border bg-transparent text-foreground shadow-xs hover:bg-accent hover:text-accent-foreground",
+        compact_ghost:
+          "text-xs flex items-center gap-2 text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:!px-4 py-2 rounded-md transition-all duration-300 cursor-pointer !px-0",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

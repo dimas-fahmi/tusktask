@@ -13,7 +13,6 @@ import {
   Hash,
   Loader,
   LoaderCircle,
-  Pickaxe,
   ShoppingCart,
   Signature,
   Tag,
@@ -47,9 +46,13 @@ import {
 } from "../../../shadcn/ui/tooltip";
 import { TasksPatchRequest } from "@/app/api/tasks/patch";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
-import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
+import {
+  DEFAULT_AVATAR,
+  TASK_PAGE_DETAIL,
+} from "@/src/lib/tusktask/constants/configs";
 import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
 import { timeDistanceFromNow } from "@/src/lib/tusktask/utils/timeDistanceFromNow";
+import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
 
 export const ItemCardSkeleton = () => {
   return (
@@ -107,7 +110,13 @@ const ItemCard = ({
   const [open, setOpen] = useState(false);
 
   // Permission
-  const { canDeleteTask, canScratchTask } = usePermission(myMembership);
+  const {
+    canDeleteTask,
+    canScratchTask,
+    canClaimTask,
+    canReschedule,
+    canArchiveTask,
+  } = usePermission(myMembership);
 
   // Pull Session
   const { data: session } = useSession();
@@ -253,13 +262,16 @@ const ItemCard = ({
           </button>
         </PopoverTrigger>
         <PopoverContent className="!p-1 space-y-2">
+          {/* Open Task */}
           <PopoverAction
             Icon={ExternalLink}
             title="Open Task"
             onClick={() => {
-              router.push(`/dashboard/tasks/id/${task?.id}`);
+              router.push(`${TASK_PAGE_DETAIL}/${task?.id}`);
             }}
           />
+
+          {/* Scratch/Unscratch */}
           <PopoverAction
             className={`${!canScratchTask ? "opacity-50" : ""}`}
             Icon={completed ? Circle : CircleCheckBig}
@@ -309,7 +321,9 @@ const ItemCard = ({
               });
             }}
           />
-          {!completed && (
+
+          {/* Claim/Unclaim */}
+          {!completed && canClaimTask && (
             <PopoverAction
               Icon={isClaimedByMe ? Hand : BaggageClaim}
               onClick={async () => {
@@ -367,37 +381,55 @@ const ItemCard = ({
               title={isClaimedByMe ? "Wave and Surrender" : "Claim This"}
             />
           )}
+
           <Separator />
-          <PopoverAction
-            Icon={task?.status === "archived" ? ArchiveRestore : Archive}
-            title={task?.status === "archived" ? "Restore" : "Archive"}
-            onClick={() => {
-              let req: TasksPatchRequest = {
-                id: task.id,
-                teamId: task.teamId,
-                operation: "update",
-                newValues: {
-                  status: "not_started",
-                },
-              };
-              if (task?.status === "archived") {
-                updateTask(req);
-                return;
-              }
 
-              req.newValues.status = "archived";
+          {/* Archive Task */}
+          {canArchiveTask && (
+            <PopoverAction
+              Icon={task?.status === "archived" ? ArchiveRestore : Archive}
+              title={task?.status === "archived" ? "Restore" : "Archive"}
+              onClick={() => {
+                let req: TasksPatchRequest = {
+                  id: task.id,
+                  teamId: task.teamId,
+                  operation: "update",
+                  newValues: {
+                    status: "not_started",
+                  },
+                };
+                if (task?.status === "archived") {
+                  if (task?.completedAt) {
+                    req.newValues.status = "completed";
+                  }
+                  triggerAlertDialog({
+                    title: "Restore This Task?",
+                    description: `This will restore and set the status to ${task?.completedAt ? "completed" : "not started"}`,
+                    showCancelButton: true,
+                    confirmText: "Restore",
+                    confirm: () => {
+                      updateTask(req);
+                    },
+                  });
+                  return;
+                }
 
-              triggerAlertDialog({
-                title: "Archive This Task?",
-                description: "Are you sure you want to archive this task?",
-                showCancelButton: true,
-                confirmText: "Archive",
-                confirm: () => {
-                  updateTask(req);
-                },
-              });
-            }}
-          />
+                req.newValues.status = "archived";
+
+                triggerAlertDialog({
+                  title: "Archive This Task?",
+                  description: "Are you sure you want to archive this task?",
+                  showCancelButton: true,
+                  confirmText: "Archive",
+                  confirm: () => {
+                    updateTask(req);
+                  },
+                });
+              }}
+            />
+          )}
+
+          {/* Set Status */}
           {!completed && (
             <Popover>
               <PopoverTrigger asChild>
@@ -414,6 +446,17 @@ const ItemCard = ({
                     title="On Process"
                     subTitle={"on_process"}
                     onClick={() => {
+                      if (
+                        task?.claimedById &&
+                        task?.claimedById !== session?.user?.id
+                      ) {
+                        triggerAlertDialog({
+                          title: "Task Is Claimed",
+                          description: `Only ${truncateText(task?.claimedBy?.name ?? "", 1, false)} can set status for this task.`,
+                        });
+                        return;
+                      }
+
                       updateTask({
                         id: task.id,
                         teamId: task.teamId,
@@ -425,12 +468,24 @@ const ItemCard = ({
                     }}
                   />
                 )}
+
                 {task?.status !== "not_started" && (
                   <PopoverAction
                     Icon={Circle}
                     title="Not Started"
                     subTitle={"not_started"}
                     onClick={() => {
+                      if (
+                        task?.claimedById &&
+                        task?.claimedById !== session?.user?.id
+                      ) {
+                        triggerAlertDialog({
+                          title: "Task Is Claimed",
+                          description: `Only ${truncateText(task?.claimedBy?.name ?? "", 1, false)} can set status for this task.`,
+                        });
+                        return;
+                      }
+
                       updateTask({
                         id: task.id,
                         teamId: task.teamId,
@@ -445,7 +500,9 @@ const ItemCard = ({
               </PopoverContent>
             </Popover>
           )}
-          {!completed && (
+
+          {/* Reschedule */}
+          {!completed && canReschedule && (
             <PopoverAction
               Icon={CalendarSync}
               title="Reschedule"
@@ -458,6 +515,8 @@ const ItemCard = ({
             />
           )}
           <Separator />
+
+          {/* Delete Task */}
           <PopoverAction
             Icon={Trash}
             title="Delete This Task"
