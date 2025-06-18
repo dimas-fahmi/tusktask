@@ -4,7 +4,7 @@ import { SanitizedUser } from "../lib/tusktask/utils/sanitizeUserData";
 import { CreatedByOptimisticUpdate } from "./types";
 
 export interface SubtaskType extends TaskType {
-  subtasks: TaskType[];
+  subtasks: SubtaskType[];
 }
 
 export interface TaskWithSubtasks extends TaskType {
@@ -12,11 +12,11 @@ export interface TaskWithSubtasks extends TaskType {
 }
 
 export interface TaskWithTeam extends TaskType {
-  team: TeamType;
+  team?: TeamType | null;
 }
 
 export interface TaskWithParent extends TaskType {
-  parent: TaskType;
+  parent?: TaskType | null;
 }
 
 export interface TaskWithCreator extends TaskType {
