@@ -5,7 +5,8 @@ import React from "react";
 
 const TaskOverview = ({ subtasks }: { subtasks: TaskType[] }) => {
   const completed = subtasks.filter((t) => t.status === "completed");
-  const isEligbleToComplete = completed.length === subtasks.length;
+  const isEligibleToComplete =
+    subtasks.length > 0 && completed.length === subtasks.length;
 
   return (
     <div className="p-4 border rounded-md space-y-3">
@@ -38,8 +39,12 @@ const TaskOverview = ({ subtasks }: { subtasks: TaskType[] }) => {
 
       {/* Footer */}
       <footer className="grid">
-        <Button variant={"outline"} disabled={!isEligbleToComplete} size={"sm"}>
-          {!isEligbleToComplete ? "Not Eligble" : "Scratch"}
+        <Button
+          variant={"outline"}
+          disabled={!isEligibleToComplete}
+          size={"sm"}
+        >
+          {!isEligibleToComplete ? "Not Eligble" : "Scratch"}
         </Button>
       </footer>
     </div>
