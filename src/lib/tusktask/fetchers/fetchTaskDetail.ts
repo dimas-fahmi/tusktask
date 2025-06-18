@@ -13,7 +13,7 @@ export const fetchTaskDetail = async ({
   }
 
   try {
-    const response = await fetch(`/api/tasks/${id}`, {
+    const response = await fetch(`/api/tasks/${encodeURIComponent(id)}`, {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -21,6 +21,15 @@ export const fetchTaskDetail = async ({
     });
 
     const data = await response.json();
+
+    if (!response.ok) {
+      throw (
+        data ??
+        createResponse(500, {
+          messages: "Unexpected Error",
+        })
+      );
+    }
 
     return data;
   } catch (error) {
