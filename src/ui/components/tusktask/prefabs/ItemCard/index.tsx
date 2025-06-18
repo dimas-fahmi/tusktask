@@ -402,7 +402,15 @@ const ItemCard = ({
                   if (task?.completedAt) {
                     req.newValues.status = "completed";
                   }
-                  updateTask(req);
+                  triggerAlertDialog({
+                    title: "Restore This Task?",
+                    description: `This will restore and set the status to ${task?.completedAt ? "completed" : "not started"}`,
+                    showCancelButton: true,
+                    confirmText: "Restore",
+                    confirm: () => {
+                      updateTask(req);
+                    },
+                  });
                   return;
                 }
 
