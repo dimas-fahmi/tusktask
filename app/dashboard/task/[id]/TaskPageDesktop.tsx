@@ -1,16 +1,26 @@
 import { DetailTask } from "@/src/types/task";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
-import { Circle } from "lucide-react";
+import { Circle, Plus } from "lucide-react";
 import React from "react";
-import UserCard from "./components/UserCard";
-import TaskOverview from "./components/TaskOverview";
+import TaskPageDetaiLBreadcrumb from "./components/TaskPageDetaiLBreadcrumb";
+import Sidebar from "./components/desktop/Sidebar";
+import { Button } from "@/src/ui/components/shadcn/ui/button";
+import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 
 const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
+  // Pull TaskContext Values
+  const { setNewTaskDialog } = useTaskContext();
+
+  // Extract SubTasks
+  const subtasks = task?.subtasks ? task.subtasks : [];
+
   return (
     <div className="grid grid-cols-[auto_280px] gap-4">
       {/* Main Content */}
       <div>
-        <header className="space-y-3">
+        <TaskPageDetaiLBreadcrumb task={task} />
+
+        <header className="space-y-3 mb-11">
           {task?.name ? (
             <div className="flex items-center gap-2">
               <Circle className="w-6 h-6" />
@@ -32,27 +42,32 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
         </header>
 
         {/* SubTask Section */}
-        <section id="subtasks"></section>
+        <section id="subtasks">
+          {task?.id && task?.teamId && (
+            <Button
+              variant={"compact_ghost"}
+              onClick={() => {
+                setNewTaskDialog({
+                  open: true,
+                  parentId: task?.id,
+                  teamId: task?.teamId,
+                  type: "task",
+                });
+              }}
+            >
+              <Plus className="w-4 h-4" />
+              Create New Subtask
+            </Button>
+          )}
+
+          {subtasks.map((subtask) => (
+            <div key={subtask.id}>{subtask.name}</div>
+          ))}
+        </section>
       </div>
 
       {/* Sidebar */}
-      <aside className="space-y-4">
-        {/* Task Overview */}
-        <section id="overview">
-          <TaskOverview />
-        </section>
-
-        {/* User Section */}
-        <section id="users" className="space-y-4">
-          {/* Creator */}
-          <UserCard user={task?.creator} label="Creator" />
-
-          {/* Claimer */}
-          {task?.claimedBy && (
-            <UserCard user={task?.claimedBy} label="Claimed" />
-          )}
-        </section>
-      </aside>
+      <Sidebar task={task} />
     </div>
   );
 };

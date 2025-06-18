@@ -30,6 +30,7 @@ import { TaskWithSubtasks } from "@/app/api/tasks/get";
 import { z } from "zod";
 import { usePathname, useRouter } from "next/navigation";
 import { TeamDetail } from "@/src/types/team";
+import { newSubtask } from "@/src/lib/tusktask/cacheManipulator/newSubtask";
 
 const newTaskSchema = z.object({
   name: z.string().min(3).max(100),
@@ -52,18 +53,8 @@ const NewTaskDialog = () => {
   // Pull states from team key
   const { teamDetailKey } = useTeamContext();
 
-  // Open State
-  const [open, setOpen] = useState(false);
-
   // Pull values from TeamContext
   const { teams } = useTeamContext();
-
-  // Synchronize open state with newTaskDialog state object
-  useEffect(() => {
-    if (newTaskDialog) {
-      setOpen(newTaskDialog.open);
-    }
-  }, [newTaskDialog]);
 
   // Form Initialization
   const {
@@ -72,8 +63,7 @@ const NewTaskDialog = () => {
     reset,
     setValue,
     watch,
-    getValues,
-    formState: { isValid, errors },
+    formState: { isValid },
   } = useForm({
     resolver: zodResolver(newTaskSchema),
     mode: "onChange",
@@ -116,17 +106,6 @@ const NewTaskDialog = () => {
     }
   }, [teams, newTaskDialog]);
 
-  useEffect(() => {
-    if (!open) {
-      handleResetNewTaskDialog();
-      setAdvanceMode(false);
-    }
-  }, [open]);
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors, open]);
-
   // Pathname
   const pathname = usePathname();
   const router = useRouter();
@@ -143,7 +122,7 @@ const NewTaskDialog = () => {
     mutationFn: createNewTask,
     onMutate: async (data) => {
       // CLose dialog
-      setOpen(false);
+      setNewTaskDialog((prev) => ({ ...prev, open: false }));
 
       // Cancel all queries
       queryClient.cancelQueries();
@@ -169,6 +148,17 @@ const NewTaskDialog = () => {
         teamId: data.teamId,
         createdAt: new Date(),
       };
+
+      let oldParentData;
+      if (newTaskDialog?.parentId) {
+        const { oldData: _oldParentData } = await newSubtask(
+          newTaskDialog?.parentId,
+          newTask,
+          queryClient
+        );
+
+        oldParentData = _oldParentData;
+      }
 
       // Mutate cache
       queryClient.setQueryData(["tasks"], () => {
@@ -198,7 +188,7 @@ const NewTaskDialog = () => {
       }
 
       // Return to context
-      return { oldTasks, oldTeam, data };
+      return { oldTasks, oldTeam, data, oldParentData };
     },
     onError: (error, __, context) => {
       if (context?.oldTasks) {
@@ -212,7 +202,14 @@ const NewTaskDialog = () => {
         );
       }
 
-      setOpen(true);
+      if (context?.oldParentData) {
+        queryClient.setQueryData(
+          ["task", newTaskDialog?.parentId],
+          context.oldParentData
+        );
+      }
+
+      setNewTaskDialog((prev) => ({ ...prev, open: true }));
     },
     onSuccess: () => {
       reset();
@@ -228,6 +225,12 @@ const NewTaskDialog = () => {
       queryClient.invalidateQueries({
         queryKey: ["teams"],
       });
+
+      if (newTaskDialog?.parentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["task", newTaskDialog?.parentId],
+        });
+      }
     },
   });
 
@@ -235,7 +238,15 @@ const NewTaskDialog = () => {
   const type = watch("type");
 
   return (
-    <Dialog open={newTaskDialog.open} onOpenChange={setOpen}>
+    <Dialog
+      open={newTaskDialog.open}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleResetNewTaskDialog();
+          setAdvanceMode(false);
+        }
+      }}
+    >
       <DialogContent className="p-4">
         <DialogTitle className="sr-only">New Task Dialog</DialogTitle>
         <DialogDescription className="sr-only">
@@ -269,10 +280,14 @@ const NewTaskDialog = () => {
 
               price = price ? parseInt(price) : undefined;
 
-              const request: TasksPostRequest = {
+              let request: TasksPostRequest = {
                 ...data,
                 price: price,
               };
+
+              if (newTaskDialog?.parentId) {
+                request.parentId = newTaskDialog?.parentId;
+              }
 
               create(request);
             })}
@@ -467,7 +482,7 @@ const NewTaskDialog = () => {
                   <Button
                     variant={"outline"}
                     type="button"
-                    onClick={() => setOpen(false)}
+                    onClick={() => handleResetNewTaskDialog()}
                   >
                     Cancel
                   </Button>
