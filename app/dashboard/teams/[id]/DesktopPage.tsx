@@ -98,7 +98,7 @@ const DesktopPage = ({
           </header>
 
           {/* Items */}
-          <ScrollArea className="h-[1000px]">
+          <ScrollArea className="h-[1000px] pe-3">
             <div className="space-y-1">
               {!teamDetail && (
                 <>
