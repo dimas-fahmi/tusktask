@@ -44,9 +44,10 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
         </header>
 
         {/* SubTask Section */}
-        <section id="subtasks">
+        <section id="subtasks" className="border-t pt-4">
           {task?.id && task?.teamId && (
             <Button
+              className="!px-4"
               variant={"compact_ghost"}
               onClick={() => {
                 setNewTaskDialog({
@@ -62,9 +63,11 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
             </Button>
           )}
 
-          {subtasks.map((subtask) => (
-            <SubtaskCard key={subtask?.id} task={subtask} />
-          ))}
+          <div className="mt-4 grid grid-cols-1 gap-2">
+            {subtasks.map((subtask) => (
+              <SubtaskCard key={subtask?.id} task={subtask} />
+            ))}
+          </div>
         </section>
       </div>
 

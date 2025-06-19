@@ -24,7 +24,7 @@ const ScratchButton = ({
     <button
       className={cn(
         className,
-        `group/icon cursor-pointer ${isCompleted ? "" : ""} active:scale-90 transition-all duration-300`
+        `group/icon cursor-pointer ${isCompleted ? "" : ""} active:scale-90 transition-transform duration-300`
       )}
       {...props}
     >
