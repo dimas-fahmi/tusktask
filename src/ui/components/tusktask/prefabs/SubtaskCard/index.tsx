@@ -23,8 +23,8 @@ const SubtaskCard: React.FC<SubtaskCardProps> = ({ task }) => {
   return (
     <div className="group/SubtaskCard py-2 px-4 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md flex gap-2 items-center transition-all duration-300">
       {/* Scratch Button */}
-      <div className="flex items-center">
-        <ScratchButton size="5" task={task} />
+      <div className="flex items-center pt-0.5">
+        <ScratchButton size="md" task={task} />
       </div>
 
       {/* Details */}
