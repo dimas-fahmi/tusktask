@@ -6,6 +6,8 @@ import TaskPageDetaiLBreadcrumb from "./components/TaskPageDetaiLBreadcrumb";
 import Sidebar from "./components/desktop/Sidebar";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
+import SubtaskCard from "@/src/ui/components/tusktask/prefabs/SubtaskCard";
+import ScratchButton from "@/src/ui/components/tusktask/prefabs/ScratchButton";
 
 const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
   // Pull TaskContext Values
@@ -23,7 +25,7 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
         <header className="space-y-3 mb-11">
           {task?.name ? (
             <div className="flex items-center gap-2">
-              <Circle className="w-6 h-6" />
+              <ScratchButton task={task} />
               <h1 className="text-2xl font-bold">{task?.name}</h1>
             </div>
           ) : (
@@ -61,7 +63,7 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
           )}
 
           {subtasks.map((subtask) => (
-            <div key={subtask.id}>{subtask.name}</div>
+            <SubtaskCard key={subtask?.id} task={subtask} />
           ))}
         </section>
       </div>
