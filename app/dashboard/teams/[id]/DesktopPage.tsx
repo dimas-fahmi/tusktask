@@ -40,7 +40,7 @@ const DesktopPage = ({
   const [archiveOpen, setArchiveOpen] = useState(false);
 
   // Filter States
-  const [filter, setFilter] = useState<FilterType>("todo");
+  const [filter, setFilter] = useState<FilterType>("top_level_task");
 
   // Query Team
   const { teamDetail, setTeamDetailKey, setTeamMembershipDialog } =

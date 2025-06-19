@@ -1,14 +1,51 @@
 import { FullTask } from "@/src/types/task";
+import {
+  Archive,
+  Briefcase,
+  Circle,
+  CircleCheckBig,
+  ClipboardType,
+  FolderTree,
+  Library,
+  LucideIcon,
+  Network,
+  ShoppingCart,
+} from "lucide-react";
 
-export type FilterType =
-  | "archived"
-  | "completed"
-  | "todo"
-  | "shopping"
-  | "task"
-  | "createdByOptimisticUpdate"
-  | "process"
-  | "all";
+export const filtersOptions = [
+  "archived",
+  "completed",
+  "todo",
+  "shopping",
+  "task",
+  "createdByOptimisticUpdate",
+  "process",
+  "top_level_task",
+  "subtasks",
+  "all",
+] as const;
+
+export type FilterKey = (typeof filtersOptions)[number];
+
+export interface filterItem {
+  icon: LucideIcon;
+  label: string;
+  filterKey: FilterKey;
+}
+
+export const filterItems: filterItem[] = [
+  { label: "Show All", filterKey: "all", icon: Library },
+  { label: "Top Level Task", filterKey: "top_level_task", icon: Network },
+  { label: "Subtasks", filterKey: "subtasks", icon: FolderTree },
+  { label: "Archived", filterKey: "archived", icon: Archive },
+  { label: "Todo", filterKey: "todo", icon: Circle },
+  { label: "Shopping", filterKey: "shopping", icon: ShoppingCart },
+  { label: "Task", filterKey: "task", icon: ClipboardType },
+  { label: "On Process", filterKey: "process", icon: Briefcase },
+  { label: "Completed", filterKey: "completed", icon: CircleCheckBig },
+];
+
+export type FilterType = (typeof filtersOptions)[number];
 
 export const filterTasks = (
   data: FullTask[],
@@ -56,10 +93,15 @@ export const filterTasks = (
         (t) => t.type === "task" && !t.createdByOptimisticUpdate
       );
       break;
+    case "top_level_task":
+      result = data.filter((t) => !t.parentId && !t.createdByOptimisticUpdate);
+      break;
+    case "subtasks":
+      result = data.filter((t) => t.parentId && !t.createdByOptimisticUpdate);
+      break;
     case "createdByOptimisticUpdate":
       result = data.filter((t) => t?.createdByOptimisticUpdate);
       break;
-
     default:
       result = data;
       break;
