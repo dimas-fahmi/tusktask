@@ -1,0 +1,79 @@
+import { SubtaskType } from "@/src/types/task";
+import React from "react";
+import ScratchButton from "../ScratchButton";
+import { Button } from "../../../shadcn/ui/button";
+import { Archive, Ellipsis, ExternalLink, Tag, Trash } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../shadcn/ui/popover";
+import PopoverAction from "../Popover/PopoverAction";
+import { Separator } from "../../../shadcn/ui/separator";
+import { useRouter } from "next/navigation";
+
+export interface SubtaskCardProps {
+  task: SubtaskType;
+}
+
+const SubtaskCard: React.FC<SubtaskCardProps> = ({ task }) => {
+  // Initialize router
+  const router = useRouter();
+
+  return (
+    <div className="group/SubtaskCard py-2 px-4 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md flex gap-2 items-center transition-all duration-300">
+      {/* Scratch Button */}
+      <div className="flex items-center pt-0.5">
+        <ScratchButton size="md" task={task} />
+      </div>
+
+      {/* Details */}
+      <div
+        className="flex-grow"
+        onClick={() => {
+          router.push(`/dashboard/task/${task?.id}`);
+        }}
+      >
+        <header className="flex items-center justify-between">
+          <h1 className="capitalize">{task?.name}</h1>
+
+          <span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  className="group-hover/SubtaskCard:opacity-100 opacity-0 transition-all duration-300 !py-0"
+                  variant={"empty"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Ellipsis />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="!p-1 space-y-1.5">
+                <PopoverAction
+                  title="Open task"
+                  Icon={ExternalLink}
+                  onClick={() => {
+                    router.push(`/dashboard/task/${task?.id}`);
+                  }}
+                />
+                <Separator />
+                <PopoverAction title="Archive" Icon={Archive} />
+                <PopoverAction title="Set Status" Icon={Tag} />
+                <Separator />
+                <PopoverAction
+                  title="Delete task"
+                  variant="destructive"
+                  Icon={Trash}
+                />
+              </PopoverContent>
+            </Popover>
+          </span>
+        </header>
+      </div>
+    </div>
+  );
+};
+
+export default SubtaskCard;

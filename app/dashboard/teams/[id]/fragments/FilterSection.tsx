@@ -1,21 +1,13 @@
 import { SetStateAction } from "@/src/types/types";
 import React from "react";
 import FilterCard from "./FilterCard";
-import {
-  Archive,
-  ChevronDown,
-  Circle,
-  CircleCheckBig,
-  Funnel,
-  FunnelX,
-  ShoppingCart,
-} from "lucide-react";
+import { ChevronDown, Funnel } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/src/ui/components/shadcn/ui/collapsible";
-import { FilterType } from "@/src/lib/tusktask/utils/filterTasks";
+import { filterItems, FilterType } from "@/src/lib/tusktask/utils/filterTasks";
 
 const FilterSection = ({
   filter,
@@ -40,46 +32,23 @@ const FilterSection = ({
         </CollapsibleTrigger>
 
         <CollapsibleContent className="border-t p-4 space-y-2">
-          <FilterCard
-            Icon={FunnelX}
-            label="Show All"
-            filter={filter}
-            id="all"
-            setFilter={setFilter}
-            title="Show all tasks and shopping lists"
-          />
-          <FilterCard
-            Icon={ShoppingCart}
-            label="Shopping Lists"
-            filter={filter}
-            id="shopping"
-            setFilter={setFilter}
-            title="Show only shopping lists"
-          />
-          <FilterCard
-            Icon={Archive}
-            label="Archived Tasks"
-            filter={filter}
-            id="archived"
-            setFilter={setFilter}
-            title="Show only archived tasks"
-          />
-          <FilterCard
-            Icon={Circle}
-            label="Tasks Todo"
-            filter={filter}
-            id="todo"
-            setFilter={setFilter}
-            title="Show only incomplete tasks"
-          />
-          <FilterCard
-            Icon={CircleCheckBig}
-            label="Completed Tasks"
-            filter={filter}
-            id="completed"
-            setFilter={setFilter}
-            title="Show only completed tasks"
-          />
+          {filterItems.map((option) => {
+            if (option.filterKey === "createdByOptimisticUpdate") {
+              return <></>;
+            }
+
+            return (
+              <FilterCard
+                Icon={option.icon}
+                label={option.label}
+                filter={filter}
+                id={option.filterKey}
+                setFilter={setFilter}
+                title="Show only shopping lists"
+                key={option.filterKey}
+              />
+            );
+          })}
         </CollapsibleContent>
       </Collapsible>
     </section>
