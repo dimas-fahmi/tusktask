@@ -5,5 +5,6 @@
     "comments": "on",
     "other": "on"
   },
-  "tailwindCSS.colorDecorators": true
+  "tailwindCSS.colorDecorators": true,
+  "explorer.autoReveal": false
 }
