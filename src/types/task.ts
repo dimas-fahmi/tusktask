@@ -15,8 +15,12 @@ export interface TaskWithTeam extends TaskType {
   team?: TeamType | null;
 }
 
+export interface ParentType extends TaskType {
+  parent?: ParentType;
+}
+
 export interface TaskWithParent extends TaskType {
-  parent?: TaskType | null;
+  parent?: ParentType | null;
 }
 
 export interface TaskWithCreator extends TaskType {

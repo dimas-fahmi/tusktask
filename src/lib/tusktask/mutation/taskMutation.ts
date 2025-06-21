@@ -3,6 +3,7 @@ import { mutateTaskData } from "../mutators/mutateTaskData";
 import { StandardResponse } from "../utils/createResponse";
 import { TeamDetail } from "@/src/types/team";
 import { TasksPatchRequest } from "@/app/api/tasks/patch";
+import { SetStateAction } from "@/src/types/types";
 
 export interface UseUpdateTask {
   queryClient: QueryClient;
@@ -34,10 +35,11 @@ const updateTeamDetail = (
   return { oldTeamDetail, newTeamDetail };
 };
 
-export const useUpdateTask = ({
-  queryClient,
-  teamDetailKey,
-}: UseUpdateTask) => {
+export const useUpdateTask = (
+  { queryClient, teamDetailKey }: UseUpdateTask,
+  parentKey: string | null,
+  setParentKey: SetStateAction<string | null>
+) => {
   return useMutation({
     mutationFn: mutateTaskData,
     onMutate: async (data) => {
@@ -67,11 +69,25 @@ export const useUpdateTask = ({
         );
       }
     },
-    onSettled: () => {
+    onSettled: (_, __, data) => {
       // Refetch new data from DB when settled
       queryClient.invalidateQueries({
         queryKey: ["team", teamDetailKey],
       });
+
+      if (parentKey) {
+        queryClient?.invalidateQueries({
+          queryKey: ["task", parentKey],
+        });
+      }
+
+      if (data?.id) {
+        queryClient?.invalidateQueries({
+          queryKey: ["task", data?.id],
+        });
+      }
+
+      setParentKey(null);
     },
   });
 };

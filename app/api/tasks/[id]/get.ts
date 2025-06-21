@@ -59,7 +59,19 @@ export async function taskGet(
               },
             },
             team: true,
-            parent: true,
+            parent: {
+              with: {
+                parent: {
+                  with: {
+                    parent: {
+                      with: {
+                        parent: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         })) as DetailTask;
       } catch (error) {

@@ -1,31 +1,32 @@
 import { DetailTask } from "@/src/types/task";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
-import { Circle, Plus } from "lucide-react";
 import React from "react";
-import TaskPageDetaiLBreadcrumb from "./components/TaskPageDetaiLBreadcrumb";
+import TaskPageDetailBreadcrumb from "./components/TaskPageDetaiLBreadcrumb";
 import Sidebar from "./components/desktop/Sidebar";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import SubtaskCard from "@/src/ui/components/tusktask/prefabs/SubtaskCard";
 import ScratchButton from "@/src/ui/components/tusktask/prefabs/ScratchButton";
+import { Plus } from "lucide-react";
+import { subtasksObserver } from "@/src/lib/tusktask/utils/subtasksObserver";
 
 const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
   // Pull TaskContext Values
   const { setNewTaskDialog } = useTaskContext();
 
   // Extract SubTasks
-  const subtasks = task?.subtasks ? task.subtasks : [];
+  const { ineligible, subtasks } = subtasksObserver(task);
 
   return (
     <div className="grid grid-cols-[auto_280px] gap-4">
       {/* Main Content */}
       <div>
-        <TaskPageDetaiLBreadcrumb task={task} />
+        <TaskPageDetailBreadcrumb task={task} />
 
         <header className="space-y-3 mb-11">
           {task?.name ? (
             <div className="flex items-center gap-2">
-              <ScratchButton task={task} />
+              <ScratchButton task={task} ineligible={ineligible} />
               <h1 className="text-2xl font-bold">{task?.name}</h1>
             </div>
           ) : (

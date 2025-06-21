@@ -34,10 +34,18 @@ export interface TaskContextValues {
   isDeletingTask: boolean;
   taskDeleteKey: string | null;
   setTaskDeleteKey: SetStateAction<string | null>;
-  updateTask: MutateFunction<TaskType | null, TasksPatchRequest>;
   reScheduleDialog: ReScheduleDialog;
   setReScheduleDialog: SetStateAction<ReScheduleDialog>;
   handleResetReScheduleDialog: () => void;
+
+  // Task Update Mutation
+  updateTask: MutateFunction<TaskType | null, TasksPatchRequest>;
+  isUpdatingTask: boolean;
+  isErrorUpdatingTask: boolean;
+
+  // Helper State
+  parentKey: string | null;
+  setParentKey: SetStateAction<string | null>;
 }
 
 export interface ReScheduleDialog {
@@ -133,7 +141,19 @@ const TaskContextProvider = ({
   const { teamDetailKey } = useTeamContext();
 
   // Mutation [update task]
-  const { mutate: updateTask } = useUpdateTask({ queryClient, teamDetailKey });
+  const [parentKey, setParentKey] = useState<string | null>(null);
+  const {
+    mutate: updateTask,
+    isPending: isUpdatingTask,
+    isError: isErrorUpdatingTask,
+  } = useUpdateTask(
+    {
+      queryClient,
+      teamDetailKey,
+    },
+    parentKey,
+    setParentKey
+  );
 
   // Extract Tasks
   const tasks = tasksResponse?.data;
@@ -162,12 +182,20 @@ const TaskContextProvider = ({
         taskDeleteKey,
         setTaskDeleteKey,
         isDeletingTask,
-        updateTask,
 
         // ReScheduleDialog
         reScheduleDialog,
         setReScheduleDialog,
         handleResetReScheduleDialog,
+
+        // Task Update Mutation
+        updateTask,
+        isErrorUpdatingTask,
+        isUpdatingTask,
+
+        // Helper State
+        parentKey,
+        setParentKey,
       }}
     >
       {children}
