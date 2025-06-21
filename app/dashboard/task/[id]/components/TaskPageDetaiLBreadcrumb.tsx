@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Breadcrumb,
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -8,9 +9,16 @@ import {
   BreadcrumbSeparator,
 } from "@/src/ui/components/shadcn/ui/breadcrumb";
 import Link from "next/link";
-import { DetailTask } from "@/src/types/task";
+import { DetailTask, ParentType } from "@/src/types/task";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
 import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/ui/components/shadcn/ui/popover";
+import PopoverAction from "@/src/ui/components/tusktask/prefabs/Popover/PopoverAction";
+import { FolderTree } from "lucide-react";
 
 const BreadcrumbSkeleton = () => {
   return (
@@ -32,7 +40,25 @@ const BreadcrumbSkeleton = () => {
   );
 };
 
-const TaskPageDetaiLBreadcrumb = ({ task }: { task?: DetailTask }) => {
+const NestedPopover = ({ data }: { data: ParentType }) => {
+  const popovers = [];
+  let current = data;
+
+  while (current?.parent) {
+    popovers.push(
+      <PopoverAction
+        key={popovers.length}
+        Icon={FolderTree}
+        title={current?.parent?.name}
+      />
+    );
+    current = current.parent as ParentType;
+  }
+
+  return <>{popovers}</>;
+};
+
+const TaskPageDetailBreadcrumb = ({ task }: { task?: DetailTask }) => {
   return !task ? (
     <BreadcrumbSkeleton />
   ) : (
@@ -45,24 +71,22 @@ const TaskPageDetaiLBreadcrumb = ({ task }: { task?: DetailTask }) => {
           </BreadcrumbLink>
         </BreadcrumbItem>
 
-        {/* Team */}
-        {task?.team && (
+        {/* Deeper Parent // Later.... */}
+        {task?.parent?.parent && (
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link
-                  href={`/dashboard/teams/${task?.team?.id}`}
-                  title={`Team ${task?.team?.name}`}
-                >
-                  {truncateText(task?.team?.name ?? "", 2)}
-                </Link>
-              </BreadcrumbLink>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <BreadcrumbEllipsis className="cursor-pointer hover:opacity-60 active:opacity-100" />
+                </PopoverTrigger>
+                <PopoverContent className="!p-1 space-y-3">
+                  <NestedPopover data={task?.parent} />
+                </PopoverContent>
+              </Popover>
             </BreadcrumbItem>
           </>
         )}
-
-        {/* Deeper Parent // Later.... */}
 
         {/* Parent */}
         {task?.parent && (
@@ -88,4 +112,4 @@ const TaskPageDetaiLBreadcrumb = ({ task }: { task?: DetailTask }) => {
   );
 };
 
-export default TaskPageDetaiLBreadcrumb;
+export default TaskPageDetailBreadcrumb;

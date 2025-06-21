@@ -1,13 +1,13 @@
 import { DetailTask } from "@/src/types/task";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
-import { Circle, Plus } from "lucide-react";
 import React from "react";
-import TaskPageDetaiLBreadcrumb from "./components/TaskPageDetaiLBreadcrumb";
+import TaskPageDetailBreadcrumb from "./components/TaskPageDetaiLBreadcrumb";
 import Sidebar from "./components/desktop/Sidebar";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import SubtaskCard from "@/src/ui/components/tusktask/prefabs/SubtaskCard";
 import ScratchButton from "@/src/ui/components/tusktask/prefabs/ScratchButton";
+import { Plus } from "lucide-react";
 
 const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
   // Pull TaskContext Values
@@ -20,7 +20,7 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
     <div className="grid grid-cols-[auto_280px] gap-4">
       {/* Main Content */}
       <div>
-        <TaskPageDetaiLBreadcrumb task={task} />
+        <TaskPageDetailBreadcrumb task={task} />
 
         <header className="space-y-3 mb-11">
           {task?.name ? (
