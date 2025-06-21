@@ -43,7 +43,7 @@ CREATE TABLE "notifications" (
 	"status" text DEFAULT 'not_read' NOT NULL,
 	"senderId" text NOT NULL,
 	"receiverId" text NOT NULL,
-	"createdAt" timestamp (6) with time zone DEFAULT now(),
+	"createdAt" timestamp (6) with time zone DEFAULT now() NOT NULL,
 	"markReadAt" timestamp (6) with time zone,
 	"teamId" text,
 	"payload" json
@@ -79,7 +79,7 @@ CREATE TABLE "teamMembers" (
 	"teamId" text NOT NULL,
 	"userId" text NOT NULL,
 	"userRole" text DEFAULT 'assignee' NOT NULL,
-	"joinAt" timestamp (6) with time zone DEFAULT now(),
+	"joinAt" timestamp (6) with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "TEAM_MEMBERS_PRIMARY_KEYS" PRIMARY KEY("teamId","userId")
 );
 --> statement-breakpoint

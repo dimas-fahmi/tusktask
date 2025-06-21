@@ -1,5 +1,5 @@
 {
-  "id": "e2f9c5ca-5667-46a4-824b-af6ebb60abdb",
+  "id": "c6a555c2-4d3c-49b3-a870-a493184b3c79",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -347,7 +347,7 @@
           "name": "createdAt",
           "type": "timestamp (6) with time zone",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         },
         "markReadAt": {
@@ -869,7 +869,7 @@
           "name": "joinAt",
           "type": "timestamp (6) with time zone",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         }
       },
