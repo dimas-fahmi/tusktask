@@ -8,6 +8,13 @@
       "when": 1750493919177,
       "tag": "0000_large_luke_cage",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1750501932463,
+      "tag": "0001_lumpy_maginty",
+      "breakpoints": true
     }
   ]
 }
