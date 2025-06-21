@@ -15,6 +15,8 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
 
   // Extract SubTasks
   const subtasks = task?.subtasks ? task.subtasks : [];
+  const completedSubtasks = subtasks?.filter((t) => t.status === "completed");
+  const ineligible = completedSubtasks.length !== subtasks.length;
 
   return (
     <div className="grid grid-cols-[auto_280px] gap-4">
@@ -25,7 +27,7 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
         <header className="space-y-3 mb-11">
           {task?.name ? (
             <div className="flex items-center gap-2">
-              <ScratchButton task={task} />
+              <ScratchButton task={task} ineligible={ineligible} />
               <h1 className="text-2xl font-bold">{task?.name}</h1>
             </div>
           ) : (

@@ -19,6 +19,7 @@ import {
 } from "@/src/ui/components/shadcn/ui/popover";
 import PopoverAction from "@/src/ui/components/tusktask/prefabs/Popover/PopoverAction";
 import { FolderTree } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const BreadcrumbSkeleton = () => {
   return (
@@ -44,12 +45,17 @@ const NestedPopover = ({ data }: { data: ParentType }) => {
   const popovers = [];
   let current = data;
 
+  const router = useRouter();
+
   while (current?.parent) {
     popovers.push(
       <PopoverAction
         key={popovers.length}
         Icon={FolderTree}
         title={current?.parent?.name}
+        onClick={() => {
+          router.push(`/dashboard/task/${current?.parent?.id}`);
+        }}
       />
     );
     current = current.parent as ParentType;
