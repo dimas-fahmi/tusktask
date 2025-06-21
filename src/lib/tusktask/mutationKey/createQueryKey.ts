@@ -1,19 +1,19 @@
-import { MutationKey } from "@tanstack/react-query";
+import { QueryKey } from "@tanstack/react-query";
 
-type MutationKeyParams = {
+type QueryKeyParams = {
   branch: string;
   structure: string;
 };
 
 /**
- * Creates a structured mutation key for React Query.
+ * Creates a structured query key for React Query.
  * Example: { branch: "fruit", structure: "apple/banana/watermelon" }
  * Returns: ["task", "apple", "banana", "watermelon"]
  */
-export function createMutationKey({
+export function createQueryKey({
   branch,
   structure,
-}: MutationKeyParams): MutationKey {
+}: QueryKeyParams): QueryKey {
   const structureParts = structure.split("/").filter(Boolean);
   return [branch, ...structureParts];
 }

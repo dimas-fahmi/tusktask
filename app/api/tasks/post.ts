@@ -14,7 +14,7 @@ import { normalizeDateFields } from "@/src/lib/tusktask/utils/normalizeDateField
 import { and, eq } from "drizzle-orm";
 
 export interface TasksPostRequest
-  extends Omit<TaskInsertType, "ownerId" | "teamId"> {
+  extends Omit<TaskInsertType, "ownerId" | "teamId" | "path"> {
   ownerId?: string;
   teamId?: string;
 }
