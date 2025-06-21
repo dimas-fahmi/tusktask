@@ -132,8 +132,25 @@ export async function tasksPost(req: Request) {
   const allowedDateFields: (keyof TaskType)[] = ["deadlineAt", "startAt"];
   normalizeDateFields(body, allowedDateFields);
 
+  // Path Construction
+  let parent: TaskType | undefined;
+
+  if (body?.parentId) {
+    parent = await db.query.tasks.findFirst({
+      where: eq(tasks.parentId, body.parentId),
+    });
+  }
+
+  const generatedId = crypto.randomUUID();
+
+  const newTask: Partial<TaskInsertType> = {
+    id: generatedId,
+    ...body,
+    path: parent ? `${parent?.path}/${generatedId}` : `${generatedId}`,
+  };
+
   // Validate Request
-  const validation = taskInsertSchema.safeParse(body);
+  const validation = taskInsertSchema.safeParse(newTask);
 
   if (!validation.success) {
     return createNextResponse(400, {
@@ -144,29 +161,14 @@ export async function tasksPost(req: Request) {
 
   // Creating records
   try {
-    let parent: TaskType | undefined;
-
-    if (validation?.data?.parentId) {
-      parent = await db.query.tasks.findFirst({
-        where: eq(tasks.parentId, validation.data.parentId),
-      });
-    }
-
-    const generatedId = crypto.randomUUID();
-
-    const newTask: TaskInsertType = {
-      id: generatedId,
-      ...validation.data,
-      path: parent ? `${parent?.path}/${generatedId}` : `${generatedId}`,
-    };
-
-    const result = await db.insert(tasks).values(newTask).returning();
+    const result = await db.insert(tasks).values(validation.data).returning();
 
     return createNextResponse(200, {
       messages: "Successfully created a new task",
       data: result,
     });
   } catch (error) {
+    console.log(error);
     return createNextResponse(500, {
       messages: "Failed when creating your new task, please try again.",
       userFriendly: true,
