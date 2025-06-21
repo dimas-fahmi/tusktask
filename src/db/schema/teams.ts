@@ -1,5 +1,6 @@
 import {
   index,
+  integer,
   pgTable,
   primaryKey,
   text,
@@ -22,6 +23,7 @@ export const teams = pgTable(
     createdById: text("createdById").references(() => users.id, {
       onDelete: "set null",
     }),
+    budget: integer("budget"),
     ownerId: text("ownerId")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),

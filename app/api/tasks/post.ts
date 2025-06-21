@@ -7,13 +7,14 @@ import {
   TaskType,
 } from "@/src/db/schema/tasks";
 import { teamMembers, teams } from "@/src/db/schema/teams";
+import { capitalizeString } from "@/src/lib/tusktask/utils/capitalizeString";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { includeFields } from "@/src/lib/tusktask/utils/includeFields";
 import { normalizeDateFields } from "@/src/lib/tusktask/utils/normalizeDateFields";
 import { and, eq } from "drizzle-orm";
 
 export interface TasksPostRequest
-  extends Omit<TaskInsertType, "ownerId" | "teamId"> {
+  extends Omit<TaskInsertType, "ownerId" | "teamId" | "path"> {
   ownerId?: string;
   teamId?: string;
 }
@@ -132,8 +133,38 @@ export async function tasksPost(req: Request) {
   const allowedDateFields: (keyof TaskType)[] = ["deadlineAt", "startAt"];
   normalizeDateFields(body, allowedDateFields);
 
+  // Path Construction
+  let parent: TaskType | undefined;
+
+  if (body?.parentId) {
+    try {
+      parent = await db.query.tasks.findFirst({
+        where: eq(tasks.id, body.parentId),
+      });
+
+      if (!parent) {
+        return createNextResponse(404, {
+          messages: "Cannot find specified parent task",
+        });
+      }
+    } catch (error) {
+      return createNextResponse(500, {
+        messages: "Faield when fetch parent task",
+      });
+    }
+  }
+
+  const generatedId = crypto.randomUUID();
+
+  const newTask: Partial<TaskInsertType> = {
+    ...body,
+    id: generatedId,
+    name: capitalizeString(body.name),
+    path: parent ? `${parent.path}/${generatedId}` : `${generatedId}`,
+  };
+
   // Validate Request
-  const validation = taskInsertSchema.safeParse(body);
+  const validation = taskInsertSchema.safeParse(newTask);
 
   if (!validation.success) {
     return createNextResponse(400, {
@@ -151,6 +182,7 @@ export async function tasksPost(req: Request) {
       data: result,
     });
   } catch (error) {
+    console.log(error);
     return createNextResponse(500, {
       messages: "Failed when creating your new task, please try again.",
       userFriendly: true,

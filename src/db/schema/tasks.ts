@@ -18,6 +18,7 @@ export const tasks = pgTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
+    path: text("path").notNull(),
     name: text("name").notNull(),
     description: text("description"),
     createdById: text("createdById").references(() => users.id, {
@@ -34,6 +35,8 @@ export const tasks = pgTable(
       .default("task")
       .notNull(),
     price: integer("price"),
+    budget: integer("budget"),
+    expenses: integer("expenses"),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
     updatedAt: timestamp("updatedAt", TIMESTAMP_CONFIGS).$onUpdateFn(
       () => new Date()

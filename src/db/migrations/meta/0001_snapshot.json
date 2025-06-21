@@ -1,6 +1,6 @@
 {
-  "id": "7611ba4a-2d07-48a4-88da-5bac58886154",
-  "prevId": "e2f9c5ca-5667-46a4-824b-af6ebb60abdb",
+  "id": "55c4d2d3-60a4-4e21-a562-f29ca0b55f17",
+  "prevId": "c6a555c2-4d3c-49b3-a870-a493184b3c79",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -563,6 +563,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "path": {
+          "name": "path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "name": {
           "name": "name",
           "type": "text",
@@ -608,6 +614,18 @@
         },
         "price": {
           "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "budget": {
+          "name": "budget",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expenses": {
+          "name": "expenses",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -966,6 +984,12 @@
         "createdById": {
           "name": "createdById",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "budget": {
+          "name": "budget",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
