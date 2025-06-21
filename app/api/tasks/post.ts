@@ -7,6 +7,7 @@ import {
   TaskType,
 } from "@/src/db/schema/tasks";
 import { teamMembers, teams } from "@/src/db/schema/teams";
+import { capitalizeString } from "@/src/lib/tusktask/utils/capitalizeString";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { includeFields } from "@/src/lib/tusktask/utils/includeFields";
 import { normalizeDateFields } from "@/src/lib/tusktask/utils/normalizeDateFields";
@@ -136,17 +137,30 @@ export async function tasksPost(req: Request) {
   let parent: TaskType | undefined;
 
   if (body?.parentId) {
-    parent = await db.query.tasks.findFirst({
-      where: eq(tasks.parentId, body.parentId),
-    });
+    try {
+      parent = await db.query.tasks.findFirst({
+        where: eq(tasks.id, body.parentId),
+      });
+
+      if (!parent) {
+        return createNextResponse(404, {
+          messages: "Cannot find specified parent task",
+        });
+      }
+    } catch (error) {
+      return createNextResponse(500, {
+        messages: "Faield when fetch parent task",
+      });
+    }
   }
 
   const generatedId = crypto.randomUUID();
 
   const newTask: Partial<TaskInsertType> = {
-    id: generatedId,
     ...body,
-    path: parent ? `${parent?.path}/${generatedId}` : `${generatedId}`,
+    id: generatedId,
+    name: capitalizeString(body.name),
+    path: parent ? `${parent.path}/${generatedId}` : `${generatedId}`,
   };
 
   // Validate Request
