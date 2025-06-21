@@ -144,7 +144,23 @@ export async function tasksPost(req: Request) {
 
   // Creating records
   try {
-    const result = await db.insert(tasks).values(validation.data).returning();
+    let parent: TaskType | undefined;
+
+    if (validation?.data?.parentId) {
+      parent = await db.query.tasks.findFirst({
+        where: eq(tasks.parentId, validation.data.parentId),
+      });
+    }
+
+    const generatedId = crypto.randomUUID();
+
+    const newTask: TaskInsertType = {
+      id: generatedId,
+      ...validation.data,
+      path: parent ? `${parent?.path}/${generatedId}` : `${generatedId}`,
+    };
+
+    const result = await db.insert(tasks).values(newTask).returning();
 
     return createNextResponse(200, {
       messages: "Successfully created a new task",
