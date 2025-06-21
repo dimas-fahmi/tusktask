@@ -11,6 +11,7 @@ import {
 import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "../../../shadcn/ui/separator";
 import { useRouter } from "next/navigation";
+import { subtasksObserver } from "@/src/lib/tusktask/utils/subtasksObserver";
 
 export interface SubtaskCardProps {
   task: SubtaskType;
@@ -20,11 +21,14 @@ const SubtaskCard: React.FC<SubtaskCardProps> = ({ task }) => {
   // Initialize router
   const router = useRouter();
 
+  // ELigibility mechanism
+  const { ineligible } = subtasksObserver(task);
+
   return (
     <div className="group/SubtaskCard py-2 px-4 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md flex gap-2 items-center transition-all duration-300">
       {/* Scratch Button */}
       <div className="flex items-center pt-0.5">
-        <ScratchButton size="md" task={task} />
+        <ScratchButton size="md" task={task} ineligible={ineligible} />
       </div>
 
       {/* Details */}

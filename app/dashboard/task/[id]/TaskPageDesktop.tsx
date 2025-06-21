@@ -8,15 +8,14 @@ import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import SubtaskCard from "@/src/ui/components/tusktask/prefabs/SubtaskCard";
 import ScratchButton from "@/src/ui/components/tusktask/prefabs/ScratchButton";
 import { Plus } from "lucide-react";
+import { subtasksObserver } from "@/src/lib/tusktask/utils/subtasksObserver";
 
 const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
   // Pull TaskContext Values
   const { setNewTaskDialog } = useTaskContext();
 
   // Extract SubTasks
-  const subtasks = task?.subtasks ? task.subtasks : [];
-  const completedSubtasks = subtasks?.filter((t) => t.status === "completed");
-  const ineligible = completedSubtasks.length !== subtasks.length;
+  const { ineligible, subtasks } = subtasksObserver(task);
 
   return (
     <div className="grid grid-cols-[auto_280px] gap-4">
