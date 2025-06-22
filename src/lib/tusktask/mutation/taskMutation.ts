@@ -4,6 +4,8 @@ import { StandardResponse } from "../utils/createResponse";
 import { TeamDetail } from "@/src/types/team";
 import { TasksPatchRequest } from "@/app/api/tasks/patch";
 import { SetStateAction } from "@/src/types/types";
+import { queriesInvalidators } from "../invalidators/queriesInvalidator";
+import { createQueryKey } from "../mutationKey/createQueryKey";
 
 export interface UseUpdateTask {
   queryClient: QueryClient;
@@ -75,15 +77,22 @@ export const useUpdateTask = (
         queryKey: ["team", teamDetailKey],
       });
 
-      if (parentKey) {
-        queryClient?.invalidateQueries({
-          queryKey: ["task", parentKey],
-        });
-      }
-
       if (data?.id) {
         queryClient?.invalidateQueries({
           queryKey: ["task", data?.id],
+        });
+      }
+
+      if (parentKey) {
+        let keys = createQueryKey({
+          branch: "task",
+          structure: parentKey,
+          withBranch: false,
+        });
+        queriesInvalidators({
+          branch: "task",
+          keys: keys,
+          queryClient: queryClient,
         });
       }
 

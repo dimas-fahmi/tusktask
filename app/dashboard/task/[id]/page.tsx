@@ -18,8 +18,9 @@ export const generateMetadata = async ({
 
 const TaskPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
+  const task = await fetchTaskData(id);
 
-  return <TaskPageIndex id={id} />;
+  return <TaskPageIndex id={id} taskHydration={task} />;
 };
 
 export default TaskPage;

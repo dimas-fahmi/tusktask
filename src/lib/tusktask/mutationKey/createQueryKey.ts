@@ -1,8 +1,7 @@
-import { QueryKey } from "@tanstack/react-query";
-
 type QueryKeyParams = {
   branch: string;
   structure: string;
+  withBranch?: boolean;
 };
 
 /**
@@ -13,7 +12,8 @@ type QueryKeyParams = {
 export function createQueryKey({
   branch,
   structure,
-}: QueryKeyParams): QueryKey {
+  withBranch = true,
+}: QueryKeyParams): string[] {
   const structureParts = structure.split("/").filter(Boolean);
-  return [branch, ...structureParts];
+  return withBranch ? [branch, ...structureParts] : [...structureParts];
 }

@@ -7,25 +7,37 @@ import { useMediaQuery } from "react-responsive";
 import TaskPageDesktop from "./TaskPageDesktop";
 import TaskPageMobile from "./TaskPageMobile";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
+import { DetailTask } from "@/src/types/task";
+import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
+import { createQueryKey } from "@/src/lib/tusktask/mutationKey/createQueryKey";
 
-const TaskPageIndex = ({ id }: { id: string }) => {
+const TaskPageIndex = ({
+  id,
+  taskHydration,
+}: {
+  id: string;
+  taskHydration?: DetailTask;
+}) => {
   // Responseive Mechanism
   const isDesktop = useMediaQuery({
     query: `(min-width:1080px)`,
   });
 
+  // Pull Task Context Values
+  const { detailTask: task, setDetailTaskKey } = useTaskContext();
+
   // Fetch Task Detail
-  const { data: response } = useQuery({
-    queryKey: ["task", id],
-    queryFn: async () => fetchTaskDetail({ id }),
-    enabled: !!id,
-  });
+  useEffect(() => {
+    if (taskHydration) {
+      setDetailTaskKey({
+        keys: createQueryKey({ branch: "task", structure: taskHydration.path }),
+        taskId: taskHydration.id,
+      });
+    }
+  }, [taskHydration]);
 
   // Pull Team Context Values
   const { teamDetail, teamDetailKey, setTeamDetailKey } = useTeamContext();
-
-  // Extract Task Data
-  const task = response?.data;
 
   // Listen for task and update teamDetailKey
   useEffect(() => {

@@ -2,9 +2,11 @@ import { auth } from "@/auth";
 import { db } from "@/src/db";
 import { tasks } from "@/src/db/schema/tasks";
 import { teamMembers, TeamMembersType } from "@/src/db/schema/teams";
+import { constructDetailTaskQuery } from "@/src/lib/tusktask/queries/detailTask";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { CustomError } from "@/src/lib/tusktask/utils/error";
 import { DetailTask } from "@/src/types/task";
+import { Query } from "@tanstack/react-query";
 import { and, eq } from "drizzle-orm";
 
 export async function taskGet(
@@ -42,38 +44,8 @@ export async function taskGet(
       let task: DetailTask | undefined;
 
       try {
-        task = (await tx.query.tasks.findFirst({
-          where: eq(tasks.id, taskId),
-          with: {
-            creator: true,
-            owner: true,
-            claimedBy: true,
-            completedBy: true,
-            subtasks: {
-              with: {
-                subtasks: {
-                  with: {
-                    subtasks: true,
-                  },
-                },
-              },
-            },
-            team: true,
-            parent: {
-              with: {
-                parent: {
-                  with: {
-                    parent: {
-                      with: {
-                        parent: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        })) as DetailTask;
+        const query = constructDetailTaskQuery(taskId);
+        task = (await tx.query.tasks.findFirst(query)) as DetailTask;
       } catch (error) {
         throw databaseError;
       }

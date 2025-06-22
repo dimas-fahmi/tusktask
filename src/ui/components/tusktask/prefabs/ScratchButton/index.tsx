@@ -84,10 +84,7 @@ const ScratchButton = ({
           req.newValues.status = "not_started";
         }
 
-        if (task?.parentId) {
-          setParentKey(task?.parentId);
-        }
-
+        setParentKey(task.path);
         updateTask(req);
       }}
     >
