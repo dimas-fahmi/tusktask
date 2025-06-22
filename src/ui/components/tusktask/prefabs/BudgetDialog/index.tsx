@@ -21,6 +21,7 @@ const BudgetDialog = () => {
     setTaskControlPanelDialog,
     setBudgetDialog,
     updateTask,
+    setParentKey,
   } = useTaskContext();
 
   // Destructure State
@@ -68,6 +69,7 @@ const BudgetDialog = () => {
             }
 
             if (task) {
+              setParentKey(task.path);
               updateTask({
                 id: task.id,
                 teamId: task.teamId,
@@ -76,7 +78,7 @@ const BudgetDialog = () => {
               });
             }
 
-            setBudgetDialog((prev) => ({ ...prev, open: false }));
+            handleResetBudgetDialog();
           })}
         >
           <div>
@@ -96,6 +98,7 @@ const BudgetDialog = () => {
 
           <DialogFooter className="mt-4">
             <Button
+              type="button"
               variant={"outline"}
               onClick={() => {
                 if (trigger === "control_panel") {
