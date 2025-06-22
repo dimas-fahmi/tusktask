@@ -24,8 +24,15 @@ const dateSchema = z.object({
 
 const ReScheduleDialog = () => {
   // Pull Task Context
-  const { reScheduleDialog, handleResetReScheduleDialog, updateTask } =
-    useTaskContext();
+  const {
+    reScheduleDialog,
+    handleResetReScheduleDialog,
+    updateTask,
+    setTaskControlPanelDialog,
+  } = useTaskContext();
+
+  // Destructure state
+  const { open, task, trigger } = reScheduleDialog;
 
   // Initialize Form
   const {
@@ -58,6 +65,12 @@ const ReScheduleDialog = () => {
       open={reScheduleDialog.open}
       onOpenChange={(open) => {
         if (!open) {
+          if (trigger === "control_panel") {
+            setTaskControlPanelDialog({
+              task,
+              open: true,
+            });
+          }
           reset();
           handleResetReScheduleDialog();
         }
@@ -94,6 +107,12 @@ const ReScheduleDialog = () => {
 
             updateTask(req);
             reset();
+            if (trigger === "control_panel") {
+              setTaskControlPanelDialog({
+                task,
+                open: true,
+              });
+            }
             handleResetReScheduleDialog();
           })}
         >
@@ -132,7 +151,15 @@ const ReScheduleDialog = () => {
           <DialogFooter className="mt-4">
             <Button
               type="button"
-              onClick={() => handleResetReScheduleDialog()}
+              onClick={() => {
+                if (trigger === "control_panel") {
+                  setTaskControlPanelDialog({
+                    task,
+                    open: true,
+                  });
+                }
+                handleResetReScheduleDialog();
+              }}
               variant={"outline"}
             >
               Cancel

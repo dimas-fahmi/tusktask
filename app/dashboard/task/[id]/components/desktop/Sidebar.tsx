@@ -3,8 +3,14 @@ import React from "react";
 import TaskOverview from "../TaskOverview";
 import TeamCardOverview from "../TeamCardOverview";
 import UserCard from "../UserCard";
+import { Button } from "@/src/ui/components/shadcn/ui/button";
+import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
+import { Settings } from "lucide-react";
 
 const Sidebar = ({ task }: { task?: DetailTask }) => {
+  // Pull Task Context Values
+  const { setTaskControlPanelDialog } = useTaskContext();
+
   return (
     <aside className="space-y-4">
       {/* Task Overview */}
@@ -17,6 +23,21 @@ const Sidebar = ({ task }: { task?: DetailTask }) => {
       {/* Team Section */}
       <section id="team">
         <TeamCardOverview />
+      </section>
+
+      <section id="controlPanel" className="grid grid-cols-1">
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            if (!task) return;
+            setTaskControlPanelDialog({
+              task: task,
+              open: true,
+            });
+          }}
+        >
+          <Settings /> Control Panel
+        </Button>
       </section>
 
       {/* User Section */}
