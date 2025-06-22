@@ -27,7 +27,7 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
           {task?.name ? (
             <div className="flex items-center gap-2">
               <ScratchButton task={task} ineligible={ineligible} />
-              <h1 className="text-2xl font-bold">{task?.name}</h1>
+              <h1 className="text-2xl font-bold capitalize">{task?.name}</h1>
             </div>
           ) : (
             <Skeleton className="w-52 h-4" />
