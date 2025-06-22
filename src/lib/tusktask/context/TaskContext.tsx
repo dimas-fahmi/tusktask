@@ -15,6 +15,10 @@ import { useUpdateTask } from "../mutation/taskMutation";
 import useTeamContext from "../hooks/context/useTeamContext";
 import { TasksPatchRequest } from "@/app/api/tasks/patch";
 import ReScheduleDialog from "@/src/ui/components/tusktask/prefabs/ReScheduleDialog";
+import { fetchTaskDetail } from "../fetchers/fetchTaskDetail";
+import { DetailTaskKey } from "../server/fetchers/fetchTaskData";
+import { DetailTask } from "@/src/types/task";
+import { StandardResponse } from "../utils/createResponse";
 
 export interface NewTaskDialogType {
   open: boolean;
@@ -37,6 +41,12 @@ export interface TaskContextValues {
   reScheduleDialog: ReScheduleDialog;
   setReScheduleDialog: SetStateAction<ReScheduleDialog>;
   handleResetReScheduleDialog: () => void;
+
+  // Detail Task Data
+  detailTask: DetailTask | undefined;
+  detailTaskResponse?: StandardResponse<DetailTask | null>;
+  detailTaskKey: DetailTaskKey | null;
+  setDetailTaskKey: SetStateAction<DetailTaskKey | null>;
 
   // Task Update Mutation
   updateTask: MutateFunction<TaskType | null, TasksPatchRequest>;
@@ -169,6 +179,20 @@ const TaskContextProvider = ({
     setNewTaskDialog(newTaskDialogInitial);
   };
 
+  // Fetch Detail Task
+  const [detailTaskKey, setDetailTaskKey] = useState<DetailTaskKey | null>(
+    null
+  );
+  const { data: detailTaskResponse, isLoading: isLoadingDetailTask } = useQuery(
+    {
+      queryKey: [...(detailTaskKey?.keys ?? [])],
+      queryFn: () => fetchTaskDetail({ id: detailTaskKey?.taskId! }),
+      enabled: !!detailTaskKey,
+    }
+  );
+
+  const detailTask = detailTaskResponse?.data ?? undefined;
+
   return (
     <TaskContext.Provider
       value={{
@@ -182,6 +206,12 @@ const TaskContextProvider = ({
         taskDeleteKey,
         setTaskDeleteKey,
         isDeletingTask,
+
+        // Detail Task Data
+        detailTask,
+        detailTaskResponse,
+        detailTaskKey,
+        setDetailTaskKey,
 
         // ReScheduleDialog
         reScheduleDialog,

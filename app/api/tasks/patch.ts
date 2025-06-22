@@ -2,10 +2,12 @@ import { auth } from "@/auth";
 import { db } from "@/src/db";
 import { taskInsertSchema, tasks, TaskType } from "@/src/db/schema/tasks";
 import { teamMembers, TeamMembersType } from "@/src/db/schema/teams";
+import { createQueryKey } from "@/src/lib/tusktask/mutationKey/createQueryKey";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { CustomError } from "@/src/lib/tusktask/utils/error";
 import { includeFields } from "@/src/lib/tusktask/utils/includeFields";
 import { normalizeDateFields } from "@/src/lib/tusktask/utils/normalizeDateFields";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 export interface TasksPatchRequest {
   teamId: string;
@@ -146,14 +148,52 @@ export async function tasksPatch(req: Request) {
 
   // Mutate
   try {
-    const response = await db
-      .update(tasks)
-      .set(validation.data)
-      .where(and(eq(tasks.teamId, membership.teamId), eq(tasks.id, task.id)))
-      .returning();
+    const response = await db.transaction(async (tx) => {
+      // Check if operation is to unscratch
+      if (
+        validation.data?.status &&
+        ["not_started", "on_process"].includes(validation.data?.status)
+      ) {
+        // Update all trees
+        let keys = createQueryKey({
+          branch: "task",
+          structure: task.path,
+          withBranch: false,
+        });
+
+        try {
+          await tx
+            .update(tasks)
+            .set({ status: validation.data.status })
+            .where(inArray(tasks.id, keys));
+        } catch (error) {
+          console.log(error);
+          throw new CustomError(
+            "Database Error",
+            "Something went wrong when updating all tree",
+            500
+          );
+        }
+      }
+
+      try {
+        const response = await tx
+          .update(tasks)
+          .set(validation.data)
+          .where(
+            and(eq(tasks.teamId, membership.teamId), eq(tasks.id, task.id))
+          )
+          .returning();
+
+        return response;
+      } catch (error) {
+        console.log(error);
+        throw new CustomError("Database Error", "Something went wrong", 500);
+      }
+    });
 
     if (!response) {
-      return createNextResponse(500, {
+      throw createNextResponse(500, {
         messages: "Unexpected error when updating your task",
       });
     }
@@ -163,6 +203,12 @@ export async function tasksPatch(req: Request) {
       data: response,
     });
   } catch (error) {
+    if (error instanceof CustomError) {
+      return createNextResponse(error.statusCode, {
+        messages: error.message,
+      });
+    }
+
     return createNextResponse(500, {
       messages: "Failed when executing update",
     });
