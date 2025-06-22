@@ -6,6 +6,7 @@ import UserCard from "../UserCard";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import { Settings } from "lucide-react";
+import TaskBudgetCard from "@/src/ui/components/tusktask/prefabs/TaskBudgetCard";
 
 const Sidebar = ({ task }: { task?: DetailTask }) => {
   // Pull Task Context Values
@@ -20,11 +21,15 @@ const Sidebar = ({ task }: { task?: DetailTask }) => {
         </section>
       )}
 
+      {/* Budget Overview */}
+      {task?.budget && <TaskBudgetCard budget={task.budget} />}
+
       {/* Team Section */}
       <section id="team">
         <TeamCardOverview />
       </section>
 
+      {/* Control Panel */}
       <section id="controlPanel" className="grid grid-cols-1">
         <Button
           variant={"outline"}

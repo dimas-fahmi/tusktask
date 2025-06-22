@@ -90,6 +90,8 @@ const TaskControlPanelDialog = () => {
                 task: task,
                 trigger: "control_panel",
               });
+
+              handleResetTaskControlPanelDialog();
             }}
           />
           <PanelCard Icon={MessageCircle} label="Team Chat" />
