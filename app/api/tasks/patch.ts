@@ -204,7 +204,9 @@ export async function tasksPatch(req: Request) {
     });
   } catch (error) {
     if (error instanceof CustomError) {
-      return error;
+      return createNextResponse(error.statusCode, {
+        messages: error.message,
+      });
     }
 
     return createNextResponse(500, {
