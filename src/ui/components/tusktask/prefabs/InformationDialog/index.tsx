@@ -27,6 +27,7 @@ const InformationDialog = () => {
     handleResetInformationDialog,
     setTaskControlPanelDialog,
     updateTask,
+    setParentKey,
   } = useTaskContext();
 
   // Destructure State
@@ -85,6 +86,7 @@ const InformationDialog = () => {
           onSubmit={handleSubmit((data) => {
             if (!task) return;
 
+            setParentKey(task.path);
             updateTask({
               id: task.id,
               operation: "update",
