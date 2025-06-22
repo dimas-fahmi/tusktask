@@ -93,6 +93,7 @@ const InformationDialog = () => {
             });
 
             handleResetInformationDialog();
+            reset();
           })}
         >
           <div className="grid grid-cols-1">
