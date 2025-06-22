@@ -36,7 +36,7 @@ const ScratchButton = ({
   const { data: session } = useSession();
 
   // Is Completed check
-  const isCompleted = task?.completedAt ? true : false;
+  const isCompleted = task.status === "completed";
 
   // Icon mechanism
   const Current = isCompleted ? CircleCheckBig : Circle;
