@@ -19,6 +19,9 @@ import { fetchTaskDetail } from "../fetchers/fetchTaskDetail";
 import { DetailTaskKey } from "../server/fetchers/fetchTaskData";
 import { DetailTask } from "@/src/types/task";
 import { StandardResponse } from "../utils/createResponse";
+import TaskControlPanelDialog from "@/src/ui/components/tusktask/prefabs/TaskControlPanelDialog";
+import InformationDialog from "@/src/ui/components/tusktask/prefabs/InformationDialog";
+import BudgetDialog from "@/src/ui/components/tusktask/prefabs/BudgetDialog";
 
 export interface NewTaskDialogType {
   open: boolean;
@@ -38,9 +41,6 @@ export interface TaskContextValues {
   isDeletingTask: boolean;
   taskDeleteKey: string | null;
   setTaskDeleteKey: SetStateAction<string | null>;
-  reScheduleDialog: ReScheduleDialog;
-  setReScheduleDialog: SetStateAction<ReScheduleDialog>;
-  handleResetReScheduleDialog: () => void;
 
   // Detail Task Data
   detailTask: DetailTask | undefined;
@@ -53,14 +53,39 @@ export interface TaskContextValues {
   isUpdatingTask: boolean;
   isErrorUpdatingTask: boolean;
 
+  // Task Control Panel Dialog
+  taskControlPanelDialog: TaskControlPanelDialog;
+  setTaskControlPanelDialog: SetStateAction<TaskControlPanelDialog>;
+  handleResetTaskControlPanelDialog: () => void;
+
+  // Information Dialog
+  informationDialog: TaskControlPanelDialogWithTrigger;
+  setInformationDialog: SetStateAction<TaskControlPanelDialogWithTrigger>;
+  handleResetInformationDialog: () => void;
+
+  // Budget Dialog
+  budgetDialog: TaskControlPanelDialogWithTrigger;
+  setBudgetDialog: SetStateAction<TaskControlPanelDialogWithTrigger>;
+  handleResetBudgetDialog: () => void;
+
+  // Reschedule Dialog
+  reScheduleDialog: TaskControlPanelDialogWithTrigger;
+  setReScheduleDialog: SetStateAction<TaskControlPanelDialogWithTrigger>;
+  handleResetReScheduleDialog: () => void;
+
   // Helper State
   parentKey: string | null;
   setParentKey: SetStateAction<string | null>;
 }
 
-export interface ReScheduleDialog {
-  open: boolean;
+export interface TaskControlPanelDialog {
   task: TaskType | null;
+  open: boolean;
+}
+
+export interface TaskControlPanelDialogWithTrigger
+  extends TaskControlPanelDialog {
+  trigger?: "control_panel";
 }
 
 const TaskContext = createContext<TaskContextValues | null>(null);
@@ -79,18 +104,6 @@ const TaskContextProvider = ({
   };
   const [newTaskDialog, setNewTaskDialog] =
     useState<NewTaskDialogType>(newTaskDialogInitial);
-
-  // Reschedule Dialog
-  const reScheduleDialogInitial: ReScheduleDialog = {
-    open: false,
-    task: null,
-  };
-  const [reScheduleDialog, setReScheduleDialog] = useState<ReScheduleDialog>(
-    reScheduleDialogInitial
-  );
-
-  const handleResetReScheduleDialog = () =>
-    setReScheduleDialog(reScheduleDialogInitial);
 
   // Query Tasks
   const { data: tasksResponse, isFetching: isFetchingTasks } = useQuery({
@@ -193,6 +206,42 @@ const TaskContextProvider = ({
 
   const detailTask = detailTaskResponse?.data ?? undefined;
 
+  // Task Control Panel
+  const initialTaskControlPanelDialog: TaskControlPanelDialog = {
+    open: false,
+    task: null,
+  };
+  const [taskControlPanelDialog, setTaskControlPanelDialog] =
+    useState<TaskControlPanelDialog>(initialTaskControlPanelDialog);
+
+  const handleResetTaskControlPanelDialog = () => {
+    setTaskControlPanelDialog(initialTaskControlPanelDialog);
+  };
+
+  // Task Information Panel
+  const [informationDialog, setInformationDialog] =
+    useState<TaskControlPanelDialogWithTrigger>(initialTaskControlPanelDialog);
+
+  const handleResetInformationDialog = () => {
+    setInformationDialog(initialTaskControlPanelDialog);
+  };
+
+  // Task Budget Panel
+  const [budgetDialog, setBudgetDialog] =
+    useState<TaskControlPanelDialogWithTrigger>(initialTaskControlPanelDialog);
+
+  const handleResetBudgetDialog = () => {
+    setBudgetDialog(initialTaskControlPanelDialog);
+  };
+
+  // Reschedule Dialog
+
+  const [reScheduleDialog, setReScheduleDialog] =
+    useState<TaskControlPanelDialogWithTrigger>(initialTaskControlPanelDialog);
+
+  const handleResetReScheduleDialog = () =>
+    setReScheduleDialog(initialTaskControlPanelDialog);
+
   return (
     <TaskContext.Provider
       value={{
@@ -223,6 +272,21 @@ const TaskContextProvider = ({
         isErrorUpdatingTask,
         isUpdatingTask,
 
+        // Task Control Panel Dialog
+        taskControlPanelDialog,
+        setTaskControlPanelDialog,
+        handleResetTaskControlPanelDialog,
+
+        // Task Information dialog
+        informationDialog,
+        setInformationDialog,
+        handleResetInformationDialog,
+
+        // Task Budget Dialog
+        budgetDialog,
+        setBudgetDialog,
+        handleResetBudgetDialog,
+
         // Helper State
         parentKey,
         setParentKey,
@@ -231,6 +295,9 @@ const TaskContextProvider = ({
       {children}
       <NewTaskDialog />
       <ReScheduleDialog />
+      <TaskControlPanelDialog />
+      <InformationDialog />
+      <BudgetDialog />
     </TaskContext.Provider>
   );
 };
