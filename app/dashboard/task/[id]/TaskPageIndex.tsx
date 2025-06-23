@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchTaskDetail } from "@/src/lib/tusktask/fetchers/fetchTaskDetail";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import TaskPageDesktop from "./TaskPageDesktop";
@@ -10,6 +10,7 @@ import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import { DetailTask } from "@/src/types/task";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
 import { createQueryKey } from "@/src/lib/tusktask/mutationKey/createQueryKey";
+import createResponse from "@/src/lib/tusktask/utils/createResponse";
 
 const TaskPageIndex = ({
   id,
@@ -18,6 +19,9 @@ const TaskPageIndex = ({
   id: string;
   taskHydration?: DetailTask;
 }) => {
+  // Pull queryclient
+  const queryclient = useQueryClient();
+
   // Responseive Mechanism
   const isDesktop = useMediaQuery({
     query: `(min-width:1080px)`,
@@ -29,8 +33,19 @@ const TaskPageIndex = ({
   // Fetch Task Detail
   useEffect(() => {
     if (taskHydration) {
+      const queryKey = createQueryKey({
+        branch: "task",
+        structure: taskHydration.path,
+      });
+      queryclient.setQueryData(queryKey, () => {
+        return createResponse(200, {
+          messages: "success",
+          data: taskHydration,
+        });
+      });
+
       setDetailTaskKey({
-        keys: createQueryKey({ branch: "task", structure: taskHydration.path }),
+        keys: queryKey,
         taskId: taskHydration.id,
       });
     }
