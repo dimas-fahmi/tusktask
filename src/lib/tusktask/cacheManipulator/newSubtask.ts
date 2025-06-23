@@ -2,22 +2,25 @@ import { TaskType } from "@/src/db/schema/tasks";
 import { QueryClient } from "@tanstack/react-query";
 import { StandardResponse } from "../utils/createResponse";
 import { DetailTask, SubtaskType } from "@/src/types/task";
+import { createQueryKey } from "../mutationKey/createQueryKey";
 
 export const newSubtask = async (
-  parentId: string,
+  parent: TaskType | null,
   newTask: Partial<TaskType>,
   queryClient: QueryClient
 ) => {
-  const oldData = queryClient.getQueryData([
-    "task",
-    parentId,
-  ]) as StandardResponse<DetailTask>;
+  if (!parent) return {};
+
+  const queryKey = createQueryKey({ branch: "task", structure: parent?.path });
+  const oldData = queryClient.getQueryData(
+    queryKey
+  ) as StandardResponse<DetailTask>;
 
   if (!oldData?.data) {
     return { oldData: undefined, success: false };
   }
 
-  queryClient.setQueryData(["task", parentId], () => {
+  queryClient.setQueryData(queryKey, () => {
     if (!oldData?.data) {
       return oldData;
     }

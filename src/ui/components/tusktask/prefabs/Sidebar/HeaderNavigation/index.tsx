@@ -20,6 +20,7 @@ const HeaderNavigation = () => {
             teamId: null,
             parentId: null,
             type: "task",
+            parent: null,
           })
         }
       >

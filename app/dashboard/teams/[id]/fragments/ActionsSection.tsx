@@ -42,6 +42,7 @@ const ActionsSection = ({ teamId }: { teamId: string }) => {
             teamId: teamId,
             parentId: null,
             type: "task",
+            parent: null,
           });
         }}
       >
@@ -65,6 +66,7 @@ const ActionsSection = ({ teamId }: { teamId: string }) => {
             teamId: teamId,
             parentId: null,
             type: "shopping_list",
+            parent: null,
           });
         }}
         size={"default"}

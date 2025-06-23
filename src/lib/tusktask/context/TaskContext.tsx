@@ -28,6 +28,7 @@ export interface NewTaskDialogType {
   teamId: string | null;
   parentId: string | null;
   type: "task" | "shopping_list";
+  parent: TaskType | null;
 }
 
 export interface TaskContextValues {
@@ -101,7 +102,9 @@ const TaskContextProvider = ({
     teamId: null,
     parentId: null,
     type: "task",
+    parent: null,
   };
+
   const [newTaskDialog, setNewTaskDialog] =
     useState<NewTaskDialogType>(newTaskDialogInitial);
 
