@@ -56,6 +56,7 @@ const TaskPageDesktop = ({ task }: { task?: DetailTask }) => {
                   parentId: task?.id,
                   teamId: task?.teamId,
                   type: "task",
+                  parent: task,
                 });
               }}
             >

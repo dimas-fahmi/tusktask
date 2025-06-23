@@ -31,6 +31,8 @@ import { z } from "zod";
 import { usePathname, useRouter } from "next/navigation";
 import { TeamDetail } from "@/src/types/team";
 import { newSubtask } from "@/src/lib/tusktask/cacheManipulator/newSubtask";
+import { queriesInvalidators } from "@/src/lib/tusktask/invalidators/queriesInvalidator";
+import { createQueryKey } from "@/src/lib/tusktask/mutationKey/createQueryKey";
 
 const newTaskSchema = z.object({
   name: z.string().min(3).max(100),
@@ -150,9 +152,9 @@ const NewTaskDialog = () => {
       };
 
       let oldParentData;
-      if (newTaskDialog?.parentId) {
+      if (newTaskDialog?.parent) {
         const { oldData: _oldParentData } = await newSubtask(
-          newTaskDialog?.parentId,
+          newTaskDialog?.parent,
           newTask,
           queryClient
         );
@@ -226,10 +228,13 @@ const NewTaskDialog = () => {
         queryKey: ["teams"],
       });
 
-      if (newTaskDialog?.parentId) {
-        queryClient.invalidateQueries({
-          queryKey: ["task", newTaskDialog?.parentId],
+      if (newTaskDialog?.parent) {
+        const keys = createQueryKey({
+          branch: "task",
+          structure: newTaskDialog?.parent?.path,
+          withBranch: false,
         });
+        queriesInvalidators({ branch: "task", keys, queryClient });
       }
     },
   });
@@ -244,6 +249,7 @@ const NewTaskDialog = () => {
         if (!open) {
           handleResetNewTaskDialog();
           setAdvanceMode(false);
+          return;
         }
       }}
     >

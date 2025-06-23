@@ -6,36 +6,12 @@ import { TasksPatchRequest } from "@/app/api/tasks/patch";
 import { SetStateAction } from "@/src/types/types";
 import { queriesInvalidators } from "../invalidators/queriesInvalidator";
 import { createQueryKey } from "../mutationKey/createQueryKey";
+import { updateTeamDetail } from "../optimisticUpdates/updateTeamDetail";
 
 export interface UseUpdateTask {
   queryClient: QueryClient;
   teamDetailKey?: string | null;
 }
-
-const updateTeamDetail = (
-  { queryClient, teamDetailKey }: UseUpdateTask,
-  data: TasksPatchRequest
-) => {
-  const oldTeamDetail = queryClient.getQueryData([
-    "team",
-    teamDetailKey,
-  ]) as StandardResponse<TeamDetail>;
-  let newTeamDetail: StandardResponse<TeamDetail> | null = null;
-
-  if (oldTeamDetail?.data) {
-    const { id, newValues } = data;
-    const updatedTasks = (oldTeamDetail?.data.tasks ?? []).map((task) =>
-      task.id === id ? { ...task, ...newValues } : task
-    );
-
-    newTeamDetail = {
-      ...oldTeamDetail,
-      data: { ...oldTeamDetail.data, tasks: updatedTasks },
-    };
-  }
-
-  return { oldTeamDetail, newTeamDetail };
-};
 
 export const useUpdateTask = (
   { queryClient, teamDetailKey }: UseUpdateTask,

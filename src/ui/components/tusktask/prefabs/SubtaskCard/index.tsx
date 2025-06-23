@@ -2,7 +2,14 @@ import { SubtaskType } from "@/src/types/task";
 import React from "react";
 import ScratchButton from "../ScratchButton";
 import { Button } from "../../../shadcn/ui/button";
-import { Archive, Ellipsis, ExternalLink, Tag, Trash } from "lucide-react";
+import {
+  Archive,
+  Ellipsis,
+  ExternalLink,
+  LoaderCircle,
+  Tag,
+  Trash,
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -12,9 +19,11 @@ import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "../../../shadcn/ui/separator";
 import { useRouter } from "next/navigation";
 import { subtasksObserver } from "@/src/lib/tusktask/utils/subtasksObserver";
+import { CreatedByOptimisticUpdate } from "@/src/types/types";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 export interface SubtaskCardProps {
-  task: SubtaskType;
+  task: SubtaskType & CreatedByOptimisticUpdate;
 }
 
 const SubtaskCard: React.FC<SubtaskCardProps> = ({ task }) => {
@@ -24,20 +33,34 @@ const SubtaskCard: React.FC<SubtaskCardProps> = ({ task }) => {
   // ELigibility mechanism
   const { ineligible } = subtasksObserver(task);
 
+  // Pull notification context values
+  const { triggerAlertDialog } = useNotificationContext();
+
   return (
-    <div className="group/SubtaskCard py-2 px-4 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md flex gap-2 items-center transition-all duration-300">
+    <div
+      className={`group/SubtaskCard py-2 px-4 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md flex gap-2 items-center transition-all duration-300 ${task?.createdByOptimisticUpdate ? "opacity-50 animate-pulse" : ""}`}
+      onClick={() => {
+        if (task?.createdByOptimisticUpdate) {
+          triggerAlertDialog({
+            title: "Wait A Moment",
+            description: "We're still saving your new task",
+          });
+          return;
+        }
+        router.push(`/dashboard/task/${task?.id}`);
+      }}
+    >
       {/* Scratch Button */}
       <div className="flex items-center pt-0.5">
-        <ScratchButton size="md" task={task} ineligible={ineligible} />
+        {task?.createdByOptimisticUpdate ? (
+          <LoaderCircle className="animate-spin" />
+        ) : (
+          <ScratchButton size="md" task={task} ineligible={ineligible} />
+        )}
       </div>
 
       {/* Details */}
-      <div
-        className="flex-grow"
-        onClick={() => {
-          router.push(`/dashboard/task/${task?.id}`);
-        }}
-      >
+      <div className="flex-grow">
         <header className="flex items-center justify-between">
           <h1 className="capitalize">{task?.name}</h1>
 

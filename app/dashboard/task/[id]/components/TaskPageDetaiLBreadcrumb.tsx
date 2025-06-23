@@ -11,7 +11,6 @@ import {
 import Link from "next/link";
 import { DetailTask, ParentType } from "@/src/types/task";
 import { Skeleton } from "@/src/ui/components/shadcn/ui/skeleton";
-import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
 import {
   Popover,
   PopoverContent,
@@ -48,13 +47,19 @@ const NestedPopover = ({ data }: { data: ParentType }) => {
   const router = useRouter();
 
   while (current?.parent) {
+    const id = current?.parent?.id ?? crypto.randomUUID();
+    const url = `/dashboard/task/${id}`;
+    const title = current?.parent?.name ?? "N/A";
     popovers.push(
       <PopoverAction
-        key={popovers.length}
+        key={id}
         Icon={FolderTree}
-        title={current?.parent?.name}
+        title={title}
         onClick={() => {
-          router.push(`/dashboard/task/${current?.parent?.id}`);
+          if (!id) {
+            return;
+          }
+          router.push(url);
         }}
       />
     );
