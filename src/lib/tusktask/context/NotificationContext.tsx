@@ -171,8 +171,8 @@ const NotificationContextProvider = ({
   // Synchronize personal prefences with context
   useEffect(() => {
     if (personal) {
-      setNotificationSoundEnable(personal.notificationSoundEnable!);
-      setReminderSoundEnable(personal.reminderSoundEnable!);
+      setNotificationSoundEnable(personal.notificationSoundEnable ?? false);
+      setReminderSoundEnable(personal.reminderSoundEnable ?? false);
     }
   }, [personal]);
 
@@ -283,7 +283,6 @@ const NotificationContextProvider = ({
         "notifications",
       ]) as StandardResponse<NotificationBundle>;
 
-      console.log(oldNotifications);
       if (oldNotifications?.data?.received) {
         const received = [...oldNotifications.data.received];
         const index = received.findIndex((t) => t.id === authorizationId);
@@ -310,7 +309,6 @@ const NotificationContextProvider = ({
     },
 
     onError: (error, __, context) => {
-      console.log(error);
       if (context?.oldNotifications) {
         queryClient.setQueryData(["notifications"], context.oldNotifications);
       }

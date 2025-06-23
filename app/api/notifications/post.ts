@@ -150,7 +150,6 @@ export async function notificationsPost(req: Request) {
       data: response,
     });
   } catch (error) {
-    console.log(error);
     return createNextResponse(500, {
       messages: "Failed when creating new notification",
     });

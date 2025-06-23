@@ -5,6 +5,7 @@ import { TaskType } from "@/src/db/schema/tasks";
 import { cn } from "@/src/lib/shadcn/utils";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useTaskContext from "@/src/lib/tusktask/hooks/context/useTaskContext";
+import { CreatedByOptimisticUpdate } from "@/src/types/types";
 import { Circle, CircleCheckBig } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React from "react";
@@ -19,7 +20,7 @@ const sizes = {
 } as const;
 
 export interface ScratchButton {
-  task: TaskType;
+  task: TaskType & CreatedByOptimisticUpdate;
   className?: string;
   size?: keyof typeof sizes;
   ineligible: boolean;
@@ -40,7 +41,6 @@ const ScratchButton = ({
 
   // Icon mechanism
   const Current = isCompleted ? CircleCheckBig : Circle;
-  const Preview = isCompleted ? Circle : CircleCheckBig;
 
   // Pull Task Context
   const { updateTask, setParentKey } = useTaskContext();
@@ -52,10 +52,11 @@ const ScratchButton = ({
     <button
       className={cn(
         className,
-        `group/icon cursor-pointer ${isCompleted ? "" : ""} active:scale-90 transition-transform duration-300`
+        `${isCompleted ? "" : ""} ${task?.createdByOptimisticUpdate ? "cursor-wait animate-pulse" : "active:scale-90 group/icon cursor-pointer"} transition-transform duration-300`
       )}
       {...props}
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         if (ineligible && !isCompleted) {
           triggerAlertDialog({
             title: "Ineligible!",
@@ -88,13 +89,9 @@ const ScratchButton = ({
         updateTask(req);
       }}
     >
-      <div className="group-hover/icon:hidden">
+      <div>
         <Current className={`${sizes[size ?? "md"]}`} />
       </div>
-      <div className="hidden group-hover/icon:block opacity-60 transition-all duration-300">
-        <Preview className={`${sizes[size ?? "md"]}`} />
-      </div>
-      <div></div>
     </button>
   );
 };

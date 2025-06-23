@@ -92,7 +92,6 @@ const AdminRequestDialog = () => {
         <form
           onSubmit={handleSubmit((data) => {
             if (!user || !session?.user?.id || !membership?.teamId) {
-              console.log("anjing");
               return;
             }
 

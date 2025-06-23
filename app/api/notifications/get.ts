@@ -46,7 +46,6 @@ export async function notificationsGet(req: Request) {
       data: result,
     });
   } catch (error) {
-    console.log(error);
     return createNextResponse(500, {
       messages: "Failed when fetching notifications",
     });

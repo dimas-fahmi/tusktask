@@ -56,10 +56,6 @@ const InviteMemberDialog = () => {
 
   const users = data && data?.data ? data.data : [];
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   // Reset search key when dialog is closed
   useEffect(() => {
     if (!inviteMemberDialog) {

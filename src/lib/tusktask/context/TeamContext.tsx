@@ -161,11 +161,9 @@ const TeamContextProvider = ({
 
       if (oldTeamDetail?.data) {
         queryClient.setQueryData(["team", teamDetailKey], () => {
-          console.log(oldTeamDetail?.data?.teamMembers);
           let newTeamMembers = oldTeamDetail?.data?.teamMembers.filter(
             (t) => t.userId !== data.userId
           );
-          console.log(newTeamMembers);
 
           return {
             ...oldTeamDetail,
@@ -203,7 +201,6 @@ const TeamContextProvider = ({
     onSettled: () => {
       setUserKey(null);
 
-      console.log("triggered");
       queryClient.invalidateQueries({
         queryKey: ["team", teamDetailKey],
       });

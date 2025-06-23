@@ -167,7 +167,6 @@ export async function tasksPatch(req: Request) {
             .set({ status: validation.data.status })
             .where(inArray(tasks.id, keys));
         } catch (error) {
-          console.log(error);
           throw new CustomError(
             "Database Error",
             "Something went wrong when updating all tree",
@@ -187,7 +186,6 @@ export async function tasksPatch(req: Request) {
 
         return response;
       } catch (error) {
-        console.log(error);
         throw new CustomError("Database Error", "Something went wrong", 500);
       }
     });
