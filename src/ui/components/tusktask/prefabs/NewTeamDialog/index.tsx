@@ -71,7 +71,6 @@ const NewTeamDialog = () => {
       const oldTeams = queryClient.getQueryData(["teams"]) as TeamsGetResponse;
 
       // Mutate cache
-      console.log(oldTeams);
       queryClient.setQueryData(["teams"], () => {
         if (!oldTeams?.data) {
           return oldTeams;
@@ -95,8 +94,6 @@ const NewTeamDialog = () => {
           ...oldTeams,
           data: [...oldTeams.data, newMembership],
         };
-
-        console.log(newTeams);
 
         return newTeams;
       });

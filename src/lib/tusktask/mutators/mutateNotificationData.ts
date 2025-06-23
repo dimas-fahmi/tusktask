@@ -30,7 +30,6 @@ export const mutateNotificationData = async (
 
     return data;
   } catch (error) {
-    console.log(error);
     throw createResponse(500, {
       messages: "Something went wrong",
       data: error,

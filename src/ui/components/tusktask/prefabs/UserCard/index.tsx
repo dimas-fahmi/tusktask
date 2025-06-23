@@ -151,7 +151,6 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
               variant={isAMember || isAlreadyInvited ? "disabled" : "default"}
               onClick={() => {
                 if (isAMember || isAlreadyInvited) {
-                  console.log(isAMember, isAlreadyInvited);
                   return;
                 }
 

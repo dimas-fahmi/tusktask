@@ -182,7 +182,6 @@ export async function tasksPost(req: Request) {
       data: result,
     });
   } catch (error) {
-    console.log(error);
     return createNextResponse(500, {
       messages: "Failed when creating your new task, please try again.",
       userFriendly: true,
