@@ -99,10 +99,14 @@ export const useUpdateTask = (
       });
 
       if (data?.id) {
-        queryClient?.invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: ["task", data?.id],
         });
       }
+
+      queryClient.invalidateQueries({
+        queryKey: ["tasks"],
+      });
 
       if (parentKey) {
         let keys = createQueryKey({

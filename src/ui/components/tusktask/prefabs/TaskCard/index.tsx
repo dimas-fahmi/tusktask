@@ -31,6 +31,7 @@ import PopoverAction from "../Popover/PopoverAction";
 import { Separator } from "../../../shadcn/ui/separator";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { TASK_PAGE_DETAIL } from "@/src/lib/tusktask/constants/configs";
+import ScratchButton from "../ScratchButton";
 // TaskCard component displays a summary of a task, including its name, description, subtasks progress, team, and deadline.
 const TaskCard = ({ task }: { task: TaskWithSubtasks }) => {
   const { subtasks, team } = task;
@@ -67,7 +68,7 @@ const TaskCard = ({ task }: { task: TaskWithSubtasks }) => {
         {task.createdByOptimisticUpdate ? (
           <LoaderCircle className="w-5 h-5 animate-spin" aria-hidden="true" />
         ) : (
-          <Circle className="w-5 h-5" aria-hidden="true" />
+          <ScratchButton task={task} ineligible={false} />
         )}
 
         <h2 id={`task-title-${task.id}`} className="text-base font-medium">
