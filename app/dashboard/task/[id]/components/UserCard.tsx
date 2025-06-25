@@ -54,7 +54,9 @@ const UserCard = ({ user, label }: { user?: SanitizedUser; label: string }) => {
       <div className="flex items-center justify-between w-full">
         {/* Start */}
         <div>
-          <h1 className="font-semibold">{truncateText(user?.name ?? "", 2)}</h1>
+          <h1 className="font-semibold text-sm text-nowrap max-w-32 overflow-hidden">
+            {truncateText(user?.name ?? "", 2)}
+          </h1>
           <p className="text-xs text-muted-foreground">{user?.username}</p>
         </div>
 
