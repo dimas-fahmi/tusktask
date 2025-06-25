@@ -9,6 +9,7 @@ import useNotificationContext from "../hooks/context/useNotificationContext";
 import { StandardResponse } from "../utils/createResponse";
 import { DetailTask } from "@/src/types/task";
 import { updateSubtask } from "../optimisticUpdates/updateSubtask";
+import { updatePersonalTasks } from "../optimisticUpdates/updatePersonalTasks";
 
 export interface UseUpdateTask {
   queryClient: QueryClient;
@@ -50,6 +51,10 @@ export const useUpdateTask = (
         exact: false,
       });
 
+      await queryClient.cancelQueries({
+        queryKey: ["tasks"],
+      });
+
       // Create new TeamDetail data
       const { newTeamDetail, oldTeamDetail } = updateTeamDetail(
         { queryClient, teamDetailKey },
@@ -67,12 +72,19 @@ export const useUpdateTask = (
         oldParent = oldData;
       }
 
+      // Update personal tasks
+      const { oldData: oldPersonalTasks } = updatePersonalTasks(
+        parentKey,
+        data,
+        queryClient
+      );
+
       // Implement Update TeamDetail Cache
       if (newTeamDetail) {
         queryClient.setQueryData(["team", teamDetailKey], newTeamDetail);
       }
 
-      return { oldTeamDetail, oldData, oldParent };
+      return { oldTeamDetail, oldData, oldParent, oldPersonalTasks };
     },
     onError: (_, __, context) => {
       // Roll Back cache if mutation failed
@@ -81,6 +93,10 @@ export const useUpdateTask = (
           ["team", teamDetailKey],
           context.oldTeamDetail
         );
+      }
+
+      if (context?.oldPersonalTasks) {
+        queryClient.setQueryData(["tasks"], context.oldPersonalTasks);
       }
 
       if (context?.oldData) {
