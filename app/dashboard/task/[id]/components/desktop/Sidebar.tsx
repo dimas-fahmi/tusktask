@@ -17,7 +17,7 @@ const Sidebar = ({ task }: { task?: DetailTask }) => {
       {/* Task Overview */}
       {task?.subtasks && task?.subtasks.length > 0 && (
         <section id="overview">
-          <TaskOverview subtasks={task?.subtasks} />
+          <TaskOverview task={task} subtasks={task?.subtasks} />
         </section>
       )}
 
