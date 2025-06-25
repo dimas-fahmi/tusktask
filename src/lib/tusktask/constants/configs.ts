@@ -30,5 +30,5 @@ export const TOAST_MANAGEMENT_ONLY = {
 // PATHS
 export const TASK_PAGE_DETAIL = "/dashboard/task";
 export const TASKS_PAGE_FILTER = "/dashboard/tasks";
-export const POMODORO_PAGE = "/dashboard/pomodoro";
 export const TEAMS_PAGE_INDEX = "/dashboard/teams";
+export const MESSAGES_PAGE_INDEX = "/dashboard/messages";

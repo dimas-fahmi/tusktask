@@ -1,11 +1,11 @@
 import {
-  AlarmClock,
   Calendar1,
   CalendarArrowUp,
   CalendarClock,
   CalendarFold,
   FolderGit2,
   LayoutDashboard,
+  MessageSquareText,
 } from "lucide-react";
 import { Separator } from "../../../shadcn/ui/separator";
 import {
@@ -18,13 +18,18 @@ import HeaderNavigation from "../Sidebar/HeaderNavigation";
 import SidebarNavLink from "../Sidebar/SidebarNavLink";
 import UserProfileCard from "../UserProfileCard";
 import {
-  POMODORO_PAGE,
+  MESSAGES_PAGE_INDEX,
   TASKS_PAGE_FILTER,
   TEAMS_PAGE_INDEX,
 } from "@/src/lib/tusktask/constants/configs";
 
 const navigationLinks = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  {
+    label: "Messages",
+    href: MESSAGES_PAGE_INDEX,
+    icon: MessageSquareText,
+  },
   {
     label: "Today",
     href: `${TASKS_PAGE_FILTER}/today`,
@@ -44,11 +49,6 @@ const navigationLinks = [
     label: "Overdue",
     href: `${TASKS_PAGE_FILTER}/overdue`,
     icon: CalendarClock,
-  },
-  {
-    label: "Pomodoro",
-    href: POMODORO_PAGE,
-    icon: AlarmClock,
   },
   {
     label: "My Teams",
