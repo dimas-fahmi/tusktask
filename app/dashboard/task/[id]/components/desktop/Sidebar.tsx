@@ -17,7 +17,7 @@ const Sidebar = ({ task }: { task?: DetailTask }) => {
       {/* Task Overview */}
       {task?.subtasks && task?.subtasks.length > 0 && (
         <section id="overview">
-          <TaskOverview subtasks={task?.subtasks} />
+          <TaskOverview task={task} subtasks={task?.subtasks} />
         </section>
       )}
 
@@ -48,9 +48,7 @@ const Sidebar = ({ task }: { task?: DetailTask }) => {
       {/* User Section */}
       <section id="users" className="space-y-4">
         {/* Creator */}
-        {task?.creator && (
-          <UserCard user={task?.creator} label="Task Creator" />
-        )}
+        {task?.creator && <UserCard user={task?.creator} label="Creator" />}
 
         {/* Claimer */}
         {task?.claimedBy && <UserCard user={task?.claimedBy} label="Claimed" />}

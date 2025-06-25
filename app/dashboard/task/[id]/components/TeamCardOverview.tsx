@@ -13,11 +13,22 @@ const TeamCardOverview = () => {
   // Pull Team Context
   const { teamDetail } = useTeamContext();
 
+  // Subtasks
+  const tasks = teamDetail?.tasks ? teamDetail.tasks : [];
+  const completedTasks = tasks.filter((t) => t.status === "completed");
+  const shoppingLists = tasks.filter((t) => t.type === "shopping_list");
+
   return (
     <div className="rounded-md border p-4">
       <header className="pb-2">
-        <div className="flex justify-between items-center">
-          <h1 className="text-lg font-bold">{teamDetail?.name}</h1>
+        <div className="flex justify-between mb-4">
+          <div>
+            <h1 className="text-lg font-bold">{teamDetail?.name}</h1>
+            <p className="text-xs leading-4">
+              Completed tasks and shopping lists, along with the totals for
+              both.
+            </p>
+          </div>
           <Button
             variant={"ghost"}
             size={"sm"}
@@ -36,7 +47,7 @@ const TeamCardOverview = () => {
           <span>
             <CircleCheckBig className="w-3 h-3" />
           </span>
-          <span className="font-bold">7</span>
+          <span className="font-bold">{completedTasks.length}</span>
         </div>
 
         {/* Shopping List */}
@@ -44,7 +55,7 @@ const TeamCardOverview = () => {
           <span>
             <ShoppingCart className="w-3 h-3" />
           </span>
-          <span className="font-bold">10</span>
+          <span className="font-bold">{shoppingLists.length}</span>
         </div>
 
         {/* Total Tasks */}
@@ -52,7 +63,7 @@ const TeamCardOverview = () => {
           <span>
             <Equal className="w-3 h-3" />
           </span>
-          <span className="font-bold">10</span>
+          <span className="font-bold">{tasks.length}</span>
         </div>
       </div>
     </div>
