@@ -15,6 +15,20 @@
       "when": 1750501932463,
       "tag": "0001_lumpy_maginty",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1750917544503,
+      "tag": "0002_spotty_whirlwind",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1750918751643,
+      "tag": "0003_loving_sumo",
+      "breakpoints": true
     }
   ]
 }
