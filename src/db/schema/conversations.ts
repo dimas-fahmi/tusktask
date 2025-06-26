@@ -8,7 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { messages } from "./messages";
 import { teams } from "./teams";
 
@@ -20,7 +20,9 @@ export const conversations = pgTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name"),
-    teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }),
+    teamId: text("teamId")
+      .references(() => teams.id, { onDelete: "cascade" })
+      .unique(),
     type: text("type", {
       enum: ["team", "direct"],
     }).notNull(),
@@ -96,3 +98,14 @@ export const conversationParticipantsRelations = relations(
     }),
   })
 );
+
+// Types
+export type ConversationType = InferSelectModel<typeof conversations>;
+export type ConvesationsInsertType = InferInsertModel<typeof conversations>;
+
+export type ConversationMembershipType = InferSelectModel<
+  typeof conversationParticipants
+>;
+export type ConversationMembershipInsertType = InferInsertModel<
+  typeof conversationParticipants
+>;

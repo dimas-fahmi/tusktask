@@ -3,6 +3,7 @@ import { Pool } from "@neondatabase/serverless";
 
 import * as accounts from "./schema/accounts";
 import * as authenticators from "./schema/authenticators";
+import * as conversations from "./schema/conversations";
 import * as messages from "./schema/messages";
 import * as notifications from "./schema/notifications";
 import * as sessions from "./schema/sessions";
@@ -19,6 +20,7 @@ const schema = {
   schema: {
     ...accounts,
     ...authenticators,
+    ...conversations,
     ...messages,
     ...notifications,
     ...sessions,
