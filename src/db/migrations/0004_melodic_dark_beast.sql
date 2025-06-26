@@ -1,0 +1,1 @@
+ALTER TABLE "conversations" ADD CONSTRAINT "conversations_teamId_unique" UNIQUE("teamId");
