@@ -65,7 +65,7 @@ export const conversationParticipants = pgTable(
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
     role: text("role", {
-      enum: ["owner", "admin", "member"],
+      enum: ["owner", "admin", "assignee"],
     }),
     joinAt: timestamp("joinAt", TIMESTAMP_CONFIGS).defaultNow().notNull(),
   },
