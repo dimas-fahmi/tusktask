@@ -7,7 +7,7 @@ import RoomCard from "./RoomCard";
 
 const ContactLists = () => {
   // Pull chat context
-  const { setOpenIndex, setSelectedRoom, rooms } = useChatContext();
+  const { rooms } = useChatContext();
 
   return (
     <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-none">
