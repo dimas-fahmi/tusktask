@@ -3,13 +3,11 @@ import { db } from "@/src/db";
 import {
   ConversationMembershipType,
   conversationParticipants,
-  conversations,
 } from "@/src/db/schema/conversations";
 import { messages, MessageType } from "@/src/db/schema/messages";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { CustomError } from "@/src/lib/tusktask/utils/error";
-import { ConversationWithMessages } from "@/src/types/conversation";
 import { and, eq } from "drizzle-orm";
 
 export type MessagesConversationGetResponse = StandardResponse<
@@ -84,5 +82,9 @@ export async function messagesConversationGet(
         messages: error.message,
       });
     }
+
+    return createNextResponse(500, {
+      messages: "Unexpected and unknown error",
+    });
   }
 }
