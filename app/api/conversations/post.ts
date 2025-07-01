@@ -59,12 +59,19 @@ export async function conversationsPost(req: Request) {
       }
 
       // 3. Validate Request
-
       if (type === "direct") {
         if (!directOne || !directTwo) {
           throw new CustomError(
             "BAD_REQUEST",
             "Missing Important Parameters: [directOne | directTwo]",
+            400
+          );
+        }
+
+        if (directOne === directTwo) {
+          throw new CustomError(
+            "BAD_REQUEST",
+            "Cannot create direct conversation with yourself",
             400
           );
         }
