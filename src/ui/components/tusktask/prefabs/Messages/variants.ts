@@ -1,5 +1,5 @@
 // Animation variants
-export const sidebarVariants = {
+export const containerVariants = {
   open: {
     maxWidth: "900px",
     opacity: 1,
@@ -22,28 +22,9 @@ export const sidebarVariants = {
   },
 };
 
-export const chatRoomVariants = {
-  open: {
-    maxWidth: "900px",
-    opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 30,
-      duration: 0.3,
-    },
-  },
-  closed: {
-    maxWidth: 0,
-    opacity: 0,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 30,
-      duration: 0.3,
-    },
-  },
-};
+export const sidebarVariants = containerVariants;
+
+export const chatRoomVariants = containerVariants;
 
 export const contactVariants = {
   hidden: { opacity: 0, x: -20 },
