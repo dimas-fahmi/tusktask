@@ -4,7 +4,7 @@ import { createNotification as createNotificationFn } from "../mutators/createtN
 
 export const newNotificationMutation = (
   mutationKey: string[],
-  options: MutationActions | undefined
+  options?: MutationActions
 ) => {
   // Mutation
   const { mutate: createNotification, ...others } = useMutation({
@@ -24,5 +24,5 @@ export const newNotificationMutation = (
     },
   });
 
-  return { createNotificationFn, ...others };
+  return { createNotification, ...others };
 };
