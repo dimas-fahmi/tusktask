@@ -38,8 +38,12 @@ const NotificationCard = ({
   const createSubtitle = () => (
     <>
       <span>{timePassed(notification.createdAt)}</span>
-      <span>·</span>
-      <span>{notification?.team?.name ?? "N/A"}</span>
+      {notification && (
+        <>
+          <span>·</span>
+          <span>{notification?.team?.name ?? "N/A"}</span>
+        </>
+      )}
     </>
   );
 
@@ -83,26 +87,27 @@ const NotificationCard = ({
       <>
         {payload.type === "broadcast" ? (
           <>
-            <span className="font-semibold">{payload.promoter.name}</span> Just{" "}
-            {level[payload.roleBefore] > level[payload.roleNow]
+            <span className="font-semibold">{payload?.promoter.name}</span> Just{" "}
+            {level[payload?.roleBefore] > level[payload?.roleNow]
               ? "promoted"
               : "demoted"}{" "}
             <span className="font-semibold">
-              {payload.user.id === session?.user?.id
+              {payload?.user?.id === session?.user?.id
                 ? "you"
-                : payload.user.name}{" "}
+                : payload?.user?.name}{" "}
             </span>{" "}
             to{" "}
-            <span className="font-semibold capitalize">{payload.roleNow}</span>
+            <span className="font-semibold capitalize">{payload?.roleNow}</span>
           </>
         ) : (
           <>
-            <span className="font-semibold">{payload.promoter.name}</span> Just{" "}
-            {level[payload.roleBefore] > level[payload.roleNow]
+            <span className="font-semibold">{payload?.promoter?.name}</span>{" "}
+            Just{" "}
+            {level[payload?.roleBefore] > level[payload?.roleNow]
               ? "promoted"
               : "demoted"}{" "}
             you as{" "}
-            <span className="font-semibold capitalize">{payload.roleNow}</span>
+            <span className="font-semibold capitalize">{payload?.roleNow}</span>
           </>
         )}
       </>
@@ -235,6 +240,18 @@ const NotificationCard = ({
     },
     changesOnRole: {
       header: createOnChangesRoleHeader(),
+      subtitle: createSubtitle(),
+      footer: createAckowledgeFooter(),
+    },
+    newRoomChat: {
+      header: (
+        <>
+          <span className="font-semibold">
+            {notification.payload?.starter?.name}
+          </span>{" "}
+          has started a conversation with you
+        </>
+      ),
       subtitle: createSubtitle(),
       footer: createAckowledgeFooter(),
     },
