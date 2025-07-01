@@ -28,7 +28,8 @@ export const notifications = pgTable(
         "assignNotification", // when someone request other user to claim a task
         "reminder", // reminder notification for tasks deadline
         "system", // system broadcast
-        "changesOnRole",
+        "changesOnRole", // notification on roles changes
+        "newRoomChat", // When new room chat is created
       ],
     }).notNull(),
     category: text("category", {
