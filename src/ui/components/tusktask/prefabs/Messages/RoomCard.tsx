@@ -7,6 +7,10 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchConversationMembers } from "@/src/lib/tusktask/fetchers/fetchConversationMembers";
 import { useSession } from "next-auth/react";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
+import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
+import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
+import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
@@ -51,12 +55,10 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
             damping: 25,
           }}
         >
-          {user?.name
-            ? user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-            : "N/A"}
+          <Avatar className="w-12 h-12">
+            <AvatarImage src={user?.image ?? DEFAULT_AVATAR} />
+            <AvatarFallback>{getUserInitials(user?.name)}</AvatarFallback>
+          </Avatar>
         </motion.div>
         <AnimatePresence>
           {true && (
@@ -86,8 +88,12 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
           </span>
         </div>
         <div className="flex items-center justify-between mt-1">
-          <p className="text-sm text-muted-foreground truncate">
-            {timePassed(new Date())}
+          <p
+            className="text-xs text-muted-foreground truncate"
+            title={`Conversation with ${user?.name} is now opened`}
+          >
+            Conversation with {truncateText(user?.name ?? "", 1, false)} is now
+            started
           </p>
           <AnimatePresence>
             {5 > 0 && (

@@ -4,6 +4,10 @@ import React, { createContext, useState } from "react";
 import { fetchConversations } from "../fetchers/fetchConversations";
 import { ConversationType } from "@/src/db/schema/conversations";
 import NewRoomChatDialog from "@/src/ui/components/tusktask/prefabs/NewRoomChatDialog";
+import { fetchMessages } from "../fetchers/fetchMessages";
+import { MessageType } from "@/src/db/schema/messages";
+import { fetchConversationDetails } from "../fetchers/fetchConversationDetails";
+import { ConversationDetail } from "@/src/types/conversation";
 
 export interface ChatContextValues {
   // Index State
@@ -20,6 +24,12 @@ export interface ChatContextValues {
 
   // Rooms
   rooms: ConversationType[];
+
+  // Messages
+  messages: MessageType[];
+
+  // Conversation Detail
+  conversationDetails: ConversationDetail | null;
 }
 
 // Message type definition
@@ -57,6 +67,19 @@ const ChatContextProvider = ({
 
   const rooms = roomsResponse?.data ? roomsResponse.data : [];
 
+  // Conversation Details query
+  const { data: conversationDetailsResponse } = useQuery({
+    queryKey: ["conversation", selectedRoom],
+    queryFn: () => fetchConversationDetails(selectedRoom),
+    enabled: !!selectedRoom,
+  });
+
+  const conversationDetails = conversationDetailsResponse?.data ?? null;
+
+  const messages = conversationDetailsResponse?.data?.messages
+    ? conversationDetailsResponse.data.messages
+    : [];
+
   return (
     <ChatContext.Provider
       value={{
@@ -74,6 +97,12 @@ const ChatContextProvider = ({
 
         // Rooms
         rooms,
+
+        // Messages
+        messages,
+
+        // Conversation Detail
+        conversationDetails,
       }}
     >
       {children}

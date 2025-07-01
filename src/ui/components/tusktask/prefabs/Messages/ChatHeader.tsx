@@ -1,17 +1,22 @@
-import { Phone, Video, MoreVertical, ChevronLeft } from "lucide-react";
+"use client";
 
+import { Phone, Video, MoreVertical, ChevronLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Button } from "../../../shadcn/ui/button";
 import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
+import { useSession } from "next-auth/react";
 
 // Chat Header Component
-const ChatHeader = ({
-  contact,
-}: {
-  contact: { name: string; online: boolean };
-}) => {
+const ChatHeader = () => {
+  // Pull Session
+  const { data: session } = useSession();
+
   // Pull Chat Context
-  const { setOpenIndex } = useChatContext();
+  const { setOpenIndex, conversationDetails } = useChatContext();
+
+  const user = (conversationDetails?.members ?? []).find(
+    (u) => u.id !== session?.user?.id
+  );
 
   return (
     <motion.div
@@ -36,13 +41,15 @@ const ChatHeader = ({
             whileHover={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            {contact.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
+            {user?.name
+              ? user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+              : "N/A"}
           </motion.div>
           <AnimatePresence>
-            {contact.online && (
+            {true && (
               <motion.div
                 className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full"
                 initial={{ scale: 0 }}
@@ -64,9 +71,9 @@ const ChatHeader = ({
             damping: 25,
           }}
         >
-          <h2 className="font-semibold">{contact.name}</h2>
+          <h2 className="font-semibold">{user?.name}</h2>
           <p className="text-sm text-muted-foreground">
-            {contact.online ? "Online" : "Last seen recently"}
+            {true ? "Online" : "Last seen recently"}
           </p>
         </motion.div>
       </div>

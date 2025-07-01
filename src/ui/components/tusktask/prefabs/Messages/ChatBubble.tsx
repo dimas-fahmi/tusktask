@@ -1,10 +1,14 @@
 import { Message } from "@/src/lib/tusktask/context/ChatContext";
 import { motion } from "motion/react";
 import { messageVariants } from "./variants";
+import { MessageType } from "@/src/db/schema/messages";
+import { useSession } from "next-auth/react";
+import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 
 // Chat Bubble Component
-const ChatBubble = ({ message }: { message: Message }) => {
-  const isMe = message.sender === "me";
+const ChatBubble = ({ message }: { message: MessageType }) => {
+  const { data: session } = useSession();
+  const isMe = message.senderId === session?.user?.id;
 
   return (
     <motion.div
@@ -16,14 +20,14 @@ const ChatBubble = ({ message }: { message: Message }) => {
       layout
     >
       <div className={`max-w-[70%] ${isMe ? "order-2" : "order-1"}`}>
-        {!isMe && message.senderName && (
+        {!isMe && message?.senderId && (
           <motion.p
             className="text-xs text-muted-foreground mb-1 px-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
-            {message.senderName}
+            Jajang
           </motion.p>
         )}
         <motion.div
@@ -35,7 +39,7 @@ const ChatBubble = ({ message }: { message: Message }) => {
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
-          <p className="text-sm">{message.text}</p>
+          <p className="text-sm">{message.content}</p>
         </motion.div>
         <motion.p
           className={`text-xs text-muted-foreground mt-1 px-2 ${isMe ? "text-right" : "text-left"}`}
@@ -43,7 +47,7 @@ const ChatBubble = ({ message }: { message: Message }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          {message.timestamp}
+          {timePassed(new Date())}
         </motion.p>
       </div>
     </motion.div>
