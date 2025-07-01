@@ -3,10 +3,12 @@ import { MutationActions } from "./types";
 import { createNotification as createNotificationFn } from "../mutators/createtNotification";
 
 export const newNotificationMutation = (
+  mutationKey: string[],
   options: MutationActions | undefined
 ) => {
   // Mutation
   const { mutate: createNotification, ...others } = useMutation({
+    mutationKey,
     mutationFn: createNotificationFn,
     onMutate: () => {
       options?.onMutate?.();
