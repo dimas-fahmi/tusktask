@@ -55,6 +55,7 @@ export async function notificationsPost(req: Request) {
   const insensitiveTypes: NotificationType["type"][] = [
     "directMessage",
     "system",
+    "newRoomChat",
   ];
 
   // Check membership
