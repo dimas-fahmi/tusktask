@@ -64,8 +64,8 @@ const ChatRoom = () => {
       exit={{ opacity: 0, x: -20 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
     >
-      <ChatHeader contact={currentContact} />
-      <ChatMessages messages={messages} />
+      <ChatHeader />
+      <ChatMessages />
       <ChatInput onSendMessage={handleSendMessage} />
     </motion.div>
   );
