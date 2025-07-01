@@ -52,9 +52,10 @@ export async function conversationsGet(req: Request) {
     });
   }
 
-  if (!conversationMemberships) {
-    return createNextResponse(404, {
-      messages: "Not found",
+  if (conversationMemberships.length === 0) {
+    return createNextResponse(200, {
+      messages: "No conversations found",
+      data: conversationMemberships,
     });
   }
 
