@@ -1,11 +1,19 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
-import { conversationParticipants } from "@/src/db/schema/conversations";
+import {
+  conversationParticipants,
+  ConversationType,
+} from "@/src/db/schema/conversations";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { extractFieldValues } from "@/src/lib/tusktask/utils/extractFieldValues";
 import { getSearchParams } from "@/src/lib/tusktask/utils/getSearchParams";
 import { ConversationMembershipWithConversation } from "@/src/types/conversation";
 import { and, eq } from "drizzle-orm";
+
+export type ConversationsGetResponse = StandardResponse<
+  ConversationType[] | null
+>;
 
 export async function conversationsGet(req: Request) {
   // Parse parameters

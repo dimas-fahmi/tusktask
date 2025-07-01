@@ -1,4 +1,5 @@
 import { PgTimestampConfig } from "drizzle-orm/pg-core";
+import { CustomError } from "../utils/error";
 
 export const TIMESTAMP_CONFIGS: PgTimestampConfig = {
   mode: "date",

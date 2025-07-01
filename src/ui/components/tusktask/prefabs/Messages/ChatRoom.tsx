@@ -7,11 +7,7 @@ import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 
 // Main Chat Room Component
-const ChatRoom = ({
-  setOpenIndex,
-}: {
-  setOpenIndex: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const ChatRoom = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,

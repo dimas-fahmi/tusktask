@@ -43,7 +43,7 @@ const ChatInput = ({
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             placeholder="Type a message..."
             className="w-full bg-transparent resize-none outline-none text-sm placeholder:text-muted-foreground"
             rows={1}

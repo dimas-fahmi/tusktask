@@ -98,8 +98,8 @@ export async function conversationsPost(req: Request) {
         try {
           existedConversations = await tx.query.conversations.findFirst({
             where: or(
-              eq(conversations.id, `${directOne}/${directTwo}`),
-              eq(conversations.id, `${directTwo}/${directOne}`)
+              eq(conversations.id, `${directOne}&${directTwo}`),
+              eq(conversations.id, `${directTwo}&${directOne}`)
             ),
           });
         } catch (error) {
@@ -120,7 +120,7 @@ export async function conversationsPost(req: Request) {
           [newConversation] = await tx
             .insert(conversations)
             .values({
-              id: `${directOne}/${directTwo}`,
+              id: `${directOne}&${directTwo}`,
               type: "direct",
             })
             .returning();

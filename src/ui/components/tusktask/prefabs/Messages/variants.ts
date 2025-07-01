@@ -113,3 +113,46 @@ export const messageVariants = {
     },
   },
 };
+
+export const contacts = [
+  {
+    id: 1,
+    name: "John Doe",
+    lastMessage: "Hey, how are you?",
+    time: "2:30 PM",
+    unread: 2,
+    online: true,
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    lastMessage: "Thanks for the help!",
+    time: "1:15 PM",
+    unread: 0,
+    online: false,
+  },
+  {
+    id: 3,
+    name: "Team Project",
+    lastMessage: "Meeting at 3 PM",
+    time: "12:45 PM",
+    unread: 5,
+    online: false,
+  },
+  {
+    id: 4,
+    name: "Mom",
+    lastMessage: "Don't forget dinner tonight",
+    time: "11:30 AM",
+    unread: 1,
+    online: true,
+  },
+  {
+    id: 5,
+    name: "Alex Wilson",
+    lastMessage: "Sure, sounds good!",
+    time: "Yesterday",
+    unread: 0,
+    online: false,
+  },
+];
