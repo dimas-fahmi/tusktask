@@ -240,8 +240,7 @@ export async function conversationsPost(req: Request) {
           (tm) => ({
             conversationId: newConversationId,
             userId: tm.userId,
-            role: tm.userRole === "owner" ? "owner" : "member",
-            joinAt: new Date(),
+            role: tm.userRole,
           })
         );
 
