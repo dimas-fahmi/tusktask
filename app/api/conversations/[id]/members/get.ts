@@ -1,9 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/src/db";
-import {
-  conversationParticipants,
-  conversations,
-} from "@/src/db/schema/conversations";
+import { conversationParticipants } from "@/src/db/schema/conversations";
 import { UserType } from "@/src/db/schema/users";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
