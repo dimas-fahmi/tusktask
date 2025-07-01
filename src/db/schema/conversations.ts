@@ -27,6 +27,7 @@ export const conversations = pgTable(
       enum: ["team", "direct"],
     }).notNull(),
     image: text("image"),
+    createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
   },
   (t) => [
     index("CONVERSATIONS_NAME_IDX").on(t.name),
