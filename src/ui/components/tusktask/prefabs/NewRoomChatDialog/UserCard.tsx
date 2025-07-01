@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
+import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
 
 const UserCard = ({ user }: { user: SanitizedUser }) => {
   // Session
@@ -29,6 +30,11 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
   const prebuildRoomChatId = `${session?.user?.id}&${user.id}`;
 
   // Mutation
+  const { createNotification } = newNotificationMutation([
+    "notifications",
+    "new",
+  ]);
+
   const { createNewChat } = newChatMutation(
     ["conversation", "new", prebuildRoomChatId],
     queryClient,
@@ -39,6 +45,26 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
       onSettled: () => {
         router.push("/dashboard/messages");
         setSelectedRoom(prebuildRoomChatId);
+      },
+      onSuccess: () => {
+        if (!session || !session?.user?.id) return;
+
+        createNotification({
+          senderId: session.user.id,
+          receiverId: user.id,
+          type: "newRoomChat",
+          category: "messages",
+          title: `${session?.user?.name} Just started a conversation with ${user?.name}`,
+          payload: {
+            starter: {
+              id: session.user.id,
+              name: session.user.name,
+              image: session.user.image,
+              username: session.user.username,
+            },
+            receiver: { ...user },
+          },
+        });
       },
     }
   );
