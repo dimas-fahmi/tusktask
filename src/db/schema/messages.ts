@@ -19,10 +19,8 @@ export const messages = pgTable(
     senderId: text("senderId")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
-    receiverId: text("receiverId").references(() => users.id),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
     respondToId: text("respondToId"),
-    teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }),
   },
   (t) => [
     foreignKey({
