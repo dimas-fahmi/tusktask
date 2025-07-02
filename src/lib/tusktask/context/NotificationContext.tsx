@@ -35,6 +35,7 @@ import AlertDialog from "@/src/ui/components/tusktask/prefabs/AlertDialog";
 import { createNotification as createNotificationFn } from "../mutators/createtNotification";
 import { NotificationsPostRequest } from "@/app/api/notifications/post";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
+import { invalidateByNotificationType } from "../invalidators/notifications/invalidators";
 
 interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -349,6 +350,7 @@ const NotificationContextProvider = ({
 
       if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
         setNewNotification(true);
+        invalidateByNotificationType(latestFetched.type, queryClient);
         triggerToast({
           type: "default",
           title: "New Notification",

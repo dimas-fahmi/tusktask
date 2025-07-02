@@ -1,8 +1,9 @@
 import { foreignKey, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
-import { relations } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { teams } from "./teams";
+import { conversations } from "./conversations";
 
 // MESSAGES TABLE
 export const messages = pgTable(
@@ -12,12 +13,13 @@ export const messages = pgTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     content: text("content").notNull(),
+    conversationId: text("conversationId")
+      .references(() => conversations.id, { onDelete: "cascade" })
+      .notNull(),
     senderId: text("senderId")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
-    receiverId: text("receiverId")
-      .references(() => users.id)
-      .notNull(),
+    receiverId: text("receiverId").references(() => users.id),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
     respondToId: text("respondToId"),
     teamId: text("teamId").references(() => teams.id, { onDelete: "cascade" }),
@@ -38,13 +40,18 @@ export const messagesRelations = relations(messages, ({ one }) => ({
     references: [users.id],
     relationName: "messages_sender",
   }),
-  receiver: one(users, {
-    fields: [messages.receiverId],
-    references: [users.id],
-    relationName: "messages_receiver",
-  }),
   respondTo: one(messages, {
     fields: [messages.respondToId],
     references: [messages.id],
   }),
+
+  // Conversation Relation
+  conversation: one(conversations, {
+    fields: [messages.conversationId],
+    references: [conversations.id],
+    relationName: "conversations_messages",
+  }),
 }));
+
+export type MessageType = InferSelectModel<typeof messages>;
+export type MessageInsertType = InferInsertModel<typeof messages>;

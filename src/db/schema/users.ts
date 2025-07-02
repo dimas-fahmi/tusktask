@@ -7,6 +7,7 @@ import { notifications } from "./notifications";
 import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { tasks } from "./tasks";
 import { messages } from "./messages";
+import { conversationParticipants } from "./conversations";
 
 // USERS TABLE
 export const users = pgTable(
@@ -76,9 +77,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   sendMessages: many(messages, {
     relationName: "messages_sender",
   }),
-  receivedMessages: many(messages, {
-    relationName: "messages_receiver",
-  }),
+  conversationMembership: many(conversationParticipants),
 }));
 
 export type UserType = InferSelectModel<typeof users>;

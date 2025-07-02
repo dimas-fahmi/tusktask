@@ -1,0 +1,1 @@
+ALTER TABLE "conversations" ADD COLUMN "createdAt" timestamp (6) with time zone DEFAULT now();
