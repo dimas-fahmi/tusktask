@@ -4,6 +4,7 @@ import { TIMESTAMP_CONFIGS } from "@/src/lib/tusktask/constants/configs";
 import { InferInsertModel, InferSelectModel, relations } from "drizzle-orm";
 import { teams } from "./teams";
 import { conversations } from "./conversations";
+import { createInsertSchema } from "drizzle-zod";
 
 // MESSAGES TABLE
 export const messages = pgTable(
@@ -53,3 +54,5 @@ export const messagesRelations = relations(messages, ({ one }) => ({
 
 export type MessageType = InferSelectModel<typeof messages>;
 export type MessageInsertType = InferInsertModel<typeof messages>;
+
+export const messageInsertSchema = createInsertSchema(messages);
