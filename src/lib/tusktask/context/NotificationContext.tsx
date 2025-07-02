@@ -36,8 +36,9 @@ import { createNotification as createNotificationFn } from "../mutators/createtN
 import { NotificationsPostRequest } from "@/app/api/notifications/post";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import { invalidateByNotificationType } from "../invalidators/notifications/invalidators";
+import { usePathname } from "next/navigation";
 
-interface TriggerToastProps extends ExternalToast {
+export interface TriggerToastProps extends ExternalToast {
   title: string;
   type: "default" | "error" | "success" | "reminder";
   sound?: PlaySoundType;
@@ -334,6 +335,8 @@ const NotificationContextProvider = ({
   const latestNotification = useRef<Date | null>(null);
   const [newNotification, setNewNotification] = useState(false);
 
+  const pathname = usePathname();
+
   useEffect(() => {
     const nots = received.filter((t) => t.status === "not_read");
 
@@ -351,23 +354,12 @@ const NotificationContextProvider = ({
       if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
         setNewNotification(true);
         invalidateByNotificationType(
-          latestFetched.type,
           queryClient,
-          latestFetched
+          latestFetched,
+          triggerToast,
+          setNotificationsDialogOpen,
+          pathname
         );
-        triggerToast({
-          type: "default",
-          title: "New Notification",
-          description: "You have a new notification",
-          action: (
-            <Button
-              variant={"toaster"}
-              onClick={() => setNotificationsDialogOpen(true)}
-            >
-              Open
-            </Button>
-          ),
-        });
       }
 
       latestNotification.current = latestFetched.createdAt;
