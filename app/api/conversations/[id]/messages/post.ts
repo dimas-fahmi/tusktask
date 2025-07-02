@@ -8,8 +8,10 @@ import {
   messageInsertSchema,
   MessageInsertType,
   messages,
+  MessageType,
 } from "@/src/db/schema/messages";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { CustomError } from "@/src/lib/tusktask/utils/error";
 import { and, eq } from "drizzle-orm";
 
@@ -17,6 +19,9 @@ export interface MessagesConversationPostRequest {
   content: string;
   respondToId?: string;
 }
+
+export type MessagesConversationPostResponse =
+  StandardResponse<MessageType | null>;
 
 export async function messagesConversationPost(
   req: Request,
