@@ -350,7 +350,11 @@ const NotificationContextProvider = ({
 
       if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
         setNewNotification(true);
-        invalidateByNotificationType(latestFetched.type, queryClient);
+        invalidateByNotificationType(
+          latestFetched.type,
+          queryClient,
+          latestFetched
+        );
         triggerToast({
           type: "default",
           title: "New Notification",
