@@ -30,7 +30,7 @@ export const invalidateByNotificationType = (
         triggerToast({
           type: "default",
           title: `${notification?.payload?.sender?.name} send you a message`,
-          description: "Hi, how are you?",
+          description: `${notification?.payload?.content}`,
         });
 
         break;
