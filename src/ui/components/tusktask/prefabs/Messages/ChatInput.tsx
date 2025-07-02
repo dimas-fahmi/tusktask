@@ -4,6 +4,9 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { Button } from "../../../shadcn/ui/button";
 import { Send } from "lucide-react";
+import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
+import { newMessageMutation } from "@/src/lib/tusktask/mutation/newMessageMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Chat Input Component
 const ChatInput = ({
@@ -13,9 +16,31 @@ const ChatInput = ({
 }) => {
   const [message, setMessage] = useState("");
 
+  // Pull Chat Context
+  const { selectedRoom } = useChatContext();
+
+  // Pull queryclient
+
+  const queryclient = useQueryClient();
+
+  // Mutation
+  const { sendMessage } = newMessageMutation({
+    onSettled: () => {
+      queryclient.invalidateQueries({
+        queryKey: ["conversation", selectedRoom],
+      });
+    },
+  });
+
   const handleSend = () => {
+    if (!selectedRoom) return;
+
+    sendMessage({
+      conversationId: selectedRoom,
+      content: message,
+    });
+
     if (message.trim()) {
-      onSendMessage(message.trim());
       setMessage("");
     }
   };
