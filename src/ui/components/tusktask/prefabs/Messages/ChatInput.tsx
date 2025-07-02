@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 const ChatInput = () => {
   // Message State
   const [message, setMessage] = useState("");
+  const [lastMessage, setLastMessage] = useState("");
 
   // Pull Session
   const { data: session } = useSession();
@@ -37,6 +38,12 @@ const ChatInput = () => {
 
   // Mutation
   const { sendMessage } = newMessageMutation({
+    onMutate: () => {
+      setLastMessage(message);
+      if (message.trim()) {
+        setMessage("");
+      }
+    },
     onSettled: () => {
       queryclient.invalidateQueries({
         queryKey: ["conversation", selectedRoom],
@@ -58,6 +65,7 @@ const ChatInput = () => {
             image: session.user.image,
           },
           conversationId: selectedRoom,
+          content: lastMessage,
         },
       });
     },
@@ -70,10 +78,6 @@ const ChatInput = () => {
       conversationId: selectedRoom,
       content: message,
     });
-
-    if (message.trim()) {
-      setMessage("");
-    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
