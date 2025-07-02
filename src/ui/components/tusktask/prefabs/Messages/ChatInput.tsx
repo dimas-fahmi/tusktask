@@ -4,18 +4,74 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { Button } from "../../../shadcn/ui/button";
 import { Send } from "lucide-react";
+import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
+import { newMessageMutation } from "@/src/lib/tusktask/mutation/newMessageMutation";
+import { useQueryClient } from "@tanstack/react-query";
+import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
+import { useSession } from "next-auth/react";
 
 // Chat Input Component
-const ChatInput = ({
-  onSendMessage,
-}: {
-  onSendMessage: (message: string) => void;
-}) => {
+const ChatInput = () => {
+  // Message State
   const [message, setMessage] = useState("");
 
+  // Pull Session
+  const { data: session } = useSession();
+
+  // Pull Chat Context
+  const { selectedRoom, conversationDetails } = useChatContext();
+
+  // Members
+  const members = conversationDetails?.members?.find(
+    (t) => t.id !== session?.user?.id
+  );
+
+  // Pull queryclient
+  const queryclient = useQueryClient();
+
+  // Create Notification
+  const { createNotification } = newNotificationMutation([
+    "notification",
+    "new",
+  ]);
+
+  // Mutation
+  const { sendMessage } = newMessageMutation({
+    onSettled: () => {
+      queryclient.invalidateQueries({
+        queryKey: ["conversation", selectedRoom],
+      });
+    },
+    onSuccess: () => {
+      if (!session?.user?.id || !members) return;
+
+      createNotification({
+        senderId: session.user.id,
+        receiverId: members.id,
+        type: "directMessage",
+        category: "messages",
+        payload: {
+          sender: {
+            name: session.user.name,
+            id: session.user.id,
+            username: session.user.username,
+            image: session.user.image,
+          },
+          conversationId: selectedRoom,
+        },
+      });
+    },
+  });
+
   const handleSend = () => {
+    if (!selectedRoom) return;
+
+    sendMessage({
+      conversationId: selectedRoom,
+      content: message,
+    });
+
     if (message.trim()) {
-      onSendMessage(message.trim());
       setMessage("");
     }
   };

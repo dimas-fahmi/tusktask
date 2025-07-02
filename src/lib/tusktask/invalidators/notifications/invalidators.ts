@@ -5,7 +5,8 @@ import { QueryClient } from "@tanstack/react-query";
 
 export const invalidateByNotificationType = (
   latestType: NotificationType["type"],
-  queryClient: QueryClient
+  queryClient: QueryClient,
+  notification: NotificationType
 ) => {
   const invalidate = (type: NotificationType["type"]) => {
     switch (type) {
@@ -14,6 +15,10 @@ export const invalidateByNotificationType = (
           queryKey: ["conversations"],
         });
         break;
+      case "directMessage":
+        queryClient.invalidateQueries({
+          queryKey: ["conversation", notification?.payload?.conversationId],
+        });
     }
   };
 

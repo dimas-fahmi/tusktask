@@ -43,6 +43,13 @@
       "when": 1751414274894,
       "tag": "0005_hard_ravenous",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1751421397450,
+      "tag": "0006_wandering_snowbird",
+      "breakpoints": true
     }
   ]
 }
