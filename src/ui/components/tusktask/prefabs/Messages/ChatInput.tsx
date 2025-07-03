@@ -9,6 +9,7 @@ import { newMessageMutation } from "@/src/lib/tusktask/mutation/newMessageMutati
 import { useQueryClient } from "@tanstack/react-query";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
 import { useSession } from "next-auth/react";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 // Chat Input Component
 const ChatInput = () => {
@@ -20,7 +21,10 @@ const ChatInput = () => {
   const { data: session } = useSession();
 
   // Pull Chat Context
-  const { selectedRoom, conversationDetails } = useChatContext();
+  const { conversationDetails } = useChatContext();
+
+  // Pull selectedRoom From notification context
+  const { selectedRoom } = useNotificationContext();
 
   // Members
   const members = conversationDetails?.members?.find(

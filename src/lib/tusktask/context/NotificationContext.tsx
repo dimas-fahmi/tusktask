@@ -34,7 +34,6 @@ import {
 import AlertDialog from "@/src/ui/components/tusktask/prefabs/AlertDialog";
 import { createNotification as createNotificationFn } from "../mutators/createtNotification";
 import { NotificationsPostRequest } from "@/app/api/notifications/post";
-import { Button } from "@/src/ui/components/shadcn/ui/button";
 import { invalidateByNotificationType } from "../invalidators/notifications/invalidators";
 import { usePathname } from "next/navigation";
 
@@ -80,6 +79,10 @@ interface NotificationContextValues {
   setAlertDialog: SetStateAction<AlertDialogState>;
   triggerAlertDialog: (props: Omit<AlertDialogState, "open">) => void;
   handleResetAlertDialog: () => void;
+
+  // Room Chat State
+  selectedRoom?: string;
+  setSelectedRoom: SetStateAction<string | undefined>;
 }
 
 export type PlaySoundType =
@@ -334,6 +337,10 @@ const NotificationContextProvider = ({
   const [invitationLength, setInvitationLength] = useState(0);
   const latestNotification = useRef<Date | null>(null);
   const [newNotification, setNewNotification] = useState(false);
+  // Room State
+  const [selectedRoom, setSelectedRoom] = useState<string | undefined>(
+    undefined
+  );
 
   const pathname = usePathname();
 
@@ -358,7 +365,8 @@ const NotificationContextProvider = ({
           latestFetched,
           triggerToast,
           setNotificationsDialogOpen,
-          pathname
+          pathname,
+          selectedRoom
         );
       }
 
@@ -500,6 +508,10 @@ const NotificationContextProvider = ({
         setAlertDialog,
         triggerAlertDialog,
         handleResetAlertDialog,
+
+        // selectedRoom
+        selectedRoom,
+        setSelectedRoom,
       }}
     >
       {children}

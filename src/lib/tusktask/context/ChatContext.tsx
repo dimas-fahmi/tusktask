@@ -8,15 +8,12 @@ import { fetchMessages } from "../fetchers/fetchMessages";
 import { MessageType } from "@/src/db/schema/messages";
 import { fetchConversationDetails } from "../fetchers/fetchConversationDetails";
 import { ConversationDetail } from "@/src/types/conversation";
+import useNotificationContext from "../hooks/context/useNotificationContext";
 
 export interface ChatContextValues {
   // Index State
   openIndex: boolean;
   setOpenIndex: SetStateAction<boolean>;
-
-  // Room Chat State
-  selectedRoom?: string;
-  setSelectedRoom: SetStateAction<string | undefined>;
 
   // New Room Chat Dialog
   newRoomChatDialogOpen: boolean;
@@ -51,10 +48,8 @@ const ChatContextProvider = ({
   // Index State
   const [openIndex, setOpenIndex] = useState(false);
 
-  // Room State
-  const [selectedRoom, setSelectedRoom] = useState<string | undefined>(
-    undefined
-  );
+  // Pull selectedRoom from notification context
+  const { selectedRoom, setSelectedRoom } = useNotificationContext();
 
   // New Room Chat State
   const [newRoomChatDialogOpen, setNewRoomChatDialogOpen] = useState(false);
@@ -86,10 +81,6 @@ const ChatContextProvider = ({
         // Index State
         openIndex,
         setOpenIndex,
-
-        // Room State
-        selectedRoom,
-        setSelectedRoom,
 
         // New Room Chat Dialog Open
         newRoomChatDialogOpen,

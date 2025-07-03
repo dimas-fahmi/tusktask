@@ -11,7 +11,8 @@ export const invalidateByNotificationType = (
   notification: NotificationType,
   triggerToast: (options: TriggerToastProps) => void,
   setNotificationsDialogOpen: SetStateAction<boolean>,
-  pathname: string
+  pathname: string,
+  selectedRoom?: string
 ) => {
   const invalidate = (type: NotificationType["type"]) => {
     switch (type) {
@@ -25,7 +26,11 @@ export const invalidateByNotificationType = (
           queryKey: ["conversation", notification?.payload?.conversationId],
         });
 
-        if (pathname === "/dashboard/messages") return;
+        if (
+          pathname === "/dashboard/messages" &&
+          selectedRoom === notification?.payload?.conversationId
+        )
+          return;
 
         triggerToast({
           type: "default",

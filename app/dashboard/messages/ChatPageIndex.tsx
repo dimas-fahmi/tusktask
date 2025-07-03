@@ -1,6 +1,7 @@
 "use client";
 
 import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import { useSidebar } from "@/src/ui/components/shadcn/ui/sidebar";
 import ChatRoom from "@/src/ui/components/tusktask/prefabs/Messages/ChatRoom";
@@ -25,8 +26,10 @@ export const ChatPageIndex = () => {
   const { setOpen, open, setOpenMobile, openMobile } = useSidebar();
 
   // Pull Chat Context Values
-  const { openIndex, selectedRoom, setNewRoomChatDialogOpen } =
-    useChatContext();
+  const { openIndex, setNewRoomChatDialogOpen } = useChatContext();
+
+  // Pull selectedRoom From notification context
+  const { selectedRoom } = useNotificationContext();
 
   return (
     <div className="flex h-screen">
