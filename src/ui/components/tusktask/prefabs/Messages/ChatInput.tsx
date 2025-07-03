@@ -10,6 +10,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
 import { useSession } from "next-auth/react";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { registerNewMessageToConversation } from "@/src/lib/tusktask/optimisticUpdates/registerNewMessageToConversation";
+import { Content } from "@radix-ui/react-dialog";
 
 // Chat Input Component
 const ChatInput = () => {
@@ -43,6 +45,14 @@ const ChatInput = () => {
   // Mutation
   const { sendMessage } = newMessageMutation({
     onMutate: () => {
+      if (!session?.user?.id) return;
+
+      registerNewMessageToConversation(
+        queryclient,
+        session?.user?.id,
+        message,
+        selectedRoom
+      );
       setLastMessage(message);
       if (message.trim()) {
         setMessage("");

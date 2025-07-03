@@ -3,8 +3,12 @@ import { MessageType } from "../db/schema/messages";
 import { UserType } from "../db/schema/users";
 
 // Conversation
+export interface MessageWithCreatedByOptimisticUpdate extends MessageType {
+  createdByOptimisticUpdate?: boolean;
+}
+
 export interface ConversationWithMessages extends ConversationType {
-  messages: MessageType[];
+  messages: MessageWithCreatedByOptimisticUpdate[];
 }
 
 export interface ConversationWithMembers extends ConversationType {

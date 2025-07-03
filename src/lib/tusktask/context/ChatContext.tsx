@@ -7,7 +7,10 @@ import NewRoomChatDialog from "@/src/ui/components/tusktask/prefabs/NewRoomChatD
 import { fetchMessages } from "../fetchers/fetchMessages";
 import { MessageType } from "@/src/db/schema/messages";
 import { fetchConversationDetails } from "../fetchers/fetchConversationDetails";
-import { ConversationDetail } from "@/src/types/conversation";
+import {
+  ConversationDetail,
+  MessageWithCreatedByOptimisticUpdate,
+} from "@/src/types/conversation";
 import useNotificationContext from "../hooks/context/useNotificationContext";
 
 export interface ChatContextValues {
@@ -23,7 +26,7 @@ export interface ChatContextValues {
   rooms: ConversationType[];
 
   // Messages
-  messages: MessageType[];
+  messages: MessageWithCreatedByOptimisticUpdate[];
 
   // Conversation Detail
   conversationDetails: ConversationDetail | null;
