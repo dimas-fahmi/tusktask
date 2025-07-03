@@ -12,13 +12,17 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 
 const UserCard = ({ user }: { user: SanitizedUser }) => {
   // Session
   const { data: session } = useSession();
 
   // Pull setters from chat context
-  const { setSelectedRoom, setNewRoomChatDialogOpen } = useChatContext();
+  const { setNewRoomChatDialogOpen } = useChatContext();
+
+  // Pull setters from notification context
+  const { setSelectedRoom } = useNotificationContext();
 
   // Pull query client
   const queryClient = useQueryClient();

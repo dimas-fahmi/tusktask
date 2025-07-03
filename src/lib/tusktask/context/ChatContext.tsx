@@ -7,16 +7,16 @@ import NewRoomChatDialog from "@/src/ui/components/tusktask/prefabs/NewRoomChatD
 import { fetchMessages } from "../fetchers/fetchMessages";
 import { MessageType } from "@/src/db/schema/messages";
 import { fetchConversationDetails } from "../fetchers/fetchConversationDetails";
-import { ConversationDetail } from "@/src/types/conversation";
+import {
+  ConversationDetail,
+  MessageWithCreatedByOptimisticUpdate,
+} from "@/src/types/conversation";
+import useNotificationContext from "../hooks/context/useNotificationContext";
 
 export interface ChatContextValues {
   // Index State
   openIndex: boolean;
   setOpenIndex: SetStateAction<boolean>;
-
-  // Room Chat State
-  selectedRoom?: string;
-  setSelectedRoom: SetStateAction<string | undefined>;
 
   // New Room Chat Dialog
   newRoomChatDialogOpen: boolean;
@@ -26,7 +26,7 @@ export interface ChatContextValues {
   rooms: ConversationType[];
 
   // Messages
-  messages: MessageType[];
+  messages: MessageWithCreatedByOptimisticUpdate[];
 
   // Conversation Detail
   conversationDetails: ConversationDetail | null;
@@ -51,10 +51,8 @@ const ChatContextProvider = ({
   // Index State
   const [openIndex, setOpenIndex] = useState(false);
 
-  // Room State
-  const [selectedRoom, setSelectedRoom] = useState<string | undefined>(
-    undefined
-  );
+  // Pull selectedRoom from notification context
+  const { selectedRoom, setSelectedRoom } = useNotificationContext();
 
   // New Room Chat State
   const [newRoomChatDialogOpen, setNewRoomChatDialogOpen] = useState(false);
@@ -86,10 +84,6 @@ const ChatContextProvider = ({
         // Index State
         openIndex,
         setOpenIndex,
-
-        // Room State
-        selectedRoom,
-        setSelectedRoom,
 
         // New Room Chat Dialog Open
         newRoomChatDialogOpen,

@@ -9,17 +9,24 @@ import { newMessageMutation } from "@/src/lib/tusktask/mutation/newMessageMutati
 import { useQueryClient } from "@tanstack/react-query";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
 import { useSession } from "next-auth/react";
+import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import { registerNewMessageToConversation } from "@/src/lib/tusktask/optimisticUpdates/registerNewMessageToConversation";
+import { Content } from "@radix-ui/react-dialog";
 
 // Chat Input Component
 const ChatInput = () => {
   // Message State
   const [message, setMessage] = useState("");
+  const [lastMessage, setLastMessage] = useState("");
 
   // Pull Session
   const { data: session } = useSession();
 
   // Pull Chat Context
-  const { selectedRoom, conversationDetails } = useChatContext();
+  const { conversationDetails } = useChatContext();
+
+  // Pull selectedRoom From notification context
+  const { selectedRoom } = useNotificationContext();
 
   // Members
   const members = conversationDetails?.members?.find(
@@ -37,6 +44,20 @@ const ChatInput = () => {
 
   // Mutation
   const { sendMessage } = newMessageMutation({
+    onMutate: () => {
+      if (!session?.user?.id) return;
+
+      registerNewMessageToConversation(
+        queryclient,
+        session?.user?.id,
+        message,
+        selectedRoom
+      );
+      setLastMessage(message);
+      if (message.trim()) {
+        setMessage("");
+      }
+    },
     onSettled: () => {
       queryclient.invalidateQueries({
         queryKey: ["conversation", selectedRoom],
@@ -58,6 +79,7 @@ const ChatInput = () => {
             image: session.user.image,
           },
           conversationId: selectedRoom,
+          content: lastMessage,
         },
       });
     },
@@ -70,10 +92,6 @@ const ChatInput = () => {
       conversationId: selectedRoom,
       content: message,
     });
-
-    if (message.trim()) {
-      setMessage("");
-    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
