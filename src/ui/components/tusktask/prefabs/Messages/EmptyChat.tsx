@@ -1,4 +1,3 @@
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { Send } from "lucide-react";
 import { motion } from "motion/react";
 import { emptyStateVariants } from "./variants";

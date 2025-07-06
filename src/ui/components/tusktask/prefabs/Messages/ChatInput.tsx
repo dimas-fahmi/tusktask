@@ -4,15 +4,13 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { Button } from "../../../shadcn/ui/button";
 import { Send } from "lucide-react";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { newMessageMutation } from "@/src/lib/tusktask/mutation/newMessageMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
 import { useSession } from "next-auth/react";
-import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { registerNewMessageToConversation } from "@/src/lib/tusktask/optimisticUpdates/registerNewMessageToConversation";
-import { Content } from "@radix-ui/react-dialog";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 // Chat Input Component
 const ChatInput = () => {
@@ -24,10 +22,12 @@ const ChatInput = () => {
   const { data: session } = useSession();
 
   // Pull Chat Context
-  const { conversationDetails } = useChatContext();
-
-  // Pull selectedRoom From chat store
-  const selectedRoom = useChatStore((s) => s.selectedRoom);
+  const { selectedRoom, conversationDetails } = useChatStore(
+    useShallow((s) => ({
+      selectedRoom: s.selectedRoom,
+      conversationDetails: s.conversationDetails,
+    }))
+  );
 
   // Members
   const members = conversationDetails?.members?.find(

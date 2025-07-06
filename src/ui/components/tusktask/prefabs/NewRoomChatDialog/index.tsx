@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../../shadcn/ui/dialog";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { Input } from "../Input";
 import { Search } from "lucide-react";
 import { Button } from "../../../shadcn/ui/button";
@@ -18,13 +17,20 @@ import { Controller, useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import fetchUsers from "@/src/lib/tusktask/fetchers/fetchUsers";
 import { useSession } from "next-auth/react";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 const NewRoomChatDialog = () => {
   // Pull session
   const { data: session } = useSession();
 
   // Pull state from chat context
-  const { newRoomChatDialogOpen, setNewRoomChatDialogOpen } = useChatContext();
+  const { newRoomChatDialogOpen, setNewRoomChatDialogOpen } = useChatStore(
+    useShallow((s) => ({
+      newRoomChatDialogOpen: s.newRoomChatDialogOpen,
+      setNewRoomChatDialogOpen: s.setNewRoomChatDialogOpen,
+    }))
+  );
 
   // Fetch User
   const [userKey, setUserKey] = useState<string | undefined>(undefined);

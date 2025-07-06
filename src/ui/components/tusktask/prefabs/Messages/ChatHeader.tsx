@@ -3,7 +3,6 @@
 import { Phone, Video, MoreVertical, ChevronLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Button } from "../../../shadcn/ui/button";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { useSession } from "next-auth/react";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
 import { useShallow } from "zustand/react/shallow";
@@ -14,10 +13,10 @@ const ChatHeader = () => {
   const { data: session } = useSession();
 
   // Pull Chat Context
-  const { conversationDetails } = useChatContext();
-  const { setOpenIndex } = useChatStore(
+  const { setOpenIndex, conversationDetails } = useChatStore(
     useShallow((s) => ({
       setOpenIndex: s.setOpenIndex,
+      conversationDetails: s.conversationDetails,
     }))
   );
 

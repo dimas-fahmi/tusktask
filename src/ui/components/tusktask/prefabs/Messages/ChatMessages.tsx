@@ -1,17 +1,16 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { emptyStateVariants } from "./variants";
 import ChatBubble from "./ChatBubble";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { ScrollArea } from "../../../shadcn/ui/scroll-area";
-import { ArrowDownToLine } from "lucide-react";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 // Chat Messages Component
 const ChatMessages = () => {
   // Pull states from chat context
-  const { messages } = useChatContext();
+  const messages = useChatStore((s) => s.messages);
 
   // Create ref for scroll container
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);

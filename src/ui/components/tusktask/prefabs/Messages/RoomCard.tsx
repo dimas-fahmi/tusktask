@@ -1,7 +1,6 @@
 import React from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { contactVariants } from "./variants";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { ConversationType } from "@/src/db/schema/conversations";
 import { useQuery } from "@tanstack/react-query";
 import { fetchConversationMembers } from "@/src/lib/tusktask/fetchers/fetchConversationMembers";

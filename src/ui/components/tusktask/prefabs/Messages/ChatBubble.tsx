@@ -1,13 +1,10 @@
-import { Message } from "@/src/lib/tusktask/context/ChatContext";
 import { motion } from "motion/react";
 import { messageVariants } from "./variants";
 import { useSession } from "next-auth/react";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 import { MessageWithCreatedByOptimisticUpdate } from "@/src/types/conversation";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
-import { Avatar } from "../../../shadcn/ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
-import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 // Chat Bubble Component
 const ChatBubble = ({
@@ -16,7 +13,11 @@ const ChatBubble = ({
   message: MessageWithCreatedByOptimisticUpdate;
 }) => {
   const { data: session } = useSession();
-  const { conversationDetails } = useChatContext();
+  const { conversationDetails } = useChatStore(
+    useShallow((s) => ({
+      conversationDetails: s.conversationDetails,
+    }))
+  );
 
   const members = conversationDetails?.members
     ? conversationDetails.members
