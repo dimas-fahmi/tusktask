@@ -12,6 +12,7 @@ import {
   MessageWithCreatedByOptimisticUpdate,
 } from "@/src/types/conversation";
 import useNotificationContext from "../hooks/context/useNotificationContext";
+import useChatStore from "../store/chatStore";
 
 export interface ChatContextValues {
   // Index State
@@ -51,8 +52,8 @@ const ChatContextProvider = ({
   // Index State
   const [openIndex, setOpenIndex] = useState(false);
 
-  // Pull selectedRoom from notification context
-  const { selectedRoom, setSelectedRoom } = useNotificationContext();
+  // Pull selectedRoom from chat store
+  const selectedRoom = useChatStore((s) => s.selectedRoom);
 
   // New Room Chat State
   const [newRoomChatDialogOpen, setNewRoomChatDialogOpen] = useState(false);

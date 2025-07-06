@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
 import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
 import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
-import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
@@ -20,8 +20,8 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull Chat context
   const { setOpenIndex } = useChatContext();
 
-  // Pull setters from notification context
-  const { setSelectedRoom } = useNotificationContext();
+  // Pull setters from chat context
+  const setSelectedRoom = useChatStore((s) => s.setSelectedRoom);
 
   // Query members
   const { data: membersResponse } = useQuery({
