@@ -17,11 +17,11 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
   const { data: session } = useSession();
 
-  // Pull Chat context
-  const { setOpenIndex } = useChatContext();
-
   // Pull setters from chat context
-  const setSelectedRoom = useChatStore((s) => s.setSelectedRoom);
+  const { setSelectedRoom, setOpenIndex } = useChatStore((s) => ({
+    setSelectedRoom: s.setSelectedRoom,
+    setOpenIndex: s.setOpenIndex,
+  }));
 
   // Query members
   const { data: membersResponse } = useQuery({

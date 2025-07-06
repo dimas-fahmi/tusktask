@@ -25,11 +25,14 @@ export const ChatPageIndex = () => {
   //   Pull Sidebar Context
   const { setOpen, open, setOpenMobile, openMobile } = useSidebar();
 
-  // Pull Chat Context Values
-  const { openIndex, setNewRoomChatDialogOpen } = useChatContext();
-
-  // Pull selectedRoom From chat store
-  const selectedRoom = useChatStore((s) => s.selectedRoom);
+  // Pull values From chat store
+  const { selectedRoom, openIndex, setNewRoomChatDialogOpen } = useChatStore(
+    (s) => ({
+      selectedRoom: s.selectedRoom,
+      openIndex: s.openIndex,
+      setNewRoomChatDialogOpen: s.setNewRoomChatDialogOpen,
+    })
+  );
 
   return (
     <div className="flex h-screen">

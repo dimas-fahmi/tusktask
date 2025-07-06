@@ -15,14 +15,6 @@ import useNotificationContext from "../hooks/context/useNotificationContext";
 import useChatStore from "../store/chatStore";
 
 export interface ChatContextValues {
-  // Index State
-  openIndex: boolean;
-  setOpenIndex: SetStateAction<boolean>;
-
-  // New Room Chat Dialog
-  newRoomChatDialogOpen: boolean;
-  setNewRoomChatDialogOpen: SetStateAction<boolean>;
-
   // Rooms
   rooms: ConversationType[];
 
@@ -49,14 +41,8 @@ const ChatContextProvider = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
-  // Index State
-  const [openIndex, setOpenIndex] = useState(false);
-
   // Pull selectedRoom from chat store
   const selectedRoom = useChatStore((s) => s.selectedRoom);
-
-  // New Room Chat State
-  const [newRoomChatDialogOpen, setNewRoomChatDialogOpen] = useState(false);
 
   // Rooms Query
   const { data: roomsResponse } = useQuery({
@@ -82,14 +68,6 @@ const ChatContextProvider = ({
   return (
     <ChatContext.Provider
       value={{
-        // Index State
-        openIndex,
-        setOpenIndex,
-
-        // New Room Chat Dialog Open
-        newRoomChatDialogOpen,
-        setNewRoomChatDialogOpen,
-
         // Rooms
         rooms,
 

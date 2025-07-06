@@ -2,11 +2,15 @@ import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { Send } from "lucide-react";
 import { motion } from "motion/react";
 import { emptyStateVariants } from "./variants";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 // Empty State Component (for when no chat is selected)
 export const EmptyChat = () => {
   // Pull Chat Context Values
-  const { setOpenIndex } = useChatContext();
+  const { setOpenIndex, openIndex } = useChatStore((s) => ({
+    setOpenIndex: s.setOpenIndex,
+    openIndex: s.openIndex,
+  }));
 
   return (
     <motion.div
@@ -34,7 +38,7 @@ export const EmptyChat = () => {
         </motion.h3>
         <motion.p
           className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
-          onClick={() => setOpenIndex((prev) => !prev)}
+          onClick={() => setOpenIndex(!openIndex)}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
