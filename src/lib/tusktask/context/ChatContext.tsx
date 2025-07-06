@@ -9,11 +9,9 @@ import {
   MessageWithCreatedByOptimisticUpdate,
 } from "@/src/types/conversation";
 import useChatStore from "../store/chatStore";
+import useSyncRooms from "../sync/useSyncRooms";
 
 export interface ChatContextValues {
-  // Rooms
-  rooms: ConversationType[];
-
   // Messages
   messages: MessageWithCreatedByOptimisticUpdate[];
 
@@ -37,16 +35,11 @@ const ChatContextProvider = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
+  // Sync Data
+  useSyncRooms();
+
   // Pull selectedRoom from chat store
   const selectedRoom = useChatStore((s) => s.selectedRoom);
-
-  // Rooms Query
-  const { data: roomsResponse } = useQuery({
-    queryKey: ["conversations"],
-    queryFn: () => fetchConversations(),
-  });
-
-  const rooms = roomsResponse?.data ? roomsResponse.data : [];
 
   // Conversation Details query
   const { data: conversationDetailsResponse } = useQuery({
@@ -64,9 +57,6 @@ const ChatContextProvider = ({
   return (
     <ChatContext.Provider
       value={{
-        // Rooms
-        rooms,
-
         // Messages
         messages,
 
