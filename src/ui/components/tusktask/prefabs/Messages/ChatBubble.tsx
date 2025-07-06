@@ -4,6 +4,10 @@ import { messageVariants } from "./variants";
 import { useSession } from "next-auth/react";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
 import { MessageWithCreatedByOptimisticUpdate } from "@/src/types/conversation";
+import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
+import { Avatar } from "../../../shadcn/ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
+import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 
 // Chat Bubble Component
 const ChatBubble = ({
@@ -12,7 +16,13 @@ const ChatBubble = ({
   message: MessageWithCreatedByOptimisticUpdate;
 }) => {
   const { data: session } = useSession();
+  const { conversationDetails } = useChatContext();
+
+  const members = conversationDetails?.members
+    ? conversationDetails.members
+    : [];
   const isMe = message.senderId === session?.user?.id;
+  const sender = members.find((t) => t.id === message?.senderId);
 
   const isCreatedByOptimisticUpdate = message?.createdByOptimisticUpdate;
 
@@ -27,20 +37,20 @@ const ChatBubble = ({
     >
       <div className={`max-w-[70%] ${isMe ? "order-2" : "order-1"}`}>
         {!isMe && message?.senderId && (
-          <motion.p
-            className="text-xs text-muted-foreground mb-1 px-2"
+          <motion.div
+            className="text-xs text-muted-foreground mb-1 px-2 flex items-center gap-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
-            Jajang
-          </motion.p>
+            <span>{sender?.name}</span>
+          </motion.div>
         )}
         <motion.div
           className={`px-4 py-2 rounded-2xl ${
             isMe
               ? "bg-primary text-primary-foreground rounded-br-none rounded-tl-md"
-              : "bg-muted text-muted-foreground rounded-bl-md"
+              : "bg-muted text-muted-foreground rounded-bl-none rounded-tr-md"
           }`}
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
