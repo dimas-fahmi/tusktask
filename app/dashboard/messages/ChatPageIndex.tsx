@@ -1,6 +1,5 @@
 "use client";
 
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
 import { useSidebar } from "@/src/ui/components/shadcn/ui/sidebar";
@@ -15,6 +14,7 @@ import { Plus, PanelLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
+import { useShallow } from "zustand/react/shallow";
 
 export const ChatPageIndex = () => {
   // IsDesktop
@@ -25,11 +25,14 @@ export const ChatPageIndex = () => {
   //   Pull Sidebar Context
   const { setOpen, open, setOpenMobile, openMobile } = useSidebar();
 
-  // Pull Chat Context Values
-  const { openIndex, setNewRoomChatDialogOpen } = useChatContext();
-
-  // Pull selectedRoom From chat store
-  const selectedRoom = useChatStore((s) => s.selectedRoom);
+  // Pull values From chat store
+  const { selectedRoom, openIndex, setNewRoomChatDialogOpen } = useChatStore(
+    useShallow((s) => ({
+      selectedRoom: s.selectedRoom,
+      openIndex: s.openIndex,
+      setNewRoomChatDialogOpen: s.setNewRoomChatDialogOpen,
+    }))
+  );
 
   return (
     <div className="flex h-screen">

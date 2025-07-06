@@ -10,7 +10,7 @@ import { PersonalContextProvider } from "@/src/lib/tusktask/context/PersonalCont
 import { ThemeContextProvider } from "@/src/lib/tusktask/context/ThemeContext";
 import { TaskContextProvider } from "@/src/lib/tusktask/context/TaskContext";
 import { TeamContextProvider } from "@/src/lib/tusktask/context/TeamContext";
-import { ChatContextProvider } from "@/src/lib/tusktask/context/ChatContext";
+import { ChatContext } from "@/src/lib/tusktask/context/ChatContext";
 
 const queryClient = new QueryClient();
 
@@ -32,7 +32,7 @@ export default function RootLayout({
                 <ThemeContextProvider>
                   <TeamContextProvider>
                     <TaskContextProvider>
-                      <ChatContextProvider>{children}</ChatContextProvider>
+                      <ChatContext>{children}</ChatContext>
                     </TaskContextProvider>
                   </TeamContextProvider>
                 </ThemeContextProvider>

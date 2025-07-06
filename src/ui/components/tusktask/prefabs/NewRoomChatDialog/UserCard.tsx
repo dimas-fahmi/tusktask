@@ -10,19 +10,21 @@ import { newChatMutation } from "@/src/lib/tusktask/mutation/newChatMutation";
 import { useSession } from "next-auth/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 const UserCard = ({ user }: { user: SanitizedUser }) => {
   // Session
   const { data: session } = useSession();
 
   // Pull setters from chat context
-  const { setNewRoomChatDialogOpen } = useChatContext();
-
-  // Pull setters from chat store
-  const setSelectedRoom = useChatStore((s) => s.setSelectedRoom);
+  const { setNewRoomChatDialogOpen, setSelectedRoom } = useChatStore(
+    useShallow((s) => ({
+      setSelectedRoom: s.setSelectedRoom,
+      setNewRoomChatDialogOpen: s.setNewRoomChatDialogOpen,
+    }))
+  );
 
   // Pull query client
   const queryClient = useQueryClient();

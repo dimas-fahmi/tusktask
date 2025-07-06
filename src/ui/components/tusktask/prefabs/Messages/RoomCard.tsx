@@ -1,7 +1,6 @@
 import React from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { contactVariants } from "./variants";
-import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { ConversationType } from "@/src/db/schema/conversations";
 import { useQuery } from "@tanstack/react-query";
 import { fetchConversationMembers } from "@/src/lib/tusktask/fetchers/fetchConversationMembers";
@@ -12,16 +11,19 @@ import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
 import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
   const { data: session } = useSession();
 
-  // Pull Chat context
-  const { setOpenIndex } = useChatContext();
-
   // Pull setters from chat context
-  const setSelectedRoom = useChatStore((s) => s.setSelectedRoom);
+  const { setSelectedRoom, setOpenIndex } = useChatStore(
+    useShallow((s) => ({
+      setSelectedRoom: s.setSelectedRoom,
+      setOpenIndex: s.setOpenIndex,
+    }))
+  );
 
   // Query members
   const { data: membersResponse } = useQuery({
