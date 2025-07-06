@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 const UserCard = ({ user }: { user: SanitizedUser }) => {
   // Session
@@ -21,8 +22,8 @@ const UserCard = ({ user }: { user: SanitizedUser }) => {
   // Pull setters from chat context
   const { setNewRoomChatDialogOpen } = useChatContext();
 
-  // Pull setters from notification context
-  const { setSelectedRoom } = useNotificationContext();
+  // Pull setters from chat store
+  const setSelectedRoom = useChatStore((s) => s.setSelectedRoom);
 
   // Pull query client
   const queryClient = useQueryClient();

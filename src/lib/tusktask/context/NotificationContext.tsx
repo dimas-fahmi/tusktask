@@ -36,6 +36,7 @@ import { createNotification as createNotificationFn } from "../mutators/createtN
 import { NotificationsPostRequest } from "@/app/api/notifications/post";
 import { invalidateByNotificationType } from "../invalidators/notifications/invalidators";
 import { usePathname } from "next/navigation";
+import useChatStore from "../store/chatStore";
 
 export interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -79,10 +80,6 @@ interface NotificationContextValues {
   setAlertDialog: SetStateAction<AlertDialogState>;
   triggerAlertDialog: (props: Omit<AlertDialogState, "open">) => void;
   handleResetAlertDialog: () => void;
-
-  // Room Chat State
-  selectedRoom?: string;
-  setSelectedRoom: SetStateAction<string | undefined>;
 }
 
 export type PlaySoundType =
@@ -337,12 +334,11 @@ const NotificationContextProvider = ({
   const [invitationLength, setInvitationLength] = useState(0);
   const latestNotification = useRef<Date | null>(null);
   const [newNotification, setNewNotification] = useState(false);
-  // Room State
-  const [selectedRoom, setSelectedRoom] = useState<string | undefined>(
-    undefined
-  );
 
   const pathname = usePathname();
+
+  // Pull Chat Context
+  const selectedRoom = useChatStore((s) => s.selectedRoom);
 
   useEffect(() => {
     const nots = received.filter((t) => t.status === "not_read");
@@ -508,10 +504,6 @@ const NotificationContextProvider = ({
         setAlertDialog,
         triggerAlertDialog,
         handleResetAlertDialog,
-
-        // selectedRoom
-        selectedRoom,
-        setSelectedRoom,
       }}
     >
       {children}
