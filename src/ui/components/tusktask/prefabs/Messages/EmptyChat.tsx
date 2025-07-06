@@ -3,14 +3,17 @@ import { Send } from "lucide-react";
 import { motion } from "motion/react";
 import { emptyStateVariants } from "./variants";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 // Empty State Component (for when no chat is selected)
 export const EmptyChat = () => {
   // Pull Chat Context Values
-  const { setOpenIndex, openIndex } = useChatStore((s) => ({
-    setOpenIndex: s.setOpenIndex,
-    openIndex: s.openIndex,
-  }));
+  const { setOpenIndex, openIndex } = useChatStore(
+    useShallow((s) => ({
+      setOpenIndex: s.setOpenIndex,
+      openIndex: s.openIndex,
+    }))
+  );
 
   return (
     <motion.div

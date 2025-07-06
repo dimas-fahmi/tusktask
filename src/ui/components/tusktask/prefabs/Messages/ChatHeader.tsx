@@ -6,6 +6,7 @@ import { Button } from "../../../shadcn/ui/button";
 import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { useSession } from "next-auth/react";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 // Chat Header Component
 const ChatHeader = () => {
@@ -14,9 +15,11 @@ const ChatHeader = () => {
 
   // Pull Chat Context
   const { conversationDetails } = useChatContext();
-  const { setOpenIndex } = useChatStore((s) => ({
-    setOpenIndex: s.setOpenIndex,
-  }));
+  const { setOpenIndex } = useChatStore(
+    useShallow((s) => ({
+      setOpenIndex: s.setOpenIndex,
+    }))
+  );
 
   const user = (conversationDetails?.members ?? []).find(
     (u) => u.id !== session?.user?.id

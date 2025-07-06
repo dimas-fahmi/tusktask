@@ -1,17 +1,13 @@
-import { SetStateAction } from "@/src/types/types";
 import { useQuery } from "@tanstack/react-query";
 import React, { createContext, useState } from "react";
 import { fetchConversations } from "../fetchers/fetchConversations";
 import { ConversationType } from "@/src/db/schema/conversations";
 import NewRoomChatDialog from "@/src/ui/components/tusktask/prefabs/NewRoomChatDialog";
-import { fetchMessages } from "../fetchers/fetchMessages";
-import { MessageType } from "@/src/db/schema/messages";
 import { fetchConversationDetails } from "../fetchers/fetchConversationDetails";
 import {
   ConversationDetail,
   MessageWithCreatedByOptimisticUpdate,
 } from "@/src/types/conversation";
-import useNotificationContext from "../hooks/context/useNotificationContext";
 import useChatStore from "../store/chatStore";
 
 export interface ChatContextValues {

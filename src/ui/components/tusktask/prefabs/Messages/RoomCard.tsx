@@ -12,16 +12,19 @@ import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
 import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
+import { useShallow } from "zustand/react/shallow";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
   const { data: session } = useSession();
 
   // Pull setters from chat context
-  const { setSelectedRoom, setOpenIndex } = useChatStore((s) => ({
-    setSelectedRoom: s.setSelectedRoom,
-    setOpenIndex: s.setOpenIndex,
-  }));
+  const { setSelectedRoom, setOpenIndex } = useChatStore(
+    useShallow((s) => ({
+      setSelectedRoom: s.setSelectedRoom,
+      setOpenIndex: s.setOpenIndex,
+    }))
+  );
 
   // Query members
   const { data: membersResponse } = useQuery({
