@@ -1,18 +1,24 @@
 import { Message } from "@/src/lib/tusktask/context/ChatContext";
 import { motion } from "motion/react";
 import { messageVariants } from "./variants";
-import { MessageType } from "@/src/db/schema/messages";
 import { useSession } from "next-auth/react";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
+import { MessageWithCreatedByOptimisticUpdate } from "@/src/types/conversation";
 
 // Chat Bubble Component
-const ChatBubble = ({ message }: { message: MessageType }) => {
+const ChatBubble = ({
+  message,
+}: {
+  message: MessageWithCreatedByOptimisticUpdate;
+}) => {
   const { data: session } = useSession();
   const isMe = message.senderId === session?.user?.id;
 
+  const isCreatedByOptimisticUpdate = message?.createdByOptimisticUpdate;
+
   return (
     <motion.div
-      className={`flex ${isMe ? "justify-end" : "justify-start"} mb-4`}
+      className={`flex ${isCreatedByOptimisticUpdate ? "animate-pulse text-muted-foreground cursor-wait" : ""} ${isMe ? "justify-end" : "justify-start"} mb-4`}
       variants={messageVariants}
       initial="hidden"
       animate="visible"
@@ -33,7 +39,7 @@ const ChatBubble = ({ message }: { message: MessageType }) => {
         <motion.div
           className={`px-4 py-2 rounded-2xl ${
             isMe
-              ? "bg-primary text-primary-foreground rounded-br-md"
+              ? "bg-primary text-primary-foreground rounded-br-none rounded-tl-md"
               : "bg-muted text-muted-foreground rounded-bl-md"
           }`}
           whileHover={{ scale: 1.02 }}
@@ -47,7 +53,11 @@ const ChatBubble = ({ message }: { message: MessageType }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          {timePassed(new Date())}
+          {isCreatedByOptimisticUpdate ? (
+            <span className="animate-pulse">Sending</span>
+          ) : (
+            timePassed(message?.createdAt)
+          )}
         </motion.p>
       </div>
     </motion.div>

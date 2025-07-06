@@ -53,6 +53,7 @@ const ChatInput = () => {
         message,
         selectedRoom
       );
+      
       setLastMessage(message);
       if (message.trim()) {
         setMessage("");
