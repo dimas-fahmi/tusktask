@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import { registerNewMessageToConversation } from "@/src/lib/tusktask/optimisticUpdates/registerNewMessageToConversation";
 import { Content } from "@radix-ui/react-dialog";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 // Chat Input Component
 const ChatInput = () => {
@@ -25,8 +26,8 @@ const ChatInput = () => {
   // Pull Chat Context
   const { conversationDetails } = useChatContext();
 
-  // Pull selectedRoom From notification context
-  const { selectedRoom } = useNotificationContext();
+  // Pull selectedRoom From chat store
+  const selectedRoom = useChatStore((s) => s.selectedRoom);
 
   // Members
   const members = conversationDetails?.members?.find(
@@ -53,7 +54,7 @@ const ChatInput = () => {
         message,
         selectedRoom
       );
-      
+
       setLastMessage(message);
       if (message.trim()) {
         setMessage("");

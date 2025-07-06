@@ -12,7 +12,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import useChatContext from "@/src/lib/tusktask/hooks/context/useChatContext";
 import { newNotificationMutation } from "@/src/lib/tusktask/mutation/newNotificationMutation";
-import useNotificationContext from "@/src/lib/tusktask/hooks/context/useNotificationContext";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 const UserCard = ({ user }: { user: SanitizedUser }) => {
