@@ -8,10 +8,10 @@ import ItemCard, {
 } from "@/src/ui/components/tusktask/prefabs/ItemCard";
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import {
-  ChevronDown,
-  ChevronUp,
   FolderGit2,
+  LoaderCircle,
   MessageCircle,
+  MessageCirclePlus,
   UsersRound,
 } from "lucide-react";
 import { filterTasks, FilterType } from "@/src/lib/tusktask/utils/filterTasks";
@@ -20,16 +20,15 @@ import { motion } from "motion/react";
 import ShoppingListOverview from "./fragments/ShoppingListOverview";
 import { SetStateAction } from "@/src/types/types";
 import { Button } from "@/src/ui/components/shadcn/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/src/ui/components/shadcn/ui/collapsible";
 import CollapsibleTaskSection from "@/src/ui/components/tusktask/prefabs/CollapsibleTaskSection";
+import { useQueryClient } from "@tanstack/react-query";
+import { DetailConversationGetResponse } from "@/app/api/conversations/[id]/details/get";
+import { newChatMutation } from "@/src/lib/tusktask/mutation/newChatMutation";
+import { useRouter } from "next/navigation";
+import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 const DesktopPage = ({
   id,
-  setTeamChatOpen,
 }: {
   id: string;
   setTeamChatOpen: SetStateAction<boolean>;
@@ -45,6 +44,16 @@ const DesktopPage = ({
   // Query Team
   const { teamDetail, setTeamDetailKey, setTeamMembershipDialog } =
     useTeamContext();
+
+  // Pull query client
+  const queryClient = useQueryClient();
+
+  // Get Query Data
+  const conversationResponse = queryClient.getQueryData([
+    "conversation",
+    id,
+  ]) as DetailConversationGetResponse;
+  const conversationDetails = conversationResponse?.data;
 
   // Filter Task
   const tasks = teamDetail?.tasks
@@ -77,6 +86,28 @@ const DesktopPage = ({
   useEffect(() => {
     setTeamDetailKey(id);
   }, []);
+
+  // Router
+  const router = useRouter();
+
+  // Pull setters
+  const setSelectedRoom = useChatStore((s) => s.setSelectedRoom);
+
+  // New Chat Room Mutation
+  const { createNewChat, isPending, isIdle } = newChatMutation(
+    ["conversation", "new", id],
+    queryClient,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["conversation", id],
+        });
+
+        router.push("/dashboard/messages");
+        setSelectedRoom(id);
+      },
+    }
+  );
 
   return (
     <div>
@@ -188,14 +219,42 @@ const DesktopPage = ({
 
           {/* Memberships & Co-Operation Actions */}
           <div className="flex gap-2 w-full">
-            <Button
-              variant={"outline"}
-              className="flex-grow"
-              onClick={() => setTeamChatOpen(true)}
-            >
-              <MessageCircle />
-              Messages
-            </Button>
+            {conversationDetails ? (
+              <Button
+                variant={"outline"}
+                className="flex-grow"
+                onClick={() => {
+                  router.push("/dashboard/messages");
+                  setSelectedRoom(id);
+                }}
+              >
+                <MessageCircle />
+                Messages
+              </Button>
+            ) : (
+              <Button
+                variant={"outline"}
+                className="flex-grow"
+                onClick={() => {
+                  createNewChat({
+                    teamId: id,
+                    type: "team",
+                  });
+                }}
+                disabled={isPending}
+              >
+                {!isPending ? (
+                  <>
+                    <MessageCirclePlus />
+                    Initialize
+                  </>
+                ) : (
+                  <>
+                    <LoaderCircle className="animate-spin" /> Intializing
+                  </>
+                )}
+              </Button>
+            )}
             <Button
               variant={"outline"}
               className="flex-grow"

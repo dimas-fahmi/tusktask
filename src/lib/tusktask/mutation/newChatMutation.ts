@@ -14,7 +14,7 @@ export const newChatMutation = (
   options?: NewChatMutationOptions
 ) => {
   const { onError, onMutate, onSettled, onSuccess } = options ?? {};
-  const { mutate: createNewChat } = useMutation({
+  const { mutate: createNewChat, ...others } = useMutation({
     mutationKey,
     mutationFn: createNewChatFunction,
     onMutate: () => {
@@ -43,5 +43,5 @@ export const newChatMutation = (
     },
   });
 
-  return { createNewChat };
+  return { createNewChat, ...others };
 };

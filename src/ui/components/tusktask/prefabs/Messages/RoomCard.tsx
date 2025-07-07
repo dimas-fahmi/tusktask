@@ -2,7 +2,7 @@ import React from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { contactVariants } from "./variants";
 import { ConversationType } from "@/src/db/schema/conversations";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchConversationMembers } from "@/src/lib/tusktask/fetchers/fetchConversationMembers";
 import { useSession } from "next-auth/react";
 import { timePassed } from "@/src/lib/tusktask/utils/timePassed";
@@ -15,6 +15,9 @@ import { useShallow } from "zustand/react/shallow";
 import { Skeleton } from "../../../shadcn/ui/skeleton";
 import { fetchConversationDetails } from "@/src/lib/tusktask/fetchers/fetchConversationDetails";
 import { EllipsisIcon } from "lucide-react";
+import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
+import { TeamDetail } from "@/src/types/team";
+import { fetchTeamDetail } from "@/src/lib/tusktask/fetchers/fetchTeamDetail";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
@@ -44,6 +47,9 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )[0];
 
+  // Initialize QueryClient
+  const queryClient = useQueryClient();
+
   // Query members
   const { data: membersResponse } = useQuery({
     queryKey: ["conversation", "members", room.id],
@@ -56,6 +62,15 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
   // Get First User
   const roomType = room.type;
   const user = members.find((t) => t.id !== session?.user?.id);
+
+  // Get Team Detail
+  const { data: teamDetailResponse } = useQuery({
+    queryKey: ["team", room.id],
+    queryFn: () => fetchTeamDetail(room.id!),
+    enabled: !!room.id,
+    staleTime: 1000,
+  });
+  let team = teamDetailResponse?.data;
 
   return (
     <motion.button
@@ -89,8 +104,10 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
               <AvatarImage src={user?.image ?? DEFAULT_AVATAR} />
               <AvatarFallback>{getUserInitials(user?.name)}</AvatarFallback>
             </Avatar>
+          ) : team ? (
+            <span className="uppercase">{getUserInitials(team.name)}</span>
           ) : (
-            <div className="w-12 h-12">K5</div>
+            <></>
           )}
         </motion.div>
         <AnimatePresence>
@@ -121,6 +138,8 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
             ) : (
               <Skeleton className="h-3 w-28" />
             )
+          ) : team ? (
+            <h3 className="text-sm font-medium truncate">{team?.name}</h3>
           ) : (
             <></>
           )}
@@ -136,11 +155,13 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
             {roomDetails ? (
               lastMessage ? (
                 <p>{truncateText(lastMessage?.content ?? "", 5)}</p>
-              ) : (
+              ) : roomType === "direct" ? (
                 <p>
                   Conversation with {truncateText(user?.name ?? "", 1, false)}{" "}
                   is now started
                 </p>
+              ) : (
+                <p>Group conversation is started</p>
               )
             ) : (
               <Skeleton className="h-2 w-19" />
