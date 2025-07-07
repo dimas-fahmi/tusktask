@@ -17,6 +17,7 @@ import { fetchConversationDetails } from "@/src/lib/tusktask/fetchers/fetchConve
 import { EllipsisIcon } from "lucide-react";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { TeamDetail } from "@/src/types/team";
+import { fetchTeamDetail } from "@/src/lib/tusktask/fetchers/fetchTeamDetail";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
@@ -61,11 +62,15 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
   // Get First User
   const roomType = room.type;
   const user = members.find((t) => t.id !== session?.user?.id);
-  let teamResponse = queryClient.getQueryData([
-    "team",
-    room.id,
-  ]) as StandardResponse<TeamDetail>;
-  let team = teamResponse?.data;
+
+  // Get Team Detail
+  const { data: teamDetailResponse } = useQuery({
+    queryKey: ["team", room.id],
+    queryFn: () => fetchTeamDetail(room.id!),
+    enabled: !!room.id,
+    staleTime: 1000,
+  });
+  let team = teamDetailResponse?.data;
 
   return (
     <motion.button
