@@ -52,7 +52,15 @@ export const useInvalidateByNotificationType = (
         const shouldIgnoreToast =
           pathname === "/dashboard/messages" && selectedRoom === conversationId;
 
-        if (shouldIgnoreToast) return;
+        if (shouldIgnoreToast) {
+          updateNotification({
+            notificationId: notification.id,
+            newValue: {
+              status: "acknowledged",
+            },
+          });
+          return;
+        }
 
         triggerToast({
           type: "default",

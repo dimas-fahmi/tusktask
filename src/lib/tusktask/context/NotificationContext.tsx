@@ -367,13 +367,6 @@ const NotificationContextProvider = ({
     mutationKey: ["notifications", "mutate"],
     mutationFn: mutateNotificationData,
     onMutate: async (data) => {
-      triggerToast({
-        type: "default",
-        title: "Saving Your Changes",
-        description: "We're saving your changes in the background",
-        sound: "mute",
-      });
-
       await queryClient.cancelQueries({ queryKey: ["notifications"] });
 
       const oldNots = queryClient.getQueryData([
@@ -407,26 +400,11 @@ const NotificationContextProvider = ({
       return { oldNots };
     },
     onError: (error, _, context) => {
-      triggerToast({
-        type: "error",
-        title: "Something Went Wrong",
-        description: "Failed when saving your changes",
-        sound: "mute",
-      });
-
       if (context?.oldNots) {
         queryClient.setQueryData(["notifications"], context.oldNots);
       }
     },
-    onSuccess: () => {
-      triggerToast({
-        type: "success",
-        title: "Your Changes Are Saved",
-        description:
-          "Successfully saved your changes, everything is sync with cloud storage",
-        sound: "mute",
-      });
-    },
+    onSuccess: () => {},
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
