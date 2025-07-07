@@ -4,6 +4,7 @@ import {
   ConversationMembershipType,
   conversationParticipants,
   conversations,
+  ConversationType,
 } from "@/src/db/schema/conversations";
 import {
   messageInsertSchema,
@@ -11,9 +12,15 @@ import {
   messages,
   MessageType,
 } from "@/src/db/schema/messages";
+import {
+  NotificationInsertType,
+  notifications,
+} from "@/src/db/schema/notifications";
+import { users } from "@/src/db/schema/users";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { StandardResponse } from "@/src/lib/tusktask/utils/createResponse";
 import { CustomError } from "@/src/lib/tusktask/utils/error";
+import sanitizeUserData from "@/src/lib/tusktask/utils/sanitizeUserData";
 import { and, eq } from "drizzle-orm";
 
 export interface MessagesConversationPostRequest {
@@ -97,6 +104,84 @@ export async function messagesConversationPost(
 
       if (!membership) {
         throw new CustomError("UNAUTHORIZED", "Membership not found", 401);
+      }
+
+      let memberships: ConversationMembershipType[] | undefined;
+
+      try {
+        memberships = await tx.query.conversationParticipants.findMany({
+          where: eq(conversationParticipants.conversationId, id),
+        });
+      } catch (error) {
+        throw new CustomError(
+          "DATABASE_ERROR",
+          "Failed when fetching team membership"
+        );
+      }
+
+      if (memberships.length < 1) {
+        throw new CustomError(
+          "UNEXPECTED_ERROR",
+          "Something went wrong when creating broadcast",
+          500
+        );
+      }
+
+      // Fetch conversation
+      let conversation: ConversationType | undefined;
+
+      try {
+        conversation = await tx.query.conversations.findFirst({
+          where: eq(conversations.id, id),
+        });
+      } catch (error) {
+        throw new CustomError(
+          "DATABASE_ERROR",
+          "Failed when fetching conversation",
+          500
+        );
+      }
+
+      if (!conversation) {
+        throw new CustomError("BAD_REQUEST", "Conversation is not found", 404);
+      }
+
+      const broadcast: NotificationInsertType[] = await Promise.all(
+        memberships
+          .filter((t) => t.userId !== session.user.id)
+          .map(async (m) => {
+            const user = await tx.query.users.findFirst({
+              where: eq(users.id, m.userId),
+            });
+
+            const not: NotificationInsertType = {
+              type: "groupChat",
+              senderId: session.user.id,
+              receiverId: m.userId,
+              category: "teams",
+              teamId: conversation?.teamId,
+              title: `${session.user.name} send a message on a group chat`,
+              payload: {
+                sender: sanitizeUserData([session.user])[0],
+                content: validation.data.content,
+                receiver: sanitizeUserData([user!])[0],
+                conversationId: id,
+              },
+            };
+
+            return not;
+          })
+      );
+
+      // # Execute broadcast
+      try {
+        await tx.insert(notifications).values(broadcast);
+      } catch (error) {
+        throw new CustomError(
+          "DATABASE_ERROR",
+          "Failed when creating broadcast",
+          500
+        );
       }
 
       // # Update Conversation

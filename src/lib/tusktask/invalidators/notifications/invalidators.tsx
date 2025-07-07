@@ -35,6 +35,10 @@ export const useInvalidateByNotificationType = (
   const setOpenIndex = useChatStore((s) => s.setOpenIndex);
 
   const invalidateByNotificationType = (notification: NotificationType) => {
+    const conversationId = notification?.payload?.conversationId;
+    const shouldIgnoreToast =
+      pathname === "/dashboard/messages" && selectedRoom === conversationId;
+
     switch (notification.type) {
       case "newRoomChat":
         queryClient.invalidateQueries({
@@ -43,14 +47,9 @@ export const useInvalidateByNotificationType = (
         break;
 
       case "directMessage":
-        const conversationId = notification?.payload?.conversationId;
-
         queryClient.invalidateQueries({
           queryKey: ["conversation", conversationId],
         });
-
-        const shouldIgnoreToast =
-          pathname === "/dashboard/messages" && selectedRoom === conversationId;
 
         if (shouldIgnoreToast) {
           updateNotification({
@@ -88,6 +87,47 @@ export const useInvalidateByNotificationType = (
 
         break;
 
+      case "groupChat":
+        queryClient.invalidateQueries({
+          queryKey: ["conversation", conversationId],
+        });
+
+        if (shouldIgnoreToast) {
+          updateNotification({
+            notificationId: notification.id,
+            newValue: {
+              status: "acknowledged",
+            },
+          });
+          return;
+        }
+
+        triggerToast({
+          type: "default",
+          title: `${notification?.payload?.sender?.name} sent you a message`,
+          description: `${notification?.payload?.content}`,
+          action: (
+            <Button
+              variant={"toaster"}
+              onClick={() => {
+                router.push("/dashboard/messages"); // ✅ navigate to chat
+                setSelectedRoom(conversationId);
+                setOpenIndex(false);
+                updateNotification({
+                  notificationId: notification.id,
+                  newValue: {
+                    status: "acknowledged",
+                  },
+                });
+              }}
+            >
+              Open
+            </Button>
+          ),
+        });
+
+        break;
+        break;
       default:
         triggerToast({
           type: "default",

@@ -141,7 +141,7 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
           ) : team ? (
             <h3 className="text-sm font-medium truncate">{team?.name}</h3>
           ) : (
-            <></>
+            <Skeleton className="h-3 w-28" />
           )}
           <span className="text-xs text-muted-foreground">
             {timePassed(room.updatedAt)}
