@@ -37,12 +37,6 @@ const ChatInput = () => {
   // Pull queryclient
   const queryClient = useQueryClient();
 
-  // Create Notification
-  const { createNotification } = newNotificationMutation([
-    "notification",
-    "new",
-  ]);
-
   // Mutation
   const { sendMessage } = newMessageMutation({
     onMutate: () => {
@@ -71,23 +65,6 @@ const ChatInput = () => {
     },
     onSuccess: () => {
       if (!session?.user?.id || !members) return;
-
-      createNotification({
-        senderId: session.user.id,
-        receiverId: members.id,
-        type: "directMessage",
-        category: "messages",
-        payload: {
-          sender: {
-            name: session.user.name,
-            id: session.user.id,
-            username: session.user.username,
-            image: session.user.image,
-          },
-          conversationId: selectedRoom,
-          content: lastMessage,
-        },
-      });
     },
   });
 
