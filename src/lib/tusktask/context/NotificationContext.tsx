@@ -34,9 +34,9 @@ import {
 import AlertDialog from "@/src/ui/components/tusktask/prefabs/AlertDialog";
 import { createNotification as createNotificationFn } from "../mutators/createtNotification";
 import { NotificationsPostRequest } from "@/app/api/notifications/post";
-import { invalidateByNotificationType } from "../invalidators/notifications/invalidators";
 import { usePathname } from "next/navigation";
 import useChatStore from "../store/chatStore";
+import { useInvalidateByNotificationType } from "../invalidators/notifications/invalidators";
 
 export interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -337,39 +337,6 @@ const NotificationContextProvider = ({
 
   const pathname = usePathname();
 
-  // Pull Chat Context
-  const selectedRoom = useChatStore((s) => s.selectedRoom);
-
-  useEffect(() => {
-    const nots = received.filter((t) => t.status === "not_read");
-
-    if (nots.length !== notificationLength) {
-      setNotificationLength(nots.length);
-    }
-
-    if (!isLoadingNtfBundle && nots.length > 0) {
-      const latestFetched = nots.reduce((latest, n) => {
-        return new Date(n.createdAt) > new Date(latest.createdAt) ? n : latest;
-      });
-
-      const lastSeen = latestNotification.current;
-
-      if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
-        setNewNotification(true);
-        invalidateByNotificationType(
-          queryClient,
-          latestFetched,
-          triggerToast,
-          setNotificationsDialogOpen,
-          pathname,
-          selectedRoom
-        );
-      }
-
-      latestNotification.current = latestFetched.createdAt;
-    }
-  }, [received]);
-
   useEffect(() => {
     const length =
       sentInvitation.filter((t) => ["accepted", "rejected"].includes(t.status))
@@ -400,13 +367,6 @@ const NotificationContextProvider = ({
     mutationKey: ["notifications", "mutate"],
     mutationFn: mutateNotificationData,
     onMutate: async (data) => {
-      triggerToast({
-        type: "default",
-        title: "Saving Your Changes",
-        description: "We're saving your changes in the background",
-        sound: "mute",
-      });
-
       await queryClient.cancelQueries({ queryKey: ["notifications"] });
 
       const oldNots = queryClient.getQueryData([
@@ -440,26 +400,11 @@ const NotificationContextProvider = ({
       return { oldNots };
     },
     onError: (error, _, context) => {
-      triggerToast({
-        type: "error",
-        title: "Something Went Wrong",
-        description: "Failed when saving your changes",
-        sound: "mute",
-      });
-
       if (context?.oldNots) {
         queryClient.setQueryData(["notifications"], context.oldNots);
       }
     },
-    onSuccess: () => {
-      triggerToast({
-        type: "success",
-        title: "Your Changes Are Saved",
-        description:
-          "Successfully saved your changes, everything is sync with cloud storage",
-        sound: "mute",
-      });
-    },
+    onSuccess: () => {},
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
@@ -480,6 +425,37 @@ const NotificationContextProvider = ({
       });
     },
   });
+
+  // Initialize invalidators
+  const { invalidateByNotificationType } = useInvalidateByNotificationType(
+    triggerToast,
+    setNotificationsDialogOpen,
+    updateNotification
+  );
+
+  useEffect(() => {
+    const nots = received.filter((t) => t.status === "not_read");
+
+    if (nots.length !== notificationLength) {
+      setNotificationLength(nots.length);
+    }
+
+    if (!isLoadingNtfBundle && nots.length > 0) {
+      const latestFetched = nots.reduce((latest, n) => {
+        return new Date(n.createdAt) > new Date(latest.createdAt) ? n : latest;
+      });
+
+      const lastSeen = latestNotification.current;
+
+      if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
+        setNewNotification(true);
+      }
+
+      invalidateByNotificationType(latestFetched);
+
+      latestNotification.current = latestFetched.createdAt;
+    }
+  }, [received]);
 
   return (
     <NotificationContext.Provider
