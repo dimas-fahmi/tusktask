@@ -14,6 +14,7 @@ import useChatStore from "@/src/lib/tusktask/store/chatStore";
 import { useShallow } from "zustand/react/shallow";
 import { Skeleton } from "../../../shadcn/ui/skeleton";
 import { fetchConversationDetails } from "@/src/lib/tusktask/fetchers/fetchConversationDetails";
+import { EllipsisIcon } from "lucide-react";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
@@ -124,7 +125,7 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
             <></>
           )}
           <span className="text-xs text-muted-foreground">
-            {timePassed(new Date())}
+            {timePassed(room.updatedAt)}
           </span>
         </div>
         <div className="flex items-center justify-between mt-1">
@@ -134,7 +135,7 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
           >
             {roomDetails ? (
               lastMessage ? (
-                <p>{lastMessage?.content}</p>
+                <p>{truncateText(lastMessage?.content ?? "", 5)}</p>
               ) : (
                 <p>
                   Conversation with {truncateText(user?.name ?? "", 1, false)}{" "}
@@ -145,23 +146,6 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
               <Skeleton className="h-2 w-19" />
             )}
           </div>
-          <AnimatePresence>
-            {5 > 0 && (
-              <motion.span
-                className="ml-2 bg-accent text-accent-foreground text-xs rounded-full px-2 py-1 min-w-[20px] text-center"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0, opacity: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 25,
-                }}
-              >
-                {true}
-              </motion.span>
-            )}
-          </AnimatePresence>
         </div>
       </div>
     </motion.button>

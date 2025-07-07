@@ -10,6 +10,10 @@ export const registerNewMessageToConversation = (
   content?: string,
   selectedRoom?: string
 ) => {
+  queryClient.cancelQueries({
+    queryKey: ["conversation", selectedRoom],
+  });
+
   if (!selectedRoom || !content) return;
 
   const oldData = queryClient.getQueryData([
