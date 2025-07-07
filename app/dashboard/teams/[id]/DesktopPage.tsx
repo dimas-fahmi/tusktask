@@ -9,6 +9,7 @@ import ItemCard, {
 import useTeamContext from "@/src/lib/tusktask/hooks/context/useTeamContext";
 import {
   FolderGit2,
+  LoaderCircle,
   MessageCircle,
   MessageCirclePlus,
   UsersRound,
@@ -28,7 +29,6 @@ import useChatStore from "@/src/lib/tusktask/store/chatStore";
 
 const DesktopPage = ({
   id,
-  setTeamChatOpen,
 }: {
   id: string;
   setTeamChatOpen: SetStateAction<boolean>;
@@ -94,7 +94,7 @@ const DesktopPage = ({
   const setSelectedRoom = useChatStore((s) => s.setSelectedRoom);
 
   // New Chat Room Mutation
-  const { createNewChat } = newChatMutation(
+  const { createNewChat, isPending, isIdle } = newChatMutation(
     ["conversation", "new", id],
     queryClient,
     {
@@ -223,7 +223,10 @@ const DesktopPage = ({
               <Button
                 variant={"outline"}
                 className="flex-grow"
-                onClick={() => setTeamChatOpen(true)}
+                onClick={() => {
+                  router.push("/dashboard/messages");
+                  setSelectedRoom(id);
+                }}
               >
                 <MessageCircle />
                 Messages
@@ -238,9 +241,18 @@ const DesktopPage = ({
                     type: "team",
                   });
                 }}
+                disabled={isPending}
               >
-                <MessageCirclePlus />
-                Initialize
+                {!isPending ? (
+                  <>
+                    <MessageCirclePlus />
+                    Initialize
+                  </>
+                ) : (
+                  <>
+                    <LoaderCircle className="animate-spin" /> Intializing
+                  </>
+                )}
               </Button>
             )}
             <Button
