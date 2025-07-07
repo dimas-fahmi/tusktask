@@ -34,9 +34,9 @@ import {
 import AlertDialog from "@/src/ui/components/tusktask/prefabs/AlertDialog";
 import { createNotification as createNotificationFn } from "../mutators/createtNotification";
 import { NotificationsPostRequest } from "@/app/api/notifications/post";
-import { invalidateByNotificationType } from "../invalidators/notifications/invalidators";
 import { usePathname } from "next/navigation";
 import useChatStore from "../store/chatStore";
+import { useInvalidateByNotificationType } from "../invalidators/notifications/invalidators";
 
 export interface TriggerToastProps extends ExternalToast {
   title: string;
@@ -337,39 +337,6 @@ const NotificationContextProvider = ({
 
   const pathname = usePathname();
 
-  // Pull Chat Context
-  const selectedRoom = useChatStore((s) => s.selectedRoom);
-
-  useEffect(() => {
-    const nots = received.filter((t) => t.status === "not_read");
-
-    if (nots.length !== notificationLength) {
-      setNotificationLength(nots.length);
-    }
-
-    if (!isLoadingNtfBundle && nots.length > 0) {
-      const latestFetched = nots.reduce((latest, n) => {
-        return new Date(n.createdAt) > new Date(latest.createdAt) ? n : latest;
-      });
-
-      const lastSeen = latestNotification.current;
-
-      if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
-        setNewNotification(true);
-        invalidateByNotificationType(
-          queryClient,
-          latestFetched,
-          triggerToast,
-          setNotificationsDialogOpen,
-          pathname,
-          selectedRoom
-        );
-      }
-
-      latestNotification.current = latestFetched.createdAt;
-    }
-  }, [received]);
-
   useEffect(() => {
     const length =
       sentInvitation.filter((t) => ["accepted", "rejected"].includes(t.status))
@@ -480,6 +447,37 @@ const NotificationContextProvider = ({
       });
     },
   });
+
+  // Initialize invalidators
+  const { invalidateByNotificationType } = useInvalidateByNotificationType(
+    triggerToast,
+    setNotificationsDialogOpen,
+    updateNotification
+  );
+
+  useEffect(() => {
+    const nots = received.filter((t) => t.status === "not_read");
+
+    if (nots.length !== notificationLength) {
+      setNotificationLength(nots.length);
+    }
+
+    if (!isLoadingNtfBundle && nots.length > 0) {
+      const latestFetched = nots.reduce((latest, n) => {
+        return new Date(n.createdAt) > new Date(latest.createdAt) ? n : latest;
+      });
+
+      const lastSeen = latestNotification.current;
+
+      if (!lastSeen || new Date(latestFetched.createdAt) > new Date(lastSeen)) {
+        setNewNotification(true);
+      }
+
+      invalidateByNotificationType(latestFetched);
+
+      latestNotification.current = latestFetched.createdAt;
+    }
+  }, [received]);
 
   return (
     <NotificationContext.Provider
