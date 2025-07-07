@@ -28,6 +28,9 @@ export const conversations = pgTable(
     }).notNull(),
     image: text("image"),
     createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
+    updatedAt: timestamp("updatedAt", TIMESTAMP_CONFIGS).$onUpdateFn(
+      () => new Date()
+    ),
   },
   (t) => [
     index("CONVERSATIONS_NAME_IDX").on(t.name),
