@@ -9,6 +9,8 @@ import { useShallow } from "zustand/react/shallow";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
 import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
 import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
+import { useQuery } from "@tanstack/react-query";
+import { fetchTeamDetail } from "@/src/lib/tusktask/fetchers/fetchTeamDetail";
 
 // Chat Header Component
 const ChatHeader = () => {
@@ -28,6 +30,15 @@ const ChatHeader = () => {
   const user = (conversationDetails?.members ?? []).find(
     (u) => u.id !== session?.user?.id
   );
+
+  // Get Team Detail
+  const { data: teamDetailResponse } = useQuery({
+    queryKey: ["team", conversationDetails?.id],
+    queryFn: () => fetchTeamDetail(conversationDetails?.id!),
+    enabled: !!conversationDetails?.id,
+    staleTime: 1000,
+  });
+  let team = teamDetailResponse?.data;
 
   return (
     <motion.div
@@ -57,6 +68,8 @@ const ChatHeader = () => {
                 <AvatarImage src={user?.image ?? DEFAULT_AVATAR} />
                 <AvatarFallback>{getUserInitials(user?.name)}</AvatarFallback>
               </Avatar>
+            ) : team ? (
+              <span className="uppercase">{getUserInitials(team.name)}</span>
             ) : (
               <></>
             )}
@@ -73,8 +86,9 @@ const ChatHeader = () => {
             damping: 25,
           }}
         >
-          <h2 className="font-semibold">{user?.name}</h2>
-          <p className="text-sm text-muted-foreground"></p>
+          <h2 className="font-semibold">
+            {roomType === "direct" ? user?.name : team?.name}
+          </h2>
         </motion.div>
       </div>
 
