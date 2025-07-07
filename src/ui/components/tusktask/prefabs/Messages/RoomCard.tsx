@@ -12,6 +12,8 @@ import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
 import { truncateText } from "@/src/lib/tusktask/utils/truncateText";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
 import { useShallow } from "zustand/react/shallow";
+import { Skeleton } from "../../../shadcn/ui/skeleton";
+import { fetchConversationDetails } from "@/src/lib/tusktask/fetchers/fetchConversationDetails";
 
 const RoomCard = ({ room }: { room: ConversationType }) => {
   // Pull session
@@ -25,13 +27,33 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
     }))
   );
 
+  // Query room details
+  const { data: roomResponse } = useQuery({
+    queryKey: ["conversation", room.id],
+    queryFn: () => fetchConversationDetails(room.id),
+    enabled: !!room.id,
+  });
+
+  const roomDetails = roomResponse?.data;
+  const messages = roomDetails?.messages ? roomDetails.messages : [];
+  const lastMessage = messages
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
+
   // Query members
   const { data: membersResponse } = useQuery({
     queryKey: ["conversation", "members", room.id],
     queryFn: () => fetchConversationMembers(room.id),
   });
 
+  // Members
   const members = membersResponse?.data ? membersResponse.data : [];
+
+  // Get First User
+  const roomType = room.type;
   const user = members.find((t) => t.id !== session?.user?.id);
 
   return (
@@ -61,10 +83,14 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
             damping: 25,
           }}
         >
-          <Avatar className="w-12 h-12">
-            <AvatarImage src={user?.image ?? DEFAULT_AVATAR} />
-            <AvatarFallback>{getUserInitials(user?.name)}</AvatarFallback>
-          </Avatar>
+          {roomType === "direct" ? (
+            <Avatar className="w-12 h-12">
+              <AvatarImage src={user?.image ?? DEFAULT_AVATAR} />
+              <AvatarFallback>{getUserInitials(user?.name)}</AvatarFallback>
+            </Avatar>
+          ) : (
+            <div className="w-12 h-12">K5</div>
+          )}
         </motion.div>
         <AnimatePresence>
           {true && (
@@ -86,21 +112,39 @@ const RoomCard = ({ room }: { room: ConversationType }) => {
       {/* Contact Info */}
       <div className="ml-3 flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium truncate">
-            {user?.name && user.name}
-          </h3>
+          {roomType === "direct" ? (
+            user?.name ? (
+              <h3 className="text-sm font-medium truncate">
+                {user?.name && user.name}
+              </h3>
+            ) : (
+              <Skeleton className="h-3 w-28" />
+            )
+          ) : (
+            <></>
+          )}
           <span className="text-xs text-muted-foreground">
             {timePassed(new Date())}
           </span>
         </div>
         <div className="flex items-center justify-between mt-1">
-          <p
+          <div
             className="text-xs text-muted-foreground truncate"
             title={`Conversation with ${user?.name} is now opened`}
           >
-            Conversation with {truncateText(user?.name ?? "", 1, false)} is now
-            started
-          </p>
+            {roomDetails ? (
+              lastMessage ? (
+                <p>{lastMessage?.content}</p>
+              ) : (
+                <p>
+                  Conversation with {truncateText(user?.name ?? "", 1, false)}{" "}
+                  is now started
+                </p>
+              )
+            ) : (
+              <Skeleton className="h-2 w-19" />
+            )}
+          </div>
           <AnimatePresence>
             {5 > 0 && (
               <motion.span
