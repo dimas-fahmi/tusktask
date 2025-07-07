@@ -7,10 +7,15 @@ import {
   conversations,
   ConversationType,
 } from "@/src/db/schema/conversations";
+import {
+  NotificationInsertType,
+  notifications,
+} from "@/src/db/schema/notifications";
 import { teams, TeamType } from "@/src/db/schema/teams";
 import { users, UserType } from "@/src/db/schema/users";
 import createNextResponse from "@/src/lib/tusktask/utils/createNextResponse";
 import { CustomError } from "@/src/lib/tusktask/utils/error";
+import sanitizeUserData from "@/src/lib/tusktask/utils/sanitizeUserData";
 import { TeamWithTeamMembers } from "@/src/types/team";
 import { and, eq, or } from "drizzle-orm";
 
@@ -215,7 +220,7 @@ export async function conversationsPost(req: Request) {
         try {
           [newConversation] = await tx
             .insert(conversations)
-            .values({ type: "team", image: image ?? null, name })
+            .values({ id: team.id, type: "team", image: image ?? null, name })
             .returning();
         } catch (error) {
           throw new CustomError(
@@ -250,6 +255,42 @@ export async function conversationsPost(req: Request) {
           throw new CustomError(
             "DATABASE_ERROR",
             "Failed when registering memberships",
+            500
+          );
+        }
+
+        // 8. Broadcast Notification
+        const broadcast: NotificationInsertType[] = await Promise.all(
+          teamMembers.map(async (m) => {
+            const user = await tx.query.users.findFirst({
+              where: eq(users.id, m.userId),
+            });
+
+            return {
+              senderId: session.user.id,
+              receiverId: m.userId,
+              type: "newRoomChat",
+              category: "teams",
+              title: `${session.user.name} just started a group chat for ${team.name}`,
+              payload: {
+                starter: {
+                  id: session.user.id,
+                  name: session.user.name,
+                  image: session.user.image,
+                  username: session.user.username,
+                },
+                receiver: sanitizeUserData([user!])[0],
+              },
+            };
+          })
+        );
+
+        try {
+          await tx.insert(notifications).values(broadcast);
+        } catch (error) {
+          throw new CustomError(
+            "DATABASE_ERROR",
+            "Failed when creating broadcast",
             500
           );
         }
