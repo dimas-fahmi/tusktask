@@ -255,6 +255,33 @@ const NotificationCard = ({
       subtitle: createSubtitle(),
       footer: createAckowledgeFooter(),
     },
+    directMessage: {
+      header: (
+        <>
+          <span className="font-semibold">
+            {notification.payload?.sender?.name}
+          </span>{" "}
+          send you a message
+        </>
+      ),
+      subtitle: (
+        <Collapsible>
+          <CollapsibleTrigger asChild>
+            <h1 className="flex items-center gap-1 text-sm px-4 py-2 font-semibold border rounded-md w-full cursor-pointer hover:bg-accent hover:text-accent-foreground transition-all duration-300">
+              <Mail /> Message
+            </h1>
+          </CollapsibleTrigger>
+          {notification?.payload?.content && (
+            <CollapsibleContent>
+              <div className="p-4 text-xs border rounded-md mt-2">
+                {notification?.payload?.content}
+              </div>
+            </CollapsibleContent>
+          )}
+        </Collapsible>
+      ),
+      footer: createAckowledgeFooter(),
+    },
   };
 
   // Get the configuration for the current notification type
