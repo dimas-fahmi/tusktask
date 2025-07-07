@@ -6,6 +6,9 @@ import { Button } from "../../../shadcn/ui/button";
 import { useSession } from "next-auth/react";
 import useChatStore from "@/src/lib/tusktask/store/chatStore";
 import { useShallow } from "zustand/react/shallow";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../shadcn/ui/avatar";
+import { DEFAULT_AVATAR } from "@/src/lib/tusktask/constants/configs";
+import { getUserInitials } from "@/src/lib/tusktask/utils/getUserInitials";
 
 // Chat Header Component
 const ChatHeader = () => {
@@ -19,6 +22,8 @@ const ChatHeader = () => {
       conversationDetails: s.conversationDetails,
     }))
   );
+
+  const roomType = conversationDetails?.type;
 
   const user = (conversationDetails?.members ?? []).find(
     (u) => u.id !== session?.user?.id
@@ -47,24 +52,15 @@ const ChatHeader = () => {
             whileHover={{ scale: 1.1 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            {user?.name
-              ? user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-              : "N/A"}
-          </motion.div>
-          <AnimatePresence>
-            {true && (
-              <motion.div
-                className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                transition={{ type: "spring", stiffness: 500, damping: 25 }}
-              />
+            {roomType === "direct" ? (
+              <Avatar className="w-10 h-10">
+                <AvatarImage src={user?.image ?? DEFAULT_AVATAR} />
+                <AvatarFallback>{getUserInitials(user?.name)}</AvatarFallback>
+              </Avatar>
+            ) : (
+              <></>
             )}
-          </AnimatePresence>
+          </motion.div>
         </div>
         <motion.div
           className="ml-3"

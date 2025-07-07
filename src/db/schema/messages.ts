@@ -20,7 +20,7 @@ export const messages = pgTable(
     senderId: text("senderId")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
-    createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow(),
+    createdAt: timestamp("createdAt", TIMESTAMP_CONFIGS).defaultNow().notNull(),
     respondToId: text("respondToId"),
   },
   (t) => [
