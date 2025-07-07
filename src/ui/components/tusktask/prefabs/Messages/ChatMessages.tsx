@@ -10,7 +10,9 @@ import useChatStore from "@/src/lib/tusktask/store/chatStore";
 // Chat Messages Component
 const ChatMessages = () => {
   // Pull states from chat context
-  const messages = useChatStore((s) => s.messages);
+  const messages = useChatStore((s) => s.messages).sort((a, b) => {
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
 
   // Create ref for scroll container
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);

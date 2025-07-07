@@ -3,6 +3,7 @@ import { db } from "@/src/db";
 import {
   ConversationMembershipType,
   conversationParticipants,
+  conversations,
 } from "@/src/db/schema/conversations";
 import {
   messageInsertSchema,
@@ -16,6 +17,7 @@ import { CustomError } from "@/src/lib/tusktask/utils/error";
 import { and, eq } from "drizzle-orm";
 
 export interface MessagesConversationPostRequest {
+  id?: undefined;
   content: string;
   respondToId?: string;
 }
@@ -58,6 +60,7 @@ export async function messagesConversationPost(
 
   // Request Validation
   const newMessage: MessageInsertType = {
+    id: body?.id ?? crypto.randomUUID(),
     content: body.content,
     respondToId: body?.respondToId,
     conversationId: id,
@@ -94,6 +97,20 @@ export async function messagesConversationPost(
 
       if (!membership) {
         throw new CustomError("UNAUTHORIZED", "Membership not found", 401);
+      }
+
+      // # Update Conversation
+      try {
+        await tx
+          .update(conversations)
+          .set({ updatedAt: new Date() })
+          .where(eq(conversations.id, id));
+      } catch (error) {
+        throw new CustomError(
+          "DATABASE_ERROR",
+          "Failed when register update to conversation model",
+          500
+        );
       }
 
       // # Insert

@@ -74,9 +74,7 @@ const ChatHeader = () => {
           }}
         >
           <h2 className="font-semibold">{user?.name}</h2>
-          <p className="text-sm text-muted-foreground">
-            {true ? "Online" : "Last seen recently"}
-          </p>
+          <p className="text-sm text-muted-foreground"></p>
         </motion.div>
       </div>
 

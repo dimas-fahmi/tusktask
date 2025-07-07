@@ -35,7 +35,7 @@ const ChatInput = () => {
   );
 
   // Pull queryclient
-  const queryclient = useQueryClient();
+  const queryClient = useQueryClient();
 
   // Create Notification
   const { createNotification } = newNotificationMutation([
@@ -49,7 +49,7 @@ const ChatInput = () => {
       if (!session?.user?.id) return;
 
       registerNewMessageToConversation(
-        queryclient,
+        queryClient,
         session?.user?.id,
         message,
         selectedRoom
@@ -61,8 +61,12 @@ const ChatInput = () => {
       }
     },
     onSettled: () => {
-      queryclient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ["conversation", selectedRoom],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
       });
     },
     onSuccess: () => {

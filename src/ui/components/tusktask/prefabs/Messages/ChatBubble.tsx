@@ -51,7 +51,7 @@ const ChatBubble = ({
           className={`px-4 py-2 rounded-2xl ${
             isMe
               ? "bg-primary text-primary-foreground rounded-br-none rounded-tl-md"
-              : "bg-muted text-muted-foreground rounded-bl-none rounded-tr-md"
+              : "bg-accent text-accent-foreground rounded-bl-none rounded-tr-md"
           }`}
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
