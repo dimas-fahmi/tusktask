@@ -2,20 +2,25 @@ import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
-import { defineConfig } from "eslint/config";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const compat = new FlatCompat({
-  // import.meta.dirname is available after Node.js v20.11.0
-  baseDirectory: import.meta.dirname,
-  recommendedConfig: js.configs.recommended,
-});
+import pluginNext from "@next/eslint-plugin-next";
+import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
+  globalIgnores([
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    plugins: { js, "@next/next": pluginNext },
+    extends: ["js/recommended"],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     rules: {
+      ...pluginNext.configs.recommended.rules,
+      ...pluginNext.configs["core-web-vitals"].rules,
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -26,10 +31,12 @@ export default defineConfig([
         },
       ],
     },
+    settings: {
+      react: {
+        version: "19.1.0",
+      },
+    },
   },
-  ...compat.config({
-    extends: ["eslint:recommended", "next"],
-  }),
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
 ]);
