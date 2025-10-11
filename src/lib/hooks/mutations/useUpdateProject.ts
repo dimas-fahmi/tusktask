@@ -9,10 +9,8 @@ import { StandardizeResponse } from "../../utils/createResponse";
 import { Project } from "@/src/db/schema/projects";
 import { OperationError } from "../../errors";
 import { ProjectsPatchRequest } from "@/app/api/projects/patch";
-import {
-  eagerUpdaterProjectsDetail,
-  EagerUpdaterResult,
-} from "../../utils/eagerUpdater/projects/detail";
+import { eagerUpdaterProjectsDetail } from "../../utils/eagerUpdater/projects/detail";
+import { EagerUpdaterResult } from "../../types/eagerUpdate";
 
 export interface UseUpdateProjectContext {
   projectDetail?: EagerUpdaterResult<Project[]>;

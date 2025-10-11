@@ -325,6 +325,16 @@
   }
 }
 
+.theme-font-playfair {
+  .font-header {
+    font-family: var(--font-playfair-display);
+  }
+
+  .font-body {
+    font-family: var(--font-space-grotesk);
+  }
+}
+
 .theme-font-merriweather {
   .font-header {
     font-family: var(--font-playfair-display);
@@ -385,6 +395,17 @@
   }
 }
 
+p,
+ul,
+li,
+a,
+div,
+span,
+small,
+table {
+  font-family: var(--font-body);
+}
+
 h1,
 h2,
 h3,
@@ -392,10 +413,6 @@ h4,
 h5,
 h6 {
   font-family: var(--font-header);
-}
-
-p {
-  font-family: var(--font-body);
 }
 
 .opacity-fade-bottom {

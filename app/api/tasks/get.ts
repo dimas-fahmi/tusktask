@@ -47,6 +47,17 @@ export async function tasksGet(req: NextRequest) {
     try {
       const response = await db.query.tasks.findFirst({
         where: and(eq(tasks.id, id), eq(tasks.ownerId, user.id)),
+        with: {
+          masterTask: true,
+          parent: true,
+          project: true,
+          owner: true,
+          subtasks: {
+            with: {
+              subtasks: true,
+            },
+          },
+        },
       });
 
       return createResponse(
@@ -143,6 +154,10 @@ export async function tasksGet(req: NextRequest) {
 
   if (includeQueries.includes("masterTask")) {
     withRelation.masterTask = true;
+  }
+
+  if (includeQueries.includes("project")) {
+    withRelation.project = true;
   }
 
   // Execute

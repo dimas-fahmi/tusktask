@@ -1,8 +1,5 @@
 "use client";
 
-import { useIconPickerStore } from "@/src/lib/stores/ui/iconPickerStore";
-import { ProjectApp } from "@/src/lib/types/projects";
-import RenderLucide from "@/src/ui/components/RenderLucide";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import { Card, CardContent } from "@/src/ui/shadcn/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,9 +7,9 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { motion, Variants } from "motion/react";
 import { Pencil, PencilOff } from "lucide-react";
-import { useUpdateProject } from "@/src/lib/hooks/mutations/useUpdateProject";
-import { projectFormSchema } from "@/src/lib/zod/schemas/projectSchema";
-import { DEFAULT_ICON } from "@/src/lib/configs";
+import { TaskApp } from "@/src/lib/types/tasks";
+import { newTaskFormSchema } from "@/src/lib/zod/schemas/taskSchema";
+import { useUpdateTask } from "@/src/lib/hooks/mutations/useUpdateTasks";
 
 export const motionVariants = {
   hidden: {
@@ -47,11 +44,7 @@ export const motionVariants = {
   },
 } satisfies Variants;
 
-const NameAndDescriptionCard = ({ project }: { project?: ProjectApp }) => {
-  // Pull states from icon picker store
-  const { setIconPickerDrawerOpen, pickedIcon, setPickedIcon } =
-    useIconPickerStore();
-
+const NameAndDescriptionCard = ({ task }: { task?: TaskApp }) => {
   // Edit Mode Status
   const [editMode, setEditMode] = useState(false);
 
@@ -60,50 +53,42 @@ const NameAndDescriptionCard = ({ project }: { project?: ProjectApp }) => {
     control,
     handleSubmit,
     setValue,
-    watch,
     reset,
     formState: { isValid },
   } = useForm({
-    resolver: zodResolver(projectFormSchema),
+    resolver: zodResolver(
+      newTaskFormSchema.pick({ name: true, description: true })
+    ),
     mode: "onChange",
     defaultValues: {
-      name: project?.name,
-      description: project?.description || "",
-      icon: project?.icon || DEFAULT_ICON,
+      name: task?.name,
+      description: task?.description || "",
     },
   });
 
-  const icon = watch("icon");
-
   useEffect(() => {
-    if (project) {
+    if (task) {
       // No need to set icon, sync below everytime pickedIcon change
-      setValue("name", project?.name);
-      setValue("description", project?.description || undefined);
+      setValue("name", task?.name);
+      setValue("description", task?.description || undefined);
     }
-    setPickedIcon(project?.icon || DEFAULT_ICON);
-  }, [project]);
-
-  useEffect(() => {
-    if (pickedIcon) {
-      // Sync picked icon
-      setValue("icon", pickedIcon);
-    }
-  }, [setValue, pickedIcon]);
+  }, [task]);
 
   // Mutation
-  const { mutate: updateProject, isPending: isUpdatingProject } =
-    useUpdateProject(["update", "project"]);
+  const { mutate: updateTask, isPending: isUpdatingTask } = useUpdateTask([
+    "update",
+    "task",
+    "detail",
+  ]);
 
   useEffect(() => {
     if (!editMode) {
       reset({
-        name: project?.name,
-        description: project?.description || "",
-        icon: pickedIcon,
+        name: task?.name,
+        description: task?.description || "",
       });
     }
-  }, [editMode, pickedIcon, setPickedIcon]);
+  }, [editMode]);
 
   return (
     <>
@@ -111,13 +96,16 @@ const NameAndDescriptionCard = ({ project }: { project?: ProjectApp }) => {
         <CardContent className="h-full group/card">
           <form
             onSubmit={handleSubmit((data) => {
-              if (!isValid || isUpdatingProject) return;
-              if (project) {
-                updateProject(
+              if (!isValid || isUpdatingTask) return;
+              if (task) {
+                updateTask(
                   {
-                    id: project?.id,
-                    newValues: {
-                      ...data,
+                    old: task,
+                    req: {
+                      id: task?.id,
+                      newValues: {
+                        ...data,
+                      },
                     },
                   },
                   {
@@ -134,33 +122,25 @@ const NameAndDescriptionCard = ({ project }: { project?: ProjectApp }) => {
           >
             <div className="flex flex-col flex-1 overflow-hidden">
               <div className="flex items-center gap-1.5 text-4xl font-header py-2">
-                <RenderLucide
-                  iconName={icon ?? project?.icon ?? DEFAULT_ICON}
-                  className={`${editMode ? "border-border cursor-pointer" : "border-transparent"} border p-1 rounded-md box-content w-10 h-10`}
-                  onClick={() => {
-                    setEditMode(true);
-                    setIconPickerDrawerOpen(true);
-                  }}
-                />
                 {!editMode ? (
                   <h1
                     onClick={() => {
                       setEditMode(true);
                     }}
                   >
-                    {project?.name || "Untitled"}
+                    {task?.name || "Untitled"}
                   </h1>
                 ) : (
                   <Controller
                     control={control}
                     name="name"
-                    render={({ field }) => (
-                      <input
-                        {...field}
-                        autoFocus={true}
-                        autoComplete="off"
-                        placeholder="Project Name"
-                        className="border-1 p-1 w-full px-4 rounded-md outline-0"
+                    render={({ field: { value, onChange, ...fieldProps } }) => (
+                      <textarea
+                        value={value || ""}
+                        onChange={onChange}
+                        {...fieldProps}
+                        className="w-full outline-0 resize-none field-sizing-content max-h-52 scrollbar-none p-4 border rounded-md h-full"
+                        placeholder="Project description font-body"
                       />
                     )}
                   />
@@ -179,19 +159,19 @@ const NameAndDescriptionCard = ({ project }: { project?: ProjectApp }) => {
                       onChange={onChange}
                       name={name}
                       {...fieldProps}
-                      className="w-full outline-0 resize-none field-sizing-content max-h-52 scrollbar-none p-4 border rounded-md h-full"
+                      className="w-full outline-0 resize-none field-sizing-content max-h-52 scrollbar-none p-4 border rounded-md h-full font-body"
                       placeholder="Project description"
                     />
                   )}
                 />
               ) : (
                 <p
-                  className="text-sm opacity-70 mt-4"
+                  className="text-sm opacity-70 mt-4 font-body"
                   onClick={() => {
                     setEditMode(true);
                   }}
                 >
-                  {project?.description || "No description"}
+                  {task?.description || "No description"}
                 </p>
               )}
             </div>
@@ -221,7 +201,7 @@ const NameAndDescriptionCard = ({ project }: { project?: ProjectApp }) => {
                 >
                   Cancel
                 </Button>
-                <Button disabled={!isValid || isUpdatingProject}>Save</Button>
+                <Button disabled={!isValid || isUpdatingTask}>Save</Button>
               </motion.div>
             </div>
           </form>

@@ -29,8 +29,10 @@ import {
   CircleQuestionMark,
   ClockAlert,
   Loader2Icon,
+  Network,
   Save,
   Settings2,
+  X,
   Zap,
 } from "lucide-react";
 import { DatePicker } from "../../../DatePicker";
@@ -46,7 +48,6 @@ import { TasksPostRequest } from "@/app/api/tasks/post";
 import PriorityButton from "./components/PriorityButton";
 import { PRIORITIES } from "@/src/db/schema/configs";
 import { formatRelative } from "date-fns";
-import { parseDate } from "chrono-node";
 import {
   Tooltip,
   TooltipContent,
@@ -55,6 +56,7 @@ import {
 import NewTaskHelper from "../../../TooltipContents/NewTaskHelper";
 import { queryKeys } from "@/src/lib/utils/queryKeys";
 import { DEFAULT_ICON } from "@/src/lib/configs";
+import { naturalLanguangeDateParse } from "@/src/lib/utils/naturalLanguageDateParser";
 
 const settingsVariants: Variants = {
   hidden: { transition: { duration: 0.3 }, width: 0 },
@@ -71,7 +73,10 @@ const NewTaskDialog = () => {
     newTaskDialogOpen,
     setNewTaskDialogOpen,
     activeProject,
+    parentTask,
     setActiveProject,
+    setParentTask,
+    reset: resetStore,
   } = useTaskStore();
 
   // Error state
@@ -127,10 +132,9 @@ const NewTaskDialog = () => {
   }, [setIsValidDeadline, deadline]);
 
   useEffect(() => {
-    console.log(isDeadlineSetManually);
     if (isDeadlineSetManually && isValidDeadline) return;
 
-    const pd = parseDate(name);
+    const { date: pd } = naturalLanguangeDateParse(name);
     if (pd) {
       setValue("deadlineAt", pd);
       setTimeout(() => {
@@ -217,6 +221,7 @@ const NewTaskDialog = () => {
     }, 500);
     setNewTaskDialogOpen(false);
     setIsDeadlineSetManually(false);
+    resetStore();
   };
 
   // OnOpenChange
@@ -232,7 +237,7 @@ const NewTaskDialog = () => {
   return (
     <Dialog open={newTaskDialogOpen} onOpenChange={setNewTaskDialogOpen}>
       <DialogContent
-        className={`p-0 bg-card text-card-foreground overflow-hidden`}
+        className={`p-0 bg-card text-card-foreground overflow-hidden w-full`}
       >
         {/* Header [hidden] */}
         <DialogHeader className="sr-only">
@@ -247,6 +252,8 @@ const NewTaskDialog = () => {
               newTaskRequest: {
                 ...data,
                 description: data?.description || undefined,
+                parentTask: parentTask ? parentTask?.id : null,
+                projectId: parentTask ? parentTask?.projectId : data?.projectId,
               },
             };
 
@@ -303,8 +310,8 @@ const NewTaskDialog = () => {
               </div>
 
               {/* Current Settings Bar */}
-              <div className="px-4 flex items-center justify-between mt-2">
-                <span>
+              <div className="px-4 flex items-center justify-between mt-2 w-full">
+                <span className="flex items-center gap-2 max-w-72">
                   {/* Deadline */}
                   <motion.div
                     variants={settingsVariants}
@@ -312,7 +319,7 @@ const NewTaskDialog = () => {
                     className="overflow-hidden"
                   >
                     <div
-                      className={`${isValidDeadline ? "" : "bg-destructive/10 text-destructive"} px-4 py-1 min-w-48 capitalize max-w-48 border w-fit rounded-md flex items-center gap-2 text-xs`}
+                      className={`${isValidDeadline ? "" : "bg-destructive/10 text-destructive"} px-4 py-1 min-w-48 capitalize max-w-48 border rounded-md flex items-center gap-2 text-xs`}
                     >
                       <AlarmClock className="w-4 h-4" />{" "}
                       {deadline
@@ -465,7 +472,7 @@ const NewTaskDialog = () => {
           {/* Footer */}
           <footer className="flex items-center justify-between p-4 border-t">
             {/* Project Select */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex gap-1.5">
               <Button
                 type="button"
                 variant={advance ? "default" : "outline"}
@@ -475,32 +482,63 @@ const NewTaskDialog = () => {
               >
                 <Settings2 />
               </Button>
-              <Select
-                value={activeProject?.id || ""}
-                onValueChange={(id) => {
-                  const find = projects?.find((item) => item.id === id);
-                  setActiveProject(find);
-                }}
-              >
-                <SelectTrigger className="max-w-34 min-w-34 text-xs">
-                  <SelectValue placeholder={"Project"}>
-                    {ActiveProjectIcon} {activeProject?.name}
-                  </SelectValue>
-                </SelectTrigger>
+              {parentTask ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.div
+                      variants={settingsVariants}
+                      animate={parentTask ? "visible" : "hidden"}
+                      className="overflow-hidden"
+                    >
+                      <div
+                        className={`${isValidDeadline ? "" : "bg-destructive/10 text-destructive"} px-4 py-1 min-w-55 max-w-55 h-full border rounded-md flex items-center justify-between gap-2 text-xs capitalize`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <Network className="max-h-4 max-w-4 min-w-4 min-h-4" />
+                          <span className="truncate max-w-28">
+                            {parentTask?.name}
+                          </span>
+                        </span>
+                        <button
+                          type="button"
+                          className="cursor-pointer"
+                          onClick={() => setParentTask(null)}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </motion.div>
+                  </TooltipTrigger>
+                  <TooltipContent>{parentTask?.name}</TooltipContent>
+                </Tooltip>
+              ) : (
+                <Select
+                  value={activeProject?.id || ""}
+                  onValueChange={(id) => {
+                    const find = projects?.find((item) => item.id === id);
+                    setActiveProject(find);
+                  }}
+                >
+                  <SelectTrigger className="max-w-34 min-w-34 text-xs">
+                    <SelectValue placeholder={"Project"}>
+                      {ActiveProjectIcon} {activeProject?.name}
+                    </SelectValue>
+                  </SelectTrigger>
 
-                <SelectContent className="text-xs">
-                  <SelectGroup>
-                    <SelectLabel>Projects</SelectLabel>
-                    {projects &&
-                      Array.isArray(projects) &&
-                      projects.map((item) => (
-                        <SelectItem key={item.id} value={item.id}>
-                          <RenderLucide iconName={item?.icon} /> {item.name}
-                        </SelectItem>
-                      ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+                  <SelectContent className="text-xs">
+                    <SelectGroup>
+                      <SelectLabel>Projects</SelectLabel>
+                      {projects &&
+                        Array.isArray(projects) &&
+                        projects.map((item) => (
+                          <SelectItem key={item.id} value={item.id}>
+                            <RenderLucide iconName={item?.icon} /> {item.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             {/* Controller */}
@@ -516,6 +554,7 @@ const NewTaskDialog = () => {
                 Cancel
               </Button>
               <Button
+                type="submit"
                 disabled={
                   !isValid ||
                   !isReminderValid ||

@@ -1,31 +1,10 @@
 import React, { Suspense } from "react";
 import { generateMetadata as gm } from "@/src/lib/utils/generateMetadata";
-import { fetchUserProjects } from "@/src/lib/utils/fetchers/fetchUserProjects";
-import { parseCookies } from "@/src/lib/utils/parseCookies";
 import { StandardizeResponse } from "@/src/lib/utils/createResponse";
 import { Project } from "@/src/db/schema/projects";
 import ProjectPageIndex from "./ProjectPageIndex";
 import { redirect } from "next/navigation";
-
-async function getProject(id: string) {
-  const cookieString = await parseCookies();
-  const headers = new Headers();
-  headers.set("Cookie", cookieString);
-  // Need to forward cookie for authentication to validate project ownership
-  const response = await fetchUserProjects<Project[]>(
-    { id },
-    {
-      headers: headers,
-      cache: "force-cache",
-      next: {
-        revalidate: 60 * 60 * 1, // revalidate every 1 hour
-        tags: ["projects", `project-${id}`],
-      },
-    }
-  );
-
-  return response;
-}
+import { getProject } from "@/src/lib/utils/serverQueries/getProject";
 
 export async function generateMetadata({
   params,

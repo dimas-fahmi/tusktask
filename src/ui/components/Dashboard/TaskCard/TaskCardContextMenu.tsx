@@ -37,17 +37,11 @@ const TaskCardContextMenu = ({ task }: { task: TaskApp }) => {
   const { mutate: deleteTask, isPending: isDeletingTask } = useDeleteTask();
 
   // Update Mutation
-  const { mutate: updateTask, isPending: isUpdatingTask } = useUpdateTask(
-    ["update", "task", task.id],
-    {
-      onMutate: () => {
-        console.log("extending");
-      },
-      onSettled: (_data, _err, _var, context) => {
-        console.log(context);
-      },
-    }
-  );
+  const { mutate: updateTask, isPending: isUpdatingTask } = useUpdateTask([
+    "update",
+    "task",
+    task.id,
+  ]);
 
   return (
     <div>
@@ -202,6 +196,7 @@ const TaskCardContextMenu = ({ task }: { task: TaskApp }) => {
                 deleteTask({
                   id: task?.id,
                   projectId: task?.projectId,
+                  parentTaskId: task?.parentTask,
                 });
               }}
             >

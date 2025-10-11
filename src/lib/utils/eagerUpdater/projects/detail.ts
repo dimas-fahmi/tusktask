@@ -6,12 +6,6 @@ import { queryKeys } from "../../queryKeys";
 import { StandardizeResponse } from "../../createResponse";
 import { Project } from "@/src/db/schema/projects";
 
-export interface EagerUpdaterResult<T> {
-  oldData: StandardizeResponse<T>;
-  newData: StandardizeResponse<T>;
-  queryKey: string[];
-}
-
 const update = (req: ProjectsPatchRequest, queryClient: QueryClient) => {
   const queryKey = queryKeys.projects.detail(req?.id);
 

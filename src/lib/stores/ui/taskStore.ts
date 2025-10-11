@@ -1,6 +1,7 @@
 import { Project } from "@/src/db/schema/projects";
 import { create } from "zustand";
 import { TaskApp } from "../../types/tasks";
+import { Task } from "@/src/db/schema/tasks";
 
 export interface TaskStore {
   // New Task Dialog State
@@ -19,6 +20,10 @@ export interface TaskStore {
   activeProject?: Project;
   setActiveProject: (n?: Project) => void;
 
+  // Parent Task
+  parentTask: Task | null;
+  setParentTask: (n: Task | null) => void;
+
   // Resetter
   reset: () => void;
 }
@@ -28,6 +33,7 @@ export const taskStoreDefaultValues = {
   activeProject: undefined,
   rescheduleDialogOpen: false,
   activeTask: undefined,
+  parentTask: null,
 };
 
 export const useTaskStore = create<TaskStore>((set) => ({
@@ -38,6 +44,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
   setActiveProject: (n) => set({ activeProject: n }),
   setRescheduleDialogOpen: (n) => set({ rescheduleDialogOpen: n }),
   setActiveTask: (n) => set({ activeTask: n }),
+  setParentTask: (n) => set({ parentTask: n }),
 
   // Resetter
   reset: () => set(taskStoreDefaultValues),

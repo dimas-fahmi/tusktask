@@ -11,9 +11,14 @@ import {
   eagerUpdaterTasksProject,
   EagerUpdateTasksProjectResult,
 } from "../../utils/eagerUpdater/tasks/project";
+import { EagerUpdaterResult } from "../../types/eagerUpdate";
+import { eagerUpdaterTaskDetail } from "../../utils/eagerUpdater/tasks/detail";
+import { TaskApp } from "../../types/tasks";
 
 export interface UseUpdateTaskDefaultContext {
   euTasksProject?: EagerUpdateTasksProjectResult;
+  euTasksDetail?: EagerUpdaterResult<Task>;
+  euSubtasksList?: EagerUpdaterResult<TaskApp>;
 }
 
 export interface UseUpdateTaskVariables {
@@ -120,6 +125,12 @@ export const useUpdateTask = <TContext extends UseUpdateTaskDefaultContext>(
           data.old.projectId,
           queryClient
         ),
+        euTasksDetail: eagerUpdaterTaskDetail.update(data.req, queryClient),
+        euSubtasksList: eagerUpdaterTaskDetail.updateSubtasksList(
+          data.req,
+          queryClient,
+          data?.old?.parentTask
+        ),
 
         // More eager update here...
 
@@ -138,6 +149,20 @@ export const useUpdateTask = <TContext extends UseUpdateTaskDefaultContext>(
           onMutateResult?.euTasksProject?.oldData
         );
       }
+
+      if (onMutateResult?.euTasksDetail) {
+        queryClient.setQueryData(
+          onMutateResult?.euTasksDetail?.queryKey,
+          onMutateResult?.euTasksDetail?.oldData
+        );
+      }
+
+      if (onMutateResult?.euSubtasksList) {
+        queryClient.setQueryData(
+          onMutateResult?.euSubtasksList?.queryKey,
+          onMutateResult?.euSubtasksList?.oldData
+        );
+      }
     },
     onSuccess: (_data, _variables, _onMutateResult, _context) => {
       options?.onSuccess?.(_data, _variables, _onMutateResult, _context);
@@ -150,6 +175,18 @@ export const useUpdateTask = <TContext extends UseUpdateTaskDefaultContext>(
       if (onMutateResult?.euTasksProject) {
         queryClient.invalidateQueries({
           queryKey: onMutateResult?.euTasksProject?.queryKey,
+        });
+      }
+
+      if (onMutateResult?.euTasksDetail) {
+        queryClient.invalidateQueries({
+          queryKey: onMutateResult?.euTasksDetail?.queryKey,
+        });
+      }
+
+      if (onMutateResult?.euSubtasksList) {
+        queryClient.invalidateQueries({
+          queryKey: onMutateResult?.euSubtasksList?.queryKey,
         });
       }
     },

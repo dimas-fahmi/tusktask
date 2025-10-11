@@ -17,8 +17,6 @@ function update(
 ): EagerUpdateTasksProjectResult {
   const queryKey = queryKeys.tasks.project(projectId);
 
-  console.log(queryClient);
-
   const oldData = queryClient.getQueryData(queryKey) as StandardizeResponse<
     Task[]
   >;
@@ -67,10 +65,11 @@ function del(
 
   const newData = (() => {
     const newList = oldData?.result?.filter((item) => item?.id !== taskId);
+    console.log(newList);
 
     return {
       ...oldData,
-      result: [...newList],
+      result: [...(newList ?? [])],
     };
   })();
 

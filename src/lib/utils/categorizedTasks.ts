@@ -1,19 +1,20 @@
-import { Task } from "@/src/db/schema/tasks";
+import { TaskApp } from "../types/tasks";
 
 export interface CategorizedTasks {
-  overdue: Task[];
-  overdueSoon: Task[];
-  tomorrow: Task[];
-  ongoing: Task[];
-  archived: Task[];
-  completed: Task[];
-  lowPriority: Task[];
-  mediumPriority: Task[];
-  highPriority: Task[];
-  urgentPriority: Task[];
+  overdue: TaskApp[];
+  overdueSoon: TaskApp[];
+  tomorrow: TaskApp[];
+  ongoing: TaskApp[];
+  archived: TaskApp[];
+  completed: TaskApp[];
+  lowPriority: TaskApp[];
+  mediumPriority: TaskApp[];
+  highPriority: TaskApp[];
+  urgentPriority: TaskApp[];
+  todos: TaskApp[];
 }
 
-export const categorizeTasks = (tasks?: Task[]): CategorizedTasks => {
+export const categorizeTasks = (tasks?: TaskApp[]): CategorizedTasks => {
   const categorizedTasks: CategorizedTasks = {
     archived: [],
     completed: [],
@@ -25,6 +26,7 @@ export const categorizeTasks = (tasks?: Task[]): CategorizedTasks => {
     mediumPriority: [],
     highPriority: [],
     urgentPriority: [],
+    todos: [],
   };
 
   if (!tasks || !Array.isArray(tasks) || !tasks.length) {
@@ -87,8 +89,13 @@ export const categorizeTasks = (tasks?: Task[]): CategorizedTasks => {
     ) {
       return false;
     }
+
+    const isInSoon = categorizedTasks.overdueSoon.find((t) => t.id === item.id);
+
     const deadlineAt = new Date(item.deadlineAt);
-    return deadlineAt >= tomorrowDate && deadlineAt < dayAfterTomorrow;
+    return (
+      deadlineAt >= tomorrowDate && deadlineAt < dayAfterTomorrow && !isInSoon
+    );
   });
 
   // Ongoing (Not completed, not archived, not overdue, not overdueSoon, not tomorrow)
@@ -103,6 +110,10 @@ export const categorizeTasks = (tasks?: Task[]): CategorizedTasks => {
       categorizedTasks.tomorrow.find((t) => t.id === id);
 
     return !isInOtherCategory;
+  });
+
+  categorizedTasks.todos = tasks?.filter((item) => {
+    return !item?.completedAt && item?.taskStatus !== "archived";
   });
 
   // Priority

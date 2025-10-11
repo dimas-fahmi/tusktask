@@ -112,6 +112,10 @@ export const APP_THEMES_ID = [
   "beige-serenity",
 ] as const;
 
+export const DEFAULT_COLOR_THEME: (typeof APP_THEMES_ID)[number] = "default";
+export const DEFAULT_FONT_THEME: (typeof FONT_THEME_CLASSES)[number] =
+  "theme-font-playfair";
+
 export interface AppTheme {
   id: (typeof APP_THEMES_ID)[number];
   screenshot: string;
@@ -154,6 +158,7 @@ export const FONT_THEME_CLASSES = [
   "theme-font-default",
   "theme-font-space-mono",
   "theme-font-inter",
+  "theme-font-playfair",
   "theme-font-merriweather",
   "theme-font-jetbrains",
   "theme-font-poppins",
@@ -213,6 +218,11 @@ export const FONT_THEMES: Record<
     name: "Orbitron & JetBrains Mono",
     description:
       "Futuristic and digital — fits tech startups, dev tools, and sci-fi interfaces.",
+  },
+  "theme-font-playfair": {
+    id: "theme-font-playfair",
+    name: "Playfair Display & Space Grotesk",
+    description: "Retro Modern, light header with clear paragraph.",
   },
   "theme-font-merriweather": {
     id: "theme-font-merriweather",

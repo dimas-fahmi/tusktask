@@ -61,7 +61,7 @@ export const ProjectCard = ({
                 <TooltipContent>{project?.name || "Untitled"}</TooltipContent>
               </Tooltip>
 
-              <p className="text-sm opacity-50 group-hover/card:opacity-75 transition-all duration-300">
+              <p className="text-sm opacity-50 font-body group-hover/card:opacity-75 transition-all duration-300">
                 {Array.isArray(project?.tasks) && project?.tasks?.length
                   ? compactNumber(project?.tasks?.length)
                   : "No"}{" "}

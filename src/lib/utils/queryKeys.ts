@@ -5,6 +5,7 @@ export const queryKeys = {
       ...queryKeys.tasks.all,
       `project-${projectId}`,
     ],
+    detail: (taskId: string) => [...queryKeys.tasks.all, `task-${taskId}`],
   },
   projects: {
     all: ["projects"] as const,

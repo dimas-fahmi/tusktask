@@ -21,7 +21,7 @@ const Card = React.forwardRef<HTMLDivElement, TaskCardProps>(
     return (
       <div
         onClick={() => {
-          router.push(`/dashboard/tasks/${task?.id}`);
+          router.push(`/dashboard/tasks/detail/${task?.id}`);
         }}
         ref={ref}
         className={cn(

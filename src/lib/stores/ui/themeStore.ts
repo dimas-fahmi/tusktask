@@ -1,5 +1,12 @@
 import { create } from "zustand";
-import { APP_THEMES, AppTheme, FONT_THEMES, FontTheme } from "../../configs";
+import {
+  APP_THEMES,
+  AppTheme,
+  DEFAULT_COLOR_THEME,
+  DEFAULT_FONT_THEME,
+  FONT_THEMES,
+  FontTheme,
+} from "../../configs";
 
 export interface ThemeStore {
   // Theme State
@@ -16,10 +23,10 @@ export interface ThemeStore {
 }
 
 export const useThemeStore = create<ThemeStore>((set) => ({
-  activeTheme: APP_THEMES["beige-serenity"],
+  activeTheme: APP_THEMES[DEFAULT_COLOR_THEME],
   setActiveTheme: (n) => set({ activeTheme: n }),
 
-  activeFont: FONT_THEMES["theme-font-merriweather"],
+  activeFont: FONT_THEMES[DEFAULT_FONT_THEME],
   setActiveFont: (n) => set({ activeFont: n }),
 
   themePickerDialogOpen: false,
