@@ -4,7 +4,7 @@ import { StandardError } from "./src/lib/app/errors";
 
 config({ path: ".env" });
 
-const connectionString = process.env.SECRET_SUPABASE_DATABASE_URI;
+const connectionString = process.env.SECRET_SUPABASE_DB_URI;
 
 if (!connectionString) {
   throw new StandardError(
