@@ -7,12 +7,10 @@ import { useRef } from "react";
 const SlapLabel = ({
   text,
   fallDirection,
-  delay,
   fallDelay,
 }: {
   text: string;
   fallDirection: "left" | "right";
-  delay?: number;
   fallDelay?: number;
 }) => {
   const labelRef = useRef<HTMLSpanElement>(null);
@@ -21,26 +19,6 @@ const SlapLabel = ({
     if (!labelRef.current) return;
 
     const tl = gsap.timeline();
-
-    tl.fromTo(
-      labelRef.current,
-      { y: -50, rotation: -15, opacity: 0 },
-      {
-        y: 0,
-        rotation: 0,
-        opacity: 1,
-        duration: 0.7,
-        ease: "bounce.out",
-        delay: delay ?? 0,
-      },
-    );
-
-    tl.to(labelRef.current, {
-      scaleX: 1,
-      scaleY: 1,
-      duration: 0.2,
-      ease: "power2.out",
-    });
 
     tl.to({}, { duration: fallDelay || 0.6 });
 

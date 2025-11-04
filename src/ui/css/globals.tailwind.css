@@ -133,4 +133,17 @@
   body {
     @apply bg-background text-foreground font-body;
   }
+  
+  .flex-center{
+    @apply flex items-center justify-center
+  }
+}
+
+html,body{
+  scroll-behavior: smooth;
+}
+
+
+.scrollbar-none::-webkit-scrollbar{
+  display: none;
 }
