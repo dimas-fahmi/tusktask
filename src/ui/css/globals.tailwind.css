@@ -126,24 +126,31 @@
     @apply font-header;
   }
 
-  button,a{
+  button,
+  a {
     @apply cursor-pointer;
   }
 
   body {
     @apply bg-background text-foreground font-body;
   }
-  
-  .flex-center{
-    @apply flex items-center justify-center
+
+  .flex-center {
+    @apply flex items-center justify-center;
   }
 }
 
-html,body{
+html,
+body {
   scroll-behavior: smooth;
 }
 
-
-.scrollbar-none::-webkit-scrollbar{
+.scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+.drag-none {
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
 }

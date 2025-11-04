@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "./components/Navbar";
 import HeroSection from "./sections/HeroSection";
 import OverviewSection from "./sections/OverviewSection";
+import TestimoniesSection from "./sections/TestimoniesSection";
 
 export const metadata: Metadata = {
   title: "We'll Remember It For You | TuskTask",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 const LandingPage = () => {
   return (
-    <div className="min-h-[1400px]">
+    <div className="min-h-[10400px]">
       {/* Landing Page NavBar */}
       <Navbar />
 
@@ -18,6 +19,9 @@ const LandingPage = () => {
 
       {/* Overview Section */}
       <OverviewSection />
+
+      {/* Testimony Section */}
+      <TestimoniesSection />
     </div>
   );
 };

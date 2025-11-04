@@ -77,12 +77,8 @@
           "tableFrom": "profiles",
           "tableTo": "users",
           "schemaTo": "auth",
-          "columnsFrom": [
-            "id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -92,9 +88,7 @@
         "profiles_username_unique": {
           "name": "profiles_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         }
       },
       "policies": {},
@@ -240,12 +234,8 @@
           "tableFrom": "projects",
           "tableTo": "profiles",
           "schemaTo": "user",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -516,12 +506,8 @@
           "tableFrom": "tasks",
           "tableTo": "projects",
           "schemaTo": "main",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -530,12 +516,8 @@
           "tableFrom": "tasks",
           "tableTo": "profiles",
           "schemaTo": "user",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -544,12 +526,8 @@
           "tableFrom": "tasks",
           "tableTo": "tasks",
           "schemaTo": "main",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -565,20 +543,12 @@
     "main.project_status_enum": {
       "name": "project_status_enum",
       "schema": "main",
-      "values": [
-        "active",
-        "archived"
-      ]
+      "values": ["active", "archived"]
     },
     "main.status_enum": {
       "name": "status_enum",
       "schema": "main",
-      "values": [
-        "pending",
-        "ongoing",
-        "archived",
-        "completed"
-      ]
+      "values": ["pending", "ongoing", "archived", "completed"]
     }
   },
   "schemas": {
