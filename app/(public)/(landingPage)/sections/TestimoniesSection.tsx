@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { useRef } from "react";
 import TestimonyBlock from "../components/TestimonyBlock";
+import TestimonyBlockCover from "../components/TestimonyBlockCover";
 
 const testimonies = [
   {
@@ -56,16 +57,148 @@ const TestimoniesSection = () => {
     () => {
       gsap.registerPlugin(ScrollTrigger);
       const blocks = gsap.utils?.toArray(".testimony-block");
-      gsap.to(blocks, {
+
+      // First Quote Icon
+      const tbFquoteIcons = gsap.utils?.toArray(
+        ".testimony-block-first-quote-icon",
+      ) as gsap.DOMTarget[];
+
+      // Second Quote Icon
+      const tbSquoteIcons = gsap.utils?.toArray(
+        ".testimony-block-second-quote-icon",
+      ) as gsap.DOMTarget[];
+
+      // Name & Roles
+      const tbNamesAndRoles = gsap.utils?.toArray(
+        ".testimony-block-name-and-role",
+      ) as gsap.DOMTarget[];
+
+      // Images
+      const tbImages = gsap.utils?.toArray(
+        ".testimony-block-image",
+      ) as gsap.DOMTarget[];
+
+      // Titles
+      const tbTitles = gsap.utils?.toArray(
+        ".testimony-block-title",
+      ) as gsap.DOMTarget[];
+
+      // Contents
+      const tbContents = gsap.utils?.toArray(
+        ".testimony-block-content",
+      ) as gsap.DOMTarget[];
+
+      const containerAnimation = gsap.to(blocks, {
         xPercent: -100 * (blocks.length - 1),
         ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
           pin: true,
           scrub: 1,
-          // base vertical scrolling on how wide the container is so it feels more natural.
           end: "+=3500",
         },
+      });
+
+      // First Quote Icon Animation
+      tbFquoteIcons.forEach((item) => {
+        gsap.from(item, {
+          opacity: 0,
+          rotate: 360,
+          scale: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            containerAnimation,
+            trigger: item,
+            start: "left 90%",
+            end: "left 50%",
+            scrub: true,
+          },
+        });
+      });
+
+      // Second Quote Icon Animation
+      tbSquoteIcons.forEach((item) => {
+        gsap.from(item, {
+          opacity: 0,
+          rotate: 360,
+          scale: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            containerAnimation,
+            trigger: item,
+            start: "left 95%",
+            end: "left 80%",
+            scrub: true,
+          },
+        });
+      });
+
+      // Namme and Roles
+      tbNamesAndRoles.forEach((item) => {
+        gsap.from(item, {
+          x: -50,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            containerAnimation,
+            trigger: item,
+            scrub: true,
+            start: "left 80%",
+            end: "left 40%",
+          },
+        });
+      });
+
+      // Image Animation
+      tbImages.forEach((item) => {
+        gsap.from(item, {
+          scale: 0.7,
+          opacity: 0,
+          scrollTrigger: {
+            containerAnimation,
+            trigger: item,
+            start: "left 90%",
+            end: "left 20%",
+            scrub: true,
+          },
+        });
+      });
+
+      // Title
+      tbTitles.forEach((item) => {
+        gsap.from(item, {
+          y: 30,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            containerAnimation,
+            trigger: item,
+            start: "left 90%",
+            end: "left center",
+            scrub: true,
+          },
+        });
+      });
+
+      // Contents
+      tbContents.forEach((item) => {
+        gsap.from(item, {
+          y: 20,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            containerAnimation,
+            trigger: item,
+            start: "left 90%",
+            end: "left center",
+            scrub: true,
+          },
+        });
       });
     },
     { scope: containerRef },
@@ -76,6 +209,8 @@ const TestimoniesSection = () => {
       ref={containerRef}
       className="flex flex-nowrap overflow-x-scroll scrollbar-none"
     >
+      <TestimonyBlockCover />
+
       {testimonies.map((testimony) => (
         <TestimonyBlock key={testimony.id} {...testimony} />
       ))}

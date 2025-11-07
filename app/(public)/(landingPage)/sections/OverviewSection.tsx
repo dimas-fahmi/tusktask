@@ -25,13 +25,6 @@ const OverviewSection = () => {
           image="/assets/arts/png/lp-art-passed-deadline.png"
         />
       </div>
-
-      <div className="text-center">
-        <h1 className="text-4xl font-bold">
-          All Of Them Use <span className="text-primary">TuskTask</span>
-        </h1>
-        <p>And they live happily ever after</p>
-      </div>
     </section>
   );
 };
