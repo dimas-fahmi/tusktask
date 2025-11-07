@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "./components/Navbar";
+import FeatureSection from "./sections/FeatureSection";
 import HeroSection from "./sections/HeroSection";
 import OverviewSection from "./sections/OverviewSection";
 import TestimoniesSection from "./sections/TestimoniesSection";
@@ -22,6 +23,9 @@ const LandingPage = () => {
 
       {/* Testimony Section */}
       <TestimoniesSection />
+
+      {/* Feature Section */}
+      <FeatureSection />
     </div>
   );
 };

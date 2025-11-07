@@ -138,6 +138,11 @@
   .flex-center {
     @apply flex items-center justify-center;
   }
+
+  .layout-padding {
+    @apply p-4 md:p-6 lg:p-16;
+  }
+
 }
 
 html,
