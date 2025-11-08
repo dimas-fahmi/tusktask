@@ -1,5 +1,10 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
+import { useRef } from "react";
 import { getValueByInterval } from "@/src/lib/utils/getValueByInterval";
 import type { FeatureBlockProps } from "../components/FeatureBlock";
 import FeatureBlock from "../components/FeatureBlock";
@@ -56,10 +61,37 @@ const features = [
 ] as const;
 
 const FeatureSection = () => {
+  const headerRef = useRef<HTMLElement | null>(null);
+  useGSAP(
+    () => {
+      // Register Plugin
+      gsap.registerPlugin(SplitText, ScrollTrigger);
+
+      const split = SplitText.create(headerRef.current);
+
+      gsap.from(split.words, {
+        y: 50,
+        opacity: 0,
+        scale: 0.4,
+        stagger: 0.05,
+        duration: 0.5,
+        scrollTrigger: {
+          trigger: split.words,
+          start: "top 90%",
+          end: "top center",
+          toggleActions: "play none none none",
+        },
+      });
+    },
+    {
+      scope: headerRef,
+    },
+  );
+
   return (
     <section className="layout-padding space-y-12">
       {/* Header */}
-      <header className="text-center space-y-2">
+      <header ref={headerRef} className="text-center space-y-2">
         <h1 className="text-4xl font-bold">What Make TuskTask Special</h1>
         <p className="font-light">This is why people loved us</p>
       </header>
