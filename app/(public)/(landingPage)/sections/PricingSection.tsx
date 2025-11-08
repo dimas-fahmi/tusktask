@@ -6,7 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import Image from "next/image";
 import { useRef } from "react";
-import { useMediaQuery } from "react-responsive";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 
 const PricingSection = () => {
@@ -17,9 +16,6 @@ const PricingSection = () => {
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const descriptionRef = useRef<HTMLParagraphElement | null>(null);
   const ctaRef = useRef<HTMLDivElement | null>(null);
-  const isWideScreen = useMediaQuery({
-    query: "(min-width: 768px)",
-  });
 
   useGSAP(
     () => {
@@ -118,19 +114,21 @@ const PricingSection = () => {
       {/* Illo 1 */}
       <div ref={imageContainerRef} className="absolute left-0 top-0">
         <Image
-          width={isWideScreen ? 280 : 180}
-          height={isWideScreen ? 280 : 180}
+          width={280}
+          height={280}
           src={"/assets/arts/png/lp-poor-tusky.png"}
           alt="Poor Tusky Begging For Donation"
+          className={`w-[180px] md:w-[280px]`}
         />
       </div>
 
       <div ref={imageSecondContainerRef} className="absolute right-0 bottom-0">
         <Image
-          width={isWideScreen ? 280 : 180}
-          height={isWideScreen ? 280 : 180}
+          width={280}
+          height={280}
           src={"/assets/arts/png/lp-landowner-tusky.png"}
           alt="Wealthy Tusky Standing With Proud"
+          className={`w-[180px] md:w-[280px]`}
         />
       </div>
 
