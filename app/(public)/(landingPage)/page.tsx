@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import FeatureSection from "./sections/FeatureSection";
 import HeroSection from "./sections/HeroSection";
 import OverviewSection from "./sections/OverviewSection";
+import PricingSection from "./sections/PricingSection";
 import TestimoniesSection from "./sections/TestimoniesSection";
 
 export const metadata: Metadata = {
@@ -26,6 +27,9 @@ const LandingPage = () => {
 
       {/* Feature Section */}
       <FeatureSection />
+
+      {/* Pricing Section */}
+      <PricingSection />
     </div>
   );
 };
