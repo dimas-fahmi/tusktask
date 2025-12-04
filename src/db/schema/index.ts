@@ -1,22 +1,24 @@
-// Profiles
-import { profiles, profilesRelations } from "./profiles";
+// Auth Schema
+import {
+  account,
+  accountRelations,
+  session,
+  sessionRelations,
+  user,
+  userRelations,
+  verification,
+} from "./auth-schema";
 
-// Projects
-import { projects, projectsRelations } from "./projects";
-
-// Tasks
-import { tasks, tasksRelations } from "./tasks";
-
-export const schema = {
-  // Profiles
-  profiles,
-  profilesRelations,
-
-  // Projects
-  projects,
-  projectsRelations,
-
-  // Tasks
-  tasks,
-  tasksRelations,
+// Export as bundle
+const schema = {
+  // Auth Schema
+  account,
+  accountRelations,
+  session,
+  sessionRelations,
+  user,
+  userRelations,
+  verification,
 };
+
+export default schema;

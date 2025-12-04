@@ -15,7 +15,7 @@ if (!connectionString) {
 
 export default defineConfig({
   schema: "./src/db/schema",
-  out: "./src/migrations/supabase",
+  out: "./src/db/migrations/supabase",
   dialect: "postgresql",
   dbCredentials: {
     url: connectionString,
