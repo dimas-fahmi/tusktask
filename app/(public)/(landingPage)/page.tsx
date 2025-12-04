@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const LandingPage = () => {
   return (
-    <div className="min-h-[10400px]">
+    <div className="">
       {/* Landing Page NavBar */}
       <Navbar />
 
