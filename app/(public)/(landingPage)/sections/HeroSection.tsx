@@ -26,7 +26,9 @@ const HeroSection = () => {
 
         {/* CTA */}
         <div className="mt-6 flex gap-4 justify-center md:justify-start">
-          <Button size={"lg"}>Yes, I Need This!</Button>
+          <Button size={"lg"} asChild>
+            <Link href={"/auth"}>Yes, I Need This!</Link>
+          </Button>
           <Button variant={"outline"} size={"lg"} asChild>
             <Link href={"#whosin"} scroll>
               Who's in?
