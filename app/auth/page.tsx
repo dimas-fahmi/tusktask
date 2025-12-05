@@ -1,8 +1,17 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { authClient } from "@/src/lib/auth/client";
 import ActionButton from "@/src/ui/components/ui/ActionButton";
 
+type LoadingComponent = "github" | "facebook" | "google" | "discord" | "apple";
+
 const AuthPage = () => {
+  const [loadingComponent, setLoadingComponent] =
+    useState<null | LoadingComponent>(null);
+
   return (
     <div className="h-full p-4 flex-center">
       <div className="max-w-md space-y-6">
@@ -28,26 +37,52 @@ const AuthPage = () => {
             icon="Google"
             text="Continue With Google"
             className="text-sm"
+            disabled
           />
           <ActionButton
             icon="Apple"
             text="Continue With Apple"
             className="text-sm"
+            disabled
           />
           <ActionButton
             icon="Facebook"
             text="Continue With Facebook"
             className="text-sm"
+            disabled
           />
           <ActionButton
             icon="Github"
-            text="Continue With Github"
             className="text-sm"
+            text={
+              loadingComponent === "github"
+                ? "Wait a moment"
+                : "Continue with Github"
+            }
+            onClick={async () => {
+              setLoadingComponent("github");
+              await authClient.signIn.social({
+                provider: "github",
+              });
+            }}
+            disabled={loadingComponent === "github"}
           />
           <ActionButton
             icon="Discord"
-            text="Continue With Discord"
             className="text-sm"
+            text={
+              loadingComponent === "discord"
+                ? "Wait a moment"
+                : "Continue with Discord"
+            }
+            onClick={async () => {
+              setLoadingComponent("discord");
+              await authClient.signIn.social({
+                provider: "discord",
+                callbackURL: "/dashboard",
+              });
+            }}
+            disabled={loadingComponent === "discord"}
           />
         </div>
 

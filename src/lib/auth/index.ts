@@ -11,6 +11,14 @@ if (!githubId || !githubSecret) {
   throw new Error("GITHUB_ID_OR_SECRET_UNAVAILABLE");
 }
 
+// DISCORD
+const discordId = process.env.DISCORD_CLIENT_ID;
+const discordSecret = process.env.DISCORD_CLIENT_SECRET;
+
+if (!discordId || !discordSecret) {
+  throw new Error("DISCORD_ID_OR_SECRET_UNAVAILABLE");
+}
+
 export const auth = betterAuth({
   // DATABASE CONFIGURATION
   database: drizzleAdapter(db, {
@@ -22,6 +30,10 @@ export const auth = betterAuth({
 
   // AUTH SETUP
   socialProviders: {
+    discord: {
+      clientId: discordId,
+      clientSecret: discordSecret,
+    },
     github: {
       clientId: githubId,
       clientKey: githubSecret,
