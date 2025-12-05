@@ -26,6 +26,9 @@ export const user = appAuthSchema.table("user", {
     .notNull(),
 });
 
+export type UserType = typeof user.$inferSelect;
+export type InsertUserType = typeof user.$inferInsert;
+
 export const session = appAuthSchema.table(
   "session",
   {
