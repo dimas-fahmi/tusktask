@@ -1,13 +1,24 @@
 import { relations } from "drizzle-orm";
 import { boolean, index, text, timestamp } from "drizzle-orm/pg-core";
-import { appAuthSchema } from "./configs";
+import { appAuthSchema, onboardingStatusEnum, themeEnum } from "./configs";
+import { notificationReceiver } from "./notification";
+import { project, projectMembership } from "./project";
+import { task } from "./task";
 
 export const user = appAuthSchema.table("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  username: text("username").unique(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
+  onboardingStatus: onboardingStatusEnum("onboarding_status")
+    .notNull()
+    .default("name"),
+  theme: themeEnum("theme").notNull().default("default"),
+  isSilent: boolean("is_silent").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -77,6 +88,10 @@ export const verification = appAuthSchema.table(
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  projects: many(project),
+  tasks: many(task),
+  projectMemberships: many(projectMembership),
+  notificationsReceived: many(notificationReceiver),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({

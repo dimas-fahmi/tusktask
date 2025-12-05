@@ -9,6 +9,23 @@ import {
   verification,
 } from "./auth-schema";
 
+// Notification
+import {
+  notification,
+  notificationReceiver,
+  notificationReceiverRelations,
+} from "./notification";
+
+// Project Schema
+import {
+  project,
+  projectMembership,
+  projectMembershipRelations,
+  projectRelations,
+} from "./project";
+// Task Schema
+import { task, taskRelations } from "./task";
+
 // Export as bundle
 const schema = {
   // Auth Schema
@@ -19,6 +36,21 @@ const schema = {
   user,
   userRelations,
   verification,
+
+  // Project
+  project,
+  projectRelations,
+  projectMembership,
+  projectMembershipRelations,
+
+  // Task
+  task,
+  taskRelations,
+
+  // Notification
+  notification,
+  notificationReceiver,
+  notificationReceiverRelations,
 };
 
 export default schema;
