@@ -39,8 +39,6 @@ export async function AuthProfileGet() {
       );
     }
 
-    console.log("RESULT", result);
-
     return createResponse(
       "record_fetched",
       "User's profile found and fetched",
