@@ -1,5 +1,10 @@
 import { relations } from "drizzle-orm";
 import { boolean, index, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
 import { appAuthSchema, onboardingStatusEnum, themeEnum } from "./configs";
 import { notificationReceiver } from "./notification";
 import { project, projectMembership } from "./project";
@@ -28,6 +33,9 @@ export const user = appAuthSchema.table("user", {
 
 export type UserType = typeof user.$inferSelect;
 export type InsertUserType = typeof user.$inferInsert;
+export const userSelectSchema = createSelectSchema(user);
+export const userInsertSchema = createInsertSchema(user);
+export const userUpdateSchema = createUpdateSchema(user);
 
 export const session = appAuthSchema.table(
   "session",

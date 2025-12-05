@@ -31,7 +31,7 @@ const SignInButton = ({
       onClick={async () => {
         setLoadingComponent(icon);
         await authClient.signIn.social({
-          provider: "discord",
+          provider: icon.toLowerCase(),
           callbackURL: "/dashboard",
         });
       }}
@@ -89,8 +89,6 @@ const AuthPageIndex = () => {
             icon="Github"
             loadingComponent={loadingComponent}
             setLoadingComponent={setLoadingComponent}
-            disabled
-            tooltipContent={"Issue detected, we disabled it for now."}
           />
           <SignInButton
             icon="Google"

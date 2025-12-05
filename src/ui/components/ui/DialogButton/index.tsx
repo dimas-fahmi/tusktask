@@ -18,7 +18,7 @@ export const dialogButtonVariants = cva(
 );
 
 export type DialogButtonProps = React.HTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof dialogButtonVariants>;
+  VariantProps<typeof dialogButtonVariants> & { disabled?: boolean };
 
 const DialogButton = React.forwardRef<HTMLButtonElement, DialogButtonProps>(
   ({ className, variant, ...props }, ref) => {

@@ -14,6 +14,7 @@ const OnboardingLayout = ({
 }) => {
   const router = useRouter();
   const [exitModalOpen, setExitModalOpen] = useState(false);
+  const [signOutLoading, setSignOutLoading] = useState(false);
 
   return (
     <>
@@ -69,6 +70,7 @@ const OnboardingLayout = ({
         setOpen={setExitModalOpen}
         positiveProps={{
           onClick: async () => {
+            setSignOutLoading(true);
             await authClient.signOut({
               fetchOptions: {
                 onSuccess: () => {
@@ -77,6 +79,7 @@ const OnboardingLayout = ({
               },
             });
           },
+          disabled: signOutLoading,
         }}
       />
     </>
