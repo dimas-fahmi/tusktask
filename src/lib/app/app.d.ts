@@ -14,7 +14,8 @@ export type ResultCode =
   | "expired_session"
   | "record_stored"
   | "record_updated"
-  | "record_fetched";
+  | "record_fetched"
+  | "resource_not_found";
 
 export type HttpStatusCode =
   | 200 // OK
