@@ -4,13 +4,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { authClient } from "@/src/lib/auth/client";
-import ActionButton from "@/src/ui/components/ui/ActionButton";
+import ActionButton, {
+  type ActionButtonIconsType,
+} from "@/src/ui/components/ui/ActionButton";
 
-type LoadingComponent = "github" | "facebook" | "google" | "discord" | "apple";
+const SignInButton = ({
+  loadingComponent,
+  setLoadingComponent,
+  icon,
+  disabled,
+  tooltipContent,
+}: {
+  loadingComponent: null | ActionButtonIconsType;
+  setLoadingComponent: (nv: null | ActionButtonIconsType) => void;
+  icon: ActionButtonIconsType;
+  disabled?: boolean;
+  tooltipContent?: React.ReactNode;
+}) => {
+  return (
+    <ActionButton
+      icon={icon}
+      className="text-sm"
+      text={
+        loadingComponent === icon ? "Wait a moment" : `Continue with ${icon}`
+      }
+      onClick={async () => {
+        setLoadingComponent(icon);
+        await authClient.signIn.social({
+          provider: "discord",
+          callbackURL: "/dashboard",
+        });
+      }}
+      tooltipContent={tooltipContent}
+      disabled={loadingComponent === icon || disabled}
+    />
+  );
+};
 
 const AuthPage = () => {
   const [loadingComponent, setLoadingComponent] =
-    useState<null | LoadingComponent>(null);
+    useState<null | ActionButtonIconsType>(null);
 
   return (
     <div className="h-full p-4 flex-center">
@@ -33,56 +66,38 @@ const AuthPage = () => {
 
         {/* Form */}
         <div className="py-4 space-y-2">
-          <ActionButton
-            icon="Google"
-            text="Continue With Google"
-            className="text-sm"
-            disabled
-          />
-          <ActionButton
+          <SignInButton
             icon="Apple"
-            text="Continue With Apple"
-            className="text-sm"
+            loadingComponent={loadingComponent}
+            setLoadingComponent={setLoadingComponent}
             disabled
+            tooltipContent={"Available soon."}
           />
-          <ActionButton
-            icon="Facebook"
-            text="Continue With Facebook"
-            className="text-sm"
-            disabled
-          />
-          <ActionButton
-            icon="Github"
-            className="text-sm"
-            text={
-              loadingComponent === "github"
-                ? "Wait a moment"
-                : "Continue with Github"
-            }
-            onClick={async () => {
-              setLoadingComponent("github");
-              await authClient.signIn.social({
-                provider: "github",
-              });
-            }}
-            disabled={loadingComponent === "github"}
-          />
-          <ActionButton
+          <SignInButton
             icon="Discord"
-            className="text-sm"
-            text={
-              loadingComponent === "discord"
-                ? "Wait a moment"
-                : "Continue with Discord"
-            }
-            onClick={async () => {
-              setLoadingComponent("discord");
-              await authClient.signIn.social({
-                provider: "discord",
-                callbackURL: "/dashboard",
-              });
-            }}
-            disabled={loadingComponent === "discord"}
+            loadingComponent={loadingComponent}
+            setLoadingComponent={setLoadingComponent}
+          />
+          <SignInButton
+            icon="Facebook"
+            loadingComponent={loadingComponent}
+            setLoadingComponent={setLoadingComponent}
+            disabled
+            tooltipContent={"Available soon."}
+          />
+          <SignInButton
+            icon="Github"
+            loadingComponent={loadingComponent}
+            setLoadingComponent={setLoadingComponent}
+            disabled
+            tooltipContent={"Issue detected, we disabled it for now."}
+          />
+          <SignInButton
+            icon="Google"
+            loadingComponent={loadingComponent}
+            setLoadingComponent={setLoadingComponent}
+            disabled
+            tooltipContent={"Available soon."}
           />
         </div>
 
