@@ -36,7 +36,7 @@ export const auth = betterAuth({
     },
     github: {
       clientId: githubId,
-      clientKey: githubSecret,
+      clientSecret: githubSecret,
     },
   },
 });
