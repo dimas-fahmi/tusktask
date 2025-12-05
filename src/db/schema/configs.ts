@@ -22,6 +22,16 @@ export const notificationType = [
   "system_negative",
 ] as const;
 
+export const onboardingPhases = [
+  "name",
+  "username",
+  "image",
+  "settings",
+  "completed",
+] as const;
+
+export type OnboardingPhaseType = (typeof onboardingPhases)[number];
+
 // Timestamp config
 export const defaultTimestampConfig: PgTimestampConfig = {
   mode: "date",
@@ -35,7 +45,7 @@ export const appAuthSchema = pgSchema("app_auth");
 // ENUMS
 export const onboardingStatusEnum = appAuthSchema.enum(
   "onboarding_status_enum",
-  ["name", "username", "image", "settings", "completed"],
+  onboardingPhases,
 );
 export const themeEnum = appAuthSchema.enum("theme_enum", [
   "default",
