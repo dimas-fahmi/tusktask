@@ -15,7 +15,10 @@ export type ResultCode =
   | "record_stored"
   | "record_updated"
   | "record_fetched"
-  | "resource_not_found";
+  | "resource_not_found"
+  | "unnecessary_operation"
+  | "resource_duplication"
+  | "resource_available";
 
 export type HttpStatusCode =
   | 200 // OK
@@ -29,6 +32,7 @@ export type HttpStatusCode =
   | 405 // Method Not Allowed
   | 408 // Request Timeout
   | 409 // Conflict
+  | 429 // Too Many Requests
   | 500 // Internal Server Error
   | 502 // Bad Gateway
   | 503 // Service Unavailable

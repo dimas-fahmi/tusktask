@@ -5,11 +5,11 @@ import type {
   StandardResponseType,
 } from "../app/app";
 
-export const createResponse = (
+export const createResponse = <TResult>(
   code: ResultCode,
   message: string,
   status?: HttpStatusCode,
-  result?: unknown,
+  result?: TResult,
   log?: "log" | "error" | "warn",
   path?: string,
   error?: unknown,
