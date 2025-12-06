@@ -5,9 +5,9 @@ import { cn } from "@/src/ui/shadcn/lib/utils";
 const messageVariant = cva("", {
   variants: {
     variant: {
-      default: "",
-      negative: "",
-      positive: "",
+      default: "text-foreground",
+      negative: "text-destructive",
+      positive: "text-success",
     },
   },
   defaultVariants: {
@@ -18,14 +18,14 @@ const messageVariant = cva("", {
 export interface InputProps {
   label?: string;
   className?: string;
-  labelProps?: React.HTMLAttributes<HTMLLabelElement>;
-  inputProps?: React.HTMLAttributes<HTMLInputElement> & {
-    placeholder?: string;
-  };
+  labelProps?: React.ComponentProps<"label">;
+  inputProps?: React.ComponentProps<"input">;
 
   message?: string;
   messageVariants?: VariantProps<typeof messageVariant>;
   messageProps?: React.HTMLAttributes<HTMLSpanElement>;
+
+  labelRight?: React.ReactNode;
 }
 
 const Input = ({
@@ -36,6 +36,7 @@ const Input = ({
   message,
   messageVariants,
   messageProps,
+  labelRight,
 }: InputProps) => {
   const uuid = crypto.randomUUID();
 
@@ -43,13 +44,16 @@ const Input = ({
     <div className={cn("flex flex-col gap-1", className)}>
       {/* Label */}
       {label && (
-        <label
-          htmlFor={uuid}
-          {...labelProps}
-          className={cn("font-header", labelProps?.className)}
-        >
-          {label}
-        </label>
+        <div className="flex justify-between items-center">
+          <label
+            htmlFor={uuid}
+            {...labelProps}
+            className={cn("font-header", labelProps?.className)}
+          >
+            {label}
+          </label>
+          <div>{labelRight}</div>
+        </div>
       )}
 
       {/* Input */}

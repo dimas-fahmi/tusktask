@@ -103,7 +103,7 @@ export async function AuthAvailabilityPost(request: NextRequest) {
       return createResponse<AuthAvailabilityPostPayload>(
         "resource_duplication",
         `${username} is taken`,
-        409,
+        200,
         {
           takenById: result.id,
           isTakenByTheSameAccount: result?.id === session?.user?.id,

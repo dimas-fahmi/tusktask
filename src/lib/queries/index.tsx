@@ -20,9 +20,12 @@ export const queryClient = new QueryClient({
   },
 });
 
-export interface QueryObject<T> {
+export interface QueryObject<TData> {
   queryKey: string[];
-  queryOptions: UseQueryOptions<T>;
+  queryOptions: UseQueryOptions<TData>;
+  resources?: {
+    queryFn?: unknown;
+  };
 }
 
 export const queryIndex = {

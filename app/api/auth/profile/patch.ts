@@ -5,9 +5,11 @@ import { prettifyError } from "zod";
 import { db } from "@/src/db";
 import {
   type InsertUserType,
+  type UserType,
   user,
   userUpdateSchema,
 } from "@/src/db/schema/auth-schema";
+import type { StandardResponseType } from "@/src/lib/app/app";
 import { auth } from "@/src/lib/auth";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { hasAnyField } from "@/src/lib/utils/hasAnyField";
@@ -16,6 +18,7 @@ import { usernameSchema } from "@/src/lib/zod";
 const PATH = "AUTH_PROFILE_PATCH";
 
 export type AuthProfilePatchRequest = Partial<InsertUserType>;
+export type AuthProfilePatchResponse = StandardResponseType<UserType>;
 
 export async function AuthProfilePatch(request: NextRequest) {
   // Validate Session
