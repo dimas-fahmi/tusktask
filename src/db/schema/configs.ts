@@ -1,4 +1,5 @@
 import { type PgTimestampConfig, pgEnum, pgSchema } from "drizzle-orm/pg-core";
+import { APP_COLOR_THEMES } from "@/src/lib/app/color-themes";
 
 // Actions
 export const notificationType = [
@@ -47,14 +48,9 @@ export const onboardingStatusEnum = appAuthSchema.enum(
   "onboarding_status_enum",
   onboardingPhases,
 );
-export const themeEnum = appAuthSchema.enum("theme_enum", [
-  "default",
-  "dark",
-  "popBella",
-  "brownBear",
-  "cofeePuff",
-  "jettBlack",
-]);
+
+export const themeEnum = appAuthSchema.enum("theme_enum", APP_COLOR_THEMES);
+
 export const notificationTypeEnum = pgEnum(
   "notification_type_enum",
   notificationType,

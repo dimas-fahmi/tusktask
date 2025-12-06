@@ -1,14 +1,11 @@
-import { AudioLines, ChevronDown, SwatchBook } from "lucide-react";
+"use client";
+
+import { AudioLines, SwatchBook } from "lucide-react";
 import { useOnboardingStore } from "@/src/lib/stores/onboardingStore";
+import ColorThemeDropdown from "@/src/ui/components/ui/ColorThemeDropdown";
 import SettingsItem from "@/src/ui/components/ui/SettingsItem";
+import SoundToggler from "@/src/ui/components/ui/SoundToggler";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/src/ui/shadcn/components/ui/dropdown-menu";
-import { Switch } from "@/src/ui/shadcn/components/ui/switch";
 
 const SettingsPhase = () => {
   const { setOnboardingPhase } = useOnboardingStore();
@@ -24,29 +21,14 @@ const SettingsPhase = () => {
             title="Sound"
             description="Sound effects & notifications"
           >
-            <Switch />
+            <SoundToggler />
           </SettingsItem>
           <SettingsItem
             icon={SwatchBook}
             title="Color Theme"
             description="Costumize color scheme"
           >
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className="text-sm p-2 px-4 border rounded-xl flex gap-1 items-center"
-                  type="button"
-                >
-                  Default <ChevronDown className="w-4 h-4" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Default</DropdownMenuItem>
-                <DropdownMenuItem>Dark</DropdownMenuItem>
-                <DropdownMenuItem>Pop Bella</DropdownMenuItem>
-                <DropdownMenuItem>Brown Bear</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ColorThemeDropdown />
           </SettingsItem>
         </div>
 

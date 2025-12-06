@@ -5,6 +5,7 @@ import "@/src/ui/css/globals.tailwind.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { interFont, oswaldFont } from "@/src/ui/fonts";
+import ThemeProvider from "./ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -17,7 +18,7 @@ export default function RootLayout({
         className={`${interFont.variable} ${oswaldFont.variable} antialiased`}
       >
         <QueryClientProvider client={queryClient}>
-          {children}
+          <ThemeProvider>{children}</ThemeProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>
