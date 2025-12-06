@@ -8,7 +8,7 @@ import type { StandardResponseType } from "@/src/lib/app/app";
 import { auth } from "@/src/lib/auth";
 import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
-import { usernameSchema } from "@/src/lib/zod/username";
+import { usernameSchema } from "@/src/lib/zod";
 
 const PATH = "AUTH_AVAILABILITY_POST";
 

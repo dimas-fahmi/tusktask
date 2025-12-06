@@ -11,7 +11,7 @@ import {
 import { auth } from "@/src/lib/auth";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { hasAnyField } from "@/src/lib/utils/hasAnyField";
-import { usernameSchema } from "@/src/lib/zod/username";
+import { usernameSchema } from "@/src/lib/zod";
 
 const PATH = "AUTH_PROFILE_PATCH";
 
