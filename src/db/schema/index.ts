@@ -8,14 +8,14 @@ import {
   userRelations,
   verification,
 } from "./auth-schema";
-
+// Image
+import { image, imageRelations } from "./image";
 // Notification
 import {
   notification,
   notificationReceiver,
   notificationReceiverRelations,
 } from "./notification";
-
 // Project Schema
 import {
   project,
@@ -51,6 +51,10 @@ const schema = {
   notification,
   notificationReceiver,
   notificationReceiverRelations,
+
+  // Image
+  image,
+  imageRelations,
 };
 
 export default schema;

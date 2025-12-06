@@ -15,6 +15,13 @@
       "when": 1764930039287,
       "tag": "0001_fuzzy_siren",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765041343067,
+      "tag": "0002_special_chameleon",
+      "breakpoints": true
     }
   ]
 }

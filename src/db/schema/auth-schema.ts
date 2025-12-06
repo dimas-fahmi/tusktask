@@ -6,6 +6,7 @@ import {
   createUpdateSchema,
 } from "drizzle-zod";
 import { appAuthSchema, onboardingStatusEnum, themeEnum } from "./configs";
+import { image } from "./image";
 import { notificationReceiver } from "./notification";
 import { project, projectMembership } from "./project";
 import { task } from "./task";
@@ -103,6 +104,7 @@ export const userRelations = relations(user, ({ many }) => ({
   tasks: many(task),
   projectMemberships: many(projectMembership),
   notificationsReceived: many(notificationReceiver),
+  images: many(image),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
