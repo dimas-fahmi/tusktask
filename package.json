@@ -31,6 +31,7 @@
     "@tanstack/react-query-devtools": "^5.91.1",
     "@upstash/ratelimit": "^2.0.7",
     "@upstash/redis": "^1.35.7",
+    "@vercel/blob": "^2.0.0",
     "baseline-browser-mapping": "^2.9.2",
     "better-auth": "^1.4.5",
     "browser-image-compression": "^2.0.2",
