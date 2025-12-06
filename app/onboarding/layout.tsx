@@ -20,7 +20,7 @@ const OnboardingLayout = ({
     <>
       <div className="min-h-dvh flex-center max-w-md mx-auto">
         {/* Wrapper */}
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {/* Header */}
           <header>
             <button

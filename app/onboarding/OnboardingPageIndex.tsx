@@ -19,7 +19,8 @@ const onboardingHeaders: Record<
 > = {
   name: {
     title: "Let's Setup Your Profile Real Quick",
-    description: "First, your name. This is how friends will know it's you.",
+    description:
+      "First, your name. This is how your friends will know that it's you.",
   },
   username: {
     title: "Choose a Username",
@@ -75,7 +76,7 @@ const OnboardingPageIndex = () => {
   return isLoadingProfile && !isFetchedProfile && !isRefetchingProfile ? (
     <Loader title="Wait a moment" description="Validating your data" />
   ) : onboardingPhase !== "loading" ? (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 flex-1">
       {/* Progress Bar */}
       <div className="flex gap-2">
         {onboardingPhases.slice(0, -1).map((item, index) => {
