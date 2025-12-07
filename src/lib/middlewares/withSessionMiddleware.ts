@@ -26,6 +26,12 @@ export function withSessionMiddleware(
     );
     const session = getSessionCookie(request);
 
+    // Redirect user from landing page to dashboard if logged in
+    if (session && url.pathname === "/") {
+      const target = new URL("/dashboard", request.url);
+      return NextResponse.redirect(target);
+    }
+
     if (session && isNoSessionRoute && url.pathname !== "/dashboard") {
       const target = new URL("/dashboard", request.url);
       return NextResponse.redirect(target);
