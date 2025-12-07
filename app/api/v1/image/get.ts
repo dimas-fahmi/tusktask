@@ -19,7 +19,7 @@ const VALID_ORDER_FIELDS = ["name", "createdAt", "deletedAt"] as const;
 
 export interface V1ImageGetRequest {
   ownership: ImageType["ownership"];
-  isDeleted?: boolean;
+  isDeleted?: "true";
   page?: number;
   id?: string;
   name?: string;
@@ -134,11 +134,8 @@ export async function v1ImageGet(request: NextRequest) {
   }
 
   // Always search by deletion status
-  where.push(
-    parameters?.isDeleted
-      ? isNotNull(image.deletedAt)
-      : isNull(image.deletedAt),
-  );
+  const isDeleted = parameters?.isDeleted === "true";
+  where.push(isDeleted ? isNotNull(image.deletedAt) : isNull(image.deletedAt));
 
   // Order
   const orderDirection = parameters?.orderDirection === "asc" ? "asc" : "desc";
