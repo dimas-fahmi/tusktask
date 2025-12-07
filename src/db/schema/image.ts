@@ -1,7 +1,18 @@
 import { relations, sql } from "drizzle-orm";
-import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  index,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
-import { defaultTimestampConfig } from "./configs";
+import {
+  defaultTimestampConfig,
+  mediaOwnershipEnum,
+  mediaStorageEnum,
+} from "./configs";
 
 export const image = pgTable(
   "image",
@@ -12,6 +23,9 @@ export const image = pgTable(
     ownerId: text("owner_id").references(() => user.id, {
       onDelete: "set null",
     }),
+    ownership: mediaOwnershipEnum("ownership").default("user_owned"),
+    tags: jsonb("tags").$type<string[]>().default([]).notNull(),
+    mediaStorage: mediaStorageEnum("media_storage").notNull(),
     createdAt: timestamp("created_at", defaultTimestampConfig)
       .notNull()
       .defaultNow(),
@@ -25,6 +39,7 @@ export const image = pgTable(
     ),
 
     // Indexes
+    index("public_image_tags_idx").using("gin", t.tags),
     index("public_image_ownerId_idx").on(t.ownerId),
     index("public_image_deletedAt_idx").on(t.deletedAt),
   ],

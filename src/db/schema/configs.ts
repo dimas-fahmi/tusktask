@@ -49,6 +49,16 @@ export const onboardingStatusEnum = appAuthSchema.enum(
   onboardingPhases,
 );
 
+export const mediaOwnershipEnum = pgEnum("media_ownership_enum", [
+  "system",
+  "user_owned",
+]);
+
+export const mediaStorageEnum = pgEnum("media_storage", [
+  "internal",
+  "external",
+]);
+
 export const themeEnum = appAuthSchema.enum("theme_enum", APP_COLOR_THEMES);
 
 export const notificationTypeEnum = pgEnum(

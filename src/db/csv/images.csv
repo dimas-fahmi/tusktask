@@ -1,0 +1,4 @@
+id,name,url,owner_id,created_at,deleted_at,ownership,tags,media_storage
+fa653018-e808-4ff1-81ea-e24e52061ef9,Smiling Bernard,https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/arts/bernard-0001.webp,,2025-12-07T13:15:04+00:00,,system,"[""TuskTask Arts"", ""TuskTask Animals"", ""TuskTask Tusky""]",internal
+c8abe797-8a81-4630-9283-397d6a79556a,Competent Tusky,https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/arts/developer-tusky-0001.webp,,2025-12-07T13:15:04+00:01,,system,"[""TuskTask Arts"", ""TuskTask Animals"", ""TuskTask Bernard""]",internal
+44449ca4-2944-46df-a956-a3a54d402103,Ginger The Hunter,https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/arts/ginger-0001.webp,,2025-12-07T13:15:04+00:02,,system,"[""TuskTask Arts"", ""TuskTask Animals"", ""TuskTask Ginger""]",internal
