@@ -46,6 +46,13 @@ export interface StandardErrorType {
   context?: unknown;
 }
 
+export interface StandardV1GetResponse<TResult> {
+  page: number;
+  totalPages: number;
+  totalResults: number;
+  result?: TResult;
+}
+
 export interface StandardResponseType<TResult> {
   code: ResultCode;
   message: string;
