@@ -1,8 +1,9 @@
 import { and, count, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
+import { prettifyError } from "zod";
 import { db } from "@/src/db";
-import { type ImageType, image } from "@/src/db/schema/image";
+import { ImageSchema, type ImageType, image } from "@/src/db/schema/image";
 import type {
   StandardResponseType,
   StandardV1GetResponse,
@@ -71,6 +72,18 @@ export async function v1ImageGet(request: NextRequest) {
   const parameters = Object.fromEntries(
     url.searchParams.entries(),
   ) as unknown as V1ImageGetRequest;
+
+  // Validate Request
+  const validation = ImageSchema.partial().safeParse(parameters);
+
+  if (!validation.success) {
+    return createResponse(
+      "bad_request",
+      prettifyError(validation.error),
+      400,
+      validation,
+    );
+  }
 
   // Validate Request
   if (!parameters?.ownership) {
