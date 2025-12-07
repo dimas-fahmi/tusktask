@@ -23,7 +23,7 @@ export const image = pgTable(
     ownerId: text("owner_id").references(() => user.id, {
       onDelete: "set null",
     }),
-    ownership: mediaOwnershipEnum("ownership").default("user_owned"),
+    ownership: mediaOwnershipEnum("ownership").default("user_owned").notNull(),
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
     mediaStorage: mediaStorageEnum("media_storage").notNull(),
     createdAt: timestamp("created_at", defaultTimestampConfig)
@@ -44,6 +44,9 @@ export const image = pgTable(
     index("public_image_deletedAt_idx").on(t.deletedAt),
   ],
 );
+
+export type ImageType = typeof image.$inferSelect;
+export type InsertImageType = typeof image.$inferInsert;
 
 export const imageRelations = relations(image, ({ one }) => ({
   owner: one(user, {
