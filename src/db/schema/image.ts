@@ -24,7 +24,7 @@ export const image = pgTable(
   {
     id: uuid("id").primaryKey(),
     name: text("name").notNull(),
-    url: text("url"),
+    url: text("url").notNull(),
     ownerId: text("owner_id").references(() => user.id, {
       onDelete: "set null",
     }),

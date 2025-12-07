@@ -1,25 +1,27 @@
 import { EllipsisIcon } from "lucide-react";
 import Image from "next/image";
+import type { ImageType } from "@/src/db/schema/image";
+import { truncateString } from "@/src/lib/utils/truncateString";
 
-const ImageCard = () => {
+const ImageCard = ({ image }: { image: ImageType }) => {
   return (
     <div className="group/card relative max-w-[180px] cursor-pointer rounded-2xl overflow-hidden transition-all duration-300">
       {/* Image Container */}
       <div className="aspect-square relative">
         <Image
           layout={"fill"}
-          src={
-            "https://images.pexels.com/photos/34987930/pexels-photo-34987930.jpeg"
-          }
-          alt="Image"
+          src={image.url}
+          alt={image.name}
           className="rounded-2xl group-hover/card:brightness-50 transition-all duration-300"
         />
       </div>
 
       {/* Metadata Container */}
       <div className="min-h-13 max-h-13">
-        <h1>some_image_name.jpg</h1>
-        <p className="text-sm font-light">2.5kb</p>
+        <h1>{truncateString(image.name, 3, true)}</h1>
+        <p className="text-xs font-light">
+          {image.ownership === "system" ? "System owned" : "Your image"}
+        </p>
       </div>
 
       {/* Floating Button */}
