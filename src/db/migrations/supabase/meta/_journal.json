@@ -29,6 +29,13 @@
       "when": 1765107477308,
       "tag": "0003_early_vindicator",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1765142512934,
+      "tag": "0004_tense_payback",
+      "breakpoints": true
     }
   ]
 }

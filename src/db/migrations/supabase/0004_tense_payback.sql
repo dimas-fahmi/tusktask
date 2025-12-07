@@ -1,0 +1,1 @@
+ALTER TABLE "image" ALTER COLUMN "ownership" SET NOT NULL;
