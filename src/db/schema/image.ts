@@ -7,6 +7,11 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
 import { user } from "./auth-schema";
 import {
   defaultTimestampConfig,
@@ -47,6 +52,10 @@ export const image = pgTable(
 
 export type ImageType = typeof image.$inferSelect;
 export type InsertImageType = typeof image.$inferInsert;
+
+export const ImageSchema = createSelectSchema(image);
+export const InsertImageSchema = createInsertSchema(image);
+export const UpdateImageSchema = createUpdateSchema(image);
 
 export const imageRelations = relations(image, ({ one }) => ({
   owner: one(user, {
