@@ -5,6 +5,7 @@ import {
   APP_COLOR_THEMES,
   APP_COLOR_THEMES_CLASSES,
 } from "@/src/lib/app/color-themes";
+import { authClient } from "@/src/lib/auth/client";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { usePreferencesStore } from "@/src/lib/stores/preferencesStore";
 
@@ -17,14 +18,20 @@ const ThemeProvider = ({
   const profile = profileResponse?.result;
 
   const { activeColorScheme, setActiveColorScheme } = usePreferencesStore();
+  const { data: session } = authClient.useSession();
 
   useEffect(() => {
+    if (!session) {
+      setActiveColorScheme(undefined);
+      return;
+    }
+
     if (!profile) return;
 
     if (!activeColorScheme) {
       setActiveColorScheme(profile?.theme);
     }
-  }, [profile, activeColorScheme, setActiveColorScheme]);
+  }, [profile, activeColorScheme, setActiveColorScheme, session]);
 
   useEffect(() => {
     const resetTheme = () => {
