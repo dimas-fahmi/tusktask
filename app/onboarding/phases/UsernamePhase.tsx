@@ -118,15 +118,15 @@ const UsernamePhase = () => {
                   labelRight={
                     isValid && (
                       <div>
-                        <span className="text-xs block text-yellow-500">
+                        <span className="text-xs block text-warning">
                           {isCheckingUsername && "Checking Username"}
                         </span>
                         {!isCheckingUsername && (
                           <>
-                            <span className="text-xs block text-green-700">
+                            <span className="text-xs block text-success">
                               {usernameAvailable && "Username Available"}
                             </span>
-                            <span className="text-xs block text-red-700">
+                            <span className="text-xs block text-destructive">
                               {!usernameAvailable && "Username is taken"}
                             </span>
                           </>

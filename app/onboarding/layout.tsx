@@ -18,7 +18,7 @@ const OnboardingLayout = ({
 
   return (
     <>
-      <div className="min-h-dvh max-h-dvh overflow-scroll scrollbar-none flex-center max-w-md mx-auto">
+      <div className="min-h-dvh max-h-dvh overflow-scroll scrollbar-none flex-center max-w-md mx-auto p-4">
         {/* Wrapper */}
         <div className="flex flex-col gap-6">
           {/* Header */}

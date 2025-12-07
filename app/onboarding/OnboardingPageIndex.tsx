@@ -27,7 +27,7 @@ const onboardingHeaders: Record<
     description: "Pick something unique — this is how others can find you.",
   },
   image: {
-    title: "Add a Profile Photo",
+    title: "Add a Profile Picture",
     description: "A picture helps people recognize you instantly.",
   },
   settings: {

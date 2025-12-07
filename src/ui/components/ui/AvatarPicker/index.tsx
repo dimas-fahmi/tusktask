@@ -1,24 +1,29 @@
 import { BookImage, ImagesIcon, Trash } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/src/ui/shadcn/components/ui/popover";
+import ImageGalleryModal from "../ImageGalleryModal";
 import PopoverItem from "../PopoverItem";
 
 const AvatarPicker = () => {
+  const [ImageGalleryModalOpen, setImageGalleryModalOpen] = useState(false);
+
   return (
     <div className="relative w-60 mx-auto my-2 aspect-square rounded-full shadow-2xl">
       <Image
         layout="fill"
-        src={"https://images.pexels.com/photos/654693/pexels-photo-654693.jpeg"}
+        src={
+          "https://images.pexels.com/photos/2341350/pexels-photo-2341350.jpeg"
+        }
         alt="Profile Picture"
         className="rounded-full w-60 object-cover"
       />
 
       {/* Change Button */}
-
       <Popover>
         <PopoverTrigger asChild>
           <button
@@ -29,10 +34,19 @@ const AvatarPicker = () => {
           </button>
         </PopoverTrigger>
         <PopoverContent className="space-y-4 bg-background/95 px-6">
-          <PopoverItem icon={BookImage} title="Pick From Gallery" />
+          <PopoverItem
+            icon={BookImage}
+            title="Pick From Gallery"
+            onClick={() => setImageGalleryModalOpen(true)}
+          />
           <PopoverItem icon={Trash} title="Remove Image" variant={"negative"} />
         </PopoverContent>
       </Popover>
+
+      <ImageGalleryModal
+        open={ImageGalleryModalOpen}
+        setOpen={setImageGalleryModalOpen}
+      />
     </div>
   );
 };
