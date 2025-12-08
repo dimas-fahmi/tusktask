@@ -12,8 +12,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/ui/shadcn/components/ui/dropdown-menu";
+import { cn } from "@/src/ui/shadcn/lib/utils";
 
-const ColorThemeDropdown = () => {
+export interface ColorThemeDropdownClassNames {
+  triggerClassNames?: string;
+  itemClassNames?: string;
+}
+
+export interface ColorThemeDropdownProps {
+  classNames?: ColorThemeDropdownClassNames;
+}
+
+const ColorThemeDropdown = (props?: ColorThemeDropdownProps) => {
   const { setActiveColorScheme, activeColorScheme } = usePreferencesStore();
 
   const { mutate: updateProfile, isPending: isUpdatingProfile } =
@@ -23,7 +33,10 @@ const ColorThemeDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="text-sm p-2 px-4 border rounded-xl flex gap-1 items-center"
+          className={cn(
+            "text-sm p-2 px-4 border rounded-xl flex gap-1 items-center",
+            props?.classNames?.triggerClassNames,
+          )}
           type="button"
           disabled={isUpdatingProfile}
         >
@@ -41,6 +54,7 @@ const ColorThemeDropdown = () => {
                 theme: item,
               });
             }}
+            className={cn("", props?.classNames?.itemClassNames)}
           >
             {APP_COLOR_THEMES_SHORT_NAME[item]}
           </DropdownMenuItem>
