@@ -1,5 +1,7 @@
+import type React from "react";
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
+import type { ImageType } from "@/src/db/schema/image";
 import { ImageGalleryModalContext } from "./context";
 import ImageGalleryModalDesktop from "./Desktop";
 import ImageGalleryModalMobile from "./Mobile";
@@ -7,14 +9,31 @@ import ImageGalleryModalMobile from "./Mobile";
 export interface ImageGalleryModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+
+  pickMode?: boolean;
+  pickButton?: React.ReactNode;
+
+  selectedImage?: ImageType;
+  setSelectedImage?: (selectedImage?: ImageType | undefined) => void;
+
+  compactMode?: boolean;
+  setCompactMode?: (compactMode: boolean) => void;
 }
 
-const ImageGalleryModal = ({ open, setOpen }: ImageGalleryModalProps) => {
+const ImageGalleryModal = ({
+  open,
+  setOpen,
+  pickMode,
+  pickButton,
+  selectedImage,
+  setSelectedImage,
+  compactMode = false,
+  setCompactMode,
+}: ImageGalleryModalProps) => {
   const isDesktop = useMediaQuery({
     query: "(min-width:768px)",
   });
 
-  const [compactMode, setCompactMode] = useState(false);
   const [alert, setAlert] = useState<string | null>(null);
 
   return (
@@ -28,6 +47,12 @@ const ImageGalleryModal = ({ open, setOpen }: ImageGalleryModalProps) => {
 
         alert,
         setAlert,
+
+        pickMode,
+        pickButton,
+
+        selectedImage,
+        setSelectedImage,
       }}
     >
       {isDesktop ? <ImageGalleryModalDesktop /> : <ImageGalleryModalMobile />}

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import {
   type OnboardingPhaseType,
@@ -8,6 +10,7 @@ import {
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { useOnboardingStore } from "@/src/lib/stores/onboardingStore";
 import Loader from "@/src/ui/components/ui/Loader";
+import { Button } from "@/src/ui/shadcn/components/ui/button";
 import ImagePhase from "./phases/ImagePhase";
 import NamePhase from "./phases/NamePhase";
 import SettingsPhase from "./phases/SettingsPhase";
@@ -35,8 +38,9 @@ const onboardingHeaders: Record<
     description: "Set your preferences so everything feels just right.",
   },
   completed: {
-    title: "You're All Set!",
-    description: "Your profile is ready. Enjoy exploring!",
+    title: "You're All Set, Welcome to TuskTask!",
+    description:
+      "Your profile is ready. Click the button if you're not redirected.",
   },
 };
 
@@ -45,7 +49,11 @@ const onboardingPhaseRender: Record<OnboardingPhaseType, React.ReactNode> = {
   username: <UsernamePhase />,
   image: <ImagePhase />,
   settings: <SettingsPhase />,
-  completed: <></>,
+  completed: (
+    <Button className="w-full" asChild>
+      <Link href={"/dashboard"}>Dashboard</Link>
+    </Button>
+  ),
 };
 
 const onboardingPhaseStage: Record<OnboardingPhaseType, number> = {
@@ -69,9 +77,15 @@ const OnboardingPageIndex = () => {
 
   const { onboardingPhase, setOnboardingPhase } = useOnboardingStore();
 
+  const router = useRouter();
+
   useEffect(() => {
+    if (activePhase === "completed") {
+      router.push("/dashboard");
+      return;
+    }
     setOnboardingPhase(activePhase ?? "loading");
-  }, [activePhase, setOnboardingPhase]);
+  }, [activePhase, setOnboardingPhase, router]);
 
   return isLoadingProfile && !isFetchedProfile && !isRefetchingProfile ? (
     <Loader title="Wait a moment" description="Validating your data" />

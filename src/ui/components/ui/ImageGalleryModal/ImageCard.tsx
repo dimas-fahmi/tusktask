@@ -1,19 +1,43 @@
-import { EllipsisIcon } from "lucide-react";
+/** biome-ignore-all lint/a11y/useKeyWithClickEvents: temporary */
+import { Check, EllipsisIcon } from "lucide-react";
 import Image from "next/image";
 import type { ImageType } from "@/src/db/schema/image";
 import { truncateString } from "@/src/lib/utils/truncateString";
+import { cn } from "@/src/ui/shadcn/lib/utils";
 
-const ImageCard = ({ image }: { image: ImageType }) => {
+const ImageCard = ({
+  image,
+  onClick,
+  active,
+}: {
+  image: ImageType;
+  onClick?: () => void;
+  active?: boolean;
+}) => {
   return (
-    <div className="group/card relative max-w-[180px] cursor-pointer rounded-2xl overflow-hidden transition-all duration-300">
+    <div
+      onClick={onClick}
+      className={cn(
+        `group/card relative max-w-[180px] cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 `,
+      )}
+    >
       {/* Image Container */}
-      <div className="aspect-square relative">
+      <div className="aspect-square rounded-2xl relative overflow-hidden">
         <Image
           layout={"fill"}
           src={image.url}
           alt={image.name}
           className="rounded-2xl group-hover/card:brightness-50 transition-all duration-300"
         />
+
+        {/* Selected */}
+        <div
+          className={cn(
+            `absolute inset-0 bg-black/80 ${active ? "opacity-100" : "opacity-0"} transition-all duration-300 flex-center`,
+          )}
+        >
+          <Check className="text-white w-7 h-7" />
+        </div>
       </div>
 
       {/* Metadata Container */}

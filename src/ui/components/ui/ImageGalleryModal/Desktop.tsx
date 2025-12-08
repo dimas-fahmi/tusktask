@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { CircleAlert, Menu, Trash, Upload } from "lucide-react";
+import { motion } from "motion/react";
 import { queryIndex } from "@/src/lib/queries";
 import { useImageUploadModalStore } from "@/src/lib/stores/imageUploadModal";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
@@ -20,6 +21,7 @@ import ImageCard from "./ImageCard";
 
 export const Header = () => {
   const { setOpen: setOpenUploadModal } = useImageUploadModalStore();
+  const { pickButton, compactMode } = useImageGalleryModalContext();
 
   return (
     <DialogHeader className="gap-4">
@@ -50,15 +52,23 @@ export const Header = () => {
             <Menu />
           </Button>
 
-          <Button
-            size={"sm"}
-            onClick={() => {
-              setOpenUploadModal(true);
-            }}
+          <motion.div
+            initial={{ width: "auto" }}
+            animate={!compactMode ? { width: "auto" } : { width: 0 }}
+            className="overflow-hidden"
           >
-            <Upload />
-            Upload
-          </Button>
+            <Button
+              size={"sm"}
+              onClick={() => {
+                setOpenUploadModal(true);
+              }}
+            >
+              <Upload />
+              Upload
+            </Button>
+          </motion.div>
+
+          {pickButton}
         </div>
       </div>
     </DialogHeader>
@@ -66,7 +76,15 @@ export const Header = () => {
 };
 
 const ImageGalleryModalDesktop = () => {
-  const { open, setOpen, alert, setAlert } = useImageGalleryModalContext();
+  const {
+    open,
+    setOpen,
+    alert,
+    setAlert,
+    pickMode,
+    selectedImage,
+    setSelectedImage,
+  } = useImageGalleryModalContext();
 
   // System Image
   const systemImageQuery = queryIndex.image.system.all();
@@ -104,7 +122,20 @@ const ImageGalleryModalDesktop = () => {
           {!!ownedImage?.result?.length && (
             <ImageBlock title="Owned Images">
               {ownedImage?.result?.map((image) => (
-                <ImageCard key={crypto.randomUUID()} image={image} />
+                <ImageCard
+                  key={crypto.randomUUID()}
+                  image={image}
+                  active={selectedImage?.id === image?.id}
+                  onClick={() => {
+                    if (pickMode) {
+                      if (selectedImage?.id === image?.id) {
+                        setSelectedImage?.(undefined);
+                      } else {
+                        setSelectedImage?.(image);
+                      }
+                    }
+                  }}
+                />
               ))}
             </ImageBlock>
           )}
@@ -112,7 +143,20 @@ const ImageGalleryModalDesktop = () => {
           {!!systemImage?.result?.length && (
             <ImageBlock title="TuskTask Arts">
               {systemImage?.result?.map((image) => (
-                <ImageCard key={crypto.randomUUID()} image={image} />
+                <ImageCard
+                  key={crypto.randomUUID()}
+                  image={image}
+                  active={selectedImage?.id === image?.id}
+                  onClick={() => {
+                    if (pickMode) {
+                      if (selectedImage?.id === image?.id) {
+                        setSelectedImage?.(undefined);
+                      } else {
+                        setSelectedImage?.(image);
+                      }
+                    }
+                  }}
+                />
               ))}
             </ImageBlock>
           )}
