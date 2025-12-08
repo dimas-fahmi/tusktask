@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { ImageType } from "@/src/db/schema/image";
 import { StandardError } from "@/src/lib/app/errors";
 
 export interface ImageGalleryModalContextValues {
@@ -6,10 +7,16 @@ export interface ImageGalleryModalContextValues {
   setOpen: (open: boolean) => void;
 
   compactMode: boolean;
-  setCompactMode: (compactMode: boolean) => void;
+  setCompactMode?: (compactMode: boolean) => void;
 
   alert: string | null;
   setAlert: (alert: string | null) => void;
+
+  pickMode?: boolean;
+  pickButton?: React.ReactNode;
+
+  selectedImage?: ImageType;
+  setSelectedImage?: (selectedImage?: ImageType | undefined) => void;
 }
 
 export const ImageGalleryModalContext =

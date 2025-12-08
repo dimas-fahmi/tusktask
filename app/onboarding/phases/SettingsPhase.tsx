@@ -1,6 +1,8 @@
 "use client";
 
 import { AudioLines, SwatchBook } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useUpdateUserProfile } from "@/src/lib/queries/hooks/useUpdateUserProfile";
 import { useOnboardingStore } from "@/src/lib/stores/onboardingStore";
 import ColorThemeDropdown from "@/src/ui/components/ui/ColorThemeDropdown";
 import SettingsItem from "@/src/ui/components/ui/SettingsItem";
@@ -9,6 +11,9 @@ import { Button } from "@/src/ui/shadcn/components/ui/button";
 
 const SettingsPhase = () => {
   const { setOnboardingPhase } = useOnboardingStore();
+  const { mutate: updateProfile, isPending: isUpdatingProfile } =
+    useUpdateUserProfile();
+  const router = useRouter();
 
   return (
     <div>
@@ -41,7 +46,23 @@ const SettingsPhase = () => {
           >
             Back
           </Button>
-          <Button type="button">Save</Button>
+          <Button
+            type="button"
+            disabled={isUpdatingProfile}
+            onClick={() => {
+              if (isUpdatingProfile) return;
+              updateProfile(
+                { onboardingStatus: "completed" },
+                {
+                  onSuccess: () => {
+                    router.push("/dashboard");
+                  },
+                },
+              );
+            }}
+          >
+            {isUpdatingProfile ? "Saving" : "Save"}
+          </Button>
         </div>
       </form>
     </div>
