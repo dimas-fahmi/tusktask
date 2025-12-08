@@ -1,5 +1,4 @@
 import { Bell, PanelLeftClose, PanelLeftOpen, SwatchBook } from "lucide-react";
-import { NO_IMAGE_FALLBACK_SQUARE } from "@/src/lib/app/configs";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { getInitial } from "@/src/lib/utils/getInitial";
 import {
