@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: Do not mess up with shadcn's logic */
-/** biome-ignore-all lint/suspicious/noDocumentCookie: ShadCN cookie */
+/** biome-ignore-all lint/suspicious/noDocumentCookie: ShadCN cookiecl */
 "use client";
 
 import { Slot } from "@radix-ui/react-slot";
@@ -29,7 +29,7 @@ import { cn } from "@/src/ui/shadcn/lib/utils";
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "18rem";
-const SIDEBAR_WIDTH_MOBILE = "18rem";
+const SIDEBAR_WIDTH_MOBILE = "100vw";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 

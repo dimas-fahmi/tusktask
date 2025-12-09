@@ -5,6 +5,7 @@ import type React from "react";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import Header from "@/src/ui/components/page/dashboard/header";
 import { DashboardSidebar } from "@/src/ui/components/page/dashboard/sidebar";
+import Loader from "@/src/ui/components/ui/Loader";
 import ProfileDialog from "@/src/ui/components/ui/ProfileDialog";
 import {
   SidebarInset,
@@ -24,7 +25,9 @@ const DashboardLayout = ({
     redirect("/onboarding");
   }
 
-  return (
+  return isLoadingProfile ? (
+    <Loader />
+  ) : (
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
