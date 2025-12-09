@@ -84,9 +84,14 @@ const NotificationProvider = ({
 
     // TriggerSound
     const triggerSound = (type: "alarm" | "notification") => {
-      if (!alarmAudio || !notificationAudio) return;
-      if (!isSilent) {
-        return playAudio(type === "alarm" ? alarmAudio : notificationAudio);
+      if (isSilent) return;
+
+      if (type === "alarm") {
+        if (!alarmAudio) return;
+        return playAudio(alarmAudio);
+      } else {
+        if (!notificationAudio) return;
+        return playAudio(notificationAudio);
       }
     };
 
