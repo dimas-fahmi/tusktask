@@ -7,7 +7,9 @@ import {
   SwatchBook,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { HTMLAttributeAnchorTarget } from "react";
+import { authClient } from "@/src/lib/auth/client";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { useProfileDialogStore } from "@/src/lib/stores/profileDialog";
 import { Avatar, AvatarImage } from "@/src/ui/shadcn/components/ui/avatar";
@@ -104,6 +106,7 @@ const ButtonItem = ({
 const ProfileDialog = () => {
   const { data: profile, isPending: _isLoadingProfile } = useGetSelfProfile();
   const { open, setOpen: onOpenChange } = useProfileDialogStore();
+  const router = useRouter();
 
   return (
     <Dialog {...{ open, onOpenChange }}>
@@ -161,7 +164,15 @@ const ProfileDialog = () => {
             <ButtonItem
               icon={LogOut}
               title="Sign Out"
-              onClick={() => {}}
+              onClick={async () => {
+                await authClient.signOut({
+                  fetchOptions: {
+                    onSuccess: () => {
+                      router.push("/auth");
+                    },
+                  },
+                });
+              }}
               className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
             />
           </div>
