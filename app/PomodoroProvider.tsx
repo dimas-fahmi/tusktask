@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useNotificationStore } from "@/src/lib/stores/notification";
 import { usePomodoroStore } from "@/src/lib/stores/pomodoro";
 import { formatDurationLuxon } from "@/src/lib/utils/formatTime";
 import PomodoroDialog from "@/src/ui/components/ui/PomodoroDialog";
@@ -19,6 +20,8 @@ const PomodoroProvider = ({
     setIsStarted,
   } = usePomodoroStore();
 
+  const { triggerSound } = useNotificationStore();
+
   useEffect(() => {
     const totalDuration = currentPhase === "focus" ? focusTime : restTime;
 
@@ -29,11 +32,15 @@ const PomodoroProvider = ({
 
       interval = setInterval(() => {
         usePomodoroStore.setState((state) => {
-          const newElapsedTime = state.elapsedTime + 1000;
+          const newElapsedTime = state.elapsedTime + 500;
           const timeLeft = totalDuration - elapsedTime;
           const isCompleted = timeLeft <= 0;
 
           if (isCompleted) {
+            document.title = `It's Time To ${currentPhase === "focus" ? "Rest" : "Focus"}`;
+
+            triggerSound("alarm");
+
             return {
               currentPhase: currentPhase === "focus" ? "rest" : "focus",
               elapsedTime: 0,
@@ -48,7 +55,7 @@ const PomodoroProvider = ({
             elapsedTime: newElapsedTime,
           };
         });
-      }, 1000);
+      }, 500);
     }
 
     return () => {
@@ -56,7 +63,15 @@ const PomodoroProvider = ({
         clearInterval(interval);
       }
     };
-  }, [isRunning, focusTime, restTime, elapsedTime, setIsStarted, currentPhase]);
+  }, [
+    isRunning,
+    focusTime,
+    restTime,
+    elapsedTime,
+    setIsStarted,
+    currentPhase,
+    triggerSound,
+  ]);
 
   return (
     <>

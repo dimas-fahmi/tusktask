@@ -7,6 +7,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ColorThemePickerModal from "@/src/ui/components/ui/ColorThemePickerModal";
 import ImageUploadModal from "@/src/ui/components/ui/ImageUploadModal";
 import { interFont, oswaldFont } from "@/src/ui/fonts";
+import { Toaster } from "@/src/ui/shadcn/components/ui/sonner";
+import NotificationProvider from "./NotificationProvider";
 import PomodoroProvider from "./PomodoroProvider";
 import ThemeProvider from "./ThemeProvider";
 
@@ -21,11 +23,14 @@ export default function RootLayout({
         className={`${interFont.variable} ${oswaldFont.variable} antialiased`}
       >
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider>
-            <PomodoroProvider>{children}</PomodoroProvider>
-          </ThemeProvider>
+          <NotificationProvider>
+            <ThemeProvider>
+              <PomodoroProvider>{children}</PomodoroProvider>
+            </ThemeProvider>
+          </NotificationProvider>
           <ImageUploadModal />
           <ColorThemePickerModal />
+          <Toaster richColors position="top-center" />
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>

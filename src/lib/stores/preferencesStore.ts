@@ -6,9 +6,15 @@ export interface PreferencesStore {
   setActiveColorScheme: (
     activeColorScheme: PreferencesStore["activeColorScheme"],
   ) => void;
+
+  isSilent: boolean;
+  setIsSilent: (isSilent: boolean) => void;
 }
 
 export const usePreferencesStore = create<PreferencesStore>((set) => ({
   activeColorScheme: undefined,
   setActiveColorScheme: (nv) => set({ activeColorScheme: nv }),
+
+  isSilent: false,
+  setIsSilent: (nv) => set({ isSilent: nv }),
 }));
