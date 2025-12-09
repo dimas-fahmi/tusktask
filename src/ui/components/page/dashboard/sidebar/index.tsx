@@ -5,16 +5,18 @@ import {
   SidebarContent,
   SidebarHeader,
 } from "@/src/ui/shadcn/components/ui/sidebar";
+import ProfileCard from "./ProfileCard";
 
 export function DashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar {...props}>
-      <SidebarHeader></SidebarHeader>
-      <SidebarContent className="custom-scrollbar">
-        {/* We create a SidebarGroup for each parent. */}
-      </SidebarContent>
+    <Sidebar {...props} className="px-2 py-3">
+      <SidebarHeader>
+        {/* Profile Card */}
+        <ProfileCard />
+      </SidebarHeader>
+      <SidebarContent className="custom-scrollbar"></SidebarContent>
     </Sidebar>
   );
 }
