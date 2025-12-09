@@ -5,29 +5,14 @@ import { useEffect } from "react";
 import { type ExternalToast, toast } from "sonner";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import {
+  AUDIOS,
   type ToastType,
   useNotificationStore,
 } from "@/src/lib/stores/notification";
 import { usePreferencesStore } from "@/src/lib/stores/preferencesStore";
 
-export const AUDIOS = {
-  notification01: {
-    title: "Notification 01",
-    src: "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/sounds/notification.wav",
-    type: "notification",
-  },
-  alarm01: {
-    title: "Alarm 01",
-    src: "https://zvgpixcwdvbogm3e.public.blob.vercel-storage.com/tusktask/sounds/alarm-01.wav",
-    type: "alarm",
-  },
-} as const;
-
-export const playAudio = (key: keyof typeof AUDIOS) => {
-  const audioMetadata = AUDIOS[key];
-
+export const playAudio = (audio: HTMLAudioElement) => {
   try {
-    const audio = new Audio(audioMetadata.src);
     audio.play();
 
     return audio;
@@ -43,12 +28,25 @@ const NotificationProvider = ({
 }) => {
   const { data: profile, isPending: isLoadingProfile } = useGetSelfProfile();
   const { isSilent, setIsSilent } = usePreferencesStore();
+  const {
+    alarmAudio,
+    notificationAudio,
+    setAlarmAudio,
+    setNotificationAudio,
+    activeAlarmAudio,
+    activeNotificationAudio,
+  } = useNotificationStore();
 
-  // Preload Sound
+  // Load Audio
   useEffect(() => {
-    new Audio(AUDIOS.alarm01.src);
-    new Audio(AUDIOS.notification01.src);
-  }, []);
+    setAlarmAudio(new Audio(AUDIOS[activeAlarmAudio].src));
+    setNotificationAudio(new Audio(AUDIOS[activeNotificationAudio].src));
+  }, [
+    activeAlarmAudio,
+    activeNotificationAudio,
+    setAlarmAudio,
+    setNotificationAudio,
+  ]);
 
   // Initialize Permission When Loaded
   useEffect(() => {
@@ -85,9 +83,10 @@ const NotificationProvider = ({
     });
 
     // TriggerSound
-    const triggerSound = (key: keyof typeof AUDIOS) => {
+    const triggerSound = (type: "alarm" | "notification") => {
+      if (!alarmAudio || !notificationAudio) return;
       if (!isSilent) {
-        return playAudio(key);
+        return playAudio(type === "alarm" ? alarmAudio : notificationAudio);
       }
     };
 
@@ -116,7 +115,7 @@ const NotificationProvider = ({
         });
       }
 
-      triggerSound("notification01");
+      triggerSound("notification");
     };
 
     useNotificationStore.setState({
@@ -125,7 +124,7 @@ const NotificationProvider = ({
       triggerToast,
       triggerNotification,
     });
-  }, [isSilent]);
+  }, [isSilent, alarmAudio, notificationAudio]);
 
   return children;
 };
