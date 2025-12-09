@@ -17,15 +17,20 @@ const PomodoroProvider = ({ children }: { children: React.ReactNode }) => {
   } = usePomodoroStore();
 
   const { triggerSound } = useNotificationStore();
-
-  // Create worker instance once
   const workerRef = useRef<Worker | null>(null);
+  const elapsedTimeRef = useRef(elapsedTime);
+  elapsedTimeRef.current = elapsedTime;
 
-  if (!workerRef.current && typeof window !== "undefined") {
+  useEffect(() => {
     workerRef.current = new Worker(
       new URL("@/src/lib/workers/pomodoro.worker.js", import.meta.url),
     );
-  }
+
+    return () => {
+      workerRef.current?.terminate();
+      workerRef.current = null;
+    };
+  }, []);
 
   // Listen to worker messages once
   useEffect(() => {
@@ -73,12 +78,12 @@ const PomodoroProvider = ({ children }: { children: React.ReactNode }) => {
 
       workerRef.current.postMessage({
         type: "START",
-        payload: { duration: totalDuration, elapsed: elapsedTime },
+        payload: { duration: totalDuration, elapsed: elapsedTimeRef.current },
       });
     } else {
       workerRef.current.postMessage({ type: "STOP" });
     }
-  }, [isRunning, currentPhase, focusTime, restTime, setIsStarted, elapsedTime]);
+  }, [isRunning, currentPhase, focusTime, restTime, setIsStarted]);
 
   return (
     <>
