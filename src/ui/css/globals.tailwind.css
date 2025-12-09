@@ -122,56 +122,56 @@
 }
 
 .color-theme-popBella {
-  /* Core Colors (Soft Pink Base) */
-  --background: oklch(98% 0.01 350);
-  --foreground: oklch(0.1 0.005 350);
-  --radius: 0.625rem;
-
-  /* Cards & Popovers */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.1 0.005 350);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.1 0.005 350);
-
-  /* Primary Action (Pop Pink) */
-  --primary: oklch(75% 0.18 350);
-  --primary-foreground: oklch(0.1 0.005 350); /* Dark text for contrast */
-
-  /* Secondary & Muted (Pastel Tones) */
-  --secondary: oklch(90% 0.04 20); /* Light Peach/Coral */
-  --secondary-foreground: oklch(0.25 0 0);
-  --muted: oklch(95% 0.02 350);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(85% 0.08 60); /* Light Yellow-Green Accent */
-  --accent-foreground: oklch(0.25 0 0);
-
-  /* Utility Colors */
-  --destructive: oklch(60% 0.2 20);
-  --destructive-foreground: oklch(1 0 0);
-  --success: oklch(65% 0.15 150);
-  --success-foreground: oklch(100% 0.00011 271.152);
-
-  /* Borders & Focus */
-  --border: oklch(88% 0.05 350);
-  --input: oklch(88% 0.05 350);
-  --ring: oklch(75% 0.18 350);
-
-  /* Chart Colors (Coordinating Pastels) */
-  --chart-1: oklch(75% 0.18 350); /* Pop Pink */
-  --chart-2: oklch(85% 0.12 60); /* Light Green */
-  --chart-3: oklch(70% 0.15 280); /* Lavender */
-  --chart-4: oklch(80% 0.1 190); /* Sky Blue */
-  --chart-5: oklch(75% 0.16 20); /* Coral */
-
-  /* Sidebar (Matching the light/pastel scheme) */
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.1 0.005 350);
-  --sidebar-primary: oklch(75% 0.18 350);
-  --sidebar-primary-foreground: oklch(0.1 0.005 350);
-  --sidebar-accent: oklch(90% 0.04 20);
-  --sidebar-accent-foreground: oklch(0.25 0 0);
-  --sidebar-border: oklch(88% 0.05 350);
-  --sidebar-ring: oklch(75% 0.18 350);
+  --background: oklch(98% 0.015 330);
+  --foreground: oklch(15% 0.02 300);
+  --radius: 0.65rem;
+  --card: oklch(99% 0.008 330);
+  --card-foreground: oklch(15% 0.02 300);
+  --popover: oklch(99% 0.008 330);
+  --popover-foreground: oklch(15% 0.02 300);
+  --primary: oklch(55% 0.15 330);
+  --primary-foreground: oklch(98% 0.01 330);
+  --secondary: oklch(90% 0.06 330);
+  --secondary-foreground: oklch(15% 0.02 300);
+  --muted: oklch(95% 0.012 330);
+  --muted-foreground: oklch(40% 0.01 300);
+  --accent: oklch(85% 0.08 300);
+  --accent-foreground: oklch(15% 0.02 300);
+  --destructive: oklch(60% 0.18 15);
+  --destructive-foreground: oklch(98% 0.01 330);
+  --success: oklch(70% 0.1 150);
+  --success-foreground: oklch(98% 0.01 330);
+  --border: oklch(82% 0.008 330);
+  --input: oklch(97% 0.01 330);
+  --ring: oklch(50% 0.13 330);
+  --chart-1: oklch(60% 0.14 330);
+  --chart-1-foreground: oklch(98% 0.01 330);
+  --chart-2: oklch(70% 0.1 350);
+  --chart-2-foreground: oklch(15% 0.02 300);
+  --chart-3: oklch(65% 0.12 300);
+  --chart-3-foreground: oklch(98% 0.01 330);
+  --chart-4: oklch(75% 0.09 310);
+  --chart-4-foreground: oklch(15% 0.02 300);
+  --chart-5: oklch(80% 0.08 340);
+  --chart-5-foreground: oklch(15% 0.02 300);
+  --chart-6: oklch(68% 0.11 320);
+  --chart-6-foreground: oklch(98% 0.01 330);
+  --chart-7: oklch(72% 0.1 290);
+  --chart-7-foreground: oklch(15% 0.02 300);
+  --chart-8: oklch(66% 0.12 270);
+  --chart-8-foreground: oklch(98% 0.01 330);
+  --sidebar: oklch(99% 0.008 330);
+  --sidebar-foreground: oklch(15% 0.02 300);
+  --sidebar-primary: oklch(50% 0.13 330);
+  --sidebar-primary-foreground: oklch(98% 0.01 330);
+  --sidebar-accent: oklch(88% 0.05 300);
+  --sidebar-accent-foreground: oklch(15% 0.02 300);
+  --sidebar-border: oklch(87% 0.008 330);
+  --sidebar-ring: oklch(50% 0.13 330);
+  --glowing-color-card: oklch(97% 0.01 330);
+  --glowing-color-1: oklch(50% 0.13 330);
+  --glowing-color-2: oklch(65% 0.14 340);
+  --glowing-color-3: oklch(75% 0.09 120);
 }
 
 .color-theme-brownBear {
