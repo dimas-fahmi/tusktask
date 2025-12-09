@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useMediaQuery } from "react-responsive";
 import z from "zod";
+import { useNotificationStore } from "@/src/lib/stores/notification";
 import { usePomodoroStore } from "@/src/lib/stores/pomodoro";
 import {
   formatDurationLuxon,
@@ -77,6 +78,8 @@ const PomodoroDialog = () => {
     }
   }, [open, reset]);
 
+  const { alarmAudio } = useNotificationStore();
+
   return (
     <Dialog {...{ open, onOpenChange }}>
       <DialogContent>
@@ -123,7 +126,9 @@ const PomodoroDialog = () => {
               <div className="capitalize px-4 py-2 bg-muted space-y-4 rounded-2xl">
                 <div className="space-y-1">
                   <h1 className="text-lg font-semibold">Current Phase</h1>
-                  <p className="text-sm font-light">Focus</p>
+                  <p className="text-sm font-light capitalize">
+                    {currentPhase}
+                  </p>
                   <Separator />
                 </div>
 
@@ -134,6 +139,11 @@ const PomodoroDialog = () => {
                     size={"sm"}
                     onClick={() => {
                       setIsRunning(!isRunning);
+
+                      if (alarmAudio) {
+                        alarmAudio.pause();
+                        alarmAudio.currentTime = 0;
+                      }
                     }}
                   >
                     {!isRunning ? (
