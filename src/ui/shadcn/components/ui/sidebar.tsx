@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/correctness/useExhaustiveDependencies: Do not mess up with shadcn's logic */
-/** biome-ignore-all lint/suspicious/noDocumentCookie: ShadCN cookie */
+/** biome-ignore-all lint/suspicious/noDocumentCookie: ShadCN cookiecl */
 "use client";
 
 import { Slot } from "@radix-ui/react-slot";
