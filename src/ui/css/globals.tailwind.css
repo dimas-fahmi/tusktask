@@ -435,3 +435,10 @@
   background-color: var(--muted-foreground);
   border-radius: var(--radius-lg);
 }
+
+/* Chrome, Safari, Edge, Opera */
+.outer-spin-none::-webkit-outer-spin-button,
+.outer-spin-none::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

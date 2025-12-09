@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ColorThemePickerModal from "@/src/ui/components/ui/ColorThemePickerModal";
 import ImageUploadModal from "@/src/ui/components/ui/ImageUploadModal";
 import { interFont, oswaldFont } from "@/src/ui/fonts";
+import PomodoroProvider from "./PomodoroProvider";
 import ThemeProvider from "./ThemeProvider";
 
 export default function RootLayout({
@@ -20,7 +21,9 @@ export default function RootLayout({
         className={`${interFont.variable} ${oswaldFont.variable} antialiased`}
       >
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <PomodoroProvider>{children}</PomodoroProvider>
+          </ThemeProvider>
           <ImageUploadModal />
           <ColorThemePickerModal />
           <ReactQueryDevtools initialIsOpen={false} />

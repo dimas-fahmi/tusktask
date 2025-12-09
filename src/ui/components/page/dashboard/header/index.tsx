@@ -1,7 +1,7 @@
-import { Bell, PanelLeftClose, PanelLeftOpen, SwatchBook } from "lucide-react";
+import { Bell, PanelLeftClose, PanelLeftOpen, TimerIcon } from "lucide-react";
 import Link from "next/link";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
-import { useColorThemePickerModalStore } from "@/src/lib/stores/colorThemePickerModal";
+import { usePomodoroStore } from "@/src/lib/stores/pomodoro";
 import { useProfileDialogStore } from "@/src/lib/stores/profileDialog";
 import { getInitial } from "@/src/lib/utils/getInitial";
 import {
@@ -15,8 +15,8 @@ import { useSidebar } from "@/src/ui/shadcn/components/ui/sidebar";
 const Header = () => {
   const { isMobile, open, openMobile, setOpen, setOpenMobile } = useSidebar();
   const { data: profile } = useGetSelfProfile();
-  const { setOpen: setOpenCTPM } = useColorThemePickerModalStore();
   const { setOpen: setOpenProfileDialog } = useProfileDialogStore();
+  const { setDialogOpen: setOpenPomodorooDialog } = usePomodoroStore();
 
   return (
     <header className="flex justify-between items-center">
@@ -47,10 +47,10 @@ const Header = () => {
         <Button
           variant={"outline"}
           onClick={() => {
-            setOpenCTPM(true);
+            setOpenPomodorooDialog(true);
           }}
         >
-          <SwatchBook />
+          <TimerIcon />
         </Button>
 
         {/* Notification Button */}
