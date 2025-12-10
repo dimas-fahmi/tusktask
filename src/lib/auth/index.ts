@@ -19,6 +19,14 @@ if (!discordId || !discordSecret) {
   throw new Error("DISCORD_ID_OR_SECRET_UNAVAILABLE");
 }
 
+// GOOGLE
+const googleId = process.env.GOOGLE_CLIENT_ID;
+const googleSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+if (!googleId || !googleSecret) {
+  throw new Error("GOOGLE_ID_OR_SECRET_UNAVAILABLE");
+}
+
 export const auth = betterAuth({
   // DATABASE CONFIGURATION
   database: drizzleAdapter(db, {
@@ -37,6 +45,10 @@ export const auth = betterAuth({
     github: {
       clientId: githubId,
       clientSecret: githubSecret,
+    },
+    google: {
+      clientId: googleId,
+      clientSecret: googleSecret,
     },
   },
 });

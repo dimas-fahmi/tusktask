@@ -8,6 +8,7 @@ import z from "zod";
 import { getUsernameAvailability } from "@/src/lib/queries/fetchers/getUsernameAvailability";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { useUpdateUserProfile } from "@/src/lib/queries/hooks/useUpdateUserProfile";
+import { useNotificationStore } from "@/src/lib/stores/notification";
 import { useOnboardingStore } from "@/src/lib/stores/onboardingStore";
 import { usernameSchema } from "@/src/lib/zod";
 import Input from "@/src/ui/components/ui/Input/input";
@@ -15,6 +16,7 @@ import { Button } from "@/src/ui/shadcn/components/ui/button";
 
 const UsernamePhase = () => {
   const { setOnboardingPhase } = useOnboardingStore();
+  const { triggerToast } = useNotificationStore();
 
   const {
     control,
@@ -93,6 +95,17 @@ const UsernamePhase = () => {
               onSuccess: () => {
                 setOnboardingPhase("image");
               },
+              onError: () => {
+                setOnboardingPhase("username");
+                triggerToast(
+                  "Failed to Save Changes",
+                  {
+                    description:
+                      "Something went wrong, if the issue persist please contact developer",
+                  },
+                  "error",
+                );
+              },
             },
           );
         })}
@@ -159,7 +172,7 @@ const UsernamePhase = () => {
               isUpdatingProfile
             }
           >
-            Continue
+            {isUpdatingProfile ? "Saving" : "Continue"}
           </Button>
         </div>
       </form>

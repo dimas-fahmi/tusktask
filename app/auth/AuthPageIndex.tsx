@@ -94,8 +94,6 @@ const AuthPageIndex = () => {
             icon="Google"
             loadingComponent={loadingComponent}
             setLoadingComponent={setLoadingComponent}
-            disabled
-            tooltipContent={"Available soon."}
           />
         </div>
 

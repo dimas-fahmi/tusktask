@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { useUpdateUserProfile } from "@/src/lib/queries/hooks/useUpdateUserProfile";
+import { useNotificationStore } from "@/src/lib/stores/notification";
 import { useOnboardingStore } from "@/src/lib/stores/onboardingStore";
 import { nameSchema } from "@/src/lib/zod";
 import Input from "@/src/ui/components/ui/Input/input";
@@ -16,6 +17,7 @@ const NamePhase = () => {
   const { data: profileResult, isLoading: isLoadingProfile } =
     useGetSelfProfile();
   const profile = profileResult?.result;
+  const { triggerToast } = useNotificationStore();
 
   const {
     control,
@@ -75,6 +77,17 @@ const NamePhase = () => {
               {
                 onSuccess: () => {
                   setOnboardingPhase("username");
+                },
+                onError: () => {
+                  setOnboardingPhase("name");
+                  triggerToast(
+                    "Failed to Save Changes",
+                    {
+                      description:
+                        "Something went wrong, if issue persist please report to developer.",
+                    },
+                    "error",
+                  );
                 },
               },
             );
@@ -143,7 +156,7 @@ const NamePhase = () => {
         {/* Footer */}
         <div className="flex justify-end gap-2">
           <Button type="submit" disabled={!isValid || isUpdatingProfile}>
-            Continue
+            {isUpdatingProfile ? "Saving" : "Continue"}
           </Button>
         </div>
       </form>

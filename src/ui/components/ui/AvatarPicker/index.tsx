@@ -13,6 +13,7 @@ import { useState } from "react";
 import type { ImageType } from "@/src/db/schema/image";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { useUpdateUserProfile } from "@/src/lib/queries/hooks/useUpdateUserProfile";
+import { useNotificationStore } from "@/src/lib/stores/notification";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
   Popover,
@@ -37,6 +38,8 @@ const AvatarPicker = () => {
 
   const { mutate: updateProfile, isPending: isUpdatingProfile } =
     useUpdateUserProfile();
+
+  const { triggerToast } = useNotificationStore();
 
   return (
     <div className="relative w-60 mx-auto my-2 aspect-square rounded-full shadow-2xl">
@@ -108,6 +111,12 @@ const AvatarPicker = () => {
                   {
                     onSuccess: () => {
                       setImageGalleryModalOpen(false);
+                    },
+                    onError: () => {
+                      triggerToast("Failed to Save Changes", {
+                        description:
+                          "Something went wrong, if the issue persist please contact developer",
+                      });
                     },
                   },
                 );

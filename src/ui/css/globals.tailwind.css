@@ -422,6 +422,10 @@
   }
 }
 
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
 }
