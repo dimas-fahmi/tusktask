@@ -43,6 +43,7 @@ const UsernameSection = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: No need
   useEffect(() => {
     setIsTyping(true);
     const debouncer = setTimeout(() => {
@@ -53,7 +54,7 @@ const UsernameSection = () => {
     }, 1000);
 
     return () => clearTimeout(debouncer);
-  }, [username, usernameKey]);
+  }, [username]);
 
   const { data: usernameCheck, isFetching: isCheckingUsername } = useQuery({
     queryKey: [
