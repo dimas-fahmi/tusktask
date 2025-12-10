@@ -22,3 +22,7 @@ export const formatDurationLuxon = (
 export const formatMinuteToMillis = (minutes: number): number => {
   return minutes * 60000;
 };
+
+export const formatMillisToMinutes = (millis: number): number => {
+  return Math.ceil(millis / 60000);
+};
