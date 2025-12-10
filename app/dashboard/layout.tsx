@@ -70,6 +70,17 @@ const DashboardLayout = ({
                 <Button
                   variant={"outline"}
                   onClick={() => {
+                    if (typeof Notification === "undefined") {
+                      triggerToast(
+                        "Notifications are Not Supported",
+                        {
+                          description:
+                            "Notifications are not supported in your browser, TuskTask won't be able to send you notification.",
+                        },
+                        "error",
+                      );
+                    }
+
                     Notification.requestPermission().then((e) => {
                       useNotificationStore.setState({ notificationStatus: e });
 
