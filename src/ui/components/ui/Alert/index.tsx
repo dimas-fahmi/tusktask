@@ -11,7 +11,7 @@ export const alertVariants = cva("", {
     variant: {
       default: "bg-muted text-muted-foreground",
       destructive: "bg-destructive/15 text-destructive",
-      success: "bg-sucess/15 text-success",
+      success: "bg-success/15 text-success",
     },
   },
   defaultVariants: {
