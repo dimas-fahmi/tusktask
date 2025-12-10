@@ -138,7 +138,7 @@ const UsernameSection = () => {
                   "success",
                 );
               },
-              onError: () => [
+              onError: () => {
                 triggerToast(
                   "Something Went Wrong",
                   {
@@ -146,8 +146,8 @@ const UsernameSection = () => {
                       "Failed to save changes, if issue persist please contact developer.",
                   },
                   "error",
-                ),
-              ],
+                );
+              },
             },
           );
         })}
