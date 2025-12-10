@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useActiveSections } from "@/src/lib/hooks/useActiveSection";
 import { Separator } from "@/src/ui/shadcn/components/ui/separator";
-import { cn } from "@/src/ui/shadcn/lib/utils";
+import { SettingIndexItem } from "./components/SettingsIndexItem";
 import AccountsSection from "./sections/AccountsSection";
 import ActiveSessionsSection from "./sections/ActiveSessionsSection";
 import AdvanceSection from "./sections/AdvanceSection";
@@ -11,40 +12,6 @@ import NameSection from "./sections/NameSection";
 import PreferencesSection from "./sections/PreferencesSection";
 import ProfileSection from "./sections/ProfileSection";
 import UsernameSection from "./sections/UsernameSection";
-
-const SettingIndexItem = ({
-  href,
-  title,
-  isActive,
-  className,
-}: {
-  href: string;
-  title: string;
-  isActive?: boolean;
-  className?: string;
-}) => {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        `${isActive ? "opacity-100 text-primary font-semibold" : "opacity-55"} transition-all duration-300 hover:scale-95 active:90 text-sm`,
-        className,
-      )}
-      onClick={(e) => {
-        e.preventDefault();
-        const el = document.querySelector(href) as HTMLElement;
-        if (!el) return;
-
-        window.scrollTo({
-          top: el.offsetTop - 20,
-          behavior: "smooth",
-        });
-      }}
-    >
-      {title}
-    </Link>
-  );
-};
 
 const sectionIds = [
   "profile-picture-section",
@@ -67,7 +34,20 @@ const sectionTitles: Record<(typeof sectionIds)[number], string> = {
 };
 
 const SettingsPageIndex = () => {
+  const searchParams = useSearchParams();
+  const scrollTo = searchParams.get("scrollTo");
   const active = useActiveSections(sectionIds, 0);
+
+  useEffect(() => {
+    if (scrollTo) {
+      const el = document.getElementById(scrollTo) as HTMLElement;
+
+      window.scrollTo({
+        top: el.offsetTop - 50,
+        behavior: "smooth",
+      });
+    }
+  }, [scrollTo]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[auto_280px] gap-12">

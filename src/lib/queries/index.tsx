@@ -1,4 +1,5 @@
 import { QueryClient, type UseQueryOptions } from "@tanstack/react-query";
+import type { Account } from "better-auth";
 import type {
   V1ImageGetRequest,
   V1ImageGetResponse,
@@ -7,6 +8,7 @@ import type { UserType } from "@/src/db/schema/auth-schema";
 import type { StandardResponseType } from "../app/app";
 import { StandardError } from "../app/errors";
 import { getImage } from "./fetchers/getImage";
+import { getSelfAccounts } from "./fetchers/getSelfAccounts";
 import { getSelfProfile } from "./fetchers/getSelfProfile";
 
 export const queryClient = new QueryClient({
@@ -43,6 +45,17 @@ export const queryIndex = {
         queryOptions: {
           queryKey,
           queryFn: getSelfProfile,
+        },
+      };
+    },
+    accounts: (): QueryObject<Account[]> => {
+      const queryKey = ["self", "accounts"];
+
+      return {
+        queryKey,
+        queryOptions: {
+          queryKey,
+          queryFn: getSelfAccounts,
         },
       };
     },
