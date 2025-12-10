@@ -49,6 +49,7 @@ const DashboardLayout = ({
                 description="Notifications are blocked, so TuskTask can't send you any alerts. Some features might not work as expected."
                 variant={"destructive"}
               >
+                {/* Todo: create dedicated guide dialog later, fine for now. */}
                 <Button variant={"destructive"} asChild>
                   <Link
                     href={
