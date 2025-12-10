@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
@@ -18,6 +19,8 @@ const NameSection = () => {
   const {
     control,
     handleSubmit,
+    reset,
+    watch,
     formState: { isValid },
   } = useForm({
     resolver: zodResolver(
@@ -35,6 +38,25 @@ const NameSection = () => {
     },
   });
 
+  const name = watch("name");
+  const firstName = watch("firstName");
+  const lastName = watch("lastName");
+
+  const isIdentical =
+    profile?.result?.name === name &&
+    profile?.result?.firstName === firstName &&
+    profile?.result?.lastName === lastName;
+
+  useEffect(() => {
+    if (profile) {
+      reset({
+        name: profile?.result?.name ?? "",
+        firstName: profile?.result?.firstName ?? "",
+        lastName: profile?.result?.lastName ?? "",
+      });
+    }
+  }, [profile, reset]);
+
   const { mutate: updateProfile, isPending: isUpdatingProfile } =
     useUpdateUserProfile();
 
@@ -50,28 +72,17 @@ const NameSection = () => {
       <form
         className="space-y-4"
         onSubmit={handleSubmit((data) => {
-          if (!profile?.result || isUpdatingProfile) return;
-          const { firstName, lastName, name } = profile.result;
-          if (
-            data.firstName === firstName &&
-            data.lastName === lastName &&
-            data.name === name
-          ) {
-            triggerToast(
-              "Nothing to Save",
-              {
-                description: "Data identical, nothing to save.",
-              },
-              "info",
-            );
-
-            return;
-          }
+          if (!profile?.result || isUpdatingProfile || isIdentical) return;
 
           updateProfile(
             { ...data },
             {
               onSuccess: () => {
+                reset({
+                  name: profile?.result?.name ?? "",
+                  firstName: profile?.result?.firstName ?? "",
+                  lastName: profile?.result?.lastName ?? "",
+                });
                 triggerToast(
                   "Changes Saved",
                   {
@@ -106,6 +117,7 @@ const NameSection = () => {
                   inputProps={{
                     placeholder: profile?.result?.name ?? "",
                     ...field,
+                    autoComplete: "off",
                   }}
                   message={fieldState?.error?.message ?? ""}
                   messageVariants={{ variant: "negative" }}
@@ -124,6 +136,7 @@ const NameSection = () => {
                   inputProps={{
                     placeholder: profile?.result?.firstName ?? "",
                     ...field,
+                    autoComplete: "off",
                   }}
                   message={fieldState?.error?.message ?? ""}
                   messageVariants={{ variant: "negative" }}
@@ -140,6 +153,7 @@ const NameSection = () => {
                   inputProps={{
                     placeholder: profile?.result?.lastName ?? "",
                     ...field,
+                    autoComplete: "off",
                   }}
                   message={fieldState?.error?.message ?? ""}
                   messageVariants={{ variant: "negative" }}
@@ -153,7 +167,7 @@ const NameSection = () => {
         <footer>
           <Button
             className="ms-auto block"
-            disabled={!isValid || isUpdatingProfile}
+            disabled={!isValid || isUpdatingProfile || isIdentical}
           >
             {isUpdatingProfile ? "Saving" : "Save"}
           </Button>
