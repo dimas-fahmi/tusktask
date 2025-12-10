@@ -21,7 +21,7 @@ const AccountCard = ({
       <div className="flex items-center gap-4">
         {/* Icon */}
         <div>
-          <Icon className="w-6 h-6 opacity-70" />
+          <Icon className="w-6 h-6 opacity-70 fill-current" />
         </div>
 
         {/* Name & Status */}
