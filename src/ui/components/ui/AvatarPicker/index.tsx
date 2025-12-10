@@ -25,10 +25,22 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/src/ui/shadcn/components/ui/tooltip";
+import { cn } from "@/src/ui/shadcn/lib/utils";
 import ImageGalleryModal from "../ImageGalleryModal";
 import PopoverItem from "../PopoverItem";
 
-const AvatarPicker = () => {
+export type AvatarPickerClassNames = {
+  container?: string;
+  image?: string;
+  changeButton?: string;
+  popoverContent?: string;
+};
+
+export type AvatarPickerProps = {
+  classNames?: AvatarPickerClassNames;
+};
+
+const AvatarPicker = ({ classNames }: AvatarPickerProps) => {
   const { data: profileResponse } = useGetSelfProfile();
   const profile = profileResponse?.result;
   const [ImageGalleryModalOpen, setImageGalleryModalOpen] = useState(false);
@@ -42,7 +54,12 @@ const AvatarPicker = () => {
   const { triggerToast } = useNotificationStore();
 
   return (
-    <div className="relative w-60 mx-auto my-2 aspect-square rounded-full shadow-2xl">
+    <div
+      className={cn(
+        "relative w-60 mx-auto my-2 aspect-square rounded-full shadow-2xl",
+        classNames?.container,
+      )}
+    >
       <Image
         layout="fill"
         src={
@@ -51,7 +68,7 @@ const AvatarPicker = () => {
           "https://images.pexels.com/photos/2341350/pexels-photo-2341350.jpeg"
         }
         alt="Profile Picture"
-        className="rounded-full w-60 object-cover"
+        className={cn("rounded-full object-cover", classNames?.image)}
       />
 
       {/* Change Button */}
@@ -59,12 +76,20 @@ const AvatarPicker = () => {
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="absolute bottom-3 right-3 z-10 bg-muted p-3 rounded-full shadow-2xl hover:scale-95 active:scale-90 transition-all border duration-300"
+            className={cn(
+              "absolute bottom-3 right-3 z-10 bg-muted p-3 rounded-full shadow-2xl hover:scale-95 active:scale-90 transition-all border duration-300",
+              classNames?.changeButton,
+            )}
           >
             <ImagesIcon />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="space-y-4 bg-background/95 px-6">
+        <PopoverContent
+          className={cn(
+            "space-y-4 bg-background/95 px-6",
+            classNames?.popoverContent,
+          )}
+        >
           <PopoverItem
             icon={BookImage}
             title="Pick From Gallery"

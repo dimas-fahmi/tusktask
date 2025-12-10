@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
+import SettingsPageIndex from "./SettingsPageIndex";
+
+export const metadata: Metadata = {
+  title: "Settings | TuskTask",
+};
+
 const SettingsPage = () => {
-  return <div>SettingsPage</div>;
+  return <SettingsPageIndex />;
 };
 
 export default SettingsPage;

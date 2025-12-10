@@ -1,9 +1,11 @@
 import type { LucideIcon } from "lucide-react";
+import { cn } from "@/src/ui/shadcn/lib/utils";
 
 export interface SettingsItemProps {
   icon: LucideIcon;
   title: string;
   description: string;
+  destructive?: boolean;
   children?: React.ReactNode;
 }
 
@@ -12,9 +14,15 @@ const SettingsItem = ({
   description,
   icon: Icon,
   children,
+  destructive,
 }: SettingsItemProps) => {
   return (
-    <div className="flex justify-between items-center">
+    <div
+      className={cn(
+        "flex justify-between items-center",
+        destructive ? "text-destructive" : "",
+      )}
+    >
       {/* Icon & Title */}
       <div className="flex gap-4">
         {/* Icon */}
