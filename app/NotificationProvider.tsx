@@ -101,6 +101,7 @@ const NotificationProvider = ({
       options?: NotificationOptions,
     ) => {
       const notification = new Notification(title, options);
+      triggerSound("notification");
       return notification;
     };
 

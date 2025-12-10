@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { useNotificationStore } from "@/src/lib/stores/notification";
 import { usePomodoroStore } from "@/src/lib/stores/pomodoro";
-import { formatDurationLuxon } from "@/src/lib/utils/formatTime";
+import {
+  formatDurationLuxon,
+  formatMillisToMinutes,
+} from "@/src/lib/utils/formatTime";
 import PomodoroDialog from "@/src/ui/components/ui/PomodoroDialog";
 
 const PomodoroProvider = ({ children }: { children: React.ReactNode }) => {
@@ -16,7 +19,7 @@ const PomodoroProvider = ({ children }: { children: React.ReactNode }) => {
     elapsedTime,
   } = usePomodoroStore();
 
-  const { triggerSound } = useNotificationStore();
+  const { triggerSound, triggerNotification } = useNotificationStore();
   const workerRef = useRef<Worker | null>(null);
   const elapsedTimeRef = useRef(elapsedTime);
   elapsedTimeRef.current = elapsedTime;
@@ -38,11 +41,10 @@ const PomodoroProvider = ({ children }: { children: React.ReactNode }) => {
 
     workerRef.current.onmessage = (e) => {
       const { type, elapsed } = e.data;
+      const totalDuration = currentPhase === "focus" ? focusTime : restTime;
 
       if (type === "TICK") {
         usePomodoroStore.setState({ elapsedTime: elapsed });
-
-        const totalDuration = currentPhase === "focus" ? focusTime : restTime;
         const timeLeft = totalDuration - elapsed;
 
         document.title = `${formatDurationLuxon(timeLeft)} | ${
@@ -53,6 +55,21 @@ const PomodoroProvider = ({ children }: { children: React.ReactNode }) => {
       if (type === "COMPLETE") {
         triggerSound("alarm");
 
+        const notificationTitle = ` ${formatDurationLuxon(totalDuration)} | It's time to ${
+          currentPhase === "focus" ? "Rest" : "Focus"
+        }`;
+        const notificationDescription =
+          currentPhase === "focus"
+            ? `You have ${formatMillisToMinutes(restTime)} minutes to rest`
+            : `You have to focus for ${formatMillisToMinutes(focusTime)} minutes`;
+        const isHidden = document.hidden;
+
+        if (isHidden) {
+          triggerNotification(`${notificationTitle}`, {
+            body: notificationDescription,
+          });
+        }
+
         usePomodoroStore.setState((state) => ({
           currentPhase: state.currentPhase === "focus" ? "rest" : "focus",
           elapsedTime: 0,
@@ -60,12 +77,10 @@ const PomodoroProvider = ({ children }: { children: React.ReactNode }) => {
           dialogOpen: true,
         }));
 
-        document.title = `It's time to ${
-          currentPhase === "focus" ? "Rest" : "Focus"
-        }`;
+        document.title = notificationTitle;
       }
     };
-  }, [currentPhase, focusTime, restTime, triggerSound]);
+  }, [currentPhase, focusTime, restTime, triggerSound, triggerNotification]);
 
   // Start / Stop worker
   useEffect(() => {
