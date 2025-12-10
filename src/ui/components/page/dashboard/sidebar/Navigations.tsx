@@ -63,7 +63,7 @@ const NavigationItem = ({
       }}
       href={href}
       className={cn(
-        `flex gap-2 items-center p-2 rounded-md transition-all duration-300 ${isActive ? "bg-primary text-primary-foreground opacity-100 px-4" : "hover:bg-secondary hover:text-secondary-foreground px-2"} hover:scale-95 active:scale-90 opacity-90`,
+        `flex gap-2 items-center p-2 rounded-2xl transition-all duration-300 ${isActive ? "bg-primary text-primary-foreground opacity-100 px-4" : "hover:bg-secondary hover:text-secondary-foreground px-2"} hover:scale-95 active:scale-90 opacity-90`,
       )}
     >
       <Icon className="w-5 h-5" /> {title}
