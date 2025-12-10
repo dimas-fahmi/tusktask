@@ -410,7 +410,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body scroll-smooth;
   }
 
   .flex-center {
@@ -426,7 +426,7 @@
   display: none;
 }
 
-.scrollbar-none{
+.scrollbar-none {
   scrollbar-width: none;
 }
 
