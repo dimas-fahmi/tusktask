@@ -19,7 +19,7 @@ const ProfileSection = () => {
       <div className="flex flex-col items-center">
         <h1 className="text-4xl">Hi, {name}!</h1>
         <p className="mt-1.5 font-light">
-          You can costumize your settings here
+          You can customize your settings here
         </p>
       </div>
     </section>
