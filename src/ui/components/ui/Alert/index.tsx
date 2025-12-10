@@ -70,6 +70,7 @@ const Alert = ({
           </div>
 
           <button
+            aria-label="Close alert"
             type="button"
             onClick={() => {
               setVisible(false);
