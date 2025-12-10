@@ -86,7 +86,7 @@ const NameSection = () => {
                 triggerToast(
                   "Changes Saved",
                   {
-                    description: "All changes is saved successfully",
+                    description: "All changes saved successfully",
                   },
                   "success",
                 );
@@ -96,7 +96,7 @@ const NameSection = () => {
                   "Something Went Wrong",
                   {
                     description:
-                      "Failed to save changes, if issue persit please contact developer.",
+                      "Failed to save changes. If the issue persists, please contact the developer.",
                   },
                   "error",
                 );
