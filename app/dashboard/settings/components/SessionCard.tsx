@@ -45,7 +45,6 @@ export const SessionCard = ({
 }) => {
   const { triggerToast } = useNotificationStore();
   const { browser, device, os } = UAParser(session?.userAgent ?? "");
-  console.log(device);
   const Icon = deviceTypeIcon[device.type ?? "unknown"];
   const ipLookupQuery = queryIndex.ipLocate.lookup(
     session?.ipAddress ?? "undefined",
