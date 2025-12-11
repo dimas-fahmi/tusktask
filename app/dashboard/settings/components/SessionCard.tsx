@@ -1,40 +1,27 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  CircleQuestionMark,
-  EthernetPort,
-  Gamepad2,
-  type LucideIcon,
-  Monitor,
-  RectangleGoggles,
-  Smartphone,
-  Tablet,
-  Tv,
-  Watch,
-} from "lucide-react";
+import { ChevronDown, CircleQuestionMark } from "lucide-react";
+import { motion } from "motion/react";
 import { useState } from "react";
 import { UAParser } from "ua-parser-js";
-import type { DeviceType } from "ua-parser-js/enums";
 import type { ActiveSession } from "@/src/lib/app/app";
 import { authClient } from "@/src/lib/auth/client";
+import { DEVICE_TYPE_ICON } from "@/src/lib/lucideIcons/device";
+import { OS_NAME_ICON } from "@/src/lib/lucideIcons/os";
 import { queryIndex } from "@/src/lib/queries";
 import { useNotificationStore } from "@/src/lib/stores/notification";
 import TwoChoiceDialog from "@/src/ui/components/ui/TwoChoiceDialog";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
-
-const deviceTypeIcon: Record<
-  (typeof DeviceType)[keyof typeof DeviceType] | "unknown",
-  LucideIcon
-> = {
-  console: Gamepad2,
-  desktop: Monitor,
-  embedded: EthernetPort,
-  mobile: Smartphone,
-  smarttv: Tv,
-  tablet: Tablet,
-  wearable: Watch,
-  xr: RectangleGoggles,
-  unknown: CircleQuestionMark,
-};
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/src/ui/shadcn/components/ui/tooltip";
+import ASNInformation from "./ASNInformation";
+import BrowserInformation from "./BrowserInformation";
+import DeviceInformation from "./DeviceInformation";
+import IpInformation from "./IpInformation";
+import IpLocation from "./IpLocation";
+import SessionInformation from "./SessionInformation";
 
 export const SessionCard = ({
   session,
@@ -44,16 +31,26 @@ export const SessionCard = ({
   isCurrent?: boolean;
 }) => {
   const { triggerToast } = useNotificationStore();
-  const { browser, device, os } = UAParser(session?.userAgent ?? "");
-  const Icon = deviceTypeIcon[device.type ?? "unknown"];
+  const parsedUA = UAParser(session?.userAgent ?? "");
+  const { browser, device, os } = parsedUA;
+  const sessionQuery = queryIndex.self.sessions();
+  const queryClient = useQueryClient();
+
+  // Get Icon
+  const deviceIcon =
+    DEVICE_TYPE_ICON[device?.type as keyof typeof DEVICE_TYPE_ICON];
+  const osIcon = OS_NAME_ICON[os.name as keyof typeof OS_NAME_ICON];
+  const Icon = deviceIcon || osIcon || CircleQuestionMark;
+
+  // LookUp IP
   const ipLookupQuery = queryIndex.ipLocate.lookup(
     session?.ipAddress ?? "undefined",
   );
-
   const { data: ipLookupResponse } = useQuery({
     ...ipLookupQuery.queryOptions,
   });
 
+  // Process Ip Lookup Response
   const city = ipLookupResponse?.result?.city || "[no-city-record]";
   const subdivision =
     ipLookupResponse?.result?.subdivision || "[no-subdivision-record]";
@@ -63,104 +60,166 @@ export const SessionCard = ({
     !ipLookupResponse?.result?.subdivision &&
     !ipLookupResponse?.result?.country;
 
+  // Revoke State
   const [revokeSessionDialog, setRevokeSessionDialog] = useState(false);
   const [isRevoking, setIsRevoking] = useState(false);
 
-  const sessionQuery = queryIndex.self.sessions();
-  const queryClient = useQueryClient();
+  // More Informtion state
+  const [expand, setExpand] = useState(false);
+
+  // Handle Revoke
+  const handleRevoke = async () => {
+    if (isCurrent || isRevoking) return;
+    setIsRevoking(true);
+    await authClient.revokeSession(
+      {
+        token: session.token,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: sessionQuery.queryKey,
+          });
+
+          triggerToast(
+            "Session Terminated",
+            {
+              description:
+                "Session terminated successfully, your account is logged out from that session.",
+            },
+            "success",
+          );
+        },
+        onError: () => {
+          triggerToast(
+            "Something Went Wrong",
+            {
+              description:
+                "Failed to terminate session, try again if the issue persist please contact developer.",
+            },
+            "error",
+          );
+        },
+      },
+    );
+    setIsRevoking(false);
+    setRevokeSessionDialog(false);
+  };
 
   return (
-    <div className="flex items-center justify-between">
-      {/* Metadata */}
-      <div className="flex items-center gap-2">
-        {/* Icon */}
-        <div>
-          <Icon />
-        </div>
-
-        {/* Information */}
-        <div>
-          <h1 className="font-semibold">
-            {isCompleteBlind ? (
-              "No Information About This IP Address"
-            ) : (
-              <>
-                {city}, {subdivision}, {country}
-              </>
-            )}
-          </h1>
-          <p className="text-xs font-light">
-            {session?.ipAddress ?? "[no-ip-record]"},{" "}
-            {browser?.name ?? "[no-browser-data]"},{" "}
-            {os?.name ?? "[no-os-detail]"}
-          </p>
-        </div>
-      </div>
-
-      {/* Action */}
+    <>
+      {/* Card */}
       <div>
-        <Button
-          variant={isCurrent ? "outline" : "destructive"}
-          size={"sm"}
-          className="text-xs"
-          disabled={isCurrent || isRevoking}
-          onClick={() => {
-            if (isCurrent) return;
-            setRevokeSessionDialog(true);
-          }}
+        <div className="space-y-2 p-3 bg-muted rounded-2xl flex items-center justify-between">
+          {/* Metadata */}
+          <div className="flex items-center gap-2">
+            {/* Icon */}
+            <div>
+              <Icon />
+            </div>
+
+            {/* Information */}
+            <div>
+              <h1 className="text-sm md:font-semibold">
+                {isCompleteBlind ? (
+                  "No Information About This IP Address"
+                ) : (
+                  <>
+                    {city}, {subdivision}, {country}
+                  </>
+                )}
+              </h1>
+              <p className="text-xs font-light">
+                {session?.ipAddress ?? "[no-ip-record]"},{" "}
+                {browser?.name ?? "[no-browser-data]"},{" "}
+                {os?.name ?? "[no-os-detail]"}
+              </p>
+            </div>
+          </div>
+
+          {/* Action */}
+          <div className="flex items-center justify-end gap-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="text-xs"
+                  size={"sm"}
+                  variant={"outline"}
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  <ChevronDown
+                    className={`w-5 h-5 ${expand ? "rotate-z-180" : ""} transition-all duration-300`}
+                  />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {expand ? "Hide" : "More information about this session"}
+              </TooltipContent>
+            </Tooltip>
+
+            <Button
+              variant={isCurrent ? "outline" : "destructive"}
+              size={"sm"}
+              className="text-xs"
+              disabled={isCurrent || isRevoking}
+              onClick={() => {
+                if (isCurrent) return;
+                setRevokeSessionDialog(true);
+              }}
+            >
+              {isCurrent ? "Current" : "Terminate"}
+            </Button>
+          </div>
+        </div>
+
+        <motion.div
+          initial={{ height: 0 }}
+          animate={expand ? { height: "auto" } : { height: 0 }}
+          className="overflow-hidden"
         >
-          {isCurrent ? "Current" : "Terminate"}
-        </Button>
+          <div className="p-4 space-y-6">
+            {/* Session Information */}
+            <SessionInformation session={session} />
 
-        <TwoChoiceDialog
-          title="Terminate Session"
-          description={`Are you sure you want to terminate this session?`}
-          positiveText={"Revoke"}
-          negativeText={"Cancel"}
-          open={revokeSessionDialog}
-          setOpen={setRevokeSessionDialog}
-          positiveProps={{
-            onClick: async () => {
-              if (isCurrent || isRevoking) return;
-              setIsRevoking(true);
-              await authClient.revokeSession(
-                {
-                  token: session.token,
-                },
-                {
-                  onSuccess: () => {
-                    queryClient.invalidateQueries({
-                      queryKey: sessionQuery.queryKey,
-                    });
+            {/* Browser Information */}
+            <BrowserInformation parsedUA={parsedUA} />
 
-                    triggerToast(
-                      "Session Terminated",
-                      {
-                        description:
-                          "Session terminated successfully, your account is logged out from that session.",
-                      },
-                      "success",
-                    );
-                  },
-                  onError: () => {
-                    triggerToast(
-                      "Something Went Wrong",
-                      {
-                        description:
-                          "Failed to terminate session, try again if the issue persist please contact developer.",
-                      },
-                      "error",
-                    );
-                  },
-                },
-              );
-              setIsRevoking(false);
-              setRevokeSessionDialog(false);
-            },
-            disabled: isRevoking || isCurrent,
-          }}
-        />
+            {/* Device Information */}
+            <DeviceInformation parsedUA={parsedUA} />
+
+            {/* IP Information */}
+            {ipLookupResponse?.result && (
+              <IpInformation ipLookUp={ipLookupResponse?.result} />
+            )}
+
+            {/* IP Geolocation */}
+            {ipLookupResponse?.result && (
+              <IpLocation ipLookUp={ipLookupResponse?.result} />
+            )}
+
+            {/* IP ASN Provider */}
+            {ipLookupResponse?.result && (
+              <ASNInformation ipLookUp={ipLookupResponse?.result} />
+            )}
+          </div>
+        </motion.div>
       </div>
-    </div>
+
+      {/* Modals */}
+      <TwoChoiceDialog
+        title="Terminate Session"
+        description={`Are you sure you want to terminate this session?`}
+        positiveText={"Revoke"}
+        negativeText={"Cancel"}
+        open={revokeSessionDialog}
+        setOpen={setRevokeSessionDialog}
+        positiveProps={{
+          onClick: handleRevoke,
+          disabled: isRevoking || isCurrent,
+        }}
+      />
+    </>
   );
 };
