@@ -16,7 +16,7 @@ export const SettingIndexItem = ({
     <Link
       href={href}
       className={cn(
-        `${isActive ? "opacity-100 text-primary font-semibold" : "opacity-55"} transition-all duration-300 hover:scale-95 active:90 text-sm`,
+        `${isActive ? "opacity-100 text-primary font-semibold" : "opacity-55"} transition-all duration-300 hover:scale-95 active:scale-90 text-sm`,
         className,
       )}
       onClick={(e) => {
