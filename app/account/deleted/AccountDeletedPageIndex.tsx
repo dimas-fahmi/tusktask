@@ -71,10 +71,13 @@ const AccountDeletedPageIndex = () => {
                   fetchOptions: {
                     onSuccess: () => {
                       router.push("/auth");
+                      setIsLoading(false)
                     },
+                    onError: () => {
+                      setIsLoading(false)
+                    }
                   },
                 });
-                setIsLoading(false);
               }}
               disabled={isLoading || isUpdatingProfile}
             >
@@ -95,7 +98,6 @@ const AccountDeletedPageIndex = () => {
           onClick: () => {
             if (isLoading || isUpdatingProfile) return;
 
-            setIsLoading(true);
             updateProfile(
               { deletedAt: null },
               {
@@ -123,7 +125,6 @@ const AccountDeletedPageIndex = () => {
                 },
               },
             );
-            setIsLoading(false);
           },
         }}
       />
