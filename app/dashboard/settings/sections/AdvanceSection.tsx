@@ -1,6 +1,6 @@
-import { Trash } from "lucide-react";
-import SettingsItem from "@/src/ui/components/ui/SettingsItem";
-import { Button } from "@/src/ui/shadcn/components/ui/button";
+"use client";
+
+import DeleteAccount from "../components/DeleteAccount";
 import SectionHeader from "../components/SectionHeader";
 
 const AdvanceSection = () => {
@@ -12,16 +12,7 @@ const AdvanceSection = () => {
       />
 
       <div className="space-y-4">
-        <SettingsItem
-          icon={Trash}
-          title="Delete Account"
-          description="Delete your TuskTask account"
-          destructive
-        >
-          <Button className="text-xs" variant={"destructive"} size={"sm"}>
-            Delete
-          </Button>
-        </SettingsItem>
+        <DeleteAccount />
       </div>
     </section>
   );

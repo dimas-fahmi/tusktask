@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
-import { prettifyError } from "zod";
+import z, { prettifyError } from "zod";
 import { db } from "@/src/db";
 import {
   type InsertUserType,
@@ -65,10 +65,18 @@ export async function AuthProfilePatch(request: NextRequest) {
       "bad_request",
       "Request contains forbidden field",
       400,
+      undefined,
+      "warn",
+      PATH,
+      "Contain forbidden field",
     );
   }
 
-  const validation = userUpdateSchema.safeParse(body);
+  const validation = userUpdateSchema
+    .extend({
+      deletedAt: z.coerce.date().optional().nullable(),
+    })
+    .safeParse(body);
 
   if (!validation.success) {
     return createResponse(
@@ -76,6 +84,9 @@ export async function AuthProfilePatch(request: NextRequest) {
       prettifyError(validation?.error),
       400,
       validation,
+      "error",
+      PATH,
+      "Failed validation",
     );
   }
 
@@ -90,6 +101,9 @@ export async function AuthProfilePatch(request: NextRequest) {
         prettifyError(usernameValidation?.error),
         400,
         usernameValidation,
+        "error",
+        PATH,
+        "Failed username validation",
       );
     }
 

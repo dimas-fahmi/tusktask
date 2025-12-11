@@ -27,11 +27,11 @@ export default function RootLayout({
             <ThemeProvider>
               <PomodoroProvider>{children}</PomodoroProvider>
             </ThemeProvider>
+            <ImageUploadModal />
+            <ColorThemePickerModal />
+            <Toaster richColors position="top-center" />
+            <ReactQueryDevtools initialIsOpen={false} />
           </NotificationProvider>
-          <ImageUploadModal />
-          <ColorThemePickerModal />
-          <Toaster richColors position="top-center" />
-          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>
     </html>
