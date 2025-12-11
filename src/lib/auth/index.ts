@@ -32,7 +32,7 @@ const facebookId = process.env.FACEBOOK_CLIENT_ID;
 const facebookSecret = process.env.FACEBOOK_CLIENT_SECRET;
 
 if (!facebookId || !facebookSecret) {
-  throw new Error("GOOGLE_ID_OR_SECRET_UNAVAILABLE");
+  throw new Error("FACEBOOK_ID_OR_SECRET_UNAVAILABLE");
 }
 
 export const auth = betterAuth({
