@@ -98,7 +98,7 @@ const SensitiveConfirmationDialog = ({
           />
         </div>
 
-        {/* Foote */}
+        {/* Footer */}
         <footer className="grid grid-cols-2 gap-2">
           <Button {...(positiveButtonProps || {})}>{positiveText}</Button>
           <DialogClose asChild>
