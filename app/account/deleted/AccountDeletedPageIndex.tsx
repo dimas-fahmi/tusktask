@@ -71,11 +71,11 @@ const AccountDeletedPageIndex = () => {
                   fetchOptions: {
                     onSuccess: () => {
                       router.push("/auth");
-                      setIsLoading(false)
+                      setIsLoading(false);
                     },
                     onError: () => {
-                      setIsLoading(false)
-                    }
+                      setIsLoading(false);
+                    },
                   },
                 });
               }}
@@ -118,7 +118,7 @@ const AccountDeletedPageIndex = () => {
                     "Failed to Abort Account Deletion",
                     {
                       description:
-                        "Something went wrong, please contact developer is this issue persist!",
+                        "Something went wrong, please contact developer if this issue persist!",
                     },
                     "error",
                   );
