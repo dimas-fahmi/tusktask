@@ -59,3 +59,14 @@ export interface StandardResponseType<TResult> {
   status: HttpStatusCode;
   result?: TResult;
 }
+
+export type ActiveSession = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  expiresAt: Date;
+  token: string;
+  ipAddress?: string | null | undefined | undefined;
+  userAgent?: string | null | undefined | undefined;
+};

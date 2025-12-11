@@ -1,15 +1,18 @@
 import { QueryClient, type UseQueryOptions } from "@tanstack/react-query";
-import type { Account } from "better-auth";
+import type { Account, Prettify } from "better-auth";
 import type {
   V1ImageGetRequest,
   V1ImageGetResponse,
 } from "@/app/api/v1/image/get";
+import type { V1IpLookupResponse } from "@/app/api/v1/ip/lookup/get";
 import type { UserType } from "@/src/db/schema/auth-schema";
-import type { StandardResponseType } from "../app/app";
+import type { ActiveSession, StandardResponseType } from "../app/app";
 import { StandardError } from "../app/errors";
 import { getImage } from "./fetchers/getImage";
+import { getIpInformation } from "./fetchers/getIpInformation";
 import { getSelfAccounts } from "./fetchers/getSelfAccounts";
 import { getSelfProfile } from "./fetchers/getSelfProfile";
+import { getSelfSessions } from "./fetchers/getSelfSessions";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -59,6 +62,17 @@ export const queryIndex = {
         },
       };
     },
+    sessions: (): QueryObject<Prettify<ActiveSession[]>> => {
+      const queryKey = ["self", "sessions"];
+
+      return {
+        queryKey,
+        queryOptions: {
+          queryKey,
+          queryFn: getSelfSessions,
+        },
+      };
+    },
   },
   image: {
     generic: (req: V1ImageGetRequest): QueryObject<V1ImageGetResponse> => {
@@ -84,6 +98,22 @@ export const queryIndex = {
           },
         };
       },
+    },
+  },
+  ipLocate: {
+    lookup: (ip: string): QueryObject<V1IpLookupResponse> => {
+      const queryKey = ["system", "ip", "lookup", ip];
+
+      return {
+        queryKey,
+        queryOptions: {
+          queryKey,
+          queryFn: () => getIpInformation(ip),
+          refetchOnWindowFocus: false,
+          gcTime: 1000 * 60 * 60 * 24,
+          staleTime: 1000 * 60 * 60 * 24,
+        },
+      };
     },
   },
 } as const;
