@@ -43,6 +43,13 @@
       "when": 1765288760895,
       "tag": "0005_reflective_metal_master",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1765458284636,
+      "tag": "0006_previous_silk_fever",
+      "breakpoints": true
     }
   ]
 }

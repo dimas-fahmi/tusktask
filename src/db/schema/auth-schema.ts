@@ -5,32 +5,42 @@ import {
   createSelectSchema,
   createUpdateSchema,
 } from "drizzle-zod";
-import { appAuthSchema, onboardingStatusEnum, themeEnum } from "./configs";
+import {
+  appAuthSchema,
+  defaultTimestampConfig,
+  onboardingStatusEnum,
+  themeEnum,
+} from "./configs";
 import { image } from "./image";
 import { notificationReceiver } from "./notification";
 import { project, projectMembership } from "./project";
 import { task } from "./task";
 
-export const user = appAuthSchema.table("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  firstName: text("first_name"),
-  lastName: text("last_name"),
-  username: text("username").unique(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  image: text("image"),
-  onboardingStatus: onboardingStatusEnum("onboarding_status")
-    .notNull()
-    .default("name"),
-  theme: themeEnum("theme").notNull().default("default"),
-  isSilent: boolean("is_silent").notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-});
+export const user = appAuthSchema.table(
+  "user",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    firstName: text("first_name"),
+    lastName: text("last_name"),
+    username: text("username").unique(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    image: text("image"),
+    onboardingStatus: onboardingStatusEnum("onboarding_status")
+      .notNull()
+      .default("name"),
+    theme: themeEnum("theme").notNull().default("default"),
+    isSilent: boolean("is_silent").notNull().default(false),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    deletedAt: timestamp("deleted_at", defaultTimestampConfig),
+  },
+  (t) => [index("appAuth_user_deletedAt_idx").on(t.deletedAt)],
+);
 
 export type UserType = typeof user.$inferSelect;
 export type InsertUserType = typeof user.$inferInsert;
