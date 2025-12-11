@@ -31,3 +31,34 @@ export function truncateString(
   // Add ellipsis if required
   return addEllipsis ? `${truncated}...` : truncated;
 }
+
+/**
+ * Truncates a string based on a character limit and optionally adds an ellipsis.
+ *
+ * @param {string} input - The string to truncate.
+ * @param {number} charLimit - The maximum number of characters to keep.
+ * @param {boolean} addEllipsis - Whether or not to append ellipsis ('...') to the truncated string.
+ * @returns {string} - The truncated string, optionally followed by ellipsis.
+ *
+ * @example
+ * const result = truncateByChar("This is a long sentence.", 10, true);
+ * console.log(result); // "This is a ..."
+ */
+export function truncateStringByChar(
+  input: string,
+  charLimit: number,
+  addEllipsis: boolean,
+): string {
+  if (!input) return "";
+
+  // If the input length is within the limit, return it as is
+  if (input.length <= charLimit) {
+    return input;
+  }
+
+  // Slice the string to the specific character limit
+  const truncated = input.slice(0, charLimit);
+
+  // Add ellipsis if required
+  return addEllipsis ? `${truncated}...` : truncated;
+}

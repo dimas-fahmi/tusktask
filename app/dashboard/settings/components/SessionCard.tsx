@@ -1,7 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, CircleQuestionMark } from "lucide-react";
+import { ChevronDown, CircleQuestionMark, Trash } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { useMediaQuery } from "react-responsive";
 import { UAParser } from "ua-parser-js";
 import type { ActiveSession } from "@/src/lib/app/app";
 import { authClient } from "@/src/lib/auth/client";
@@ -9,6 +10,7 @@ import { DEVICE_TYPE_ICON } from "@/src/lib/lucideIcons/device";
 import { OS_NAME_ICON } from "@/src/lib/lucideIcons/os";
 import { queryIndex } from "@/src/lib/queries";
 import { useNotificationStore } from "@/src/lib/stores/notification";
+import { truncateStringByChar } from "@/src/lib/utils/truncateString";
 import TwoChoiceDialog from "@/src/ui/components/ui/TwoChoiceDialog";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
@@ -106,6 +108,10 @@ export const SessionCard = ({
     setRevokeSessionDialog(false);
   };
 
+  const isDesktop = useMediaQuery({
+    query: "(min-width:768px)",
+  });
+
   return (
     <>
       {/* Card */}
@@ -121,16 +127,15 @@ export const SessionCard = ({
             {/* Information */}
             <div>
               <h1 className="text-sm md:font-semibold">
-                {isCompleteBlind ? (
-                  "No Information About This IP Address"
-                ) : (
-                  <>
-                    {city}, {subdivision}, {country}
-                  </>
-                )}
+                {isCompleteBlind
+                  ? "No Information"
+                  : truncateStringByChar(
+                      `${city}, ${subdivision}, ${country}`,
+                      isDesktop ? 48 : 20,
+                      true,
+                    )}
               </h1>
               <p className="text-xs font-light">
-                {session?.ipAddress ?? "[no-ip-record]"},{" "}
                 {browser?.name ?? "[no-browser-data]"},{" "}
                 {os?.name ?? "[no-os-detail]"}
               </p>
@@ -142,7 +147,7 @@ export const SessionCard = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  className="text-xs"
+                  className="text-xs rounded-full w-8 h-8"
                   size={"sm"}
                   variant={"outline"}
                   onClick={() => {
@@ -159,18 +164,29 @@ export const SessionCard = ({
               </TooltipContent>
             </Tooltip>
 
-            <Button
-              variant={isCurrent ? "outline" : "destructive"}
-              size={"sm"}
-              className="text-xs"
-              disabled={isCurrent || isRevoking}
-              onClick={() => {
-                if (isCurrent) return;
-                setRevokeSessionDialog(true);
-              }}
-            >
-              {isCurrent ? "Current" : "Terminate"}
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    variant={isCurrent ? "outline" : "destructive"}
+                    size={"sm"}
+                    className="text-xs w-8 h-8 md:min-w-24 md:max-w-24"
+                    disabled={isCurrent || isRevoking}
+                    onClick={() => {
+                      if (isCurrent) return;
+                      setRevokeSessionDialog(true);
+                    }}
+                  >
+                    {isDesktop ? "Terminate" : <Trash />}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm text-center px-4">
+                {isCurrent
+                  ? "This is your current session"
+                  : "Terminate this session"}
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
@@ -218,6 +234,7 @@ export const SessionCard = ({
         positiveProps={{
           onClick: handleRevoke,
           disabled: isRevoking || isCurrent,
+          className: "bg-destructive text-destructive-foreground",
         }}
       />
     </>
