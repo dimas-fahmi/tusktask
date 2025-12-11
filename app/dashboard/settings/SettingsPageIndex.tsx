@@ -42,6 +42,8 @@ const SettingsPageIndex = () => {
     if (scrollTo) {
       const el = document.getElementById(scrollTo) as HTMLElement;
 
+      if (!el) return;
+
       window.scrollTo({
         top: el.offsetTop - 50,
         behavior: "smooth",
