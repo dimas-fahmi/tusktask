@@ -25,6 +25,10 @@ const DashboardLayout = ({
     useGetSelfProfile();
   const profile = profileData?.result;
 
+  if (!isLoadingProfile && profile?.deletedAt) {
+    redirect("/account/deleted");
+  }
+
   if (!isLoadingProfile && profile?.onboardingStatus !== "completed") {
     redirect("/onboarding");
   }

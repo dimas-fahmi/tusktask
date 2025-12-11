@@ -6,7 +6,7 @@ import {
 } from "next/server";
 import type { CustomMiddleware } from "./chain";
 
-const protectedRoutes = ["/dashboard", "/onboarding"];
+const protectedRoutes = ["/dashboard", "/onboarding", "/account/deleted"];
 const noSessionRoutes = ["/auth"];
 
 export function withSessionMiddleware(
