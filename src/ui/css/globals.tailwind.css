@@ -124,7 +124,6 @@
 .color-theme-popBella {
   --background: oklch(98% 0.015 330);
   --foreground: oklch(15% 0.02 300);
-  --radius: 0.65rem;
   --card: oklch(99% 0.008 330);
   --card-foreground: oklch(15% 0.02 300);
   --popover: oklch(99% 0.008 330);
@@ -336,7 +335,6 @@
 .color-theme-beigeSerenity {
   --background: oklch(98% 0.01 60);
   --foreground: oklch(15% 0.03 40);
-  --radius: 0.65rem;
   --card: oklch(99% 0.005 60);
   --card-foreground: oklch(15% 0.03 40);
   --popover: oklch(99% 0.005 60);
