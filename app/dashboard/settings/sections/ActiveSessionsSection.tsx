@@ -17,7 +17,7 @@ const ActiveSessionsSection = () => {
       <div className="space-y-4">
         {activeSessions?.map((session) => (
           <SessionCard
-            key={crypto.randomUUID()}
+            key={session.id}
             isCurrent={currentSession?.session?.id === session?.id}
             session={session}
           />
