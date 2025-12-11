@@ -1,3 +1,4 @@
+import { useGetSelfAccounts } from "@/src/lib/queries/hooks/useGetSelfAccounts";
 import {
   Apple,
   Discord,
@@ -5,56 +6,47 @@ import {
   Github,
   Google,
 } from "@/src/ui/components/icons/brands";
-import { Button } from "@/src/ui/shadcn/components/ui/button";
+import { AccountCard } from "../components/AccountCard";
 import SectionHeader from "../components/SectionHeader";
 
-const AccountCard = ({
-  name,
-  icon: Icon,
-}: {
-  name: string;
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
-}) => {
-  return (
-    <div className="flex items-center justify-between">
-      {/* Metadata */}
-      <div className="flex items-center gap-4">
-        {/* Icon */}
-        <div>
-          <Icon className="w-6 h-6 opacity-70 fill-current" />
-        </div>
-
-        {/* Name & Status */}
-        <div>
-          <h1 className="capitalize">{name}</h1>
-          <p className="text-xs font-light">Connected 2 days ago</p>
-        </div>
-      </div>
-
-      {/* Action */}
-      <div>
-        <Button size={"sm"} className="text-xs">
-          Connected
-        </Button>
-      </div>
-    </div>
-  );
-};
+const PROVIDERS = [
+  { name: "apple", icon: Apple },
+  { name: "discord", icon: Discord },
+  { name: "facebook", icon: Facebook },
+  { name: "github", icon: Github },
+  { name: "google", icon: Google },
+];
 
 const AccountsSection = () => {
+  const { data: accounts } = useGetSelfAccounts();
+
   return (
     <section id="accounts-section" className="space-y-6">
       <SectionHeader
         title="Connected Accounts"
-        description="Managed your social accounts"
+        description="Manage your social accounts for your login method"
       />
 
       <div className="space-y-4">
-        <AccountCard icon={Apple} name="apple" />
-        <AccountCard icon={Discord} name="discord" />
-        <AccountCard icon={Facebook} name="facebook" />
-        <AccountCard icon={Github} name="github" />
-        <AccountCard icon={Google} name="google" />
+        {PROVIDERS.map((provider, index) => {
+          const account = accounts?.find((t) => t.providerId === provider.name);
+          const isLastAccount = (accounts?.length || 0) <= 1 && !!account;
+          const isNotSupported =
+            provider.name === "facebook" || provider.name === "apple";
+
+          return (
+            <AccountCard
+              key={`${provider.name}-${index}`}
+              icon={provider.icon}
+              name={provider.name}
+              isConnected={!!account}
+              account={account}
+              disabled={isLastAccount || isNotSupported}
+              isNotSupported={isNotSupported}
+              isLastAccount={isLastAccount}
+            />
+          );
+        })}
       </div>
     </section>
   );

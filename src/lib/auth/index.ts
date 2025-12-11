@@ -27,6 +27,14 @@ if (!googleId || !googleSecret) {
   throw new Error("GOOGLE_ID_OR_SECRET_UNAVAILABLE");
 }
 
+// FACEBOOK
+const facebookId = process.env.FACEBOOK_CLIENT_ID;
+const facebookSecret = process.env.FACEBOOK_CLIENT_SECRET;
+
+if (!facebookId || !facebookSecret) {
+  throw new Error("FACEBOOK_ID_OR_SECRET_UNAVAILABLE");
+}
+
 export const auth = betterAuth({
   // DATABASE CONFIGURATION
   database: drizzleAdapter(db, {
@@ -49,6 +57,10 @@ export const auth = betterAuth({
     google: {
       clientId: googleId,
       clientSecret: googleSecret,
+    },
+    facebook: {
+      clientId: facebookId,
+      clientSecret: facebookSecret,
     },
   },
 });

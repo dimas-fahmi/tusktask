@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Settings | TuskTask",
 };
 
-const SettingsPage = () => {
+const SettingsPage = async () => {
   return <SettingsPageIndex />;
 };
 
