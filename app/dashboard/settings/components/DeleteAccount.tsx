@@ -58,6 +58,7 @@ const DeleteAccount = () => {
               { deletedAt: new Date() },
               {
                 onSuccess: () => {
+                  setDialogOpen(false);
                   triggerToast(
                     "Account Deletion Scheduled",
                     {
@@ -68,6 +69,8 @@ const DeleteAccount = () => {
                   );
                 },
                 onError: () => {
+                  setDialogOpen(false);
+
                   triggerToast(
                     "Failed to Schedule Deletion",
                     {
@@ -79,8 +82,6 @@ const DeleteAccount = () => {
                 },
               },
             );
-
-            setDialogOpen(false);
           },
         }}
       />
