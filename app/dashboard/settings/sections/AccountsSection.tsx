@@ -28,7 +28,7 @@ const AccountsSection = () => {
       />
 
       <div className="space-y-4">
-        {PROVIDERS.map((provider) => {
+        {PROVIDERS.map((provider, index) => {
           const account = accounts?.find((t) => t.providerId === provider.name);
           const isLastAccount = (accounts?.length || 0) <= 1 && !!account;
           const isNotSupported =
@@ -36,7 +36,7 @@ const AccountsSection = () => {
 
           return (
             <AccountCard
-              key={crypto.randomUUID()}
+              key={`${provider.name}-${index}`}
               icon={provider.icon}
               name={provider.name}
               isConnected={!!account}
