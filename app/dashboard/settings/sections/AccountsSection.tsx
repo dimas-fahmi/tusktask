@@ -24,7 +24,7 @@ const AccountsSection = () => {
     <section id="accounts-section" className="space-y-6">
       <SectionHeader
         title="Connected Accounts"
-        description="Managed your social accounts for your login method"
+        description="Manage your social accounts for your login method"
       />
 
       <div className="space-y-4">
