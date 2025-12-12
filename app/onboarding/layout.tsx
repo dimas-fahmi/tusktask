@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/src/lib/auth/client";
+import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
+import Loader from "@/src/ui/components/ui/Loader";
 import TwoChoiceDialog from "@/src/ui/components/ui/TwoChoiceDialog";
 
 const OnboardingLayout = ({
@@ -12,11 +14,14 @@ const OnboardingLayout = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
+  const { data: profile } = useGetSelfProfile();
   const router = useRouter();
   const [exitModalOpen, setExitModalOpen] = useState(false);
   const [signOutLoading, setSignOutLoading] = useState(false);
 
-  return (
+  return !profile ? (
+    <Loader />
+  ) : (
     <>
       <div className="min-h-dvh max-h-dvh overflow-scroll scrollbar-none flex-center max-w-md mx-auto p-4">
         {/* Wrapper */}

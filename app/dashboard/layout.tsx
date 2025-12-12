@@ -35,7 +35,7 @@ const DashboardLayout = ({
 
   const { notificationStatus, triggerToast } = useNotificationStore();
 
-  return isLoadingProfile ? (
+  return !profile || isLoadingProfile ? (
     <Loader />
   ) : (
     <SidebarProvider>
