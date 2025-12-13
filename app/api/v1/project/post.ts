@@ -12,6 +12,7 @@ import {
   projectMembership,
 } from "@/src/db/schema/project";
 import type { StandardResponseType } from "@/src/lib/app/app";
+import { RATE_LIMITED_RESPONSE } from "@/src/lib/app/configs";
 import { StandardError } from "@/src/lib/app/errors";
 import { auth } from "@/src/lib/auth";
 import { rateLimiter } from "@/src/lib/redis/rateLimiter";
@@ -33,16 +34,10 @@ export async function v1ProjectPost(request: NextRequest) {
   // Rate Limit
   const ip = getClientIp(request);
 
-  const rateLimitedResponse = createResponse(
-    "too_many_requests",
-    "You are being rate limited",
-    429,
-  );
-
   const { success } = await strictLimiterPolicy.limit(ip);
 
   if (!success) {
-    return rateLimitedResponse;
+    return RATE_LIMITED_RESPONSE;
   }
 
   // Validate Session

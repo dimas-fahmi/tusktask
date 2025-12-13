@@ -65,11 +65,6 @@ export const notificationTypeEnum = pgEnum(
   "notification_type_enum",
   notificationType,
 );
-export const projectTypeEnum = pgEnum("project_type_enum", [
-  "primary",
-  "regular",
-  "co-op",
-]);
 export const taskStatusEnum = pgEnum("task_status_enum", [
   "pending",
   "on_process",

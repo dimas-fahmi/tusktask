@@ -5,6 +5,7 @@ import { prettifyError } from "zod";
 import { db } from "@/src/db";
 import { user } from "@/src/db/schema/auth-schema";
 import type { StandardResponseType } from "@/src/lib/app/app";
+import { RATE_LIMITED_RESPONSE } from "@/src/lib/app/configs";
 import { auth } from "@/src/lib/auth";
 import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
@@ -31,17 +32,11 @@ export async function AuthAvailabilityPost(request: NextRequest) {
   // Get IP
   const ip = request.headers.get("x-real-ip") ?? "127.0.0.1";
 
-  const rateLimitedResponse = createResponse(
-    "too_many_requests",
-    "You are being rate limited",
-    429,
-  );
-
   const { success: strictPolicyPassed } =
     await strictPolicyRateLimiter.limit(ip);
 
   if (!strictPolicyPassed) {
-    return rateLimitedResponse;
+    return RATE_LIMITED_RESPONSE;
   }
 
   // Validate session
