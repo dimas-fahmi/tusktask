@@ -8,6 +8,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { user } from "./auth-schema";
 import {
   defaultTimestampConfig,
@@ -64,6 +65,11 @@ export const project = pgTable(
   ],
 );
 
+export type ProjectType = typeof project.$inferSelect;
+export type InsertProjectType = typeof project.$inferInsert;
+export const projectSchema = createSelectSchema(project);
+export const insertProjectSchema = createInsertSchema(project);
+
 export const projectMembership = pgTable(
   "project_membership",
   {
@@ -87,6 +93,12 @@ export const projectMembership = pgTable(
     }),
   ],
 );
+
+export type ProjectMembershipType = typeof projectMembership.$inferSelect;
+export type InsertProjectMembershipType = typeof projectMembership.$inferInsert;
+export const projectMembershipSchema = createSelectSchema(projectMembership);
+export const insertProjectMembershipSchema =
+  createInsertSchema(projectMembership);
 
 export const projectRelations = relations(project, ({ one, many }) => ({
   createdBy: one(user, {
