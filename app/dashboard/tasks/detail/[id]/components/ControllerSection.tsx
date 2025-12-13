@@ -5,14 +5,24 @@ const ControllerSection = () => {
   return (
     <section id="controller-section" className="flex justify-between">
       <div>
-        <Button variant={"outline"} size={"sm"} className="text-xs">
-          <Circle /> <span>Mark complete</span>
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          className="text-xs"
+          aria-label="Toggle completion"
+        >
+          <Circle className="w-4 h-4" /> <span>Mark complete</span>
         </Button>
       </div>
 
       <div>
-        <Button variant={"outline"} size={"sm"} className="text-xs">
-          <Menu />
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          className="text-xs"
+          aria-label="Task actions"
+        >
+          <Menu className="w-4 h-4" />
         </Button>
       </div>
     </section>
