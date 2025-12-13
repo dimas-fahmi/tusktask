@@ -1,7 +1,12 @@
-"use client";
+import type { Metadata } from "next";
+import DashboardPageIndex from "./DashboardPageIndex";
+
+export const metadata: Metadata = {
+  title: "Dashboard | TuskTask",
+};
 
 const DashboardPage = () => {
-  return <div>DashboardPage</div>;
+  return <DashboardPageIndex />;
 };
 
 export default DashboardPage;

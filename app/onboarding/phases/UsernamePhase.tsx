@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { getUsernameAvailability } from "@/src/lib/queries/fetchers/getUsernameAvailability";
@@ -32,19 +32,22 @@ const UsernamePhase = () => {
     },
   });
 
-  const [usernameKey, setUsernameKey] = useState("");
+  const usernameKey = useRef("");
+  const [isTyping, setIsTyping] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState(false);
   const username = watch("username");
 
   useEffect(() => {
+    setIsTyping(true);
     const debouncer = setTimeout(() => {
-      if (isValid && username !== usernameKey) {
-        setUsernameKey(username);
+      if (isValid && username !== usernameKey.current) {
+        usernameKey.current = username;
       }
+      setIsTyping(false);
     }, 700);
 
     return () => clearTimeout(debouncer);
-  }, [username, usernameKey, isValid]);
+  }, [username, isValid]);
 
   const { data: profileResult, isFetching: isLoadingProfile } =
     useGetSelfProfile();
@@ -58,9 +61,10 @@ const UsernamePhase = () => {
 
   const { data: queryAvailabilityResponse, isLoading: isCheckingUsername } =
     useQuery({
-      queryKey: ["username", usernameKey],
-      queryFn: async () => getUsernameAvailability({ username: usernameKey }),
-      enabled: usernameKey?.length > 3 && isValid,
+      queryKey: ["username", usernameKey.current],
+      queryFn: async () =>
+        getUsernameAvailability({ username: usernameKey.current }),
+      enabled: usernameKey.current?.length > 3 && isValid,
     });
   const queryCheckResult = queryAvailabilityResponse?.result;
 
@@ -79,11 +83,49 @@ const UsernamePhase = () => {
   const { mutate: updateProfile, isPending: isUpdatingProfile } =
     useUpdateUserProfile();
 
+  const getStatus = () => {
+    if (isTyping) {
+      return "";
+    }
+
+    if (isValid && isCheckingUsername) {
+      return (
+        <span className="text-xs block text-warning">Checking Username</span>
+      );
+    }
+
+    if (
+      isValid &&
+      !isCheckingUsername &&
+      usernameAvailable &&
+      usernameKey.current.length > 3
+    ) {
+      return (
+        <span className="text-xs block text-success">Username Available</span>
+      );
+    }
+
+    if (
+      isValid &&
+      !isCheckingUsername &&
+      !usernameAvailable &&
+      usernameKey.current.length > 3
+    ) {
+      return (
+        <span className="text-xs block text-destructive">
+          Username is taken
+        </span>
+      );
+    }
+  };
+
   return (
     <div>
       <form
         className="space-y-4"
         onSubmit={handleSubmit(({ username }) => {
+          if (isTyping) return;
+
           if (queryCheckResult?.isTakenByTheSameAccount) {
             setOnboardingPhase("image");
             return;
@@ -128,25 +170,7 @@ const UsernamePhase = () => {
                     variant: fieldState?.error ? "negative" : "default",
                   }}
                   inputProps={{ placeholder: "jajang-nurdjaman", ...field }}
-                  labelRight={
-                    isValid && (
-                      <div>
-                        <span className="text-xs block text-warning">
-                          {isCheckingUsername && "Checking Username"}
-                        </span>
-                        {!isCheckingUsername && (
-                          <>
-                            <span className="text-xs block text-success">
-                              {usernameAvailable && "Username Available"}
-                            </span>
-                            <span className="text-xs block text-destructive">
-                              {!usernameAvailable && "Username is taken"}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    )
-                  }
+                  labelRight={getStatus()}
                 />
               )}
             />
@@ -169,7 +193,8 @@ const UsernamePhase = () => {
               isLoadingProfile ||
               isCheckingUsername ||
               !usernameAvailable ||
-              isUpdatingProfile
+              isUpdatingProfile ||
+              isTyping
             }
           >
             {isUpdatingProfile ? "Saving" : "Continue"}

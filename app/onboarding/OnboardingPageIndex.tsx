@@ -65,16 +65,10 @@ const onboardingPhaseStage: Record<OnboardingPhaseType, number> = {
 };
 
 const OnboardingPageIndex = () => {
-  const {
-    data: profileResult,
-    isLoading: isLoadingProfile,
-    isRefetching: isRefetchingProfile,
-    isFetched: isFetchedProfile,
-  } = useGetSelfProfile();
+  const { data: profileResult } = useGetSelfProfile();
 
   const profile = profileResult?.result;
   const activePhase = profile?.onboardingStatus;
-
   const { onboardingPhase, setOnboardingPhase } = useOnboardingStore();
 
   const router = useRouter();
@@ -87,9 +81,7 @@ const OnboardingPageIndex = () => {
     setOnboardingPhase(activePhase ?? "loading");
   }, [activePhase, setOnboardingPhase, router]);
 
-  return isLoadingProfile && !isFetchedProfile && !isRefetchingProfile ? (
-    <Loader title="Wait a moment" description="Validating your data" />
-  ) : onboardingPhase !== "loading" ? (
+  return onboardingPhase !== "loading" ? (
     <div className="flex flex-col gap-6 flex-1">
       {/* Progress Bar */}
       <div className="flex gap-2">
@@ -119,7 +111,7 @@ const OnboardingPageIndex = () => {
       <div>{onboardingPhaseRender[onboardingPhase]}</div>
     </div>
   ) : (
-    <span></span>
+    <Loader />
   );
 };
 

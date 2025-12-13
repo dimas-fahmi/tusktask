@@ -6,7 +6,7 @@ import { Button } from "@/src/ui/shadcn/components/ui/button";
 import { useSidebar } from "@/src/ui/shadcn/components/ui/sidebar";
 
 const Controller = () => {
-  const { setOpen, setOpenMobile } = useSidebar();
+  const { setOpen, setOpenMobile, isMobile } = useSidebar();
 
   return (
     <div className="grid grid-cols-1 gap-3">
@@ -16,7 +16,14 @@ const Controller = () => {
 
       <div className="grid grid-cols-2 gap-2">
         <Button variant={"outline"} asChild>
-          <Link href={"/dashboard/settings"}>
+          <Link
+            href={"/dashboard/settings"}
+            onClick={() => {
+              if (isMobile) {
+                setOpenMobile(false);
+              }
+            }}
+          >
             <Settings /> Settings
           </Link>
         </Button>

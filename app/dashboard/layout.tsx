@@ -29,13 +29,17 @@ const DashboardLayout = ({
     redirect("/account/deleted");
   }
 
-  if (!isLoadingProfile && profile?.onboardingStatus !== "completed") {
+  if (
+    !isLoadingProfile &&
+    typeof profile?.onboardingStatus === "string" &&
+    profile?.onboardingStatus !== "completed"
+  ) {
     redirect("/onboarding");
   }
 
   const { notificationStatus, triggerToast } = useNotificationStore();
 
-  return isLoadingProfile ? (
+  return !profile || isLoadingProfile ? (
     <Loader />
   ) : (
     <SidebarProvider>
