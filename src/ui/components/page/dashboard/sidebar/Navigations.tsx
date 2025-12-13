@@ -22,21 +22,25 @@ export type NavigationData = {
 export const navigationDatas: NavigationData[] = [
   { title: "Dashboard", icon: LayoutDashboardIcon, href: "/dashboard" },
   { title: "Notifications", icon: Bell, href: "/dashboard/notifications" },
-  { title: "Today", icon: Calendar1, href: "/dashboard/tasks/today" },
+  {
+    title: "Today",
+    icon: Calendar1,
+    href: "/dashboard/tasks?collection=today",
+  },
   {
     title: "Tomorrow",
     icon: CalendarArrowUp,
-    href: "/dashboard/tasks/tomorrow",
+    href: "/dashboard/tasks?collection=tomorrow",
   },
   {
     title: "Upcoming",
     icon: CalendarClock,
-    href: "/dashboard/tasks/upcoming",
+    href: "/dashboard/tasks?collection=upcoming",
   },
   {
     title: "Overdue",
     icon: CalendarX,
-    href: "/dashboard/tasks/overdue",
+    href: "/dashboard/tasks?collection=overdue",
   },
   {
     title: "Projects",
