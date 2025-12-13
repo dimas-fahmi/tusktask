@@ -23,7 +23,7 @@ const TasksPageIndex = () => {
 
       {/* Tasks */}
       <div>
-        <span className="text-sm font-light opacity-70">No tasks</span>
+        <span className="text-xs font-light opacity-70">No tasks</span>
       </div>
     </div>
   );
