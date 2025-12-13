@@ -5,12 +5,7 @@ const ControllerSection = () => {
   return (
     <section id="controller-section" className="flex justify-between">
       <div>
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          className="text-xs"
-          aria-label="Toggle completion"
-        >
+        <Button variant={"outline"} size={"sm"} className="text-xs">
           <Circle className="w-4 h-4" /> <span>Mark complete</span>
         </Button>
       </div>
