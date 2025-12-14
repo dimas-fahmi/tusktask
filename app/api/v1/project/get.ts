@@ -126,12 +126,17 @@ export async function v1ProjectGet(request: NextRequest) {
       .from(project)
       .where(and(...where));
 
-    return createResponse<V1ProjectGetResult>("record_fetched", "Sucess", 200, {
-      page: parameters?.page ?? 1,
-      totalPages: getTotalPages(countResult.count),
-      totalResults: countResult?.count,
-      result,
-    });
+    return createResponse<V1ProjectGetResult>(
+      "record_fetched",
+      "Success",
+      200,
+      {
+        page: parameters?.page ?? 1,
+        totalPages: getTotalPages(countResult.count),
+        totalResults: countResult?.count,
+        result,
+      },
+    );
   } catch (error) {
     return createResponse(
       "unknown_error",
