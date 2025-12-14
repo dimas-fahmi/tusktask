@@ -24,6 +24,7 @@ export const notificationType = [
   "system_negative",
 ] as const;
 
+// Onboarding Phases
 export const onboardingPhases = [
   "name",
   "username",
@@ -33,6 +34,17 @@ export const onboardingPhases = [
 ] as const;
 
 export type OnboardingPhaseType = (typeof onboardingPhases)[number];
+
+// Task Status Enums
+export const TASK_STATUSES = [
+  "pending",
+  "on_process",
+  "aborted",
+  "delayed",
+  "continued",
+] as const;
+
+export type TaskStatusType = (typeof TASK_STATUSES)[number];
 
 // Timestamp config
 export const defaultTimestampConfig: PgTimestampConfig = {
@@ -66,13 +78,7 @@ export const notificationTypeEnum = pgEnum(
   "notification_type_enum",
   notificationType,
 );
-export const taskStatusEnum = pgEnum("task_status_enum", [
-  "pending",
-  "on_process",
-  "aborted",
-  "delayed",
-  "continued",
-]);
+export const taskStatusEnum = pgEnum("task_status_enum", TASK_STATUSES);
 export const projectMembershipTypeEnum = pgEnum(
   "project_membership_type_enum",
   PROJECT_MEMBERSHIP_ROLES,
