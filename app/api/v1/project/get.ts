@@ -9,10 +9,6 @@ import type {
   StandardResponseType,
   StandardV1GetResponse,
 } from "@/src/lib/app/app";
-import {
-  INVALID_SESSION_RESPONSE,
-  RATE_LIMITED_RESPONSE,
-} from "@/src/lib/app/configs";
 import { auth } from "@/src/lib/auth";
 import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
@@ -47,7 +43,11 @@ export async function v1ProjectGet(request: NextRequest) {
   const { success } = await strictPolicyLimiter.limit(ip);
 
   if (!success) {
-    return RATE_LIMITED_RESPONSE;
+    return createResponse(
+      "too_many_requests",
+      "You are being rate limited",
+      429,
+    );
   }
 
   // Session Validation
@@ -57,7 +57,11 @@ export async function v1ProjectGet(request: NextRequest) {
   const user = session?.user;
 
   if (!user) {
-    return INVALID_SESSION_RESPONSE;
+    return createResponse(
+      "invalid_session",
+      "Invalid session, please log back in",
+      400,
+    );
   }
 
   // Extract query parameters & Validate

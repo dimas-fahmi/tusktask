@@ -8,7 +8,6 @@ import type {
   StandardResponseType,
   StandardV1GetResponse,
 } from "@/src/lib/app/app";
-import { RATE_LIMITED_RESPONSE } from "@/src/lib/app/configs";
 import { auth } from "@/src/lib/auth";
 import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
@@ -44,7 +43,11 @@ export async function v1ImageGet(request: NextRequest) {
     await strictPolicyRateLimiter.limit(ip);
 
   if (!strictPolicyPassed) {
-    return RATE_LIMITED_RESPONSE;
+    return createResponse(
+      "too_many_requests",
+      "You are being rate limited",
+      429,
+    );
   }
 
   // Validate Session
