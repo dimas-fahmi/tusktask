@@ -8,12 +8,9 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { user } from "./auth-schema";
-import {
-  defaultTimestampConfig,
-  projectMembershipTypeEnum,
-  projectTypeEnum,
-} from "./configs";
+import { defaultTimestampConfig, projectMembershipTypeEnum } from "./configs";
 import { task } from "./task";
 
 export const project = pgTable(
@@ -24,7 +21,6 @@ export const project = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name").notNull(),
     description: text("description"),
-    type: projectTypeEnum("type"),
 
     // FILTER
     isPinned: boolean("is_pinned").default(false).notNull(),
@@ -53,7 +49,6 @@ export const project = pgTable(
     ),
 
     // Indexes
-    index("public_project_type_idx").on(t.type),
     index("public_project_isPinned_idx").on(t.isPinned),
     index("public_project_isArchived_idx").on(t.isArchived),
     index("public_project_createdById_idx").on(t.createdById),
@@ -64,13 +59,22 @@ export const project = pgTable(
   ],
 );
 
+export type ProjectType = typeof project.$inferSelect;
+export type InsertProjectType = typeof project.$inferInsert;
+export const projectSchema = createSelectSchema(project);
+export const insertProjectSchema = createInsertSchema(project);
+
 export const projectMembership = pgTable(
   "project_membership",
   {
-    projectId: uuid("project_id").references(() => project.id, {
-      onDelete: "cascade",
-    }),
-    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    projectId: uuid("project_id")
+      .references(() => project.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    userId: text("user_id")
+      .references(() => user.id, { onDelete: "cascade" })
+      .notNull(),
     type: projectMembershipTypeEnum("type").notNull(),
     createdAt: timestamp("created_at", defaultTimestampConfig)
       .notNull()
@@ -87,6 +91,12 @@ export const projectMembership = pgTable(
     }),
   ],
 );
+
+export type ProjectMembershipType = typeof projectMembership.$inferSelect;
+export type InsertProjectMembershipType = typeof projectMembership.$inferInsert;
+export const projectMembershipSchema = createSelectSchema(projectMembership);
+export const insertProjectMembershipSchema =
+  createInsertSchema(projectMembership);
 
 export const projectRelations = relations(project, ({ one, many }) => ({
   createdBy: one(user, {

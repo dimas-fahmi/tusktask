@@ -31,17 +31,15 @@ export async function AuthAvailabilityPost(request: NextRequest) {
   // Get IP
   const ip = request.headers.get("x-real-ip") ?? "127.0.0.1";
 
-  const rateLimitedResponse = createResponse(
-    "too_many_requests",
-    "You are being rate limited",
-    429,
-  );
-
   const { success: strictPolicyPassed } =
     await strictPolicyRateLimiter.limit(ip);
 
   if (!strictPolicyPassed) {
-    return rateLimitedResponse;
+    return createResponse(
+      "too_many_requests",
+      "You are being rate limited",
+      429,
+    );
   }
 
   // Validate session

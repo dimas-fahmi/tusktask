@@ -39,17 +39,15 @@ export async function v1ImageGet(request: NextRequest) {
   // Rate Limit
   const ip = request.headers.get("x-real-ip") ?? "127.0.0.1";
 
-  const rateLimitedResponse = createResponse(
-    "too_many_requests",
-    "You are being rate limited",
-    429,
-  );
-
   const { success: strictPolicyPassed } =
     await strictPolicyRateLimiter.limit(ip);
 
   if (!strictPolicyPassed) {
-    return rateLimitedResponse;
+    return createResponse(
+      "too_many_requests",
+      "You are being rate limited",
+      429,
+    );
   }
 
   // Validate Session
@@ -117,7 +115,7 @@ export async function v1ImageGet(request: NextRequest) {
   // Search by name
   if (parameters?.name) {
     where.push(
-      sql`to_tsvector('english', ${image.name}) @@ to_tsquery('english', ${parameters.name})`,
+      sql`to_tsvector('simple', ${image.name}) @@ plainto_tsquery('simple', ${parameters.name})`,
     );
   }
 

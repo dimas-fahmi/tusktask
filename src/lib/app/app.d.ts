@@ -1,3 +1,8 @@
+import type {
+  ProjectMembershipType,
+  ProjectType,
+} from "@/src/db/schema/project";
+
 export type ResultCode =
   | "failed_insertion"
   | "failed_mutation"
@@ -69,4 +74,8 @@ export type ActiveSession = {
   token: string;
   ipAddress?: string | null | undefined | undefined;
   userAgent?: string | null | undefined | undefined;
+};
+
+export type ExtendedProjectType = ProjectType & {
+  memberships: ProjectMembershipType[];
 };
