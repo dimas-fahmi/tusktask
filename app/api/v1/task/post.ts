@@ -132,20 +132,20 @@ export async function v1TaskPost(request: NextRequest) {
             ),
           )
           .limit(1);
-
-        if (!membership) {
-          throw new StandardError(
-            "unauthorized",
-            "Can't find active membership for the project",
-            401,
-          );
-        }
       } catch (error) {
         console.log(PATH, error);
         throw new StandardError(
           "unknown_database_error",
           "Unknown error when fetchingg membership",
           500,
+        );
+      }
+
+      if (!membership) {
+        throw new StandardError(
+          "unauthorized",
+          "Can't find active membership for the project",
+          401,
         );
       }
 
@@ -156,7 +156,7 @@ export async function v1TaskPost(request: NextRequest) {
         throw new StandardError(
           "unauthorized",
           "Do not have permission to create task for this project",
-          401,
+          403,
         );
       }
 
@@ -168,20 +168,20 @@ export async function v1TaskPost(request: NextRequest) {
           .from(project)
           .where(eq(project.id, validation.data.projectId))
           .limit(1);
-
-        if (!targetProject) {
-          throw new StandardError(
-            "resource_not_found",
-            "Somehow we can't find target project",
-            404,
-          );
-        }
       } catch (error) {
         console.log(PATH, error);
         throw new StandardError(
           "unknown_database_error",
           "Unknown error when fetching project details",
           500,
+        );
+      }
+
+      if (!targetProject) {
+        throw new StandardError(
+          "resource_not_found",
+          "Somehow we can't find the target project",
+          404,
         );
       }
 
