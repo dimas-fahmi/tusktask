@@ -185,7 +185,7 @@ export async function v1TaskPost(request: NextRequest) {
         );
       }
 
-      // 4. Insert Project
+      // 4. Insert Task
       let result: TaskType | undefined;
       try {
         const newTask: InsertTaskType = {
@@ -211,7 +211,7 @@ export async function v1TaskPost(request: NextRequest) {
     return createResponse<TaskType | undefined>(
       "record_stored",
       "Task created",
-      200,
+      201,
       transaction,
     );
   } catch (error) {
