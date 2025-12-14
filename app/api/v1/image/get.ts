@@ -115,7 +115,7 @@ export async function v1ImageGet(request: NextRequest) {
   // Search by name
   if (parameters?.name) {
     where.push(
-      sql`to_tsvector('english', ${image.name}) @@ to_tsquery('english', ${parameters.name})`,
+      sql`to_tsvector('simple', ${image.name}) @@ plainto_tsquery('simple', ${parameters.name})`,
     );
   }
 

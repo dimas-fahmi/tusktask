@@ -80,7 +80,7 @@ export async function v1ProjectGet(request: NextRequest) {
   // Search by name
   if (parameters?.name) {
     where.push(
-      sql`to_tsvector('english', ${project.name}) @@ to_tsquery('english', ${parameters?.name})`,
+      sql`to_tsvector('simple', ${project.name}) @@ plainto_tsquery('simple', ${parameters?.name})`,
     );
   }
 
