@@ -9,6 +9,11 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
 import { user } from "./auth-schema";
 import { defaultTimestampConfig, taskStatusEnum } from "./configs";
 import { project } from "./project";
@@ -89,6 +94,12 @@ export const task = pgTable(
     index("public_task_deletedAt_idx").on(t.deletedAt),
   ],
 );
+
+export type TaskType = typeof task.$inferSelect;
+export type InsertTaskType = typeof task.$inferInsert;
+export const taskSchema = createSelectSchema(task);
+export const insertTaskSchema = createInsertSchema(task);
+export const updateTaskSchema = createUpdateSchema(task);
 
 export const taskRelations = relations(task, ({ one, many }) => ({
   project: one(project, {

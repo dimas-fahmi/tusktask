@@ -1,5 +1,6 @@
 import { type PgTimestampConfig, pgEnum, pgSchema } from "drizzle-orm/pg-core";
 import { APP_COLOR_THEMES } from "@/src/lib/app/color-themes";
+import { PROJECT_MEMBERSHIP_ROLES } from "@/src/lib/app/projectRBAC";
 
 // Actions
 export const notificationType = [
@@ -74,5 +75,5 @@ export const taskStatusEnum = pgEnum("task_status_enum", [
 ]);
 export const projectMembershipTypeEnum = pgEnum(
   "project_membership_type_enum",
-  ["owner", "admin", "member", "observer"],
+  PROJECT_MEMBERSHIP_ROLES,
 );
