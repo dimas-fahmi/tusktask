@@ -39,10 +39,14 @@ All parameters are passed as URL query string parameters.
 | `claimedById` | `string` | `claimedById=user-z` | Filter tasks actively claimed by a user. |
 | `isPinned` | `string` | `isPinned=true` | Filter by pinned status (`"true"` or `"false"`). |
 | `isArchived` | `string` | `isArchived=false` | Filter by archived status (`"true"` or `"false"`). |
-| `isDeleted` | `string` | `isDeleted=true` | **Default:** Tasks with `deletedAt` are excluded. Set to `"true"` to include soft-deleted tasks. |
+| `isDeleted` | `string` | `isDeleted=true` | **Default:** Tasks with `deletedAt` are excluded. Set to `"true"` to show only deleted tasks. |
 | `createdAtGt`/`Lt` | `Date` (Coerced) | `createdAtGt=2024-01-01` | Filter tasks created after/before a specific date. |
 | `startAtGt`/`Lt` | `Date` (Coerced) | `startAtLt=2024-12-31` | Filter tasks with start dates after/before a specific date. |
-| `endAtGt`/`Lt` | `Date` (Coerced) | | Filter tasks with due/end dates after/before a specific date. |
+| `endAtGt`/`Lt` | `Date` (Coerced) | `endAtGt=2024-12-31` | Filter tasks with due/end dates after/before a specific date. |
+| `completedById` | `string` | `completedById=uuid-123` | Filter tasks by specific user who marked it as completed |
+| `completedAtGt` | `Date` (Coerced) | `completedAtGt=2024-12-31` | Filter tasks based on its completion date (Greater Than) |
+| `completedAtLt` | `Date` (Coerced) | `completedAtLt=2024-12-31` | Filter tasks based on its completion date (Less than) |
+| `parentId` | `string` | `parentId=uuid-123` | Filter tasks with its parentId
 
 ### Sorting & Pagination Parameters
 

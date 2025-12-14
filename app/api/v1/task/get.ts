@@ -81,7 +81,7 @@ export const v1TaskGetRequestSchema = z.object({
     .optional(),
   orderDirection: z.enum(["asc", "desc"]).optional(),
 
-  page: z.coerce.number().optional(),
+  page: z.coerce.number().min(1).optional(),
 });
 
 export type V1TaskGetRequest = z.infer<typeof v1TaskGetRequestSchema>;
@@ -141,15 +141,21 @@ export async function v1TaskGet(request: NextRequest) {
   }
 
   // Search by priority
-  if (parameters?.priority) {
+  if (
+    parameters?.priority !== undefined &&
+    typeof parameters?.priority === "number"
+  ) {
     where.push(eq(task.priority, parameters.priority));
   }
 
-  if (parameters?.priorityGt) {
+  if (
+    parameters?.priorityGt !== undefined &&
+    typeof parameters?.priorityGt === "number"
+  ) {
     where.push(gt(task.priority, parameters.priorityGt));
   }
 
-  if (parameters?.priorityLt) {
+  if (parameters?.priorityLt && typeof parameters?.priorityLt === "number") {
     where.push(lt(task.priority, parameters.priorityLt));
   }
 
@@ -163,6 +169,11 @@ export async function v1TaskGet(request: NextRequest) {
     where.push(eq(task.createdById, parameters?.createdById));
   }
 
+  // Search by completedById
+  if (parameters?.completedById) {
+    where.push(eq(task.completedById, parameters.completedById));
+  }
+
   // Search by owner id
   if (parameters?.ownerId) {
     where.push(eq(task.ownerId, parameters.ownerId));
@@ -170,7 +181,17 @@ export async function v1TaskGet(request: NextRequest) {
 
   // Search by claimer
   if (parameters?.claimedById) {
-    where.push(eq(task.ownerId, parameters.claimedById));
+    where.push(eq(task.claimedById, parameters.claimedById));
+  }
+
+  // Filter by projectId
+  if (parameters?.projectId) {
+    where.push(eq(task.projectId, parameters.projectId));
+  }
+
+  // Filter by parentId
+  if (parameters?.parentId) {
+    where.push(eq(task.parentId, parameters.parentId));
   }
 
   // Filter by isPinned
@@ -200,29 +221,29 @@ export async function v1TaskGet(request: NextRequest) {
 
   // Filter by startAt
   if (parameters?.startAtGt) {
-    where.push(gt(task.createdAt, parameters.startAtGt));
+    where.push(gt(task.startAt, parameters.startAtGt));
   }
 
   if (parameters?.startAtLt) {
-    where.push(lt(task.createdAt, parameters.startAtLt));
+    where.push(lt(task.startAt, parameters.startAtLt));
   }
 
   // Filter by endAt
   if (parameters?.endAtGt) {
-    where.push(gt(task.createdAt, parameters.endAtGt));
+    where.push(gt(task.endAt, parameters.endAtGt));
   }
 
   if (parameters?.endAtLt) {
-    where.push(lt(task.createdAt, parameters.endAtLt));
+    where.push(lt(task.endAt, parameters.endAtLt));
   }
 
   // Filter by completedAt
   if (parameters?.completedAtGt) {
-    where.push(gt(task.createdAt, parameters.completedAtGt));
+    where.push(gt(task.completedAt, parameters.completedAtGt));
   }
 
   if (parameters?.completedAtLt) {
-    where.push(lt(task.createdAt, parameters.completedAtLt));
+    where.push(lt(task.completedAt, parameters.completedAtLt));
   }
 
   // Filter by createdAt
@@ -329,8 +350,9 @@ export async function v1TaskGet(request: NextRequest) {
       .from(task)
       .where(and(...where));
 
-    response.totalResults = countResult.count;
-    response.totalPages = getTotalPages(countResult.count);
+    const totalResults = Number(countResult.count);
+    response.totalResults = totalResults;
+    response.totalPages = getTotalPages(totalResults);
     return createResponse("record_fetched", "Success", 200, response);
   } catch (error) {
     if (error instanceof StandardError) {
