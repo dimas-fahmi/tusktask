@@ -19,7 +19,7 @@ const NotificationsPage = () => {
 
       <div>
         <span className="text-xs font-light opacity-70">
-          No unread notification, good job!
+          No unread notifications, good job!
         </span>
       </div>
     </div>
