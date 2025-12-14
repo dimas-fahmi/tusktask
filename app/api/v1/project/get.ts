@@ -109,7 +109,17 @@ export async function v1ProjectGet(request: NextRequest) {
     where.push(inArray(project.id, membershipIds));
 
     if (membershipIds.length === 0) {
-      return createResponse("resource_not_found", "No projects found", 404);
+      return createResponse<V1ProjectGetResult>(
+        "record_fetched",
+        "Success",
+        200,
+        {
+          page: parameters?.page ?? 1,
+          totalPages: 0,
+          totalResults: 0,
+          result: [],
+        },
+      );
     }
 
     const result = await db.query.project.findMany({
