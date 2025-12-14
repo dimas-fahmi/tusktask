@@ -46,7 +46,7 @@ All parameters are passed as URL query string parameters.
 | `completedById` | `string` | `completedById=uuid-123` | Filter tasks by specific user who marked it as completed |
 | `completedAtGt` | `Date` (Coerced) | `completedAtGt=2024-12-31` | Filter tasks based on its completion date (Greater Than) |
 | `completedAtLt` | `Date` (Coerced) | `completedAtLt=2024-12-31` | Filter tasks based on its completion date (Less than) |
-| `parentId` | `string` | `parentId=uuid-123` | Filter tasks with its parentId
+| `parentId` | `string` | `parentId=uuid-123` | Filter tasks with its parentId |
 
 ### Sorting & Pagination Parameters
 

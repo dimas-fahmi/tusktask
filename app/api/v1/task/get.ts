@@ -339,8 +339,8 @@ export async function v1TaskGet(request: NextRequest) {
       },
       limit,
       offset,
-      orderBy: (image, { asc, desc }) =>
-        orderDirection === "asc" ? asc(image[orderBy]) : desc(image[orderBy]),
+      orderBy: (task, { asc, desc }) =>
+        orderDirection === "asc" ? asc(task[orderBy]) : desc(task[orderBy]),
     });
 
     response.result = queryResult;
