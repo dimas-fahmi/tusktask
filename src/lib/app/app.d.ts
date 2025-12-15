@@ -1,7 +1,9 @@
+import type { UserType } from "@/src/db/schema/auth-schema";
 import type {
   ProjectMembershipType,
   ProjectType,
 } from "@/src/db/schema/project";
+import type { TaskType } from "@/src/db/schema/task";
 
 export type ResultCode =
   | "failed_insertion"
@@ -76,6 +78,21 @@ export type ActiveSession = {
   userAgent?: string | null | undefined | undefined;
 };
 
+export type SanitizedUserType = Pick<
+  UserType,
+  "id" | "name" | "username" | "image"
+>;
+
 export type ExtendedProjectType = ProjectType & {
   memberships: ProjectMembershipType[];
+};
+
+export type ExtendedTaskType = TaskType & {
+  children?: TaskType[] | null;
+  claimedBy?: SanitizedUserType | null;
+  ownedBy?: SanitizedUserType | null;
+  createdBy?: SanitizedUserType | null;
+  completedBy?: SanitizedUserType | null;
+  project?: ProjectType | null;
+  parent?: TaskType | null;
 };
