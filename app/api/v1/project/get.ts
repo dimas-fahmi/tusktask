@@ -194,7 +194,18 @@ export async function v1ProjectGet(request: NextRequest) {
     const result = await db.query.project.findMany({
       where: where.length ? and(...where) : undefined,
       with: {
-        memberships: true,
+        memberships: {
+          with: {
+            member: {
+              columns: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
       },
       limit: pagination.limit,
       offset: pagination.offset,
