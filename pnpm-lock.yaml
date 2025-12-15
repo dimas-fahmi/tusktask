@@ -102,11 +102,11 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       drizzle-orm:
-        specifier: ^0.44.7
-        version: 0.44.7(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7)
+        specifier: ^0.45.1
+        version: 0.45.1(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7)
       drizzle-zod:
         specifier: ^0.8.3
-        version: 0.8.3(drizzle-orm@0.44.7(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7))(zod@4.1.13)
+        version: 0.8.3(drizzle-orm@0.45.1(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7))(zod@4.1.13)
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.0)
@@ -1641,8 +1641,8 @@ packages:
     resolution: {integrity: sha512-O9EC/miwdnRDY10qRxM8P3Pg8hXe3LyU4ZipReKOgTwn4OqANmftj8XJz1UPUAS6NMHf0E2htjsbQujUTkncCg==}
     hasBin: true
 
-  drizzle-orm@0.44.7:
-    resolution: {integrity: sha512-quIpnYznjU9lHshEOAYLoZ9s3jweleHlZIAWR/jX9gAWNg/JhQ1wj0KGRf7/Zm+obRrYd9GjPVJg790QY9N5AQ==}
+  drizzle-orm@0.45.1:
+    resolution: {integrity: sha512-Te0FOdKIistGNPMq2jscdqngBRfBpC8uMFVwqjf6gtTVJHIQ/dosgV/CLBU2N4ZJBsXL5savCba9b0YJskKdcA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -1962,6 +1962,7 @@ packages:
   next@16.0.7:
     resolution: {integrity: sha512-3mBRJyPxT4LOxAJI6IsXeFtKfiJUbjCLgvXO02fV8Wy/lIhPvP94Fe7dGhUgHXcQy4sSuYwQNcOLhIfOm0rL0A==}
     engines: {node: '>=20.9.0'}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -3396,15 +3397,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.7(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7):
+  drizzle-orm@0.45.1(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7):
     optionalDependencies:
       '@upstash/redis': 1.35.7
       kysely: 0.28.8
       postgres: 3.4.7
 
-  drizzle-zod@0.8.3(drizzle-orm@0.44.7(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7))(zod@4.1.13):
+  drizzle-zod@0.8.3(drizzle-orm@0.45.1(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7))(zod@4.1.13):
     dependencies:
-      drizzle-orm: 0.44.7(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7)
+      drizzle-orm: 0.45.1(@upstash/redis@1.35.7)(kysely@0.28.8)(postgres@3.4.7)
       zod: 4.1.13
 
   embla-carousel-react@8.6.0(react@19.2.0):
