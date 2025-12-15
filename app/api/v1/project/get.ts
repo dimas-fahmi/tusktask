@@ -1,4 +1,14 @@
-import { and, count, eq, inArray, sql } from "drizzle-orm";
+import {
+  and,
+  count,
+  eq,
+  gt,
+  inArray,
+  isNotNull,
+  isNull,
+  lt,
+  sql,
+} from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
@@ -17,25 +27,35 @@ import { getLimitAndOffset, getTotalPages } from "@/src/lib/utils/pagination";
 
 const PATH = "V1_PROJECT_GET";
 
-export type V1ProjectGetRequest = {
-  name?: string;
-  isPinned?: "true";
-  isArchived?: "true";
-  page?: number;
-};
+export const v1ProjectGetRequestSchema = z.object({
+  // Metadata
+  id: z.uuid().optional(),
+  name: z.string().optional(),
 
+  // Statuses
+  isPinned: z.coerce.boolean().optional(),
+  isArchived: z.coerce.boolean().optional(),
+  isDeleted: z.coerce.boolean().optional(),
+
+  // Ownerships
+  createdById: z.string().optional(),
+  ownerId: z.string().optional(),
+
+  // Timestamps
+  createdAtGt: z.coerce.date().optional(),
+  createdAtLt: z.coerce.date().optional(),
+  updatedAtGt: z.coerce.date().optional(),
+  updatedAtLt: z.coerce.date().optional(),
+
+  // Pagination
+  page: z.coerce.number().min(1).optional(),
+});
+
+export type V1ProjectGetRequest = z.infer<typeof v1ProjectGetRequestSchema>;
 export type V1ProjectGetResult = StandardV1GetResponse<ExtendedProjectType[]>;
-
 export type V1ProjectGetResponse = StandardResponseType<V1ProjectGetResult>;
 
 const strictPolicyLimiter = rateLimiter();
-
-const querySchema = z.object({
-  name: z.string().optional(),
-  isPinned: z.literal("true").optional(),
-  isArchived: z.literal("true").optional(),
-  page: z.coerce.number().int().min(1).optional(),
-});
 
 export async function v1ProjectGet(request: NextRequest) {
   // Rate Limiter
@@ -61,21 +81,36 @@ export async function v1ProjectGet(request: NextRequest) {
       "invalid_session",
       "Invalid session, please log back in",
       400,
+      undefined,
+      "error",
+      PATH,
+      "NO SESSION",
     );
   }
 
   // Extract query parameters & Validate
   const url = request.nextUrl;
-  const parsed = querySchema.safeParse(
-    Object.fromEntries(url.searchParams.entries()),
-  );
-  if (!parsed.success) {
-    return createResponse("bad_request", prettifyError(parsed.error), 400);
+  const { data: parameters, error: requestValidationError } =
+    v1ProjectGetRequestSchema
+      .strict()
+      .safeParse(Object.fromEntries(url.searchParams.entries()));
+
+  if (requestValidationError) {
+    return createResponse(
+      "bad_request",
+      prettifyError(requestValidationError),
+      400,
+      requestValidationError,
+    );
   }
-  const parameters = parsed.data;
 
   // Query Builder
   const where = [];
+
+  // Serach by id
+  if (parameters?.id) {
+    where.push(eq(project.id, parameters.id));
+  }
 
   // Search by name
   if (parameters?.name) {
@@ -84,16 +119,50 @@ export async function v1ProjectGet(request: NextRequest) {
     );
   }
 
-  // Filter archived projects
-  if (parameters?.isArchived === "true") {
-    where.push(eq(project.isArchived, true));
-  }
-
   // Filter pinned projects
-  if (parameters?.isPinned === "true") {
+  if (parameters?.isPinned) {
     where.push(eq(project.isPinned, true));
   }
 
+  // Filter archived projects
+  if (parameters?.isArchived) {
+    where.push(eq(project.isArchived, true));
+  }
+
+  // Always excluded deleted project
+  if (parameters?.isDeleted) {
+    where.push(isNotNull(project.deletedAt));
+  } else {
+    where.push(isNull(project.deletedAt));
+  }
+
+  // Search by creator
+  if (parameters?.createdById) {
+    where.push(eq(project.createdById, parameters.createdById));
+  }
+
+  // Search by owner
+  if (parameters?.ownerId) {
+    where.push(eq(project.ownerId, parameters.ownerId));
+  }
+
+  // Search by createdAt
+  if (parameters?.createdAtGt) {
+    where.push(gt(project.createdAt, parameters.createdAtGt));
+  }
+  if (parameters?.createdAtLt) {
+    where.push(lt(project.createdAt, parameters.createdAtLt));
+  }
+
+  // Search by updatedAt
+  if (parameters?.updatedAtGt) {
+    where.push(gt(project.updatedAt, parameters.updatedAtGt));
+  }
+  if (parameters?.updatedAtLt) {
+    where.push(lt(project.updatedAt, parameters.updatedAtLt));
+  }
+
+  // Pagination
   const pagination = getLimitAndOffset(parameters?.page || 1);
 
   // Execution
