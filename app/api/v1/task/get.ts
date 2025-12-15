@@ -1,3 +1,4 @@
+import { Ratelimit } from "@upstash/ratelimit";
 import {
   and,
   count,
@@ -33,7 +34,9 @@ import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { getLimitAndOffset, getTotalPages } from "@/src/lib/utils/pagination";
 
 const PATH = "V1_TASK_GET";
-const strictPolicyLimiter = rateLimiter();
+const strictPolicyLimiter = rateLimiter({
+  limiter: Ratelimit.slidingWindow(50, "10s"),
+});
 
 export const TaskStatusTypeSchema = z.enum(TASK_STATUSES);
 
