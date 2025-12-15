@@ -5,11 +5,16 @@ import type {
   V1ImageGetResponse,
 } from "@/app/api/v1/image/get";
 import type { V1IpLookupResponse } from "@/app/api/v1/ip/lookup/get";
+import type {
+  V1ProjectGetRequest,
+  V1ProjectGetResponse,
+} from "@/app/api/v1/project/get";
 import type { UserType } from "@/src/db/schema/auth-schema";
 import type { ActiveSession, StandardResponseType } from "../app/app";
 import { StandardError } from "../app/errors";
 import { getImage } from "./fetchers/getImage";
 import { getIpInformation } from "./fetchers/getIpInformation";
+import { getProjects } from "./fetchers/getProjects";
 import { getSelfAccounts } from "./fetchers/getSelfAccounts";
 import { getSelfProfile } from "./fetchers/getSelfProfile";
 import { getSelfSessions } from "./fetchers/getSelfSessions";
@@ -70,6 +75,19 @@ export const queryIndex = {
         queryOptions: {
           queryKey,
           queryFn: getSelfSessions,
+        },
+      };
+    },
+    projects: (
+      req?: V1ProjectGetRequest,
+    ): QueryObject<V1ProjectGetResponse> => {
+      const queryKey = ["self", "projects", JSON.stringify(req)];
+
+      return {
+        queryKey,
+        queryOptions: {
+          queryKey,
+          queryFn: () => getProjects(req),
         },
       };
     },
