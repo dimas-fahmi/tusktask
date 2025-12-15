@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { useCreateNewProject } from "@/src/lib/queries/hooks/useCreateNewProject";
@@ -39,6 +40,12 @@ const NewProjectDialog = () => {
   const { mutate: createNewProject, isPending: isCreatingNewProject } =
     useCreateNewProject();
 
+  useEffect(() => {
+    if (!open) {
+      reset({ projectName: "" });
+    }
+  }, [open, reset]);
+
   return (
     <Dialog {...{ open, onOpenChange }}>
       <DialogContent>
@@ -76,7 +83,7 @@ const NewProjectDialog = () => {
                     "Something Went Wrong",
                     {
                       description:
-                        "An error happened when creating your task, please try again!",
+                        "An error happened when creating your project, please try again!",
                     },
                     "error",
                   );
