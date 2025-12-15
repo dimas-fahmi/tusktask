@@ -6,6 +6,11 @@ import { authClient } from "@/src/lib/auth/client";
 import { useGetSelfProjects } from "@/src/lib/queries/hooks/useGetSelfProjects";
 import { useNewProjectDialogStore } from "@/src/lib/stores/newProjectDialog";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/src/ui/shadcn/components/ui/tooltip";
 
 const EmptyProjectsIndex = () => {
   const { data: session } = authClient.useSession();
@@ -42,7 +47,16 @@ const EmptyProjectsIndex = () => {
           >
             Create
           </Button>
-          <Button variant={"outline"}>Documentation</Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>
+                <Button variant={"outline"} disabled>
+                  Documentation
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>Still under construction</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>
