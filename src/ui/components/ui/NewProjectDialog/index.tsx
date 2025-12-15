@@ -3,6 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { useCreateNewProject } from "@/src/lib/queries/hooks/useCreateNewProject";
 import { useNewProjectDialogStore } from "@/src/lib/stores/newProjectDialog";
+import { useNotificationStore } from "@/src/lib/stores/notification";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
   Dialog,
@@ -16,6 +17,7 @@ import Input from "../Input/input";
 
 const NewProjectDialog = () => {
   const { open, setOpen: onOpenChange } = useNewProjectDialogStore();
+  const { triggerToast } = useNotificationStore();
 
   const {
     control,
@@ -59,8 +61,25 @@ const NewProjectDialog = () => {
               },
               {
                 onSuccess: () => {
+                  triggerToast(
+                    "Project Created",
+                    {
+                      description: `${data.projectName} is created successfully`,
+                    },
+                    "success",
+                  );
                   reset({ projectName: "" });
                   onOpenChange(false);
+                },
+                onError: () => {
+                  triggerToast(
+                    "Something Went Wrong",
+                    {
+                      description:
+                        "An error happened when creating your task, please try again!",
+                    },
+                    "error",
+                  );
                 },
               },
             );
