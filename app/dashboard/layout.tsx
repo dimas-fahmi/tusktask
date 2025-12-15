@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import type React from "react";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
+import { useGetSelfProjects } from "@/src/lib/queries/hooks/useGetSelfProjects";
 import { useNotificationStore } from "@/src/lib/stores/notification";
 import Header from "@/src/ui/components/page/dashboard/header";
 import { DashboardSidebar } from "@/src/ui/components/page/dashboard/sidebar";
@@ -21,9 +22,15 @@ const DashboardLayout = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
+  const pathname = usePathname();
+
   const { data: profileData, isLoading: isLoadingProfile } =
     useGetSelfProfile();
   const profile = profileData?.result;
+
+  const { data: projectData, isLoading: isLoadingProjects } =
+    useGetSelfProjects();
+  const projects = projectData?.result?.result;
 
   if (!isLoadingProfile && profile?.deletedAt) {
     redirect("/account/deleted");
@@ -35,6 +42,15 @@ const DashboardLayout = ({
     profile?.onboardingStatus !== "completed"
   ) {
     redirect("/onboarding");
+  }
+
+  if (
+    !isLoadingProjects &&
+    typeof projects !== "undefined" &&
+    !projects?.length &&
+    pathname !== "/empty/projects"
+  ) {
+    redirect("/empty/projects");
   }
 
   const { notificationStatus, triggerToast } = useNotificationStore();

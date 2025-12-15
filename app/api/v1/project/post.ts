@@ -21,7 +21,11 @@ import { hasAnyField } from "@/src/lib/utils/hasAnyField";
 
 const PATH = "V1_PROJECT_POST";
 
-export interface V1ProjectPostRequest extends InsertProjectType {}
+export interface V1ProjectPostRequest
+  extends Omit<
+    InsertProjectType,
+    "id" | "ownerId" | "createdAt" | "createdById" | "deletedAt" | "updatedAt"
+  > {}
 export type V1ProjectPostResponse = StandardResponseType<{
   insertedProject: ProjectType[];
   insertedMembership: ProjectMembershipType[];
