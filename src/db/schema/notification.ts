@@ -2,33 +2,20 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
-  json,
+  jsonb,
   pgTable,
   primaryKey,
   text,
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import type { NotificationPayload } from "@/src/lib/app/app";
 import { user } from "./auth-schema";
-import { defaultTimestampConfig, notificationTypeEnum } from "./configs";
-
-export type NotificationPayload =
-  | {
-      type: "sender" | "receiver";
-      id: string;
-      name: string;
-      image: string;
-    }
-  | { type: "project"; id: string; name: string }
-  | { type: "task"; id: string; name: string }
-  | { type: "system" };
+import { defaultTimestampConfig } from "./configs";
 
 export const notification = pgTable("notification", {
   id: uuid("id").primaryKey(),
-  title: text("title").notNull(),
-  body: text("body").notNull(),
-  type: notificationTypeEnum("type").notNull(),
-  payload: json("payload").$type<NotificationPayload[]>(),
+  payload: jsonb("payload").$type<NotificationPayload>().notNull(),
   createdAt: timestamp("created_at", defaultTimestampConfig)
     .notNull()
     .defaultNow(),
@@ -42,6 +29,9 @@ export const notificationReceiver = pgTable(
     }),
     userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
     isArchived: boolean("is_archived").notNull().default(false),
+    createdAt: timestamp("created_at", defaultTimestampConfig)
+      .notNull()
+      .defaultNow(),
     readAt: timestamp("read_at", defaultTimestampConfig),
   },
   (t) => [
@@ -58,11 +48,14 @@ export const notificationReceiver = pgTable(
 
 export const notificationReceiverRelations = relations(
   notificationReceiver,
-  ({ one, many }) => ({
+  ({ one }) => ({
     notification: one(notification, {
       fields: [notificationReceiver.notificationId],
       references: [notification.id],
     }),
-    many: many(user),
+    user: one(user, {
+      fields: [notificationReceiver.userId],
+      references: [user.id],
+    }),
   }),
 );
