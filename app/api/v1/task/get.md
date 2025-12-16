@@ -44,8 +44,8 @@ All parameters are passed as URL query string parameters.
 | `isCompleted` | `string`,`boolean` | `isCompleted=no` | Filter by completion status (`"true"` for completed, `"false"` for incomplete). |
 | `isOverdue` | `string`,`boolean` | `isOverdue=1` | Filter incomplete tasks that are overdue (`"true"`: endAt < now) or not overdue (`"false"`: endAt > now). |
 | `isStartAtNull` | `string`,`boolean` | `isStartAtNull=0` | Filter tasks where `startAt` is null (`"true"`) or not null (`"false"`). |
-| `isEndAtNull` | `string` | `isEndAtNull=true` | Filter tasks where `endAt` is null (`"true"`) or not null (`"false"`). |
-| `isUpdatedAtNull` | `string` | `isUpdatedAtNull=false` | Filter tasks where `updatedAt` is null (`"true"`) or not null (`"false"`). |
+| `isEndAtNull` | `string`,`boolean` | `isEndAtNull=true` | Filter tasks where `endAt` is null (`"true"`) or not null (`"false"`). |
+| `isUpdatedAtNull` | `string`,`boolean` | `isUpdatedAtNull=false` | Filter tasks where `updatedAt` is null (`"true"`) or not null (`"false"`). |
 | `createdAtGt` | `Date` (Coerced) | `createdAtGt=2024-01-01` | Filter tasks created after a specific date. |
 | `createdAtLt` | `Date` (Coerced) | `createdAtLt=2024-12-31` | Filter tasks created before a specific date. |
 | `updatedAtGt` | `Date` (Coerced) | `updatedAtGt=2024-01-01` | Filter tasks updated after a specific date. |
