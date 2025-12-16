@@ -3,6 +3,15 @@ import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import { prettifyError } from "zod";
 import { db } from "@/src/db";
+import { user as userTable } from "@/src/db/schema/auth-schema";
+import type {
+  NotificationReceiveType,
+  NotificationType,
+} from "@/src/db/schema/notification";
+import {
+  notificationReceive as notificationReceiveTable,
+  notification as notificationTable,
+} from "@/src/db/schema/notification";
 import {
   type ProjectMembershipType,
   type ProjectType,
@@ -23,6 +32,7 @@ import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { hasAnyField } from "@/src/lib/utils/hasAnyField";
+import { sanitizeUser } from "@/src/lib/utils/sanitizeUser";
 
 const PATH = "V1_TASK_POST";
 
@@ -120,18 +130,14 @@ export async function v1TaskPost(request: NextRequest) {
   try {
     const transaction = await db.transaction(async (tx) => {
       // 1. Validate Membership
-      let membership: ProjectMembershipType | undefined;
+      let memberships: ProjectMembershipType[] | undefined;
       try {
-        [membership] = await tx
+        memberships = await tx
           .select()
           .from(projectMembership)
           .where(
-            and(
-              eq(projectMembership.projectId, validation.data.projectId),
-              eq(projectMembership.userId, user.id),
-            ),
-          )
-          .limit(1);
+            and(eq(projectMembership.projectId, validation.data.projectId)),
+          );
       } catch (error) {
         console.log(PATH, error);
         throw new StandardError(
@@ -141,6 +147,7 @@ export async function v1TaskPost(request: NextRequest) {
         );
       }
 
+      const membership = memberships.find((m) => m.userId === user.id);
       if (!membership) {
         throw new StandardError(
           "unauthorized",
@@ -187,14 +194,15 @@ export async function v1TaskPost(request: NextRequest) {
 
       // 4. Insert Task
       let result: TaskType | undefined;
+      const newTask: InsertTaskType = {
+        id: crypto.randomUUID(),
+        ...validation.data,
+        createdAt: new Date(),
+        createdById: user.id,
+        ownerId: targetProject.ownerId,
+      };
+
       try {
-        const newTask: InsertTaskType = {
-          id: crypto.randomUUID(),
-          ...validation.data,
-          createdAt: new Date(),
-          createdById: user.id,
-          ownerId: targetProject.ownerId,
-        };
         [result] = await tx.insert(task).values(newTask).returning();
       } catch (error) {
         console.log(PATH, error);
@@ -203,6 +211,36 @@ export async function v1TaskPost(request: NextRequest) {
           "Unknown error when storing task data",
           500,
         );
+      }
+
+      // 5. Create notification
+      const currentUser = await db.query.user.findFirst({
+        where: eq(userTable.id, user.id),
+      });
+      if (memberships?.length > 1 && result && currentUser) {
+        const notId = crypto.randomUUID();
+        const notification: NotificationType = {
+          id: notId,
+          createdAt: new Date(),
+          payload: {
+            event: "created_a_task",
+            actor: sanitizeUser(currentUser),
+            project: targetProject,
+            task: result,
+          },
+        };
+
+        const members = memberships.filter((m) => m.userId !== user.id);
+        const receives: NotificationReceiveType[] = members.map((m) => ({
+          notificationId: notId,
+          userId: m.userId,
+          createdAt: new Date(),
+          isArchived: false,
+          readAt: null,
+        }));
+
+        await db.insert(notificationTable).values(notification);
+        await db.insert(notificationReceiveTable).values(receives);
       }
 
       return result;
