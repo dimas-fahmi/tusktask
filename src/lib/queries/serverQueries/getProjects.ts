@@ -1,4 +1,5 @@
 import type { V1ProjectGetRequest } from "@/app/api/v1/project/get";
+import { objectToQueryString } from "../../utils/objectToQueryString";
 import { parseCookies } from "../../utils/parseCookies";
 
 export async function getProjects(req?: V1ProjectGetRequest, key?: string[]) {
@@ -6,8 +7,10 @@ export async function getProjects(req?: V1ProjectGetRequest, key?: string[]) {
   const headers = new Headers();
   headers.set("cookie", cookieString);
 
+  const queryString = objectToQueryString(req);
+
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/v1/project`,
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/v1/project?${queryString}`,
     {
       headers: headers,
       cache: "force-cache",
