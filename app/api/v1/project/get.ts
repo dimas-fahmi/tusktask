@@ -1,14 +1,5 @@
-import {
-  and,
-  count,
-  eq,
-  gt,
-  inArray,
-  isNotNull,
-  isNull,
-  lt,
-  sql,
-} from "drizzle-orm";
+import { Ratelimit } from "@upstash/ratelimit";
+import { and, count, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
@@ -24,6 +15,7 @@ import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { getLimitAndOffset, getTotalPages } from "@/src/lib/utils/pagination";
+import { getWhereClauseBuilder } from "./getWhereClauseBuilder";
 
 const PATH = "V1_PROJECT_GET";
 
@@ -33,9 +25,9 @@ export const v1ProjectGetRequestSchema = z.object({
   name: z.string().optional(),
 
   // Statuses
-  isPinned: z.coerce.boolean().optional(),
-  isArchived: z.coerce.boolean().optional(),
-  isDeleted: z.coerce.boolean().optional(),
+  isPinned: z.stringbool().optional(),
+  isArchived: z.stringbool().optional(),
+  isDeleted: z.stringbool().optional(),
 
   // Ownerships
   createdById: z.string().optional(),
@@ -55,7 +47,9 @@ export type V1ProjectGetRequest = z.infer<typeof v1ProjectGetRequestSchema>;
 export type V1ProjectGetResult = StandardV1GetResponse<ExtendedProjectType[]>;
 export type V1ProjectGetResponse = StandardResponseType<V1ProjectGetResult>;
 
-const strictPolicyLimiter = rateLimiter();
+const strictPolicyLimiter = rateLimiter({
+  limiter: Ratelimit.slidingWindow(50, "10s"),
+});
 
 export async function v1ProjectGet(request: NextRequest) {
   // Rate Limiter
@@ -80,7 +74,7 @@ export async function v1ProjectGet(request: NextRequest) {
     return createResponse(
       "invalid_session",
       "Invalid session, please log back in",
-      400,
+      401,
       undefined,
       "error",
       PATH,
@@ -104,63 +98,8 @@ export async function v1ProjectGet(request: NextRequest) {
     );
   }
 
-  // Query Builder
-  const where = [];
-
-  // Serach by id
-  if (parameters?.id) {
-    where.push(eq(project.id, parameters.id));
-  }
-
-  // Search by name
-  if (parameters?.name) {
-    where.push(
-      sql`to_tsvector('simple', ${project.name}) @@ plainto_tsquery('simple', ${parameters?.name})`,
-    );
-  }
-
-  // Filter pinned projects
-  if (parameters?.isPinned) {
-    where.push(eq(project.isPinned, true));
-  }
-
-  // Filter archived projects
-  if (parameters?.isArchived) {
-    where.push(eq(project.isArchived, true));
-  }
-
-  // Always excluded deleted project
-  if (parameters?.isDeleted) {
-    where.push(isNotNull(project.deletedAt));
-  } else {
-    where.push(isNull(project.deletedAt));
-  }
-
-  // Search by creator
-  if (parameters?.createdById) {
-    where.push(eq(project.createdById, parameters.createdById));
-  }
-
-  // Search by owner
-  if (parameters?.ownerId) {
-    where.push(eq(project.ownerId, parameters.ownerId));
-  }
-
-  // Search by createdAt
-  if (parameters?.createdAtGt) {
-    where.push(gt(project.createdAt, parameters.createdAtGt));
-  }
-  if (parameters?.createdAtLt) {
-    where.push(lt(project.createdAt, parameters.createdAtLt));
-  }
-
-  // Search by updatedAt
-  if (parameters?.updatedAtGt) {
-    where.push(gt(project.updatedAt, parameters.updatedAtGt));
-  }
-  if (parameters?.updatedAtLt) {
-    where.push(lt(project.updatedAt, parameters.updatedAtLt));
-  }
+  // Where Clause
+  const where = getWhereClauseBuilder(parameters);
 
   // Pagination
   const pagination = getLimitAndOffset(parameters?.page || 1);
