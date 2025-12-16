@@ -2,12 +2,15 @@
 
 import { CirclePlus, FunnelX, Search } from "lucide-react";
 import { useGetSelfProjects } from "@/src/lib/queries/hooks/useGetSelfProjects";
+import { useNewProjectDialogStore } from "@/src/lib/stores/newProjectDialog";
 import ProjectCard from "@/src/ui/components/ui/ProjectCard";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 
 const ProjectsPageIndex = () => {
   const { data: projectData } = useGetSelfProjects();
   const projects = projectData?.result?.result;
+
+  const { setOpen: setNewProjectDialogOpen } = useNewProjectDialogStore();
 
   return (
     <div className="space-y-6">
@@ -32,7 +35,13 @@ const ProjectsPageIndex = () => {
           <Button variant={"outline"} size={"sm"} disabled>
             <Search className="w-4 h-4" />
           </Button>
-          <Button variant={"outline"} size={"sm"} disabled>
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            onClick={() => {
+              setNewProjectDialogOpen(true);
+            }}
+          >
             <CirclePlus className="w-4 h-4" /> New Project
           </Button>
         </div>
