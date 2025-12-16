@@ -83,8 +83,12 @@ export type SanitizedUserType = Pick<
   "id" | "name" | "username" | "image"
 >;
 
+export type ExtendedProjectMembershipType = ProjectMembershipType & {
+  member?: SanitizedUserType | null;
+};
+
 export type ExtendedProjectType = ProjectType & {
-  memberships: ProjectMembershipType[];
+  memberships: ExtendedProjectMembershipType[];
 };
 
 export type ExtendedTaskType = TaskType & {

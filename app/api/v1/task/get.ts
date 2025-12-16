@@ -1,15 +1,5 @@
-import {
-  and,
-  count,
-  eq,
-  gt,
-  inArray,
-  isNotNull,
-  isNull,
-  lt,
-  type SQL,
-  sql,
-} from "drizzle-orm";
+import { Ratelimit } from "@upstash/ratelimit";
+import { and, count, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
@@ -31,9 +21,12 @@ import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { getLimitAndOffset, getTotalPages } from "@/src/lib/utils/pagination";
+import { getWhereClauseBuilder } from "./getWhereClauseBuilder";
 
 const PATH = "V1_TASK_GET";
-const strictPolicyLimiter = rateLimiter();
+const strictPolicyLimiter = rateLimiter({
+  limiter: Ratelimit.slidingWindow(50, "10s"),
+});
 
 export const TaskStatusTypeSchema = z.enum(TASK_STATUSES);
 
@@ -48,8 +41,6 @@ export const v1TaskGetRequestSchema = z.object({
   ownerId: z.string().optional(),
   claimedById: z.string().optional(),
   completedById: z.string().optional(),
-  isPinned: z.enum(["true", "false"]).optional(),
-  isArchived: z.enum(["true", "false"]).optional(),
   projectId: z.string().optional(),
   parentId: z.string().optional(),
 
@@ -65,8 +56,20 @@ export const v1TaskGetRequestSchema = z.object({
   createdAtGt: z.coerce.date().optional(),
   createdAtLt: z.coerce.date().optional(),
 
-  isDeleted: z.literal("true").optional(),
+  updatedAtGt: z.coerce.date().optional(),
+  updatedAtLt: z.coerce.date().optional(),
 
+  // Filter
+  isPinned: z.stringbool().optional(),
+  isArchived: z.stringbool().optional(),
+  isDeleted: z.stringbool().optional(),
+  isCompleted: z.stringbool().optional(),
+  isOverdue: z.stringbool().optional(),
+  isStartAtNull: z.stringbool().optional(),
+  isEndAtNull: z.stringbool().optional(),
+  isUpdatedAtNull: z.stringbool().optional(),
+
+  // Pagination & Sorting
   orderBy: z
     .enum([
       "name",
@@ -80,7 +83,6 @@ export const v1TaskGetRequestSchema = z.object({
     ])
     .optional(),
   orderDirection: z.enum(["asc", "desc"]).optional(),
-
   page: z.coerce.number().min(1).optional(),
 });
 
@@ -125,136 +127,6 @@ export async function v1TaskGet(request: NextRequest) {
     return createResponse("bad_request", prettifyError(requestError), 400);
   }
 
-  // Query Builder
-  const where = [] as SQL<unknown>[];
-
-  // Search by id
-  if (parameters?.id) {
-    where.push(eq(task.id, parameters.id));
-  }
-
-  // Search by name
-  if (parameters?.name) {
-    where.push(
-      sql`to_tsvector('simple', ${task.name}) @@ plainto_tsquery('simple', ${parameters?.name})`,
-    );
-  }
-
-  // Search by priority
-  if (
-    parameters?.priority !== undefined &&
-    typeof parameters?.priority === "number"
-  ) {
-    where.push(eq(task.priority, parameters.priority));
-  }
-
-  if (
-    parameters?.priorityGt !== undefined &&
-    typeof parameters?.priorityGt === "number"
-  ) {
-    where.push(gt(task.priority, parameters.priorityGt));
-  }
-
-  if (parameters?.priorityLt && typeof parameters?.priorityLt === "number") {
-    where.push(lt(task.priority, parameters.priorityLt));
-  }
-
-  // Search by status
-  if (parameters?.status) {
-    where.push(eq(task.status, parameters.status));
-  }
-
-  // Search by creator
-  if (parameters?.createdById) {
-    where.push(eq(task.createdById, parameters?.createdById));
-  }
-
-  // Search by completedById
-  if (parameters?.completedById) {
-    where.push(eq(task.completedById, parameters.completedById));
-  }
-
-  // Search by owner id
-  if (parameters?.ownerId) {
-    where.push(eq(task.ownerId, parameters.ownerId));
-  }
-
-  // Search by claimer
-  if (parameters?.claimedById) {
-    where.push(eq(task.claimedById, parameters.claimedById));
-  }
-
-  // Filter by projectId
-  if (parameters?.projectId) {
-    where.push(eq(task.projectId, parameters.projectId));
-  }
-
-  // Filter by parentId
-  if (parameters?.parentId) {
-    where.push(eq(task.parentId, parameters.parentId));
-  }
-
-  // Filter by isPinned
-  if (parameters?.isPinned === "true") {
-    where.push(eq(task.isPinned, true));
-  }
-
-  if (parameters?.isPinned === "false") {
-    where.push(eq(task.isPinned, false));
-  }
-
-  // Filter by isArchived
-  if (parameters?.isArchived === "true") {
-    where.push(eq(task.isArchived, true));
-  }
-
-  if (parameters?.isArchived === "false") {
-    where.push(eq(task.isArchived, false));
-  }
-
-  // Filter by isDeleted
-  if (parameters?.isDeleted === "true") {
-    where.push(isNotNull(task.deletedAt));
-  } else {
-    where.push(isNull(task.deletedAt));
-  }
-
-  // Filter by startAt
-  if (parameters?.startAtGt) {
-    where.push(gt(task.startAt, parameters.startAtGt));
-  }
-
-  if (parameters?.startAtLt) {
-    where.push(lt(task.startAt, parameters.startAtLt));
-  }
-
-  // Filter by endAt
-  if (parameters?.endAtGt) {
-    where.push(gt(task.endAt, parameters.endAtGt));
-  }
-
-  if (parameters?.endAtLt) {
-    where.push(lt(task.endAt, parameters.endAtLt));
-  }
-
-  // Filter by completedAt
-  if (parameters?.completedAtGt) {
-    where.push(gt(task.completedAt, parameters.completedAtGt));
-  }
-
-  if (parameters?.completedAtLt) {
-    where.push(lt(task.completedAt, parameters.completedAtLt));
-  }
-
-  // Filter by createdAt
-  if (parameters?.createdAtGt) {
-    where.push(gt(task.createdAt, parameters.createdAtGt));
-  }
-
-  if (parameters?.createdAtLt) {
-    where.push(lt(task.createdAt, parameters.createdAtLt));
-  }
-
   // Sorting
   const orderBy: V1TaskGetRequest["orderBy"] =
     parameters?.orderBy || "createdAt";
@@ -263,6 +135,9 @@ export async function v1TaskGet(request: NextRequest) {
 
   // Pagination
   const { limit, offset } = getLimitAndOffset(parameters?.page || 1);
+
+  // Where Clause
+  const where = getWhereClauseBuilder(parameters);
 
   // Execution
   try {

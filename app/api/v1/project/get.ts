@@ -1,4 +1,5 @@
-import { and, count, eq, inArray, sql } from "drizzle-orm";
+import { Ratelimit } from "@upstash/ratelimit";
+import { and, count, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
@@ -14,27 +15,40 @@ import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { getLimitAndOffset, getTotalPages } from "@/src/lib/utils/pagination";
+import { getWhereClauseBuilder } from "./getWhereClauseBuilder";
 
 const PATH = "V1_PROJECT_GET";
 
-export type V1ProjectGetRequest = {
-  name?: string;
-  isPinned?: "true";
-  isArchived?: "true";
-  page?: number;
-};
+export const v1ProjectGetRequestSchema = z.object({
+  // Metadata
+  id: z.uuid().optional(),
+  name: z.string().optional(),
 
+  // Statuses
+  isPinned: z.stringbool().optional(),
+  isArchived: z.stringbool().optional(),
+  isDeleted: z.stringbool().optional(),
+
+  // Ownerships
+  createdById: z.string().optional(),
+  ownerId: z.string().optional(),
+
+  // Timestamps
+  createdAtGt: z.coerce.date().optional(),
+  createdAtLt: z.coerce.date().optional(),
+  updatedAtGt: z.coerce.date().optional(),
+  updatedAtLt: z.coerce.date().optional(),
+
+  // Pagination
+  page: z.coerce.number().min(1).optional(),
+});
+
+export type V1ProjectGetRequest = z.infer<typeof v1ProjectGetRequestSchema>;
 export type V1ProjectGetResult = StandardV1GetResponse<ExtendedProjectType[]>;
-
 export type V1ProjectGetResponse = StandardResponseType<V1ProjectGetResult>;
 
-const strictPolicyLimiter = rateLimiter();
-
-const querySchema = z.object({
-  name: z.string().optional(),
-  isPinned: z.literal("true").optional(),
-  isArchived: z.literal("true").optional(),
-  page: z.coerce.number().int().min(1).optional(),
+const strictPolicyLimiter = rateLimiter({
+  limiter: Ratelimit.slidingWindow(50, "10s"),
 });
 
 export async function v1ProjectGet(request: NextRequest) {
@@ -60,40 +74,34 @@ export async function v1ProjectGet(request: NextRequest) {
     return createResponse(
       "invalid_session",
       "Invalid session, please log back in",
-      400,
+      401,
+      undefined,
+      "error",
+      PATH,
+      "NO SESSION",
     );
   }
 
   // Extract query parameters & Validate
   const url = request.nextUrl;
-  const parsed = querySchema.safeParse(
-    Object.fromEntries(url.searchParams.entries()),
-  );
-  if (!parsed.success) {
-    return createResponse("bad_request", prettifyError(parsed.error), 400);
-  }
-  const parameters = parsed.data;
+  const { data: parameters, error: requestValidationError } =
+    v1ProjectGetRequestSchema
+      .strict()
+      .safeParse(Object.fromEntries(url.searchParams.entries()));
 
-  // Query Builder
-  const where = [];
-
-  // Search by name
-  if (parameters?.name) {
-    where.push(
-      sql`to_tsvector('simple', ${project.name}) @@ plainto_tsquery('simple', ${parameters?.name})`,
+  if (requestValidationError) {
+    return createResponse(
+      "bad_request",
+      prettifyError(requestValidationError),
+      400,
+      requestValidationError,
     );
   }
 
-  // Filter archived projects
-  if (parameters?.isArchived === "true") {
-    where.push(eq(project.isArchived, true));
-  }
+  // Where Clause
+  const where = getWhereClauseBuilder(parameters);
 
-  // Filter pinned projects
-  if (parameters?.isPinned === "true") {
-    where.push(eq(project.isPinned, true));
-  }
-
+  // Pagination
   const pagination = getLimitAndOffset(parameters?.page || 1);
 
   // Execution
@@ -125,7 +133,18 @@ export async function v1ProjectGet(request: NextRequest) {
     const result = await db.query.project.findMany({
       where: where.length ? and(...where) : undefined,
       with: {
-        memberships: true,
+        memberships: {
+          with: {
+            member: {
+              columns: {
+                id: true,
+                name: true,
+                username: true,
+                image: true,
+              },
+            },
+          },
+        },
       },
       limit: pagination.limit,
       offset: pagination.offset,
