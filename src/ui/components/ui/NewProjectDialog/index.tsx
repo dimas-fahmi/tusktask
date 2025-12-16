@@ -28,12 +28,21 @@ const NewProjectDialog = () => {
   } = useForm({
     resolver: zodResolver(
       z.object({
-        projectName: z.string().min(3).max(120),
+        projectName: z
+          .string()
+          .min(3, {
+            message: "Project name must be at least 3 characters long.",
+          })
+          .max(120, {
+            message: "Project name must be no longer than 120 characters.",
+          }),
+        description: z.string().optional(),
       }),
     ),
     mode: "onChange",
     defaultValues: {
       projectName: "",
+      description: "",
     },
   });
 
@@ -42,13 +51,13 @@ const NewProjectDialog = () => {
 
   useEffect(() => {
     if (!open) {
-      reset({ projectName: "" });
+      reset({ projectName: "", description: "" });
     }
   }, [open, reset]);
 
   return (
     <Dialog {...{ open, onOpenChange }}>
-      <DialogContent>
+      <DialogContent className="overflow-hidden grid grid-cols-1">
         <DialogHeader className="mb-4">
           <DialogTitle>New Project</DialogTitle>
           <DialogDescription>
@@ -65,6 +74,7 @@ const NewProjectDialog = () => {
             createNewProject(
               {
                 name: data.projectName,
+                description: data?.description,
               },
               {
                 onSuccess: () => {
@@ -75,7 +85,7 @@ const NewProjectDialog = () => {
                     },
                     "success",
                   );
-                  reset({ projectName: "" });
+                  reset({ projectName: "", description: "" });
                   onOpenChange(false);
                 },
                 onError: () => {
@@ -93,7 +103,7 @@ const NewProjectDialog = () => {
           })}
         >
           {/* Fields */}
-          <div>
+          <div className="space-y-4">
             <Controller
               control={control}
               name="projectName"
@@ -102,6 +112,18 @@ const NewProjectDialog = () => {
                   inputProps={{ placeholder: "Project Name", ...field }}
                   messageVariants={{ variant: "negative" }}
                   message={fieldState?.error?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="description"
+              render={({ field }) => (
+                <textarea
+                  className="p-4 h-full field-sizing-content border rounded-lg resize-none w-full scrollbar-none text-sm font-light min-h-48 max-h-48"
+                  placeholder="Description"
+                  {...field}
                 />
               )}
             />
