@@ -121,7 +121,7 @@ const NewProjectDialog = () => {
               name="description"
               render={({ field }) => (
                 <textarea
-                  className="p-4 h-full field-sizing-content border rounded-lg resize-none w-full scrollbar-none text-sm font-light min-h-38 max-h-48"
+                  className="p-4 h-full field-sizing-content border rounded-lg resize-none w-full scrollbar-none text-sm font-light min-h-48 max-h-48"
                   placeholder="Description"
                   {...field}
                 />
