@@ -21,8 +21,8 @@ export const notification = pgTable("notification", {
     .defaultNow(),
 });
 
-export const notificationReceiver = pgTable(
-  "notification_receiver",
+export const notificationReceive = pgTable(
+  "notification_receive",
   {
     notificationId: uuid("notification_id").references(() => notification.id, {
       onDelete: "cascade",
@@ -37,24 +37,22 @@ export const notificationReceiver = pgTable(
   (t) => [
     primaryKey({
       columns: [t.notificationId, t.userId],
-      name: "public_notificationReceiver_cpk",
+      name: "public_notificationReceive_cpk",
     }),
-    index("public_notificationReceiver_notificationId_idx").on(
-      t.notificationId,
-    ),
-    index("public_notificationReceiver_userId_idx").on(t.userId),
+    index("public_notificationReceive_notificationId_idx").on(t.notificationId),
+    index("public_notificationReceive_userId_idx").on(t.userId),
   ],
 );
 
-export const notificationReceiverRelations = relations(
-  notificationReceiver,
+export const notificationReceiveRelations = relations(
+  notificationReceive,
   ({ one }) => ({
     notification: one(notification, {
-      fields: [notificationReceiver.notificationId],
+      fields: [notificationReceive.notificationId],
       references: [notification.id],
     }),
     user: one(user, {
-      fields: [notificationReceiver.userId],
+      fields: [notificationReceive.userId],
       references: [user.id],
     }),
   }),
