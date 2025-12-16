@@ -9,6 +9,11 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
 import type { NotificationPayload } from "@/src/lib/app/app";
 import { user } from "./auth-schema";
 import { defaultTimestampConfig } from "./configs";
@@ -20,6 +25,11 @@ export const notification = pgTable("notification", {
     .notNull()
     .defaultNow(),
 });
+
+export type NotificationType = typeof notification.$inferSelect;
+export type InsertNotificationType = typeof notification.$inferInsert;
+export const notificationSchema = createSelectSchema(notification);
+export const insertNotificationSchema = createInsertSchema(notification);
 
 export const notificationReceive = pgTable(
   "notification_receive",
@@ -43,6 +53,15 @@ export const notificationReceive = pgTable(
     index("public_notificationReceive_userId_idx").on(t.userId),
   ],
 );
+
+export type NotificationReceiveType = typeof notification.$inferSelect;
+export type InsertNotificationReceiveType = typeof notification.$inferInsert;
+export const notificationReceiveSchema =
+  createSelectSchema(notificationReceive);
+export const insertNotificationReceiveSchema =
+  createInsertSchema(notificationReceive);
+export const updateNotificationReceiveSchema =
+  createUpdateSchema(notificationReceive);
 
 export const notificationReceiveRelations = relations(
   notificationReceive,

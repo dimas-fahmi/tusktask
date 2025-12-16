@@ -1,4 +1,5 @@
 import type { UserType } from "@/src/db/schema/auth-schema";
+import type { NotificationReceiveType } from "@/src/db/schema/notification";
 import type {
   ProjectMembershipType,
   ProjectType,
@@ -180,3 +181,6 @@ export type NotificationPayload =
     };
 
 export type NotificationType = NotificationPayload["type"];
+export type ExtendedNotificationReceiveType = NotificationReceiveType & {
+  notification: NotificationType;
+};
