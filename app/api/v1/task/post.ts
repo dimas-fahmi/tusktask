@@ -214,7 +214,7 @@ export async function v1TaskPost(request: NextRequest) {
       }
 
       // 5. Create notification
-      const currentUser = await db.query.user.findFirst({
+      const currentUser = await tx.query.user.findFirst({
         where: eq(userTable.id, user.id),
       });
       if (memberships?.length > 1 && result && currentUser) {
@@ -239,8 +239,8 @@ export async function v1TaskPost(request: NextRequest) {
           readAt: null,
         }));
 
-        await db.insert(notificationTable).values(notification);
-        await db.insert(notificationReceiveTable).values(receives);
+        await tx.insert(notificationTable).values(notification);
+        await tx.insert(notificationReceiveTable).values(receives);
       }
 
       return result;
