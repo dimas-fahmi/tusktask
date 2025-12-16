@@ -54,8 +54,9 @@ export const notificationReceive = pgTable(
   ],
 );
 
-export type NotificationReceiveType = typeof notification.$inferSelect;
-export type InsertNotificationReceiveType = typeof notification.$inferInsert;
+export type NotificationReceiveType = typeof notificationReceive.$inferSelect;
+export type InsertNotificationReceiveType =
+  typeof notificationReceive.$inferInsert;
 export const notificationReceiveSchema =
   createSelectSchema(notificationReceive);
 export const insertNotificationReceiveSchema =

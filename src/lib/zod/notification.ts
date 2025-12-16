@@ -60,7 +60,7 @@ export const notificationPayloadSchema = z.union([
 
   // suspended
   z.object({
-    event: z.literal("demoted"),
+    event: z.literal("suspended"),
     actor: sanitizedUserTypeSchema,
     target: sanitizedUserTypeSchema,
     project: projectSchema,
