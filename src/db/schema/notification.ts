@@ -14,13 +14,13 @@ import {
   createSelectSchema,
   createUpdateSchema,
 } from "drizzle-zod";
-import type { NotificationPayload } from "@/src/lib/app/app";
+import type { NotificationPayloadType } from "@/src/lib/zod/notification";
 import { user } from "./auth-schema";
 import { defaultTimestampConfig } from "./configs";
 
 export const notification = pgTable("notification", {
   id: uuid("id").primaryKey(),
-  payload: jsonb("payload").$type<NotificationPayload>().notNull(),
+  payload: jsonb("payload").$type<NotificationPayloadType>().notNull(),
   createdAt: timestamp("created_at", defaultTimestampConfig)
     .notNull()
     .defaultNow(),

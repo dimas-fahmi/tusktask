@@ -1,0 +1,1 @@
+DROP TYPE "public"."notification_type_enum";

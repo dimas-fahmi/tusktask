@@ -2,28 +2,6 @@ import { type PgTimestampConfig, pgEnum, pgSchema } from "drizzle-orm/pg-core";
 import { APP_COLOR_THEMES } from "@/src/lib/app/color-themes";
 import { PROJECT_MEMBERSHIP_ROLES } from "@/src/lib/app/projectRBAC";
 
-// Actions
-export const notificationType = [
-  "project_invitation",
-  "created_new_task",
-  "claimed_task",
-  "assigned_task",
-  "completed_task",
-  "rejected_invitation",
-  "joined_project",
-  "left_project",
-  "promoted_member",
-  "demoted_member",
-  "archived_task",
-  "updated_task",
-  "new_message",
-  "system_alert",
-  "generic_broadcast",
-  "system_broadcast",
-  "system_positive",
-  "system_negative",
-] as const;
-
 // Onboarding Phases
 export const onboardingPhases = [
   "name",
@@ -74,10 +52,6 @@ export const mediaStorageEnum = pgEnum("media_storage", [
 
 export const themeEnum = appAuthSchema.enum("theme_enum", APP_COLOR_THEMES);
 
-export const notificationTypeEnum = pgEnum(
-  "notification_type_enum",
-  notificationType,
-);
 export const taskStatusEnum = pgEnum("task_status_enum", TASK_STATUSES);
 export const projectMembershipTypeEnum = pgEnum(
   "project_membership_type_enum",
