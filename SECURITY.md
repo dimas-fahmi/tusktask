@@ -29,7 +29,7 @@ If you discover a security vulnerability, please report it responsibly. Do not d
 
 ### How to Report
 - **Preferred Method**: Submit a report via GitHub's private vulnerability reporting feature. Go to the "Security" tab and click "Report a vulnerability."
-- **Alternative**: Email us at info@mail.dimasfahmi.pro. Use a subject line like "Security Vulnerability Report."
+- **Alternative**: Email us at contact@dimasfahmi.pro. Use a subject line like "Security Vulnerability Report."
 
 *Do not open a public issue on GitHub for security vulnerabilities, as this could expose users before a fix is available.*
 
@@ -75,7 +75,7 @@ This does not grant permission for malicious activities, such as disrupting serv
 
 ## Contact
 
-For questions about this policy, contact dimas-fahmi on GitHub or email info@mail.dimasfahmi.pro.
+For questions about this policy, contact [dimas-fahmi](https://github.com/dimas-fahmi) on GitHub or email contact@dimasfahmi.pro.
 
 This policy is inspired by GitHub's recommended practices and may be updated periodically. Last updated: 15/12/2025.
 
