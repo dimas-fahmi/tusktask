@@ -1,6 +1,6 @@
 {
-  "id": "98a18152-5da1-4a29-a412-dea619a4fe2c",
-  "prevId": "e4541b45-b4a6-4e61-a0f0-2117384fc735",
+  "id": "05a03d34-8bce-4b46-b5ab-d104b9d9e4fe",
+  "prevId": "98a18152-5da1-4a29-a412-dea619a4fe2c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1446,30 +1446,6 @@
       "name": "media_storage",
       "schema": "public",
       "values": ["internal", "external"]
-    },
-    "public.notification_type_enum": {
-      "name": "notification_type_enum",
-      "schema": "public",
-      "values": [
-        "project_invitation",
-        "created_new_task",
-        "claimed_task",
-        "assigned_task",
-        "completed_task",
-        "rejected_invitation",
-        "joined_project",
-        "left_project",
-        "promoted_member",
-        "demoted_member",
-        "archived_task",
-        "updated_task",
-        "new_message",
-        "system_alert",
-        "generic_broadcast",
-        "system_broadcast",
-        "system_positive",
-        "system_negative"
-      ]
     },
     "app_auth.onboarding_status_enum": {
       "name": "onboarding_status_enum",

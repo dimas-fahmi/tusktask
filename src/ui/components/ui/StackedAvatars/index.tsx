@@ -1,5 +1,5 @@
-import type { SanitizedUserType } from "@/src/lib/app/app";
 import { NO_IMAGE_FALLBACK_SQUARE } from "@/src/lib/app/configs";
+import type { SanitizedUserType } from "@/src/lib/zod";
 import {
   Avatar,
   AvatarFallback,
