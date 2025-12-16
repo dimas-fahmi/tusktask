@@ -167,7 +167,7 @@ export type NotificationPayload =
   | {
       type: "updated_a_task";
       actor: SanitizedUserType;
-      project: SanitizedUserType;
+      project: ProjectType;
       task: TaskType;
       message?: NotificationMessageType;
     }
