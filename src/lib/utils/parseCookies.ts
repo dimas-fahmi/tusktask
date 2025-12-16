@@ -8,7 +8,7 @@ export async function parseCookies(): Promise<string> {
   // Parse cookies
   const cookieString = allCookies
     .map((cookie) => `${cookie.name}=${cookie.value}`)
-    .join(";");
+    .join("; ");
 
   return cookieString;
 }
