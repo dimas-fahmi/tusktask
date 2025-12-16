@@ -43,7 +43,7 @@ const StatisticsTable = ({ project }: { project?: ExtendedProjectType }) => {
 
           {/* Active Tasks Count */}
           <TableRow>
-            <TableCell>Tasks Created</TableCell>
+            <TableCell>Active Tasks</TableCell>
             <TableCell>{0}</TableCell>
           </TableRow>
         </TableBody>
