@@ -50,7 +50,7 @@ const ProjectCard = ({ project }: { project?: ExtendedProjectType }) => {
             {/* Total Member */}
             <span className="p-2 rounded-lg flex items-center gap-0.5 border text-xs font-light opacity-70 capitalize">
               <UsersRound className="w-3 h-3" />
-              {memberships?.length}
+              {memberships?.length ?? "0"}
             </span>
           </div>
         </button>
