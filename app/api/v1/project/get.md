@@ -98,6 +98,6 @@ Each project object includes relational data (memberships and member details) to
 | Status Code | Code | Description |
 | :--- | :--- | :--- |
 | **400** | `bad_request` | Invalid query parameters (e.g., failed Zod schema validation). |
-| **400** | `invalid_session` | User is not authenticated or session expired. |
+| **401** | `invalid_session` | User is not authenticated or session expired. |
 | **429** | `too_many_requests` | Rate limit exceeded for the client IP address. |
 | **500** | `unknown_error` | An unexpected error occurred during database operations (e.g., connection issue). |
