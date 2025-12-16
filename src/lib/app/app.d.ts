@@ -83,6 +83,7 @@ export type SanitizedUserType = Pick<
   "id" | "name" | "username" | "image"
 >;
 
+// PROJECTS
 export type ExtendedProjectMembershipType = ProjectMembershipType & {
   member?: SanitizedUserType | null;
 };
@@ -91,6 +92,7 @@ export type ExtendedProjectType = ProjectType & {
   memberships: ExtendedProjectMembershipType[];
 };
 
+// TASKS
 export type ExtendedTaskType = TaskType & {
   children?: TaskType[] | null;
   claimedBy?: SanitizedUserType | null;
@@ -100,3 +102,81 @@ export type ExtendedTaskType = TaskType & {
   project?: ProjectType | null;
   parent?: TaskType | null;
 };
+
+// NOTIFICATIONS
+export type NotificationMessageType = {
+  subject?: string;
+  message?: string;
+};
+
+export type NotificationPayload =
+  | {
+      type: "invited_to_a_project";
+      sender: SanitizedUserType;
+      project: ProjectType;
+      role: ProjectMembershipType["type"];
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "requested_a_promotion";
+      sender: SanitizedUserType;
+      project: ProjectType;
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "promoted";
+      actor: SanitizedUserType;
+      target: SanitizedUserType;
+      project: ProjectType;
+      roleBefore: ProjectMembershipType["type"];
+      roleNow: ProjectMembershipType["type"];
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "demoted";
+      actor: SanitizedUserType;
+      target: SanitizedUserType;
+      project: ProjectType;
+      roleBefore: ProjectMembershipType["type"];
+      roleNow: ProjectMembershipType["type"];
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "suspended";
+      actor: SanitizedUserType;
+      target: SanitizedUserType;
+      project: ProjectType;
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "claimed_a_task";
+      actor: SanitizedUserType;
+      target: SanitizedUserType;
+      project: ProjectType;
+      task: TaskType;
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "assigned_a_task";
+      actor: SanitizedUserType;
+      target: SanitizedUserType;
+      project: ProjectType;
+      task: TaskType;
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "updated_a_task";
+      actor: SanitizedUserType;
+      project: ProjectType;
+      task: TaskType;
+      message?: NotificationMessageType;
+    }
+  | {
+      type: "message";
+      actor: SanitizedUserType | "system";
+      message: NotificationMessageType;
+      project?: ProjectType;
+      task?: TaskType;
+    };
+
+export type NotificationType = NotificationPayload["type"];
