@@ -104,6 +104,14 @@ export const notificationPayloadSchema = z.union([
     message: notificationMessageTypeSchema.optional(),
   }),
 
+  // updated_a_project
+  z.object({
+    event: z.literal("updated_a_project"),
+    actor: sanitizedUserTypeSchema,
+    project: projectSchema,
+    message: notificationMessageTypeSchema.optional(),
+  }),
+
   // message
   z.object({
     event: z.literal("message"),

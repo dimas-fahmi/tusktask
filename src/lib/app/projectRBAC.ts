@@ -17,6 +17,7 @@ export interface PROJECT_PERMISSIONS {
   completeTask: boolean;
 
   // Project Management
+  updateProject: boolean;
   promoteAdmin: boolean;
   demoteAdmin: boolean;
   promoteMember: boolean;
@@ -42,6 +43,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     completeTask: true,
 
     // Project Management
+    updateProject: true,
     promoteAdmin: true,
     demoteAdmin: true,
     promoteMember: true,
@@ -62,6 +64,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     completeTask: true,
 
     // Project Management
+    updateProject: true,
     promoteAdmin: false,
     demoteAdmin: false,
     promoteMember: true,
@@ -82,6 +85,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     completeTask: true,
 
     // Project Management
+    updateProject: false,
     promoteAdmin: false,
     demoteAdmin: false,
     promoteMember: false,
@@ -102,6 +106,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     completeTask: false,
 
     // Project Management
+    updateProject: false,
     promoteAdmin: false,
     demoteAdmin: false,
     promoteMember: false,
