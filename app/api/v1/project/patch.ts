@@ -35,8 +35,8 @@ const v1ProjectPatchRequestSchema = z.object({
     description: z.string().optional(),
     isArchived: z.stringbool().optional(),
     isPinned: z.stringbool().optional(),
-    isDeleted: z.stringbool().optional(),
   }),
+  isDeleted: z.stringbool().optional(),
   message: notificationMessageTypeSchema.optional(),
 });
 
@@ -168,7 +168,15 @@ export async function v1ProjectPatch(request: NextRequest) {
       try {
         [updatedProject] = await tx
           .update(project)
-          .set({ ...parameters.newValue })
+          .set({
+            ...parameters.newValue,
+            deletedAt:
+              typeof parameters?.isDeleted === "boolean"
+                ? parameters?.isDeleted
+                  ? new Date()
+                  : null
+                : undefined,
+          })
           .where(eq(project.id, parameters.projectId))
           .returning();
       } catch (error) {
