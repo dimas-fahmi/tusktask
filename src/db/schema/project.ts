@@ -11,6 +11,7 @@ import {
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { user } from "./auth-schema";
 import { defaultTimestampConfig, projectMembershipTypeEnum } from "./configs";
+import { notification } from "./notification";
 import { task } from "./task";
 
 export const project = pgTable(
@@ -111,6 +112,7 @@ export const projectRelations = relations(project, ({ one, many }) => ({
   }),
   tasks: many(task),
   memberships: many(projectMembership),
+  notifications: many(notification),
 }));
 
 export const projectMembershipRelations = relations(

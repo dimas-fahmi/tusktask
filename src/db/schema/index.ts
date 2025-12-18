@@ -15,6 +15,7 @@ import {
   notification,
   notificationReceive,
   notificationReceiveRelations,
+  notificationRelations,
 } from "./notification";
 // Project Schema
 import {
@@ -49,6 +50,7 @@ const schema = {
 
   // Notification
   notification,
+  notificationRelations,
   notificationReceive,
   notificationReceiveRelations,
 
