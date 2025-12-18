@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
 import { db } from "@/src/db";
-import { type UserType, user as userTable } from "@/src/db/schema/auth-schema";
+import { type UserType, user } from "@/src/db/schema/auth-schema";
 import {
   type InsertNotificationType,
   type NotificationReceiveType,
@@ -26,7 +26,7 @@ import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { sanitizeUser } from "@/src/lib/utils/sanitizeUser";
 import { notificationMessageTypeSchema } from "@/src/lib/zod/notification";
 
-const PATH = "V1_PROJECT_PATCH";
+const PATH = "V1_PROJECT_PATCH" as const;
 
 const v1ProjectPatchRequestSchema = z.object({
   projectId: z.uuid(),
@@ -66,9 +66,8 @@ export async function v1ProjectPatch(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const user = session?.user;
 
-  if (!user) {
+  if (!session?.user) {
     return createResponse(
       "invalid_session",
       "Invalid session, please log back in.",
@@ -139,7 +138,7 @@ export async function v1ProjectPatch(request: NextRequest) {
         );
       }
 
-      const membership = memberships.find((m) => m.userId === user.id);
+      const membership = memberships.find((m) => m.userId === session.user.id);
 
       if (!membership) {
         throw new StandardError(
@@ -188,46 +187,56 @@ export async function v1ProjectPatch(request: NextRequest) {
         );
       }
 
-      // 4. Notification
-      if (memberships.length > 1) {
-        let currentUser: UserType | undefined;
+      // 4. Notification (Used for audits)
+      const isMultiMembersProject = memberships.length > 1;
+      let currentUser: UserType | undefined;
 
-        try {
-          currentUser = await tx.query.user.findFirst({
-            where: eq(userTable.id, user.id),
-          });
-        } catch (error) {
-          throw new StandardError(
-            "unknown_database_error",
-            "Unknown error when fetching user data",
-            500,
-            error,
-          );
-        }
+      try {
+        currentUser = await tx.query.user.findFirst({
+          where: eq(user.id, session.user.id),
+        });
+      } catch (error) {
+        throw new StandardError(
+          "unknown_database_error",
+          "Unknown error when fetching user data",
+          500,
+          error,
+        );
+      }
 
-        if (!currentUser) {
-          throw new StandardError(
-            "resource_not_found",
-            "Can't find user data",
-            404,
-            "CANT_FIND_USER_DATA",
-          );
-        }
+      if (!currentUser) {
+        throw new StandardError(
+          "resource_not_found",
+          "Can't find user data",
+          404,
+          "CANT_FIND_USER_DATA",
+        );
+      }
 
-        const notId = crypto.randomUUID();
-        const newNot: InsertNotificationType = {
-          id: notId,
-          createdAt: new Date(),
-          payload: {
-            event: "updated_a_project",
-            actor: sanitizeUser(currentUser),
-            project: updatedProject,
-            message: parameters?.message,
-          },
-        };
+      const notId = crypto.randomUUID();
+      const newNot: InsertNotificationType = {
+        id: notId,
+        createdAt: new Date(),
+        payload: {
+          event: "updated_a_project",
+          actor: sanitizeUser(currentUser),
+          project: updatedProject,
+          message: parameters?.message,
+        },
+        actorId: session.user.id,
+        projectId: parameters.projectId,
+      };
 
+      try {
+        await tx.insert(notification).values(newNot);
+      } catch (error) {
+        console.error(PATH, "FAILED_NOTIFICATION", error);
+      }
+
+      // 5. Create receives for other members
+      if (isMultiMembersProject) {
         const receives: NotificationReceiveType[] = memberships
-          .filter((m) => m.userId !== user.id)
+          .filter((m) => m.userId !== session.user.id)
           .map((m) => ({
             createdAt: new Date(),
             userId: m.userId,
@@ -235,12 +244,6 @@ export async function v1ProjectPatch(request: NextRequest) {
             notificationId: notId,
             readAt: null,
           }));
-
-        try {
-          await tx.insert(notification).values(newNot);
-        } catch (error) {
-          console.error(PATH, "FAILED_NOTIFICATION", error);
-        }
 
         try {
           await tx.insert(notificationReceive).values(receives);
