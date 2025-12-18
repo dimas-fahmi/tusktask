@@ -2,6 +2,7 @@
 
 import { useGetSelfProjects } from "@/src/lib/queries/hooks/useGetSelfProjects";
 import TaskCard from "@/src/ui/components/ui/TaskCard";
+import NameAndDescription from "./components/NameAndDescription";
 import Sidebar from "./components/Sidebar";
 
 const ProjectDetailPageIndex = ({ id }: { id: string }) => {
@@ -14,12 +15,8 @@ const ProjectDetailPageIndex = ({ id }: { id: string }) => {
       <section className="grid grid-cols-1 gap-4 md:grid-cols-[auto_280px]">
         {/* Header */}
         <header>
-          <div className="space-y-2">
-            <h1 className="text-4xl font-semibold">{project?.name}</h1>
-            <p className="text-sm font-light opacity-70">
-              {project?.description || "No description"}
-            </p>
-          </div>
+          {/* Project Name & Description */}
+          <NameAndDescription project={project} />
         </header>
 
         {/* Sidebar */}

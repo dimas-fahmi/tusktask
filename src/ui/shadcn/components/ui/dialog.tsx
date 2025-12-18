@@ -46,14 +46,18 @@ function DialogOverlay({
   );
 }
 
+export type DialogContentProps = React.ComponentProps<
+  typeof DialogPrimitive.Content
+> & {
+  showCloseButton?: boolean;
+};
+
 function DialogContent({
   className,
   children,
   showCloseButton = false,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & {
-  showCloseButton?: boolean;
-}) {
+}: DialogContentProps) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -81,7 +85,8 @@ function DialogContent({
   );
 }
 
-function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
+export type DialogHeaderProps = React.ComponentProps<"div">;
+function DialogHeader({ className, ...props }: DialogHeaderProps) {
   return (
     <div
       data-slot="dialog-header"
@@ -104,10 +109,10 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function DialogTitle({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+export type DialogTitleProps = React.ComponentProps<
+  typeof DialogPrimitive.Title
+>;
+function DialogTitle({ className, ...props }: DialogTitleProps) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
@@ -117,10 +122,10 @@ function DialogTitle({
   );
 }
 
-function DialogDescription({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+export type DialogDescriptionProps = React.ComponentProps<
+  typeof DialogPrimitive.Description
+>;
+function DialogDescription({ className, ...props }: DialogDescriptionProps) {
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
