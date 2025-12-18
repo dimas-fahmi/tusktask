@@ -25,9 +25,15 @@ export const notification = pgTable(
   {
     id: uuid("id").primaryKey(),
     payload: jsonb("payload").$type<NotificationPayloadType>().notNull(),
-    actorId: text("actor_id").references(() => user.id),
-    projectId: uuid("project_id").references(() => project.id),
-    taskId: uuid("task_id").references(() => task.id),
+    actorId: text("actor_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    projectId: uuid("project_id").references(() => project.id, {
+      onDelete: "set null",
+    }),
+    taskId: uuid("task_id").references(() => task.id, {
+      onDelete: "set null",
+    }),
     createdAt: timestamp("created_at", defaultTimestampConfig)
       .notNull()
       .defaultNow(),

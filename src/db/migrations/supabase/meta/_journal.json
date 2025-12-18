@@ -99,6 +99,13 @@
       "when": 1766065204014,
       "tag": "0013_steep_puff_adder",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1766065974943,
+      "tag": "0014_empty_shadow_king",
+      "breakpoints": true
     }
   ]
 }
