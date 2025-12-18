@@ -16,6 +16,7 @@ import {
 } from "drizzle-zod";
 import { user } from "./auth-schema";
 import { defaultTimestampConfig, taskStatusEnum } from "./configs";
+import { notification } from "./notification";
 import { project } from "./project";
 
 export const task = pgTable(
@@ -130,4 +131,5 @@ export const taskRelations = relations(task, ({ one, many }) => ({
     fields: [task.completedById],
     references: [user.id],
   }),
+  notifications: many(notification),
 }));

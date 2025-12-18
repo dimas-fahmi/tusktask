@@ -17,19 +17,44 @@ import {
 import type { NotificationPayloadType } from "@/src/lib/zod/notification";
 import { user } from "./auth-schema";
 import { defaultTimestampConfig } from "./configs";
+import { project } from "./project";
+import { task } from "./task";
 
-export const notification = pgTable("notification", {
-  id: uuid("id").primaryKey(),
-  payload: jsonb("payload").$type<NotificationPayloadType>().notNull(),
-  createdAt: timestamp("created_at", defaultTimestampConfig)
-    .notNull()
-    .defaultNow(),
-});
+export const notification = pgTable(
+  "notification",
+  {
+    id: uuid("id").primaryKey(),
+    payload: jsonb("payload").$type<NotificationPayloadType>().notNull(),
+    actorId: text("actor_id").references(() => user.id),
+    projectId: uuid("project_id").references(() => project.id),
+    taskId: uuid("task_id").references(() => task.id),
+    createdAt: timestamp("created_at", defaultTimestampConfig)
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    // Indexes
+    index("public_notification_actorId_idx").on(t.actorId),
+    index("public_notification_projectId_idx").on(t.projectId),
+    index("public_notification_taskId_idx").on(t.taskId),
+  ],
+);
 
 export type NotificationType = typeof notification.$inferSelect;
 export type InsertNotificationType = typeof notification.$inferInsert;
 export const notificationSchema = createSelectSchema(notification);
 export const insertNotificationSchema = createInsertSchema(notification);
+
+export const notificationRelations = relations(notification, ({ one }) => ({
+  task: one(task, {
+    fields: [notification.taskId],
+    references: [task.id],
+  }),
+  project: one(project, {
+    fields: [notification.projectId],
+    references: [project.id],
+  }),
+}));
 
 export const notificationReceive = pgTable(
   "notification_receive",
