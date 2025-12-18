@@ -5,8 +5,8 @@ import { prettifyError } from "zod";
 import { db } from "@/src/db";
 import { user as userTable } from "@/src/db/schema/auth-schema";
 import type {
+  InsertNotificationType,
   NotificationReceiveType,
-  NotificationType,
 } from "@/src/db/schema/notification";
 import {
   notificationReceive as notificationReceiveTable,
@@ -219,7 +219,7 @@ export async function v1TaskPost(request: NextRequest) {
       });
       if (memberships?.length > 1 && result && currentUser) {
         const notId = crypto.randomUUID();
-        const notification: NotificationType = {
+        const notification: InsertNotificationType = {
           id: notId,
           createdAt: new Date(),
           payload: {
