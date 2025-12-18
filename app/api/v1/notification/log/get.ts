@@ -145,9 +145,9 @@ export async function v1NotificationLogGet(request: NextRequest) {
       });
     } catch (error) {
       throw new StandardError(
-        "unauthorized",
-        "Can't find active membership for this project",
-        401,
+        "unknown_database_error",
+        "Unknown error when fetching membership",
+        500,
         error,
       );
     }
