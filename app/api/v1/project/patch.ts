@@ -223,6 +223,7 @@ export async function v1ProjectPatch(request: NextRequest) {
           project: updatedProject,
           message: parameters?.message,
         },
+        eventType: "updated_a_project",
         actorId: session.user.id,
         projectId: parameters.projectId,
       };
