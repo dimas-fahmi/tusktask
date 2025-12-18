@@ -1,5 +1,6 @@
 import { type PgTimestampConfig, pgEnum, pgSchema } from "drizzle-orm/pg-core";
 import { APP_COLOR_THEMES } from "@/src/lib/app/color-themes";
+import { EVENT_TYPES } from "@/src/lib/app/configs";
 import { PROJECT_MEMBERSHIP_ROLES } from "@/src/lib/app/projectRBAC";
 
 // Onboarding Phases
@@ -57,3 +58,5 @@ export const projectMembershipTypeEnum = pgEnum(
   "project_membership_type_enum",
   PROJECT_MEMBERSHIP_ROLES,
 );
+
+export const eventTypeEnum = pgEnum("event_type_enum", EVENT_TYPES);

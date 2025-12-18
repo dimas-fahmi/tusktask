@@ -1,0 +1,2 @@
+CREATE TYPE "public"."event_type_enum" AS ENUM('assigned_a_task', 'claimed_a_task', 'created_a_task', 'demoted', 'invited_to_a_project', 'message', 'promoted', 'requested_a_promotion', 'suspended', 'updated_a_project', 'updated_a_task');--> statement-breakpoint
+ALTER TABLE "notification" ADD COLUMN "event_Type" "event_type_enum";
