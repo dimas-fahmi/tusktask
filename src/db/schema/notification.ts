@@ -60,6 +60,10 @@ export const notificationRelations = relations(notification, ({ one }) => ({
     fields: [notification.projectId],
     references: [project.id],
   }),
+  actor: one(user, {
+    fields: [notification.actorId],
+    references: [user.id],
+  }),
 }));
 
 export const notificationReceive = pgTable(
