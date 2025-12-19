@@ -6,6 +6,10 @@ import type {
 } from "@/app/api/v1/image/get";
 import type { V1IpLookupResponse } from "@/app/api/v1/ip/lookup/get";
 import type {
+  V1NotificationLogGetRequest,
+  V1NotificationLogGetResponse,
+} from "@/app/api/v1/notification/log/get";
+import type {
   V1ProjectGetRequest,
   V1ProjectGetResponse,
 } from "@/app/api/v1/project/get";
@@ -18,6 +22,7 @@ import type { ActiveSession, StandardResponseType } from "../app/app";
 import { StandardError } from "../app/errors";
 import { getImage } from "./fetchers/getImage";
 import { getIpInformation } from "./fetchers/getIpInformation";
+import { getLogs } from "./fetchers/getLogs";
 import { getProjects } from "./fetchers/getProjects";
 import { getSelfAccounts } from "./fetchers/getSelfAccounts";
 import { getSelfProfile } from "./fetchers/getSelfProfile";
@@ -149,5 +154,18 @@ export const queryIndex = {
         },
       };
     },
+  },
+  logs: (
+    req: V1NotificationLogGetRequest,
+  ): QueryObject<V1NotificationLogGetResponse> => {
+    const queryKey = ["logs", JSON.stringify(req)];
+
+    return {
+      queryKey,
+      queryOptions: {
+        queryKey,
+        queryFn: () => getLogs(req),
+      },
+    };
   },
 } as const;

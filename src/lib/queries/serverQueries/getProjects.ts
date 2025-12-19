@@ -1,8 +1,14 @@
-import type { V1ProjectGetRequest } from "@/app/api/v1/project/get";
+import type {
+  V1ProjectGetRequest,
+  V1ProjectGetResponse,
+} from "@/app/api/v1/project/get";
 import { objectToQueryString } from "../../utils/objectToQueryString";
 import { parseCookies } from "../../utils/parseCookies";
 
-export async function getProjects(req?: V1ProjectGetRequest, key?: string[]) {
+export async function getProjects(
+  req?: V1ProjectGetRequest,
+  key?: string[],
+): Promise<V1ProjectGetResponse> {
   const cookieString = await parseCookies();
   const headers = new Headers();
   headers.set("cookie", cookieString);

@@ -31,7 +31,7 @@ const ProjectCard = ({ project }: { project?: ExtendedProjectType }) => {
           disabled={!project?.id}
           onClick={() => {
             if (!project?.id) return;
-            router.push(`/dashboard/projects/detail/${project?.id}`);
+            router.push(`/dashboard/projects/${project?.id}`);
           }}
         >
           <h1>{project?.name || "Untitled Project"}</h1>
