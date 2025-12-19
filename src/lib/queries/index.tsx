@@ -17,6 +17,10 @@ import type {
   V1TaskGetRequest,
   V1TaskGetResponse,
 } from "@/app/api/v1/task/get";
+import type {
+  V1UserGetRequest,
+  V1UserGetResponse,
+} from "@/app/api/v1/user/get";
 import type { UserType } from "@/src/db/schema/auth-schema";
 import type { ActiveSession, StandardResponseType } from "../app/app";
 import { StandardError } from "../app/errors";
@@ -28,6 +32,7 @@ import { getSelfAccounts } from "./fetchers/getSelfAccounts";
 import { getSelfProfile } from "./fetchers/getSelfProfile";
 import { getSelfSessions } from "./fetchers/getSelfSessions";
 import { getTasks } from "./fetchers/getTasks";
+import { getUsers } from "./fetchers/getUsers";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -165,6 +170,17 @@ export const queryIndex = {
       queryOptions: {
         queryKey,
         queryFn: () => getLogs(req),
+      },
+    };
+  },
+  users: (req: V1UserGetRequest): QueryObject<V1UserGetResponse> => {
+    const queryKey = [`users`, JSON.stringify(req)];
+
+    return {
+      queryKey,
+      queryOptions: {
+        queryKey,
+        queryFn: () => getUsers(req),
       },
     };
   },

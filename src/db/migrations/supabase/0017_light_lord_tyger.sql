@@ -1,0 +1,1 @@
+CREATE INDEX "appAuth_user_name_fts" ON "app_auth"."user" USING gin (to_tsvector('simple', "name"));

@@ -418,9 +418,9 @@
   }
 }
 
-html,
 body {
-  scrollbar-gutter: stable;
+  min-height: 100.1dvh;
+  scroll-behavior: smooth;
 }
 
 .scrollbar-none::-webkit-scrollbar {

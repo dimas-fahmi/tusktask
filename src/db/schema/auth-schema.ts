@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { boolean, index, text, timestamp } from "drizzle-orm/pg-core";
 import {
   createInsertSchema,
@@ -39,7 +39,16 @@ export const user = appAuthSchema.table(
       .notNull(),
     deletedAt: timestamp("deleted_at", defaultTimestampConfig),
   },
-  (t) => [index("appAuth_user_deletedAt_idx").on(t.deletedAt)],
+  (t) => [
+    // FTS
+    index("appAuth_user_name_fts").using(
+      "gin",
+      sql`to_tsvector('simple', ${t.name})`,
+    ),
+
+    // Indexes
+    index("appAuth_user_deletedAt_idx").on(t.deletedAt),
+  ],
 );
 
 export type UserType = typeof user.$inferSelect;
