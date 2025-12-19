@@ -34,7 +34,7 @@ export const notification = pgTable(
     taskId: uuid("task_id").references(() => task.id, {
       onDelete: "set null",
     }),
-    eventType: eventTypeEnum("event_Type"),
+    eventType: eventTypeEnum("event_type"),
     createdAt: timestamp("created_at", defaultTimestampConfig)
       .notNull()
       .defaultNow(),

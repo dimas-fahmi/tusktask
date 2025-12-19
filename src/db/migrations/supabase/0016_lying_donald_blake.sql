@@ -1,0 +1,1 @@
+ALTER TABLE "notification" RENAME COLUMN "event_Type" TO "event_type";
