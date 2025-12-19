@@ -1,3 +1,4 @@
+import type { NotificationType } from "@/src/db/schema/notification";
 import type {
   ProjectMembershipType,
   ProjectType,
@@ -96,4 +97,11 @@ export type ExtendedTaskType = TaskType & {
   completedBy?: SanitizedUserType | null;
   project?: ProjectType | null;
   parent?: TaskType | null;
+};
+
+// NOTIFICATIONS
+export type ExtendedNotificationType = NotificationType & {
+  actor?: SanitizedUserType | null;
+  project?: ProjectType | null;
+  task?: TaskType | null;
 };

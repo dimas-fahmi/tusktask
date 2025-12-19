@@ -4,15 +4,13 @@ import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
 import { db } from "@/src/db";
-import {
-  type NotificationType,
-  notification,
-} from "@/src/db/schema/notification";
+import { notification } from "@/src/db/schema/notification";
 import {
   type ProjectMembershipType,
   projectMembership,
 } from "@/src/db/schema/project";
 import type {
+  ExtendedNotificationType,
   StandardResponseType,
   StandardV1GetResponse,
 } from "@/src/lib/app/app";
@@ -40,7 +38,7 @@ export type V1NotificationLogGetRequest = z.infer<
   typeof v1NotificationLogGetRequestSchema
 >;
 export type V1NotificationLogGetResult = StandardV1GetResponse<
-  NotificationType[]
+  ExtendedNotificationType[]
 >;
 export type V1NotificationLogGetResponse =
   StandardResponseType<V1NotificationLogGetResult>;
