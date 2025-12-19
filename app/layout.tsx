@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${interFont.variable} ${oswaldFont.variable} antialiased`}
+        className={`${interFont.variable} ${oswaldFont.variable} antialiased custom-scrollbar`}
       >
         <QueryClientProvider client={queryClient}>
           <NotificationProvider>

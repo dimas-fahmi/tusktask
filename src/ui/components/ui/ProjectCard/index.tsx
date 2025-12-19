@@ -56,7 +56,7 @@ const ProjectCard = ({ project }: { project?: ExtendedProjectType }) => {
         </button>
       </ContextMenuTrigger>
 
-      <ProjectCardContextMenu />
+      <ProjectCardContextMenu project={project} />
     </ContextMenu>
   );
 };

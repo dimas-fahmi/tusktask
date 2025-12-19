@@ -82,10 +82,12 @@ export type ActiveSession = {
 // PROJECTS
 export type ExtendedProjectMembershipType = ProjectMembershipType & {
   member?: SanitizedUserType | null;
+  isPending?: boolean;
 };
 
 export type ExtendedProjectType = ProjectType & {
   memberships: ExtendedProjectMembershipType[];
+  isPending?: boolean;
 };
 
 // TASKS
@@ -97,6 +99,7 @@ export type ExtendedTaskType = TaskType & {
   completedBy?: SanitizedUserType | null;
   project?: ProjectType | null;
   parent?: TaskType | null;
+  isPending?: boolean;
 };
 
 // NOTIFICATIONS
@@ -104,4 +107,5 @@ export type ExtendedNotificationType = NotificationType & {
   actor?: SanitizedUserType | null;
   project?: ProjectType | null;
   task?: TaskType | null;
+  isPending?: boolean;
 };

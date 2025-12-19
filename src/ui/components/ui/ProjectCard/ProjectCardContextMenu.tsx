@@ -1,53 +1,43 @@
+"use client";
+
+import Link from "next/link";
+import type { ExtendedProjectType } from "@/src/lib/app/app";
 import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
   ContextMenuSeparator,
-  ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
 } from "@/src/ui/shadcn/components/ui/context-menu";
 
-const ProjectCardContextMenu = () => {
+const ProjectCardContextMenu = ({
+  project,
+}: {
+  project?: ExtendedProjectType;
+}) => {
   return (
-    <ContextMenuContent className="w-52">
-      <ContextMenuItem inset>
-        Back
-        <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+    <ContextMenuContent className="min-w-52 max-w-52">
+      {/* Top Level */}
+      <ContextMenuItem
+        inset
+        disabled={!project?.id || project?.isPending}
+        asChild
+      >
+        <Link href={`/dashboard/projects/${project?.id}`}>Open</Link>
       </ContextMenuItem>
-      <ContextMenuItem inset disabled>
-        Forward
-        <ContextMenuShortcut>⌘]</ContextMenuShortcut>
-      </ContextMenuItem>
-      <ContextMenuItem inset>
-        Reload
-        <ContextMenuShortcut>⌘R</ContextMenuShortcut>
-      </ContextMenuItem>
-      <ContextMenuSub>
-        <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
-        <ContextMenuSubContent className="w-44">
-          <ContextMenuItem>Save Page...</ContextMenuItem>
-          <ContextMenuItem>Create Shortcut...</ContextMenuItem>
-          <ContextMenuItem>Name Window...</ContextMenuItem>
-          <ContextMenuSeparator />
-          <ContextMenuItem>Developer Tools</ContextMenuItem>
-          <ContextMenuSeparator />
-          <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
-        </ContextMenuSubContent>
-      </ContextMenuSub>
+
+      {/* Memberships */}
       <ContextMenuSeparator />
-      <ContextMenuCheckboxItem checked>Show Bookmarks</ContextMenuCheckboxItem>
-      <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
+
+      {/* Category Level */}
       <ContextMenuSeparator />
-      <ContextMenuRadioGroup value="pedro">
-        <ContextMenuLabel inset>People</ContextMenuLabel>
-        <ContextMenuRadioItem value="pedro">Pedro Duarte</ContextMenuRadioItem>
-        <ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>
-      </ContextMenuRadioGroup>
+      <ContextMenuCheckboxItem>Archived</ContextMenuCheckboxItem>
+      <ContextMenuCheckboxItem>Pinned</ContextMenuCheckboxItem>
+
+      {/* Advance Level */}
+      <ContextMenuSeparator />
+      <ContextMenuItem inset variant="destructive">
+        Delete
+      </ContextMenuItem>
     </ContextMenuContent>
   );
 };

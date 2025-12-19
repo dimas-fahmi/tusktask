@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { NO_IMAGE_FALLBACK_SQUARE } from "@/src/lib/app/configs";
 import type { SanitizedUserType } from "@/src/lib/zod";
 import {
@@ -5,18 +8,29 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/src/ui/shadcn/components/ui/avatar";
+import UserDialog from "../UserDialog";
 
 const AvatarButton = ({ user }: { user: SanitizedUserType }) => {
+  const [userDialogOpen, setUserDialogOpen] = useState(false);
+
   return (
-    <button type="button">
-      <Avatar>
-        <AvatarImage
-          src={user?.image || NO_IMAGE_FALLBACK_SQUARE}
-          alt={`@${user?.username || user?.name}`}
-        />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-    </button>
+    <>
+      <button type="button" onClick={() => setUserDialogOpen(true)}>
+        <Avatar>
+          <AvatarImage
+            src={user?.image || NO_IMAGE_FALLBACK_SQUARE}
+            alt={`@${user?.username || user?.name}`}
+          />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </button>
+
+      <UserDialog
+        open={userDialogOpen}
+        onOpenChange={setUserDialogOpen}
+        userId={user.id}
+      />
+    </>
   );
 };
 
