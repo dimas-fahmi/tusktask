@@ -419,7 +419,6 @@
 }
 
 body {
-  scrollbar-gutter: gutter;
   min-height: 100.1dvh;
   scroll-behavior: smooth;
 }
