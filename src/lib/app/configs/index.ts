@@ -86,7 +86,7 @@ export const EVENTS_METADATA: Record<
     icon: MessageCircle,
   },
   requested_a_promotion: {
-    labelProjectLog: "Requested a a promotion",
+    labelProjectLog: "Requested a promotion",
     icon: ChevronUp,
   },
   updated_a_project: {
