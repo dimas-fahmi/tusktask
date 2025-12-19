@@ -16,7 +16,7 @@ import {
 } from "drizzle-zod";
 import type { NotificationPayloadType } from "@/src/lib/zod/notification";
 import { user } from "./auth-schema";
-import { defaultTimestampConfig } from "./configs";
+import { defaultTimestampConfig, eventTypeEnum } from "./configs";
 import { project } from "./project";
 import { task } from "./task";
 
@@ -34,6 +34,7 @@ export const notification = pgTable(
     taskId: uuid("task_id").references(() => task.id, {
       onDelete: "set null",
     }),
+    eventType: eventTypeEnum("event_type"),
     createdAt: timestamp("created_at", defaultTimestampConfig)
       .notNull()
       .defaultNow(),
