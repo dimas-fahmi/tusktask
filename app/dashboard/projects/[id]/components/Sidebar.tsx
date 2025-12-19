@@ -34,23 +34,25 @@ const Sidebar = ({ project }: { project?: ExtendedProjectType }) => {
         <StatisticsTable project={project} />
       </div>
 
-      {/* Controller */}
-      <div className="grid grid-cols-2 gap-2">
-        <Button>
-          <CirclePlus /> New Task
-        </Button>
-        <Button variant={"outline"}>
-          <UserPlus /> Invite
-        </Button>
-      </div>
+      <div className="space-y-2">
+        {/* Controller */}
+        <div className="grid grid-cols-2 gap-2">
+          <Button>
+            <CirclePlus /> New Task
+          </Button>
+          <Button variant={"outline"}>
+            <UserPlus /> Invite
+          </Button>
+        </div>
 
-      {/* Logs */}
-      <div className="grid grid-cols-1">
-        <Button variant={"outline"} asChild disabled={!project?.id}>
-          <Link href={`/dashboard/projects/${project?.id}/log`}>
-            <Logs /> <span>Logs</span>
-          </Link>
-        </Button>
+        {/* Logs */}
+        <div className="grid grid-cols-1">
+          <Button variant={"outline"} asChild disabled={!project?.id}>
+            <Link href={`/dashboard/projects/${project?.id}/log`}>
+              <Logs /> <span>Logs</span>
+            </Link>
+          </Button>
+        </div>
       </div>
     </aside>
   );

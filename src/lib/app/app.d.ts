@@ -26,7 +26,8 @@ export type ResultCode =
   | "resource_not_found"
   | "unnecessary_operation"
   | "resource_duplication"
-  | "resource_available";
+  | "resource_available"
+  | "server_error";
 
 export type HttpStatusCode =
   | 200 // OK
@@ -82,6 +83,7 @@ export type ActiveSession = {
 // PROJECTS
 export type ExtendedProjectMembershipType = ProjectMembershipType & {
   member?: SanitizedUserType | null;
+  project?: ProjectType | null;
   isPending?: boolean;
 };
 
@@ -108,4 +110,9 @@ export type ExtendedNotificationType = NotificationType & {
   project?: ProjectType | null;
   task?: TaskType | null;
   isPending?: boolean;
+};
+
+// USERS
+export type ExtendedSanitizedUserType = SanitizedUserType & {
+  projectMemberships?: ProjectMembershipType[] | null;
 };

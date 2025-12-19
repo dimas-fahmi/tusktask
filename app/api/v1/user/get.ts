@@ -6,6 +6,7 @@ import z, { prettifyError } from "zod";
 import { db } from "@/src/db";
 import { user } from "@/src/db/schema/auth-schema";
 import type {
+  ExtendedSanitizedUserType,
   StandardResponseType,
   StandardV1GetResponse,
 } from "@/src/lib/app/app";
@@ -14,7 +15,7 @@ import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { getLimitAndOffset, getTotalPages } from "@/src/lib/utils/pagination";
-import { type SanitizedUserType, usernameSchema } from "@/src/lib/zod";
+import { usernameSchema } from "@/src/lib/zod";
 
 const PATH = "V1_USER_GET" as const;
 
@@ -27,7 +28,9 @@ export const v1UserGetRequestSchema = z.object({
 });
 
 export type V1UserGetRequest = z.infer<typeof v1UserGetRequestSchema>;
-export type V1UserGetResult = StandardV1GetResponse<SanitizedUserType[]>;
+export type V1UserGetResult = StandardV1GetResponse<
+  ExtendedSanitizedUserType[]
+>;
 export type V1UserGetResponse = StandardResponseType<V1UserGetResult>;
 
 const limiter = rateLimiter({
@@ -131,6 +134,9 @@ export async function v1UserGet(request: NextRequest) {
         name: true,
         username: true,
         image: true,
+      },
+      with: {
+        projectMemberships: true,
       },
       limit,
       offset,
