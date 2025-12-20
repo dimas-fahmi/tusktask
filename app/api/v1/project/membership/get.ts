@@ -1,5 +1,14 @@
 import { Ratelimit } from "@upstash/ratelimit";
-import { and, count, eq, gt, lt, type SQL } from "drizzle-orm";
+import {
+  and,
+  count,
+  eq,
+  gt,
+  isNotNull,
+  isNull,
+  lt,
+  type SQL,
+} from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
@@ -20,7 +29,7 @@ const PATH = "V1_PROJECT_MEMBERSHIP_GET";
 
 export const v1ProjectMembershipGetRequestSchema = z.object({
   projectId: z.uuid().optional(),
-  userId: z.uuid().optional(),
+  userId: z.string().optional(),
   type: projectMembershipRoleTypeSchema.optional(),
 
   createdAtGt: z.coerce.date().optional(),
@@ -148,6 +157,15 @@ export async function v1ProjectMembershipGet(request: NextRequest) {
   // Search by updatedAtLt
   if (parameters?.updatedAtLt) {
     where.push(lt(projectMembership.updatedAt, parameters.updatedAtLt));
+  }
+
+  // Search by deletion status
+  if (typeof parameters?.isDeleted === "boolean") {
+    if (parameters.isDeleted) {
+      where.push(isNotNull(projectMembership.deletedAt));
+    } else {
+      where.push(isNull(projectMembership.deletedAt));
+    }
   }
 
   // Order

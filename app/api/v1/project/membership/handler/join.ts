@@ -61,7 +61,7 @@ export async function join(
         throw new StandardError(
           "bad_request",
           "Invitation is revoked or invalid",
-          500,
+          400,
           "INVALID_INVITATION",
         );
       }
@@ -125,8 +125,8 @@ export async function join(
         id: notId,
         payload: {
           event: "joined_to_a_project",
-          actor: not.payload.actor,
-          target: not.payload.target,
+          actor: not.payload.target,
+          invitedBy: not.payload.actor,
           project: not.payload.project,
           role: not.payload.role,
           message: parameters?.message,

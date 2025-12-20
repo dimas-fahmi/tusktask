@@ -1,5 +1,5 @@
 import type { Session } from "better-auth";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/src/db";
 import { user } from "@/src/db/schema/auth-schema";
 import {
@@ -43,7 +43,10 @@ export async function invite(
       let memberships: ExtendedProjectMembershipType[] | undefined;
       try {
         memberships = await tx.query.projectMembership.findMany({
-          where: and(eq(projectMembership.projectId, parameters.projectId)),
+          where: and(
+            eq(projectMembership.projectId, parameters.projectId),
+            isNull(projectMembership.deletedAt),
+          ),
           with: {
             member: {
               columns: {

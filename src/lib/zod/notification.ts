@@ -28,11 +28,11 @@ export const notificationPayloadSchema = z.union([
     message: notificationMessageTypeSchema.optional(),
   }),
 
-  // invited_to_a_project
+  // joined_to_a_project
   z.object({
     event: z.literal("joined_to_a_project"),
     actor: sanitizedUserTypeSchema,
-    target: sanitizedUserTypeSchema,
+    invitedBy: sanitizedUserTypeSchema,
     project: projectSchema,
     role: projectMembershipRoleTypeSchema,
     message: notificationMessageTypeSchema.optional(),
