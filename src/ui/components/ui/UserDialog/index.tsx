@@ -1,8 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
+import { MessageCircle, UserPlus } from "lucide-react";
+import { authClient } from "@/src/lib/auth/client";
 import { queryIndex } from "@/src/lib/queries";
 import { Avatar, AvatarImage } from "@/src/ui/shadcn/components/ui/avatar";
+import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -23,6 +27,9 @@ const UserDialog = ({ open, onOpenChange, userId }: UserDialogProps) => {
   });
   const user = userQueryResult?.result?.result?.[0];
 
+  const { data: session } = authClient.useSession();
+  const isCurrentUser = session?.user?.id === userId;
+
   return (
     <Dialog
       open={open}
@@ -32,7 +39,7 @@ const UserDialog = ({ open, onOpenChange, userId }: UserDialogProps) => {
       }}
     >
       <DialogContent>
-        <DialogHeader className="flex h-fit m-0 p-0 flex-col items-center">
+        <DialogHeader className="relative flex h-fit m-0 p-0 flex-col items-center">
           <Avatar className="w-32 h-32">
             {user?.image && (
               <AvatarImage
@@ -50,6 +57,33 @@ const UserDialog = ({ open, onOpenChange, userId }: UserDialogProps) => {
             </DialogDescription>
           </div>
         </DialogHeader>
+
+        {/* Content */}
+        <div className="grid grid-cols-1 gap-3">
+          {/* Invite & Send Message */}
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant={"outline"} disabled>
+              <MessageCircle /> Message
+            </Button>
+            <Button variant={"outline"} disabled={isCurrentUser}>
+              <UserPlus /> Invite
+            </Button>
+          </div>
+
+          {/* Close */}
+          <div className="grid grid-cols-1">
+            <DialogClose asChild>
+              <Button>Close</Button>
+            </DialogClose>
+          </div>
+        </div>
+
+        {/* Current User Flag */}
+        {isCurrentUser && (
+          <div className="absolute top-3 right-3 text-xs font-light py-2 px-4 rounded-xl bg-accent text-accent-foreground">
+            Your Profile
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

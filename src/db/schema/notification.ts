@@ -38,6 +38,7 @@ export const notification = pgTable(
     createdAt: timestamp("created_at", defaultTimestampConfig)
       .notNull()
       .defaultNow(),
+    deletedAt: timestamp("deleted_at", defaultTimestampConfig),
   },
   (t) => [
     // Indexes

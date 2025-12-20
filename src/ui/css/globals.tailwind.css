@@ -15,8 +15,8 @@
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(95.815% 0.00011 271.152);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --accent: oklch(60.793% 0.17613 251.488);
+  --accent-foreground: oklch(100% 0.00011 271.152);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
   --success: oklch(35.47% 47.18 144.16);
@@ -138,7 +138,7 @@
   --destructive-foreground: oklch(98% 0.01 330);
   --success: oklch(70% 0.1 150);
   --success-foreground: oklch(98% 0.01 330);
-  --border: oklch(82% 0.008 330);
+  --border: oklch(61.671% 0.00007 271.152);
   --input: oklch(97% 0.01 330);
   --ring: oklch(50% 0.13 330);
   --chart-1: oklch(60% 0.14 330);
@@ -165,10 +165,6 @@
   --sidebar-accent-foreground: oklch(15% 0.02 300);
   --sidebar-border: oklch(87% 0.008 330);
   --sidebar-ring: oklch(50% 0.13 330);
-  --glowing-color-card: oklch(97% 0.01 330);
-  --glowing-color-1: oklch(50% 0.13 330);
-  --glowing-color-2: oklch(65% 0.14 340);
-  --glowing-color-3: oklch(75% 0.09 120);
 }
 
 .color-theme-brownBear {
@@ -376,10 +372,6 @@
   --sidebar-accent-foreground: oklch(15% 0.03 40);
   --sidebar-border: oklch(88% 0.005 60);
   --sidebar-ring: oklch(70% 0.07 65);
-  --glowing-color-card: oklch(97% 0.01 60);
-  --glowing-color-1: oklch(70% 0.07 65);
-  --glowing-color-2: oklch(75% 0.08 75);
-  --glowing-color-3: oklch(80% 0.06 110);
 }
 
 @layer base {

@@ -10,6 +10,7 @@ import {
   type LucideIcon,
   MessageCircle,
   UserLock,
+  UserRoundCheck,
   UserRoundPlus,
 } from "lucide-react";
 
@@ -38,6 +39,7 @@ export const EVENT_TYPES = [
   "suspended",
   "updated_a_project",
   "updated_a_task",
+  "joined_to_a_project",
 ] as const;
 
 export type EventMetadataType = {
@@ -92,5 +94,9 @@ export const EVENTS_METADATA: Record<
   updated_a_project: {
     labelProjectLog: "Updated this project",
     icon: FolderPen,
+  },
+  joined_to_a_project: {
+    labelProjectLog: "Joined this project",
+    icon: UserRoundCheck,
   },
 };

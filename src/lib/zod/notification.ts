@@ -28,6 +28,16 @@ export const notificationPayloadSchema = z.union([
     message: notificationMessageTypeSchema.optional(),
   }),
 
+  // joined_to_a_project
+  z.object({
+    event: z.literal("joined_to_a_project"),
+    actor: sanitizedUserTypeSchema,
+    invitedBy: sanitizedUserTypeSchema,
+    project: projectSchema,
+    role: projectMembershipRoleTypeSchema,
+    message: notificationMessageTypeSchema.optional(),
+  }),
+
   // requested_a_promotion
   z.object({
     event: z.literal("requested_a_promotion"),
