@@ -15,7 +15,7 @@ import { prettifyError, z } from "zod";
 import { db } from "@/src/db";
 import {
   type NotificationType,
-  notificationReceive,
+  notificationReceipt,
 } from "@/src/db/schema/notification";
 import type {
   StandardResponseType,
@@ -111,35 +111,35 @@ export async function v1NotificationGet(request: NextRequest) {
   const where: SQL<unknown>[] = [];
 
   // Always search by userId
-  where.push(eq(notificationReceive.userId, user.id));
+  where.push(eq(notificationReceipt.userId, user.id));
 
   // Search by ID
   if (parameters?.id) {
-    where.push(eq(notificationReceive.notificationId, parameters.id));
+    where.push(eq(notificationReceipt.notificationId, parameters.id));
   }
 
   // Filter by archive
   if (typeof parameters?.isArchived === "boolean") {
-    where.push(eq(notificationReceive.isArchived, parameters.isArchived));
+    where.push(eq(notificationReceipt.isArchived, parameters.isArchived));
   }
 
   // Filter by read status
   if (typeof parameters?.isRead === "boolean") {
     if (parameters.isRead) {
-      where.push(isNotNull(notificationReceive.readAt));
+      where.push(isNotNull(notificationReceipt.readAt));
     } else {
-      where.push(isNull(notificationReceive.readAt));
+      where.push(isNull(notificationReceipt.readAt));
     }
   }
 
   // Filter by createdAtGt
   if (parameters?.createdAtGt) {
-    where.push(gt(notificationReceive.createdAt, parameters.createdAtGt));
+    where.push(gt(notificationReceipt.createdAt, parameters.createdAtGt));
   }
 
   // Filter by createdAtLt
   if (parameters?.createdAtLt) {
-    where.push(lt(notificationReceive.createdAt, parameters.createdAtLt));
+    where.push(lt(notificationReceipt.createdAt, parameters.createdAtLt));
   }
 
   const { limit, offset } = getLimitAndOffset(parameters?.page || 1);
@@ -148,7 +148,7 @@ export async function v1NotificationGet(request: NextRequest) {
 
   // Execute
   try {
-    const receives = await db.query.notificationReceive.findMany({
+    const receives = await db.query.notificationReceipt.findMany({
       where: and(...where),
       with: {
         notification: true,
@@ -182,7 +182,7 @@ export async function v1NotificationGet(request: NextRequest) {
 
     const [countResult] = await db
       .select({ count: count() })
-      .from(notificationReceive)
+      .from(notificationReceipt)
       .where(and(...where));
     const totalResults = countResult?.count;
     const totalPages = getTotalPages(totalResults);

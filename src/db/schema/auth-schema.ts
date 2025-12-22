@@ -12,7 +12,7 @@ import {
   themeEnum,
 } from "./configs";
 import { image } from "./image";
-import { notificationReceive } from "./notification";
+import { notificationReceipt } from "./notification";
 import { project, projectMembership } from "./project";
 import { task } from "./task";
 
@@ -122,7 +122,7 @@ export const userRelations = relations(user, ({ many }) => ({
   projects: many(project),
   tasks: many(task),
   projectMemberships: many(projectMembership),
-  notificationsReceived: many(notificationReceive),
+  notificationsReceived: many(notificationReceipt),
   images: many(image),
 }));
 

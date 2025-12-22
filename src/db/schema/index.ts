@@ -13,8 +13,8 @@ import { image, imageRelations } from "./image";
 // Notification
 import {
   notification,
-  notificationReceive,
-  notificationReceiveRelations,
+  notificationReceipt,
+  notificationReceiptRelations,
   notificationRelations,
 } from "./notification";
 // Project Schema
@@ -51,8 +51,8 @@ const schema = {
   // Notification
   notification,
   notificationRelations,
-  notificationReceive,
-  notificationReceiveRelations,
+  notificationReceipt,
+  notificationReceiptRelations,
 
   // Image
   image,

@@ -2,11 +2,11 @@ import type { Session } from "better-auth";
 import { eq } from "drizzle-orm";
 import { db } from "@/src/db";
 import {
-  type InsertNotificationReceiveType,
+  type InsertNotificationReceiptType,
   type InsertNotificationType,
   type NotificationType,
   notification,
-  notificationReceive,
+  notificationReceipt,
 } from "@/src/db/schema/notification";
 import {
   type InsertProjectMembershipType,
@@ -148,7 +148,7 @@ export async function join(
       }
 
       if (isMultiMembersProject) {
-        const receipts: InsertNotificationReceiveType[] = memberships
+        const receipts: InsertNotificationReceiptType[] = memberships
           .filter((m) => m.userId !== session.userId)
           .map((m) => ({
             notificationId: notId,
@@ -156,7 +156,7 @@ export async function join(
           }));
 
         try {
-          await tx.insert(notificationReceive).values(receipts);
+          await tx.insert(notificationReceipt).values(receipts);
         } catch (error) {
           throw new StandardError(
             "unknown_database_error",
