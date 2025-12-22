@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { projectSchema } from "@/src/db/schema/project";
 import { taskSchema } from "@/src/db/schema/task";
+import { EVENT_TYPES } from "../app/configs";
 import { PROJECT_MEMBERSHIP_ROLES } from "../app/projectRBAC";
 import { sanitizedUserTypeSchema } from ".";
 
@@ -16,6 +17,8 @@ export const projectMembershipRoleTypeSchema = z.enum(PROJECT_MEMBERSHIP_ROLES);
 export type ProjectMembershipRoleType = z.infer<
   typeof projectMembershipRoleTypeSchema
 >;
+
+export const notificationEventTypeSchema = z.enum(EVENT_TYPES);
 
 export const notificationPayloadSchema = z.union([
   // invited_to_a_project
