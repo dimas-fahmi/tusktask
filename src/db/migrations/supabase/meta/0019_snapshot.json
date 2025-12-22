@@ -111,12 +111,8 @@
           "tableFrom": "account",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -204,12 +200,8 @@
           "tableFrom": "session",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -219,9 +211,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -363,16 +353,12 @@
         "user_username_unique": {
           "name": "user_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         },
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -578,12 +564,8 @@
           "tableFrom": "image",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -702,12 +684,8 @@
           "tableFrom": "notification",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "actor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["actor_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -715,12 +693,8 @@
           "name": "notification_project_id_project_id_fk",
           "tableFrom": "notification",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -728,12 +702,8 @@
           "name": "notification_task_id_task_id_fk",
           "tableFrom": "notification",
           "tableTo": "task",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -818,12 +788,8 @@
           "name": "notification_receipt_notification_id_notification_id_fk",
           "tableFrom": "notification_receipt",
           "tableTo": "notification",
-          "columnsFrom": [
-            "notification_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["notification_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -832,12 +798,8 @@
           "tableFrom": "notification_receipt",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -845,10 +807,7 @@
       "compositePrimaryKeys": {
         "public_notificationReceipt_cpk": {
           "name": "public_notificationReceipt_cpk",
-          "columns": [
-            "notification_id",
-            "user_id"
-          ]
+          "columns": ["notification_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1052,12 +1011,8 @@
           "tableFrom": "project",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "created_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1066,12 +1021,8 @@
           "tableFrom": "project",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1131,12 +1082,8 @@
           "name": "project_membership_project_id_project_id_fk",
           "tableFrom": "project_membership",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1145,12 +1092,8 @@
           "tableFrom": "project_membership",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1158,10 +1101,7 @@
       "compositePrimaryKeys": {
         "public_projectMembership_cpk": {
           "name": "public_projectMembership_cpk",
-          "columns": [
-            "project_id",
-            "user_id"
-          ]
+          "columns": ["project_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1556,12 +1496,8 @@
           "tableFrom": "task",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "created_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1570,12 +1506,8 @@
           "tableFrom": "task",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1584,12 +1516,8 @@
           "tableFrom": "task",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "claimed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["claimed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1598,12 +1526,8 @@
           "tableFrom": "task",
           "tableTo": "user",
           "schemaTo": "app_auth",
-          "columnsFrom": [
-            "completed_by_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["completed_by_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1611,12 +1535,8 @@
           "name": "task_project_id_project_id_fk",
           "tableFrom": "task",
           "tableTo": "project",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1624,12 +1544,8 @@
           "name": "public_task_parentId_fk",
           "tableFrom": "task",
           "tableTo": "task",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1663,50 +1579,27 @@
     "public.media_ownership_enum": {
       "name": "media_ownership_enum",
       "schema": "public",
-      "values": [
-        "system",
-        "user_owned"
-      ]
+      "values": ["system", "user_owned"]
     },
     "public.media_storage": {
       "name": "media_storage",
       "schema": "public",
-      "values": [
-        "internal",
-        "external"
-      ]
+      "values": ["internal", "external"]
     },
     "app_auth.onboarding_status_enum": {
       "name": "onboarding_status_enum",
       "schema": "app_auth",
-      "values": [
-        "name",
-        "username",
-        "image",
-        "settings",
-        "completed"
-      ]
+      "values": ["name", "username", "image", "settings", "completed"]
     },
     "public.project_membership_type_enum": {
       "name": "project_membership_type_enum",
       "schema": "public",
-      "values": [
-        "owner",
-        "admin",
-        "member",
-        "observer"
-      ]
+      "values": ["owner", "admin", "member", "observer"]
     },
     "public.task_status_enum": {
       "name": "task_status_enum",
       "schema": "public",
-      "values": [
-        "pending",
-        "on_process",
-        "aborted",
-        "delayed",
-        "continued"
-      ]
+      "values": ["pending", "on_process", "aborted", "delayed", "continued"]
     },
     "app_auth.theme_enum": {
       "name": "theme_enum",

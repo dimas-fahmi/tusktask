@@ -1,3 +1,4 @@
+import { Ratelimit } from "@upstash/ratelimit";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
@@ -55,7 +56,9 @@ export type V1ProjectMembershipPatchRequest = z.infer<
 export type V1ProjectMembershipPatchResponse =
   StandardResponseType<ProjectMembershipType>;
 
-const limiter = rateLimiter();
+const limiter = rateLimiter({
+  limiter: Ratelimit.slidingWindow(20, "10s"),
+});
 
 export async function v1ProjectMembershipPatch(request: NextRequest) {
   // Rate limiter
