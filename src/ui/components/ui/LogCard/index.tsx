@@ -8,6 +8,7 @@ import type { ExtendedNotificationType } from "@/src/lib/app/app";
 import { EVENTS_METADATA } from "@/src/lib/app/configs";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import { cn } from "@/src/ui/shadcn/lib/utils";
+import Message from "./sections/Message";
 
 export const LogCard = ({ log }: { log: ExtendedNotificationType }) => {
   const [expand, setExpand] = useState(false);
@@ -66,24 +67,24 @@ export const LogCard = ({ log }: { log: ExtendedNotificationType }) => {
             ? { height: "auto", marginTop: "1rem" }
             : { height: 0, marginTop: 0 }
         }
-        transition={{
-          duration: 0.3,
-        }}
+        transition={
+          expand
+            ? {
+                duration: 0.8,
+                type: "spring",
+                stiffness: 80,
+                damping: 8,
+              }
+            : {
+                duration: 0.3,
+              }
+        }
         className="overflow-hidden"
       >
         {/* wrapper */}
-        <div className="p-4 border rounded-lg space-y-4 mx-4">
-          {/* Subject */}
-          <div>
-            <span className="text-xs font-light">Subject</span>
-            <h1>{log?.payload?.message?.subject}</h1>
-          </div>
-
-          {/* Description */}
-          <div>
-            <span className="text-xs font-light">Message</span>
-            <p className="text-sm">{log?.payload?.message?.message}</p>
-          </div>
+        <div className="p-4 pt-0 space-y-6">
+          {/* Message Container */}
+          <Message message={log?.payload?.message} />
         </div>
       </motion.div>
     </>

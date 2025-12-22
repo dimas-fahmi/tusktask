@@ -5,6 +5,16 @@ export const PROJECT_MEMBERSHIP_ROLES = [
   "observer",
 ] as const;
 
+export const PROJECT_MEMBERSHIP_ROLE_HIERARCHY: Record<
+  (typeof PROJECT_MEMBERSHIP_ROLES)[number],
+  number
+> = {
+  owner: 0,
+  admin: 1,
+  member: 2,
+  observer: 3,
+};
+
 export interface PROJECT_PERMISSIONS {
   // Task Management
   createTask: boolean;
@@ -18,10 +28,6 @@ export interface PROJECT_PERMISSIONS {
 
   // Project Management
   updateProject: boolean;
-  promoteAdmin: boolean;
-  demoteAdmin: boolean;
-  promoteMember: boolean;
-  demoteMember: boolean;
   inviteMember: boolean;
   suspendMember: boolean;
   deleteMembership: boolean;
@@ -44,10 +50,6 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
 
     // Project Management
     updateProject: true,
-    promoteAdmin: true,
-    demoteAdmin: true,
-    promoteMember: true,
-    demoteMember: true,
     inviteMember: true,
     suspendMember: true,
     deleteMembership: true,
@@ -65,10 +67,6 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
 
     // Project Management
     updateProject: true,
-    promoteAdmin: false,
-    demoteAdmin: false,
-    promoteMember: true,
-    demoteMember: true,
     inviteMember: true,
     suspendMember: true,
     deleteMembership: false,
@@ -86,10 +84,6 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
 
     // Project Management
     updateProject: false,
-    promoteAdmin: false,
-    demoteAdmin: false,
-    promoteMember: false,
-    demoteMember: false,
     inviteMember: false,
     suspendMember: false,
     deleteMembership: false,
@@ -107,10 +101,6 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
 
     // Project Management
     updateProject: false,
-    promoteAdmin: false,
-    demoteAdmin: false,
-    promoteMember: false,
-    demoteMember: false,
     inviteMember: false,
     suspendMember: false,
     deleteMembership: false,

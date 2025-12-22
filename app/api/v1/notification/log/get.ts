@@ -20,6 +20,7 @@ import { rateLimiter } from "@/src/lib/redis/rateLimiter";
 import { createResponse } from "@/src/lib/utils/createResponse";
 import { getClientIp } from "@/src/lib/utils/getClientIp";
 import { getLimitAndOffset, getTotalPages } from "@/src/lib/utils/pagination";
+import { notificationEventTypeSchema } from "@/src/lib/zod/notification";
 
 const PATH = "V1_NOTIFICATION_LOG_GET" as const;
 
@@ -31,6 +32,10 @@ export const v1NotificationLogGetRequestSchema = z.object({
   createdAtGt: z.coerce.date().optional(),
   createdAtLt: z.coerce.date().optional(),
 
+  eventType: notificationEventTypeSchema.optional(),
+
+  orderDirection: z.enum(["asc", "desc"]).optional(),
+  orderBy: z.enum(["createdAt", "deletedAt", "eventType"]).optional(),
   page: z.coerce.number().min(1).optional(),
 });
 
@@ -118,6 +123,11 @@ export async function v1NotificationLogGet(request: NextRequest) {
     where.push(eq(notification.actorId, parameters.actorId));
   }
 
+  // Filter by eventType
+  if (parameters?.eventType) {
+    where.push(eq(notification.eventType, parameters.eventType));
+  }
+
   // Search by createdAtGt
   if (parameters?.createdAtGt) {
     where.push(gt(notification.createdAt, parameters.createdAtGt));
@@ -129,6 +139,8 @@ export async function v1NotificationLogGet(request: NextRequest) {
 
   // Pagination
   const { limit, offset } = getLimitAndOffset(parameters?.page || 1);
+  const orderDirection = parameters?.orderDirection || "desc";
+  const orderBy = parameters?.orderBy || "createdAt";
 
   // Execution
   try {
@@ -176,6 +188,8 @@ export async function v1NotificationLogGet(request: NextRequest) {
       },
       limit,
       offset,
+      orderBy: (log, { asc, desc }) =>
+        orderDirection === "asc" ? asc(log[orderBy]) : desc(log[orderBy]),
     });
 
     const response: V1NotificationLogGetResult = {

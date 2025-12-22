@@ -49,7 +49,7 @@ const ProjectLogPageIndex = ({ id }: { id: string }) => {
       <Controller id={id} />
 
       {/* Logs */}
-      <div>
+      <div className="space-y-2">
         {Array.isArray(logs) &&
           logs.map((log, index) => (
             <LogCard key={log?.id || `log-${index}`} log={log} />
