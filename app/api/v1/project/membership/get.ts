@@ -186,6 +186,7 @@ export async function v1ProjectMembershipGet(request: NextRequest) {
             image: true,
           },
         },
+        project: true,
       },
       orderBy: (projectMembership, { asc, desc }) =>
         orderDirection === "asc"

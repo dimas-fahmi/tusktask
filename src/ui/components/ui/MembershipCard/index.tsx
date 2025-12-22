@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { UserRoundPen } from "lucide-react";
+import { useState } from "react";
 import type { ExtendedProjectMembershipType } from "@/src/lib/app/app";
 import { PROJECT_MEMBERSHIP_ROLE_PERMISSIONS } from "@/src/lib/app/projectRBAC";
 import { authClient } from "@/src/lib/auth/client";
@@ -18,6 +19,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/src/ui/shadcn/components/ui/tooltip";
+import EditMembershipDialog from "../EditMembershipDialog";
 import ProjectRoleTag from "./ProjectRoleTag";
 
 const MembershipCard = ({
@@ -27,6 +29,10 @@ const MembershipCard = ({
   membership: ExtendedProjectMembershipType;
   isSupreme?: boolean;
 }) => {
+  // Edit membership dialog state
+  const [EMDOpen, setEMDOpen] = useState(false);
+
+  // Process Membership data
   const { data: session } = authClient.useSession();
   const userId = session?.user?.id;
   const member = membership?.member;
@@ -87,7 +93,6 @@ const MembershipCard = ({
           <p className="text-xs font-extralight">{member?.username}</p>
         </div>
       </div>
-
       {/* Action */}
       <div className="flex gap-1">
         {/* Change Role Button */}
@@ -102,6 +107,9 @@ const MembershipCard = ({
                   !currentUserPermissions?.manageMembership ||
                   isLoadingCurrentUserMembership
                 }
+                onClick={() => {
+                  setEMDOpen(true);
+                }}
               >
                 <UserRoundPen />
               </Button>
@@ -112,6 +120,13 @@ const MembershipCard = ({
           </TooltipContent>
         </Tooltip>
       </div>
+      {membership && (
+        <EditMembershipDialog
+          open={EMDOpen}
+          onOpenChange={setEMDOpen}
+          membership={membership}
+        />
+      )}
     </div>
   );
 };
