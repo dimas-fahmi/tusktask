@@ -2,7 +2,12 @@ import React from "react";
 import { useMediaQuery } from "react-responsive";
 import type { ExtendedProjectMembershipType } from "@/src/lib/app/app";
 import { StandardError } from "@/src/lib/app/errors";
-import { Avatar, AvatarImage } from "@/src/ui/shadcn/components/ui/avatar";
+import { getInitial } from "@/src/lib/utils/getInitial";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/ui/shadcn/components/ui/avatar";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
   Dialog,
@@ -55,6 +60,7 @@ const Desktop = () => {
                 alt={`${member?.name || "User"}'s profile picture`}
               />
             )}
+            <AvatarFallback>{getInitial(member?.name)}</AvatarFallback>
           </Avatar>
           <div>
             <DialogTitle className="font-header text-2xl">

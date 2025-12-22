@@ -60,7 +60,7 @@ const MembershipCard = ({
     }
 
     if (!currentUserPermissions?.manageMembership) {
-      return "You doesn't have permission to manage memberships";
+      return "You don't have permission to manage memberships";
     }
 
     return "Click to manage this user's membership";
