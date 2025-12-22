@@ -251,7 +251,7 @@ export async function v1ProjectMembershipPatch(request: NextRequest) {
         return createResponse(
           "unauthorized",
           "Can't promote higher or equal than your hierarchy",
-          500,
+          403,
         );
       }
     }
@@ -280,6 +280,14 @@ export async function v1ProjectMembershipPatch(request: NextRequest) {
           "Unknown error when updating membership",
           500,
           error,
+        );
+      }
+
+      if (!updatedMembership) {
+        throw new StandardError(
+          "resource_not_found",
+          "Membership not found or already deleted",
+          404,
         );
       }
 
