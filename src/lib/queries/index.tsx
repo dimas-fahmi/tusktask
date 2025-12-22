@@ -14,6 +14,10 @@ import type {
   V1ProjectGetResponse,
 } from "@/app/api/v1/project/get";
 import type {
+  V1ProjectMembershipGetRequest,
+  V1ProjectMembershipGetResponse,
+} from "@/app/api/v1/project/membership/get";
+import type {
   V1TaskGetRequest,
   V1TaskGetResponse,
 } from "@/app/api/v1/task/get";
@@ -27,6 +31,7 @@ import { StandardError } from "../app/errors";
 import { getImage } from "./fetchers/getImage";
 import { getIpInformation } from "./fetchers/getIpInformation";
 import { getLogs } from "./fetchers/getLogs";
+import { getProjectMemberships } from "./fetchers/getProjectMemberships";
 import { getProjects } from "./fetchers/getProjects";
 import { getSelfAccounts } from "./fetchers/getSelfAccounts";
 import { getSelfProfile } from "./fetchers/getSelfProfile";
@@ -183,5 +188,20 @@ export const queryIndex = {
         queryFn: () => getUsers(req),
       },
     };
+  },
+  project: {
+    memberships: (
+      req: V1ProjectMembershipGetRequest,
+    ): QueryObject<V1ProjectMembershipGetResponse> => {
+      const queryKey = [`project`, `memberships`, `${JSON.stringify(req)}`];
+
+      return {
+        queryKey,
+        queryOptions: {
+          queryKey,
+          queryFn: () => getProjectMemberships(req),
+        },
+      };
+    },
   },
 } as const;

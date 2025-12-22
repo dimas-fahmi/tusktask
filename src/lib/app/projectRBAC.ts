@@ -30,6 +30,7 @@ export interface PROJECT_PERMISSIONS {
   updateProject: boolean;
   inviteMember: boolean;
   suspendMember: boolean;
+  manageMembership: boolean;
   deleteMembership: boolean;
 }
 
@@ -52,6 +53,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateProject: true,
     inviteMember: true,
     suspendMember: true,
+    manageMembership: true,
     deleteMembership: true,
   },
   admin: {
@@ -69,6 +71,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateProject: true,
     inviteMember: true,
     suspendMember: true,
+    manageMembership: true,
     deleteMembership: false,
   },
   member: {
@@ -86,6 +89,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateProject: false,
     inviteMember: false,
     suspendMember: false,
+    manageMembership: false,
     deleteMembership: false,
   },
   observer: {
@@ -103,6 +107,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateProject: false,
     inviteMember: false,
     suspendMember: false,
+    manageMembership: false,
     deleteMembership: false,
   },
 } as const;

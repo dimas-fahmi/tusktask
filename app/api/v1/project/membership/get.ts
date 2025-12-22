@@ -28,7 +28,7 @@ import { projectMembershipRoleTypeSchema } from "@/src/lib/zod/notification";
 const PATH = "V1_PROJECT_MEMBERSHIP_GET";
 
 export const v1ProjectMembershipGetRequestSchema = z.object({
-  projectId: z.uuid().optional(),
+  projectId: z.uuid(),
   userId: z.string().optional(),
   type: projectMembershipRoleTypeSchema.optional(),
 
@@ -38,7 +38,7 @@ export const v1ProjectMembershipGetRequestSchema = z.object({
   updatedAtGt: z.coerce.date().optional(),
   updatedAtLt: z.coerce.date().optional(),
 
-  orderBy: z.enum(["createdAt", "updatedAt"]).optional(),
+  orderBy: z.enum(["createdAt", "updatedAt", "type"]).optional(),
   orderDirection: z.enum(["asc", "desc"]).optional(),
   isDeleted: z.stringbool().optional(),
 });
