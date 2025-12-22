@@ -51,6 +51,7 @@ const ChangeMembershipRoleSelect = ({
     isPending: isLoadingCurrentUserMembership,
   } = useQuery({
     ...membershipQuery.queryOptions,
+    enabled: !!userId && !!membership?.projectId
   });
   const currentUserMembership = membershipQueryResult?.result?.result?.[0];
   const currentUserPermissions = currentUserMembership
