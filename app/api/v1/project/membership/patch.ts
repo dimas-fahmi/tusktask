@@ -4,10 +4,10 @@ import type { NextRequest } from "next/server";
 import z, { prettifyError } from "zod";
 import { db } from "@/src/db";
 import {
-  type InsertNotificationReceiveType,
+  type InsertNotificationReceiptType,
   type InsertNotificationType,
   notification,
-  notificationReceive,
+  notificationReceipt,
 } from "@/src/db/schema/notification";
 import {
   type ProjectMembershipType,
@@ -324,7 +324,7 @@ export async function v1ProjectMembershipPatch(request: NextRequest) {
         }
 
         // Receipts
-        const receipts: InsertNotificationReceiveType[] = projectMemberships
+        const receipts: InsertNotificationReceiptType[] = projectMemberships
           .filter((m) => m.userId !== currentUserMembership.userId)
           .map((m) => ({
             notificationId: newNotId,
@@ -332,7 +332,7 @@ export async function v1ProjectMembershipPatch(request: NextRequest) {
           }));
 
         try {
-          await tx.insert(notificationReceive).values(receipts);
+          await tx.insert(notificationReceipt).values(receipts);
         } catch (error) {
           console.log(PATH, "FAILED_NOTIFICATION", error);
         }
@@ -380,7 +380,7 @@ export async function v1ProjectMembershipPatch(request: NextRequest) {
         }
 
         // Receipts
-        const receipts: InsertNotificationReceiveType[] = projectMemberships
+        const receipts: InsertNotificationReceiptType[] = projectMemberships
           .filter((m) => m.userId !== currentUserMembership.userId)
           .map((m) => ({
             notificationId: newNotId,
@@ -388,7 +388,7 @@ export async function v1ProjectMembershipPatch(request: NextRequest) {
           }));
 
         try {
-          await tx.insert(notificationReceive).values(receipts);
+          await tx.insert(notificationReceipt).values(receipts);
         } catch (error) {
           console.log(PATH, "FAILED_NOTIFICATION", error);
         }

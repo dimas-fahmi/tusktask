@@ -68,8 +68,8 @@ export const notificationRelations = relations(notification, ({ one }) => ({
   }),
 }));
 
-export const notificationReceive = pgTable(
-  "notification_receive",
+export const notificationReceipt = pgTable(
+  "notification_receipt",
   {
     notificationId: uuid("notification_id").references(() => notification.id, {
       onDelete: "cascade",
@@ -84,32 +84,32 @@ export const notificationReceive = pgTable(
   (t) => [
     primaryKey({
       columns: [t.notificationId, t.userId],
-      name: "public_notificationReceive_cpk",
+      name: "public_notificationReceipt_cpk",
     }),
-    index("public_notificationReceive_notificationId_idx").on(t.notificationId),
-    index("public_notificationReceive_userId_idx").on(t.userId),
+    index("public_notificationReceipt_notificationId_idx").on(t.notificationId),
+    index("public_notificationReceipt_userId_idx").on(t.userId),
   ],
 );
 
-export type NotificationReceiveType = typeof notificationReceive.$inferSelect;
-export type InsertNotificationReceiveType =
-  typeof notificationReceive.$inferInsert;
-export const notificationReceiveSchema =
-  createSelectSchema(notificationReceive);
-export const insertNotificationReceiveSchema =
-  createInsertSchema(notificationReceive);
-export const updateNotificationReceiveSchema =
-  createUpdateSchema(notificationReceive);
+export type NotificationReceiptType = typeof notificationReceipt.$inferSelect;
+export type InsertNotificationReceiptType =
+  typeof notificationReceipt.$inferInsert;
+export const notificationReceiptSchema =
+  createSelectSchema(notificationReceipt);
+export const insertNotificationReceiptSchema =
+  createInsertSchema(notificationReceipt);
+export const updateNotificationReceiptSchema =
+  createUpdateSchema(notificationReceipt);
 
-export const notificationReceiveRelations = relations(
-  notificationReceive,
+export const notificationReceiptRelations = relations(
+  notificationReceipt,
   ({ one }) => ({
     notification: one(notification, {
-      fields: [notificationReceive.notificationId],
+      fields: [notificationReceipt.notificationId],
       references: [notification.id],
     }),
     user: one(user, {
-      fields: [notificationReceive.userId],
+      fields: [notificationReceipt.userId],
       references: [user.id],
     }),
   }),

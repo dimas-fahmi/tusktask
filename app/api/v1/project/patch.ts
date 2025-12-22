@@ -6,9 +6,9 @@ import { db } from "@/src/db";
 import { type UserType, user } from "@/src/db/schema/auth-schema";
 import {
   type InsertNotificationType,
-  type NotificationReceiveType,
+  type NotificationReceiptType,
   notification,
-  notificationReceive,
+  notificationReceipt,
 } from "@/src/db/schema/notification";
 import {
   type ProjectMembershipType,
@@ -236,7 +236,7 @@ export async function v1ProjectPatch(request: NextRequest) {
 
       // 5. Create receives for other members
       if (isMultiMembersProject) {
-        const receives: NotificationReceiveType[] = memberships
+        const receives: NotificationReceiptType[] = memberships
           .filter((m) => m.userId !== session.user.id)
           .map((m) => ({
             createdAt: new Date(),
@@ -247,7 +247,7 @@ export async function v1ProjectPatch(request: NextRequest) {
           }));
 
         try {
-          await tx.insert(notificationReceive).values(receives);
+          await tx.insert(notificationReceipt).values(receives);
         } catch (error) {
           console.error(PATH, "FAILED_NOTIFICATION_RECEIVES", error);
         }

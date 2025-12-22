@@ -6,10 +6,10 @@ import { db } from "@/src/db";
 import { user as userTable } from "@/src/db/schema/auth-schema";
 import type {
   InsertNotificationType,
-  NotificationReceiveType,
+  NotificationReceiptType,
 } from "@/src/db/schema/notification";
 import {
-  notificationReceive as notificationReceiveTable,
+  notificationReceipt as notificationReceiptTable,
   notification as notificationTable,
 } from "@/src/db/schema/notification";
 import {
@@ -231,7 +231,7 @@ export async function v1TaskPost(request: NextRequest) {
         };
 
         const members = memberships.filter((m) => m.userId !== user.id);
-        const receives: NotificationReceiveType[] = members.map((m) => ({
+        const receives: NotificationReceiptType[] = members.map((m) => ({
           notificationId: notId,
           userId: m.userId,
           createdAt: new Date(),
@@ -240,7 +240,7 @@ export async function v1TaskPost(request: NextRequest) {
         }));
 
         await tx.insert(notificationTable).values(notification);
-        await tx.insert(notificationReceiveTable).values(receives);
+        await tx.insert(notificationReceiptTable).values(receives);
       }
 
       return result;

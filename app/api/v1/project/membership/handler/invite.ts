@@ -3,10 +3,10 @@ import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/src/db";
 import { user } from "@/src/db/schema/auth-schema";
 import {
-  type InsertNotificationReceiveType,
+  type InsertNotificationReceiptType,
   type InsertNotificationType,
   notification,
-  notificationReceive,
+  notificationReceipt,
 } from "@/src/db/schema/notification";
 import { projectMembership } from "@/src/db/schema/project";
 import type { ExtendedProjectMembershipType } from "@/src/lib/app/app";
@@ -167,7 +167,7 @@ export async function invite(
       }
 
       // Create receipts
-      const receives: InsertNotificationReceiveType[] = [];
+      const receives: InsertNotificationReceiptType[] = [];
       const targetUserReceive = {
         notificationId: notId,
         userId: targetUser.id,
@@ -184,7 +184,7 @@ export async function invite(
 
       // Execution
       try {
-        await tx.insert(notificationReceive).values(receives);
+        await tx.insert(notificationReceipt).values(receives);
       } catch (error) {
         throw new StandardError(
           "unknown_database_error",
