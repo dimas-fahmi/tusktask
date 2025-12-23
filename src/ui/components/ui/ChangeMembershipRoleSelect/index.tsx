@@ -160,7 +160,7 @@ const ChangeMembershipRoleSelect = ({
                 (currentUserHierarchy >=
                   PROJECT_MEMBERSHIP_ROLE_HIERARCHY[role] &&
                   !isCurrentUserSupreme) ||
-                isUpdatingMembership
+                isUpdatingMembership || role === membership.type
               }
               onClick={() => {
                 newRoleRef.current = role;
