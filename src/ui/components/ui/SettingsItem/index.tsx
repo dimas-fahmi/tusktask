@@ -1,5 +1,14 @@
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon, LucideProps } from "lucide-react";
 import { cn } from "@/src/ui/shadcn/lib/utils";
+
+export interface SettingsItemClassNames {
+  container?: string;
+  iconTitleContainer?: string;
+  titleDescriptionContainer?: string;
+  title?: string;
+  description?: string;
+  childrenContainer?: string;
+}
 
 export interface SettingsItemProps {
   icon: LucideIcon;
@@ -7,6 +16,8 @@ export interface SettingsItemProps {
   description: string;
   destructive?: boolean;
   children?: React.ReactNode;
+  classNames?: SettingsItemClassNames;
+  iconProps?: LucideProps;
 }
 
 const SettingsItem = ({
@@ -15,28 +26,33 @@ const SettingsItem = ({
   icon: Icon,
   children,
   destructive,
+  classNames,
+  iconProps,
 }: SettingsItemProps) => {
   return (
     <div
       className={cn(
         "flex justify-between items-center",
         destructive ? "text-destructive" : "",
+        classNames?.container,
       )}
     >
       {/* Icon & Title */}
-      <div className="flex gap-4">
+      <div className={cn("flex gap-4", classNames?.iconTitleContainer)}>
         {/* Icon */}
-        <Icon />
+        <Icon {...iconProps} />
 
         {/* Title & Description */}
-        <div>
-          <h1>{title}</h1>
-          <p className="text-xs font-light">{description}</p>
+        <div className={cn("", classNames?.titleDescriptionContainer)}>
+          <h1 className={cn("", classNames?.title)}>{title}</h1>
+          <p className={cn("text-xs font-light", classNames?.description)}>
+            {description}
+          </p>
         </div>
       </div>
 
-      {/* Controller */}
-      <div>{children}</div>
+      {/* Children */}
+      <div className={cn("", classNames?.childrenContainer)}>{children}</div>
     </div>
   );
 };
