@@ -31,6 +31,9 @@ export interface ChangeMembershipRoleSelectProps {
 const ChangeMembershipRoleSelect = ({
   membership,
 }: ChangeMembershipRoleSelectProps) => {
+  // Pull the query client
+  const queryClient = useQueryClient();
+
   // Pull triggers from notification provider
   const { triggerToast } = useNotificationStore();
 
@@ -51,34 +54,36 @@ const ChangeMembershipRoleSelect = ({
     isPending: isLoadingCurrentUserMembership,
   } = useQuery({
     ...membershipQuery.queryOptions,
-    enabled: !!userId && !!membership?.projectId
+    enabled: !!userId && !!membership?.projectId,
   });
   const currentUserMembership = membershipQueryResult?.result?.result?.[0];
+
+  // Get Current user permissions and privileges
   const currentUserPermissions = currentUserMembership
     ? PROJECT_MEMBERSHIP_ROLE_PERMISSIONS[currentUserMembership?.type]
     : undefined;
-
   const currentUserHierarchy = currentUserMembership
     ? PROJECT_MEMBERSHIP_ROLE_HIERARCHY[currentUserMembership?.type]
     : 99;
 
+  // Check if current user is a true owner
   const isCurrentUserSupreme =
     currentUserMembership?.project?.ownerId === userId;
 
+  // Initiate mutation hook
   const { mutate: updateMembership, isPending: isUpdatingMembership } =
     useUpdateMembership();
 
-  const queryClient = useQueryClient();
-
+  // Store new role in ref
   const newRoleRef = useRef<ProjectMembershipRoleType | null>(null);
+
+  // Save handlers
   const handlePreSave = () => {
     if (!newRoleRef.current) {
       return;
     }
-
     setCMDOpen(true);
   };
-
   const handleFinalSave = (message: NotificationMessageType) => {
     if (!newRoleRef.current) return;
     updateMembership(
@@ -110,12 +115,12 @@ const ChangeMembershipRoleSelect = ({
           );
         },
         onSettled: () => {
-          newRoleRef.current = null;
           queryClient.invalidateQueries({
             queryKey: ["project", "memberships"],
             exact: false,
           });
           setCMDOpen(false);
+          newRoleRef.current = null;
         },
       },
     );
@@ -174,7 +179,7 @@ const ChangeMembershipRoleSelect = ({
         onOpenChange={setCMDOpen}
         onConfirm={handleFinalSave}
         isPending={isUpdatingMembership}
-        description={`Explain why would you change this user's role from ${membership.type} to ${newRoleRef.current}`}
+        description={`Explain why do you want to change this user's role from ${membership.type} to ${newRoleRef.current}`}
       />
     </>
   );
