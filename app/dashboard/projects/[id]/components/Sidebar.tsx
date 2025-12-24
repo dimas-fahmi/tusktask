@@ -1,9 +1,11 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { CirclePlus, Logs, UserPlus, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { ExtendedProjectType } from "@/src/lib/app/app";
+import { queryIndex } from "@/src/lib/queries";
 import MembershipManagementDialog from "@/src/ui/components/ui/MembershipManagementDialog";
 import StackedAvatars from "@/src/ui/components/ui/StackedAvatars";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
@@ -12,9 +14,16 @@ import StatisticsTable from "./StatisticsTable";
 const Sidebar = ({ project }: { project?: ExtendedProjectType }) => {
   const [MMDOpen, setMMDOpen] = useState(false);
 
+  const membershipsQuery = queryIndex.project.memberships({
+    projectId: project?.id || "",
+  });
+  const { data: membershipsQueryResult } = useQuery({
+    ...membershipsQuery.queryOptions,
+  });
+
   const members =
-    project?.memberships?.flatMap((membership) =>
-      membership?.member ? [membership?.member] : [],
+    membershipsQueryResult?.result?.result?.flatMap((m) =>
+      m?.member ? m.member : [],
     ) || [];
 
   return (

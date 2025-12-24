@@ -27,6 +27,7 @@ import {
 } from "@/src/ui/shadcn/components/ui/drawer";
 import { Separator } from "@/src/ui/shadcn/components/ui/separator";
 import ChangeMembershipRoleSelect from "../ChangeMembershipRoleSelect";
+import DeleteProjectMembershipButton from "../DeleteProjectMembershipButton";
 import SettingsItem from "../SettingsItem";
 import SuspendProjectMembershipButton from "../SuspendProjectMembershipButton";
 
@@ -132,9 +133,16 @@ const Desktop = () => {
             icon={UserX}
             destructive
           >
-            <Button className="text-xs" variant={"destructive"} size={"sm"}>
-              Delete
-            </Button>
+            <DeleteProjectMembershipButton
+              projectId={membership.projectId}
+              userId={membership.userId}
+              className="text-xs"
+              size={"sm"}
+              iconProps={{ className: "w-5 h-5" }}
+              onSettled={() => {
+                onOpenChange(false);
+              }}
+            />
           </SettingsItem>
         </div>
 

@@ -193,7 +193,12 @@ export const queryIndex = {
     memberships: (
       req: V1ProjectMembershipGetRequest,
     ): QueryObject<V1ProjectMembershipGetResponse> => {
-      const queryKey = [`project`, `memberships`, `${JSON.stringify(req)}`];
+      const queryKey = [
+        `project`,
+        `memberships`,
+        req.projectId,
+        `${JSON.stringify(req)}`,
+      ];
 
       return {
         queryKey,
