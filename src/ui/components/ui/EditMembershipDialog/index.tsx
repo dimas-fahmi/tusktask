@@ -1,4 +1,4 @@
-import { ChevronsUpDown, UserLock } from "lucide-react";
+import { ChevronsUpDown, UserLock, UserX } from "lucide-react";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 import type { ExtendedProjectMembershipType } from "@/src/lib/app/app";
@@ -25,6 +25,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/src/ui/shadcn/components/ui/drawer";
+import { Separator } from "@/src/ui/shadcn/components/ui/separator";
 import ChangeMembershipRoleSelect from "../ChangeMembershipRoleSelect";
 import SettingsItem from "../SettingsItem";
 import SuspendProjectMembershipButton from "../SuspendProjectMembershipButton";
@@ -114,6 +115,26 @@ const Desktop = () => {
               className="text-xs min-w-[78px]"
               size={"sm"}
             />
+          </SettingsItem>
+
+          <Separator />
+
+          {/* Delete Membership */}
+          <SettingsItem
+            title="Delete Membership"
+            description="Remove this user from this project"
+            classNames={{
+              title: "text-sm",
+              description: "text-xs font-normal",
+              iconTitleContainer: "gap-1.5 items-center",
+            }}
+            iconProps={{ className: "w-5 h-5" }}
+            icon={UserX}
+            destructive
+          >
+            <Button className="text-xs" variant={"destructive"} size={"sm"}>
+              Delete
+            </Button>
           </SettingsItem>
         </div>
 

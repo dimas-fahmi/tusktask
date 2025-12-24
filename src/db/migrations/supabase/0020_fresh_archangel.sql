@@ -1,0 +1,1 @@
+ALTER TYPE "public"."event_type_enum" ADD VALUE 'deleted_a_member';
