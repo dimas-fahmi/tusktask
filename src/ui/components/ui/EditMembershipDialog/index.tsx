@@ -96,9 +96,9 @@ const Desktop = () => {
             />
           </SettingsItem>
 
-          {/* Change Membership type [role] */}
+          {/* Toggle Suspension Membership */}
           <SettingsItem
-            title="Suspend/Recover"
+            title="Suspend Membership"
             description="Disable access for this user"
             classNames={{
               title: "text-sm",
