@@ -41,8 +41,9 @@ export type V1ProjectMembershipDeleteRequest = z.infer<
   typeof v1ProjectMembershipDeleteRequestSchema
 >;
 
-export type V1ProjectMembershipDeleteResponse =
-  StandardResponseType<ProjectMembershipType>;
+export type V1ProjectMembershipDeleteResponse = StandardResponseType<
+  ProjectMembershipType[]
+>;
 
 const limiter = rateLimiter({
   limiter: Ratelimit.slidingWindow(20, "10s"),
@@ -271,7 +272,7 @@ export async function v1ProjectMembershipDelete(request: NextRequest) {
 
     return createResponse(
       "record_deleted",
-      "Membership deleted succesfully",
+      "Membership deleted successfully",
       200,
       transaction,
     );
