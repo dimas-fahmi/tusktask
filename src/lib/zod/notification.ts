@@ -41,6 +41,15 @@ export const notificationPayloadSchema = z.union([
     message: notificationMessageTypeSchema.optional(),
   }),
 
+  // deleted_a_member
+  z.object({
+    event: z.literal("deleted_a_member"),
+    actor: sanitizedUserTypeSchema,
+    target: sanitizedUserTypeSchema,
+    project: projectSchema,
+    message: notificationMessageTypeSchema.optional(),
+  }),
+
   // requested_a_promotion
   z.object({
     event: z.literal("requested_a_promotion"),

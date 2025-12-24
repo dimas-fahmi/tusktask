@@ -23,6 +23,7 @@ export type ResultCode =
   | "record_stored"
   | "record_updated"
   | "record_fetched"
+  | "record_deleted"
   | "resource_not_found"
   | "unnecessary_operation"
   | "resource_duplication"

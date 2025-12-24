@@ -12,6 +12,7 @@ import {
   UserLock,
   UserRoundCheck,
   UserRoundPlus,
+  UserX,
 } from "lucide-react";
 
 // IMAGES CONFIGURATIONS
@@ -40,6 +41,7 @@ export const EVENT_TYPES = [
   "updated_a_project",
   "updated_a_task",
   "joined_to_a_project",
+  "deleted_a_member",
 ] as const;
 
 export type EventMetadataType = {
@@ -98,5 +100,9 @@ export const EVENTS_METADATA: Record<
   joined_to_a_project: {
     labelProjectLog: "Joined this project",
     icon: UserRoundCheck,
+  },
+  deleted_a_member: {
+    labelProjectLog: "Deleted a member",
+    icon: UserX,
   },
 };
