@@ -1,3 +1,4 @@
+import { ChevronsUpDown, UserLock } from "lucide-react";
 import React from "react";
 import { useMediaQuery } from "react-responsive";
 import type { ExtendedProjectMembershipType } from "@/src/lib/app/app";
@@ -25,6 +26,8 @@ import {
   DrawerTitle,
 } from "@/src/ui/shadcn/components/ui/drawer";
 import ChangeMembershipRoleSelect from "../ChangeMembershipRoleSelect";
+import SettingsItem from "../SettingsItem";
+import SuspendProjectMembershipButton from "../SuspendProjectMembershipButton";
 
 export interface EditMembershipDialogContextValues {
   open: boolean;
@@ -51,7 +54,7 @@ const Desktop = () => {
 
   return (
     <Dialog {...{ open, onOpenChange }}>
-      <DialogContent className="flex flex-col gap-6">
+      <DialogContent className="flex flex-col gap-9">
         <DialogHeader className="flex h-fit p-0 flex-col items-center m-0">
           <Avatar className="w-32 h-32">
             {member?.image && (
@@ -72,17 +75,50 @@ const Desktop = () => {
           </div>
         </DialogHeader>
 
-        {/* Change Membership type [role] */}
-        <div className="flex-1 space-y-2">
-          <div className="space-y-2">
-            <h1>Change Membership Role</h1>
-            <ChangeMembershipRoleSelect membership={membership} />
-          </div>
+        {/* Content */}
+        <div className="flex-1 space-y-4">
+          {/* Change Membership type [role] */}
+          <SettingsItem
+            title="Change User's Role"
+            description="Give them more or less privileges"
+            icon={ChevronsUpDown}
+            classNames={{
+              title: "text-sm",
+              description: "text-xs font-extralight",
+              iconTitleContainer: "gap-1.5 items-center",
+            }}
+            iconProps={{ className: "w-5 h-5" }}
+          >
+            <ChangeMembershipRoleSelect
+              className="text-xs min-w-[78px] gap-0 flex-center"
+              iconProps={{ className: "w-2 h-2 ms-1" }}
+              membership={membership}
+            />
+          </SettingsItem>
+
+          {/* Toggle Suspension Membership */}
+          <SettingsItem
+            title="Suspend Membership"
+            description="Disable access for this user"
+            classNames={{
+              title: "text-sm",
+              description: "text-xs font-extralight",
+              iconTitleContainer: "gap-1.5 items-center",
+            }}
+            iconProps={{ className: "w-5 h-5" }}
+            icon={UserLock}
+          >
+            <SuspendProjectMembershipButton
+              projectId={membership.projectId}
+              userId={membership.userId}
+              className="text-xs min-w-[78px]"
+              size={"sm"}
+            />
+          </SettingsItem>
         </div>
 
         {/* Footer */}
-        <footer className="grid grid-cols-2 gap-2">
-          <Button variant={"destructive"}>Suspend</Button>
+        <footer className="grid gap-2">
           <DialogClose asChild>
             <Button variant={"outline"}>Close</Button>
           </DialogClose>

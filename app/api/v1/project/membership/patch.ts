@@ -44,7 +44,7 @@ export const v1ProjectMembershipPatchRequestSchema = z.object({
       deletedAt: true,
     })
     .extend({
-      deletedAt: z.coerce.date().optional(),
+      deletedAt: z.coerce.date().nullable().optional(),
     })
     .strict(),
   message: notificationMessageTypeSchema.optional(),

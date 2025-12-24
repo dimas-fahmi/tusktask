@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, Loader } from "lucide-react";
+import { ChevronDown, Loader, type LucideProps } from "lucide-react";
 import { useRef, useState } from "react";
 import type { ProjectMembershipType } from "@/src/db/schema/project";
 import {
@@ -23,13 +23,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/ui/shadcn/components/ui/dropdown-menu";
+import { cn } from "@/src/ui/shadcn/lib/utils";
 import CommitMessageDialog from "../CommitMessageDialog";
 
 export interface ChangeMembershipRoleSelectProps {
   membership: ProjectMembershipType;
+  className?: string;
+  iconProps?: LucideProps;
 }
 const ChangeMembershipRoleSelect = ({
   membership,
+  className,
+  iconProps,
 }: ChangeMembershipRoleSelectProps) => {
   // Pull the query client
   const queryClient = useQueryClient();
@@ -131,7 +136,10 @@ const ChangeMembershipRoleSelect = ({
       {/* Dropdown Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="w-full transition-all duration-300 hover:scale-95 capitalize text-left text-sm font-light px-4 py-2 border rounded-lg disabled:pointer-events-none flex items-center justify-between"
+          className={cn(
+            "w-full transition-all duration-300 hover:scale-95 capitalize text-left text-sm font-light px-4 py-2 border rounded-lg disabled:pointer-events-none flex items-center justify-between",
+            className,
+          )}
           disabled={
             !currentUserPermissions?.manageMembership ||
             isLoadingCurrentUserMembership ||
@@ -141,12 +149,18 @@ const ChangeMembershipRoleSelect = ({
           {!isUpdatingMembership ? (
             <>
               {membership.type}
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown
+                {...iconProps}
+                className={cn("w-4 h-4", iconProps?.className)}
+              />
             </>
           ) : (
             <>
               <span>Saving Changes</span>
-              <Loader className="w-4 h-4 animate-spin" />
+              <Loader
+                {...iconProps}
+                className={cn("w-4 h-4 animate-spin", iconProps?.className)}
+              />
             </>
           )}
         </DropdownMenuTrigger>
@@ -160,7 +174,8 @@ const ChangeMembershipRoleSelect = ({
                 (currentUserHierarchy >=
                   PROJECT_MEMBERSHIP_ROLE_HIERARCHY[role] &&
                   !isCurrentUserSupreme) ||
-                isUpdatingMembership || role === membership.type
+                isUpdatingMembership ||
+                role === membership.type
               }
               onClick={() => {
                 newRoleRef.current = role;
