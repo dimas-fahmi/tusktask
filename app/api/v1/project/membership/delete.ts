@@ -256,7 +256,8 @@ export async function v1ProjectMembershipDelete(request: NextRequest) {
               eq(projectMembership.projectId, parameters.projectId),
               eq(projectMembership.userId, parameters.userId),
             ),
-          );
+          )
+          .returning();
       } catch (error) {
         throw new StandardError(
           "unknown_database_error",
