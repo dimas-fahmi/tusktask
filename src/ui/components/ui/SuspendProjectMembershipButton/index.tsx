@@ -89,6 +89,8 @@ const SuspendProjectMembershipButton = ({
         description:
           "We're still processing your action updating this membership",
       });
+
+      return;
     }
 
     if (isLoadingCurrentUserMembership || isLoadingTargetMembership) {
