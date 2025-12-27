@@ -14,6 +14,10 @@ import {
 import { Button, buttonVariants } from "@/src/ui/shadcn/components/ui/button";
 import { cn } from "@/src/ui/shadcn/lib/utils";
 
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
+};
+
 function Calendar({
   className,
   classNames,
@@ -23,9 +27,7 @@ function Calendar({
   formatters,
   components,
   ...props
-}: React.ComponentProps<typeof DayPicker> & {
-  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-}) {
+}: CalendarProps) {
   const defaultClassNames = getDefaultClassNames();
 
   return (

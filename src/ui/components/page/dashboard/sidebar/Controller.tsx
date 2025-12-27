@@ -2,15 +2,21 @@
 
 import { CirclePlus, PanelLeftClose, Settings } from "lucide-react";
 import Link from "next/link";
+import { useNewTaskDialogStore } from "@/src/lib/stores/newTaskDialog";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import { useSidebar } from "@/src/ui/shadcn/components/ui/sidebar";
 
 const Controller = () => {
   const { setOpen, setOpenMobile, isMobile } = useSidebar();
+  const { onOpenChange: setNTDOpen } = useNewTaskDialogStore();
 
   return (
     <div className="grid grid-cols-1 gap-3">
-      <Button>
+      <Button
+        onClick={() => {
+          setNTDOpen(true);
+        }}
+      >
         <CirclePlus /> New Task
       </Button>
 
