@@ -1,44 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { NO_IMAGE_FALLBACK_SQUARE } from "@/src/lib/app/configs";
 import type { SanitizedUserType } from "@/src/lib/zod";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/src/ui/shadcn/components/ui/avatar";
-import UserDialog from "../UserDialog";
+import { AvatarButton, type AvatarButtonProps } from "../AvatarButton";
 
-const AvatarButton = ({ user }: { user: SanitizedUserType }) => {
-  const [userDialogOpen, setUserDialogOpen] = useState(false);
-
-  return (
-    <>
-      <button type="button" onClick={() => setUserDialogOpen(true)}>
-        <Avatar>
-          <AvatarImage
-            src={user?.image || NO_IMAGE_FALLBACK_SQUARE}
-            alt={`@${user?.username || user?.name}`}
-          />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      </button>
-
-      <UserDialog
-        open={userDialogOpen}
-        onOpenChange={setUserDialogOpen}
-        userId={user.id}
-      />
-    </>
-  );
-};
-
-const StackedAvatars = ({ users }: { users: SanitizedUserType[] }) => {
+const StackedAvatars = ({
+  users,
+  avatarButtonProps,
+}: {
+  users: SanitizedUserType[];
+  avatarButtonProps?: Omit<AvatarButtonProps, "user">;
+}) => {
   return (
     <div className="flex -space-x-2">
       {users?.map((user) => (
-        <AvatarButton key={user?.id || crypto.randomUUID()} user={user} />
+        <AvatarButton
+          key={user?.id || crypto.randomUUID()}
+          user={user}
+          {...avatarButtonProps}
+        />
       ))}
     </div>
   );
