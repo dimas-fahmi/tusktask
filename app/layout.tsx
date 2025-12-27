@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ColorThemePickerModal from "@/src/ui/components/ui/ColorThemePickerModal";
 import ImageUploadModal from "@/src/ui/components/ui/ImageUploadModal";
 import NewProjectDialog from "@/src/ui/components/ui/NewProjectDialog";
+import NewTaskDialog from "@/src/ui/components/ui/NewTaskDialog";
 import { interFont, oswaldFont } from "@/src/ui/fonts";
 import { Toaster } from "@/src/ui/shadcn/components/ui/sonner";
 import NotificationProvider from "./NotificationProvider";
@@ -27,12 +28,13 @@ export default function RootLayout({
           <NotificationProvider>
             <ThemeProvider>
               <PomodoroProvider>{children}</PomodoroProvider>
+              <ImageUploadModal />
+              <NewProjectDialog />
+              <NewTaskDialog />
+              <ColorThemePickerModal />
+              <Toaster richColors position="top-center" />
+              <ReactQueryDevtools initialIsOpen={false} />
             </ThemeProvider>
-            <ImageUploadModal />
-            <NewProjectDialog />
-            <ColorThemePickerModal />
-            <Toaster richColors position="top-center" />
-            <ReactQueryDevtools initialIsOpen={false} />
           </NotificationProvider>
         </QueryClientProvider>
       </body>
