@@ -6,5 +6,9 @@ export const useGetSelfSessions = () => {
 
   return useQuery({
     ...query.queryOptions,
+    refetchOnWindowFocus: false,
+    retry: () => {
+      return false;
+    },
   });
 };

@@ -28,8 +28,11 @@ const DashboardLayout = ({
     useGetSelfProfile();
   const profile = profileData?.result;
 
-  const { data: projectData, isLoading: isLoadingProjects } =
-    useGetSelfProjects();
+  const {
+    data: projectData,
+    isLoading: isLoadingProjects,
+    isError: isErrorLoadingProject,
+  } = useGetSelfProjects();
   const projects = projectData?.result?.result;
 
   if (!isLoadingProfile && profile?.deletedAt) {
@@ -42,6 +45,10 @@ const DashboardLayout = ({
     profile?.onboardingStatus !== "completed"
   ) {
     redirect("/onboarding");
+  }
+
+  if (!isLoadingProjects && isErrorLoadingProject) {
+    redirect("/auth");
   }
 
   if (

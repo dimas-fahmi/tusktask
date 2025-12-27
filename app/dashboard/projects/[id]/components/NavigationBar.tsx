@@ -25,7 +25,7 @@ const NavItem = ({
 }) => {
   return (
     <Button variant={isActive ? "default" : "outline"} asChild>
-      <Link href={href}>
+      <Link href={href} scroll={false}>
         {/* Icon */}
         <span>
           <Icon className="w-5 h-5" />
