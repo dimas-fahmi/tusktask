@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import type React from "react";
+import { signout } from "@/src/lib/auth/helper/signout";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { useGetSelfProjects } from "@/src/lib/queries/hooks/useGetSelfProjects";
 import { useNotificationStore } from "@/src/lib/stores/notification";
@@ -48,7 +49,9 @@ const DashboardLayout = ({
   }
 
   if (!isLoadingProjects && isErrorLoadingProject) {
-    redirect("/auth");
+    setTimeout(() => {
+      signout();
+    }, 1500);
   }
 
   if (
