@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
+import type z from "zod";
 import { prettifyError } from "zod";
 import { db } from "@/src/db";
 import { user as userTable } from "@/src/db/schema/auth-schema";
@@ -36,7 +37,19 @@ import { sanitizeUser } from "@/src/lib/utils/sanitizeUser";
 
 const PATH = "V1_TASK_POST";
 
-export interface V1TaskPostRequest extends InsertTaskType {}
+export const v1TaskPostRequestSchema = insertTaskSchema
+  .omit({
+    id: true,
+    createdById: true,
+    ownerId: true,
+    completedById: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true,
+  })
+  .strict();
+
+export type V1TaskPostRequest = z.infer<typeof v1TaskPostRequestSchema>;
 export type V1TaskPostResponse = StandardResponseType<TaskType | undefined>;
 
 const strictPolicyLimiter = rateLimiter();
@@ -104,18 +117,7 @@ export async function v1TaskPost(request: NextRequest) {
     );
   }
 
-  const validation = insertTaskSchema
-    .omit({
-      id: true,
-      createdById: true,
-      ownerId: true,
-      completedById: true,
-      createdAt: true,
-      updatedAt: true,
-      deletedAt: true,
-    })
-    .strict()
-    .safeParse(body);
+  const validation = v1TaskPostRequestSchema.safeParse(body);
 
   if (!validation.success) {
     return createResponse(

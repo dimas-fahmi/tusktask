@@ -135,17 +135,13 @@ export function DatePicker({
           variant="outline"
           data-empty={!value}
           className={cn(
-            `data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal`,
+            `data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left overflow-hidden font-light group/trigger`,
             classes?.triggerClass,
           )}
           disabled={disabled}
         >
           <CalendarIcon className={cn("", classes?.triggerIconClass)} />
-          {value ? (
-            format(value, "PPP - p")
-          ) : (
-            <span>{label || "Pick a date"}</span>
-          )}
+          {value ? format(value, "PPP - p") : label || "Pick a date"}
         </Button>
       </DialogTrigger>
       <DialogContent
