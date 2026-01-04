@@ -184,5 +184,22 @@ export const getWhereClauseBuilder = (
     }
   }
 
+  // Filter by null
+  if (typeof parameters?.noStartAt === "boolean") {
+    if (parameters.noStartAt) {
+      where.push(isNull(task.startAt));
+    } else {
+      where.push(isNotNull(task.startAt));
+    }
+  }
+
+  if (typeof parameters?.noEndAt === "boolean") {
+    if (parameters.noEndAt) {
+      where.push(isNull(task.endAt));
+    } else {
+      where.push(isNotNull(task.endAt));
+    }
+  }
+
   return where;
 };

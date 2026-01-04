@@ -1,6 +1,6 @@
 import { LayoutDashboard } from "lucide-react";
-import StatusBar from "./components/StatusBar";
-import TasksCollection from "./components/TasksCollection";
+import DayByDayView from "./components/DayByDayView";
+import NoDeadlines from "./components/NoDeadlines";
 
 const DashboardPageIndex = () => {
   return (
@@ -11,15 +11,15 @@ const DashboardPageIndex = () => {
           <LayoutDashboard className="w-9 h-9" />
           Dashboard
         </h1>
-
-        {/* Status Bar */}
-        <StatusBar />
       </header>
 
-      {/* Task Collection */}
-      <div>
-        <TasksCollection />
+      {/* View */}
+      <div className="space-y-4">
+        <DayByDayView />
       </div>
+
+      {/* Task Collection */}
+      <NoDeadlines />
     </div>
   );
 };

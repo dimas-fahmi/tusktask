@@ -1,14 +1,16 @@
 "use client";
 
 import { Circle } from "lucide-react";
+import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
+import type { ExtendedTaskType } from "@/src/lib/app/app";
 import {
   ContextMenu,
   ContextMenuTrigger,
 } from "@/src/ui/shadcn/components/ui/context-menu";
 import TaskCardContextMenu from "./TaskCardContextMenu";
 
-const TaskCard = () => {
+const TaskCard = ({ task }: { task: ExtendedTaskType }) => {
   const router = useRouter();
 
   return (
@@ -28,7 +30,7 @@ const TaskCard = () => {
             </div>
 
             {/* Task Name */}
-            <h1>Wash Jajang's Car</h1>
+            <h1>{task.name}</h1>
           </header>
 
           {/* Description */}
@@ -36,7 +38,11 @@ const TaskCard = () => {
 
           {/* Footer */}
           <footer className="border-t pt-1">
-            <span className="text-xs">In 2 days</span>
+            <span className="text-xs">
+              {task?.endAt
+                ? DateTime.fromJSDate(new Date(task.endAt)).toRelative()
+                : "No deadline"}
+            </span>
           </footer>
         </button>
       </ContextMenuTrigger>

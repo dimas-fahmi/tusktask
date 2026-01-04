@@ -69,6 +69,10 @@ export const v1TaskGetRequestSchema = z.object({
   isEndAtNull: z.stringbool().optional(),
   isUpdatedAtNull: z.stringbool().optional(),
 
+  // Filter by null
+  noStartAt: z.stringbool().optional(),
+  noEndAt: z.stringbool().optional(),
+
   // Pagination & Sorting
   orderBy: z
     .enum([
