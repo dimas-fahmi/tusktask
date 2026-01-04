@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 
-export interface DayByDayStore {
+export interface DayByDayViewStore {
   index: number;
   setIndex: (index: number) => void;
   getActiveDate: (index: number) => Date;
@@ -15,7 +15,7 @@ const getActiveDate = (index = 0): Date => {
   return date;
 };
 
-export const useDayByDayStore = create<DayByDayStore>((set) => ({
+export const useDayByDayViewStore = create<DayByDayViewStore>((set) => ({
   index: 0,
   setIndex: (index) => set({ index }),
   getActiveDate,

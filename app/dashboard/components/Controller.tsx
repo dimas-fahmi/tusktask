@@ -7,11 +7,11 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { DateTime } from "luxon";
-import { useDayByDayStore } from "@/src/lib/stores/DayByDayStore";
+import { useDayByDayViewStore } from "@/src/lib/stores/dayByDayView";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 
 const Controller = () => {
-  const { index, setIndex, getActiveDate } = useDayByDayStore();
+  const { index, setIndex, getActiveDate } = useDayByDayViewStore();
 
   return (
     <div className="flex items-center justify-between">
