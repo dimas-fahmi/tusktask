@@ -1,8 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
-import type z from "zod";
-import { prettifyError } from "zod";
+import z, { prettifyError } from "zod";
 import { db } from "@/src/db";
 import { user as userTable } from "@/src/db/schema/auth-schema";
 import type {
@@ -46,6 +45,12 @@ export const v1TaskPostRequestSchema = insertTaskSchema
     createdAt: true,
     updatedAt: true,
     deletedAt: true,
+    startAt: true,
+    endAt: true,
+  })
+  .extend({
+    startAt: z.coerce.date().optional(),
+    endAt: z.coerce.date().optional(),
   })
   .strict();
 

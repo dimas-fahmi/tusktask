@@ -159,9 +159,13 @@ const NewTaskDialog = () => {
                 );
               },
               onError: (err) => {
-                triggerToast("Failed to Save Task", {
-                  description: "Something went wrong when saving this task",
-                });
+                triggerToast(
+                  "Failed to Save Task",
+                  {
+                    description: "Something went wrong when saving this task",
+                  },
+                  "error",
+                );
                 console.log(err);
               },
             });
