@@ -12,6 +12,7 @@ import { DashboardSidebar } from "@/src/ui/components/page/dashboard/sidebar";
 import Alert from "@/src/ui/components/ui/Alert";
 import Loader from "@/src/ui/components/ui/Loader";
 import ProfileDialog from "@/src/ui/components/ui/ProfileDialog";
+import ViewPickerModal from "@/src/ui/components/ui/ViewPickerModal";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
   SidebarInset,
@@ -151,6 +152,7 @@ const DashboardLayout = ({
       </SidebarInset>
 
       <ProfileDialog />
+      <ViewPickerModal />
     </SidebarProvider>
   );
 };

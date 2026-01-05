@@ -2,12 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { queryIndex } from "@/src/lib/queries";
-import { useDayByDayStore } from "@/src/lib/stores/DayByDayStore";
+import { useDayByDayViewStore } from "@/src/lib/stores/dayByDayView";
 import TaskCard from "@/src/ui/components/ui/TaskCard";
 import Controller from "./Controller";
 
 const DayByDayView = () => {
-  const { index, getActiveDate } = useDayByDayStore();
+  const { index, getActiveDate } = useDayByDayViewStore();
 
   const gt = getActiveDate(index);
   const lt = new Date(gt);
@@ -40,7 +40,7 @@ const DayByDayView = () => {
         </div>
       ) : (
         <div className="h-full flex-center flex-1 text-sm font-light opacity-70">
-          No Tasks For This Date
+          No task on this date
         </div>
       )}
     </div>

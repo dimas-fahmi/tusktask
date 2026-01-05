@@ -1,6 +1,14 @@
-import { Bell, PanelLeftClose, PanelLeftOpen, TimerIcon } from "lucide-react";
+import {
+  Bell,
+  LayoutDashboard,
+  PanelLeftClose,
+  PanelLeftOpen,
+  TimerIcon,
+} from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
+import { useDashboardStore } from "@/src/lib/stores/dashboard";
 import { usePomodoroStore } from "@/src/lib/stores/pomodoro";
 import { useProfileDialogStore } from "@/src/lib/stores/profileDialog";
 import { getInitial } from "@/src/lib/utils/getInitial";
@@ -17,6 +25,9 @@ const Header = () => {
   const { data: profile } = useGetSelfProfile();
   const { setOpen: setOpenProfileDialog } = useProfileDialogStore();
   const { setDialogOpen: setOpenPomodorooDialog } = usePomodoroStore();
+  const { setViewPickerModalOpen } = useDashboardStore();
+
+  const pathname = usePathname();
 
   return (
     <header className="flex justify-between items-center">
@@ -43,6 +54,17 @@ const Header = () => {
       </div>
 
       <div className="flex gap-3">
+        {pathname === "/dashboard" && (
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              setViewPickerModalOpen(true);
+            }}
+          >
+            <LayoutDashboard />
+          </Button>
+        )}
+
         {/* Theme Button */}
         <Button
           variant={"outline"}
