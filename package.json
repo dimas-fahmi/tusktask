@@ -76,7 +76,7 @@
     "@types/luxon": "^3.7.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
-    "@typescript/native-preview": "7.0.0-dev.20251226.1",
+    "@typescript/native-preview": "7.0.0-dev.20260119.1",
     "babel-plugin-react-compiler": "1.0.0",
     "drizzle-kit": "^0.31.8",
     "tailwindcss": "^4.1.17",
