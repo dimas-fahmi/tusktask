@@ -31,7 +31,6 @@
         "@vercel/blob": "^2.0.0",
         "baseline-browser-mapping": "^2.9.2",
         "better-auth": "^1.4.5",
-        "@biomejs/monorepo": "biomejs/biome",
         "browser-image-compression": "^2.0.2",
         "bun-types": "^1.3.6",
         "class-variance-authority": "^0.7.1",
@@ -114,8 +113,6 @@
     "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@2.3.10", "", { "os": "win32", "cpu": "arm64" }, "sha512-o7lYc9n+CfRbHvkjPhm8s9FgbKdYZu5HCcGVMItLjz93EhgJ8AM44W+QckDqLA9MKDNFrR8nPbO4b73VC5kGGQ=="],
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.3.10", "", { "os": "win32", "cpu": "x64" }, "sha512-pHEFgq7dUEsKnqG9mx9bXihxGI49X+ar+UBrEIj3Wqj3UCZp1rNgV+OoyjFgcXsjCWpuEAF4VJdkZr3TrWdCbQ=="],
-
-    "@biomejs/monorepo": ["@biomejs/monorepo@github:biomejs/biome#0d15370", {}, "biomejs-biome-0d15370"],
 
     "@date-fns/tz": ["@date-fns/tz@1.4.1", "", {}, "sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA=="],
 
