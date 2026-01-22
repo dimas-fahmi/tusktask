@@ -11,8 +11,12 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
 } from "@/src/ui/shadcn/components/ui/context-menu";
+import DeleteTaskButton from "../../actions/DeleteTaskButton";
+import { useTaskCardContext } from ".";
 
 const TaskCardContextMenu = () => {
+  const { task, queryKeys } = useTaskCardContext();
+
   return (
     <ContextMenuContent className="w-52">
       <ContextMenuItem inset>
@@ -36,7 +40,15 @@ const TaskCardContextMenu = () => {
           <ContextMenuSeparator />
           <ContextMenuItem>Developer Tools</ContextMenuItem>
           <ContextMenuSeparator />
-          <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+          <ContextMenuItem variant="destructive" asChild>
+            <DeleteTaskButton
+              className="w-full"
+              taskId={task.id}
+              querykeys={queryKeys}
+            >
+              Delete
+            </DeleteTaskButton>
+          </ContextMenuItem>
         </ContextMenuSubContent>
       </ContextMenuSub>
       <ContextMenuSeparator />

@@ -35,7 +35,11 @@ const DayByDayView = () => {
       {tasks.length ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
           {tasks.map((task, index) => (
-            <TaskCard key={task?.id || `task-${index}`} task={task} />
+            <TaskCard
+              key={task?.id || `task-${index}`}
+              task={task}
+              queryKeys={[taskQuery.queryKey]}
+            />
           ))}
         </div>
       ) : (
