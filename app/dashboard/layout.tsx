@@ -72,7 +72,7 @@ const DashboardLayout = ({
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <main className="p-4 md:p-6 lg:p-12 space-y-4 md:space-y-6">
+        <main className="px-4 md:p-6 lg:p-12 space-y-4 md:space-y-6">
           {/* Layout Header */}
           <Header />
 

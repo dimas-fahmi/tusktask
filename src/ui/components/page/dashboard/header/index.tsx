@@ -30,7 +30,7 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="flex justify-between items-center">
+    <header className="flex justify-between items-center sticky top-0 z-10 bg-background py-4">
       {/* Expand Button */}
       <div>
         <Button
