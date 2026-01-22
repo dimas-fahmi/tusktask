@@ -25,7 +25,7 @@ const DayByDayView = () => {
   const tasks = taskQueryResult?.result?.result || [];
 
   return (
-    <div className="min-h-[200px] flex flex-col space-y-4">
+    <div className="min-h-50 flex flex-col space-y-4">
       {/* COntroller */}
       <header>
         <Controller />
