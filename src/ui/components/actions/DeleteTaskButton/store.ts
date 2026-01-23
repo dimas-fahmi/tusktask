@@ -12,7 +12,6 @@ export const useDeleteTaskButton = create<DeleteTaskButtonStore>((set) => {
     registeredKeys: [],
     registerKey: (key) => {
       const serialized = JSON.stringify(key);
-
       if (seen.has(serialized)) return;
       seen.add(serialized);
       set((state) => ({
