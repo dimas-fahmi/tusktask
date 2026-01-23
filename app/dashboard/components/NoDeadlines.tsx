@@ -25,7 +25,7 @@ const NoDeadlines = () => {
             <TaskCard
               key={task?.id || `task-${index}`}
               task={task}
-              queryKeys={[taskQuery.queryKey]}
+              queryKey={taskQuery.queryKey}
             />
           ))}
         </div>

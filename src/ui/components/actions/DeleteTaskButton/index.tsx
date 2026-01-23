@@ -5,29 +5,32 @@ import React from "react";
 import type { V1TaskGetResponse } from "@/app/api/v1/task/get";
 import { deleteTask } from "@/src/lib/serverActions/deleteTask";
 import { cn } from "@/src/ui/shadcn/lib/utils";
+import { useDeleteTaskButton } from "./store";
 
 export type DeleteTaskButtonProps = {
-  querykeys?: string[][];
   taskId: string;
 } & React.ComponentProps<"button">;
 
 const DeleteTaskButton = React.forwardRef<
   HTMLButtonElement,
   DeleteTaskButtonProps
->(({ taskId, querykeys, className, onClick, ...props }, ref) => {
+>(({ taskId, className, onClick, ...props }, ref) => {
   const queryClient = useQueryClient();
-  const isQueryKeysValid = querykeys && Array.isArray(querykeys);
+  const { registeredKeys: queryKeys } = useDeleteTaskButton();
+  const isQueryKeysValid = queryKeys && Array.isArray(queryKeys);
 
   const mutation = useMutation({
     mutationFn: deleteTask,
     onMutate: () => {
+      const trashBin: { queryKey: string[]; oldData: unknown }[] = [];
       if (isQueryKeysValid) {
-        querykeys.forEach((qk) => {
+        queryKeys.forEach((qk) => {
           queryClient.cancelQueries({
             queryKey: qk,
           });
 
           const oldData = queryClient.getQueryData(qk) as V1TaskGetResponse;
+          trashBin.push({ queryKey: qk, oldData: oldData });
 
           if (oldData) {
             queryClient.setQueryData(qk, (): V1TaskGetResponse => {
@@ -51,13 +54,21 @@ const DeleteTaskButton = React.forwardRef<
           }
         });
       }
+
+      return { trashBin };
     },
-    onError: (err) => {
+    onError: (err, _var, omr) => {
       console.log(err);
+
+      if (omr?.trashBin && Array.isArray(omr?.trashBin)) {
+        omr.trashBin.forEach((q) => {
+          queryClient.setQueryData(q?.queryKey, q?.oldData);
+        });
+      }
     },
     onSettled: () => {
       if (isQueryKeysValid) {
-        querykeys.forEach((qk) => {
+        queryKeys.forEach((qk) => {
           queryClient.invalidateQueries({
             queryKey: qk,
           });

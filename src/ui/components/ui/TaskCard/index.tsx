@@ -16,7 +16,7 @@ import TaskCardContextMenu from "./TaskCardContextMenu";
 export type TaskCardProps = {
   task: ExtendedTaskType;
   // Test approach for optimistic update
-  queryKeys?: string[][];
+  queryKey?: string[];
 };
 
 export type TaskCardContextValues = TaskCardProps;
@@ -36,7 +36,7 @@ export const useTaskCardContext = () => {
   return ctx;
 };
 
-const TaskCard = ({ task, queryKeys }: TaskCardProps) => {
+const TaskCard = ({ task, queryKey }: TaskCardProps) => {
   const router = useRouter();
   const now = new Date();
   const endAt = task?.endAt ? new Date(task?.endAt) : undefined;
@@ -46,7 +46,7 @@ const TaskCard = ({ task, queryKeys }: TaskCardProps) => {
     <TaskCardContext.Provider
       value={{
         task,
-        queryKeys,
+        queryKey,
       }}
     >
       <ContextMenu>

@@ -26,7 +26,7 @@ const DayByDayView = () => {
 
   return (
     <div className="min-h-50 flex flex-col space-y-4">
-      {/* COntroller */}
+      {/* Controller */}
       <header>
         <Controller />
       </header>
@@ -38,7 +38,7 @@ const DayByDayView = () => {
             <TaskCard
               key={task?.id || `task-${index}`}
               task={task}
-              queryKeys={[taskQuery.queryKey]}
+              queryKey={taskQuery.queryKey}
             />
           ))}
         </div>

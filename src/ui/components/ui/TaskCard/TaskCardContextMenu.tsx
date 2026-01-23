@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
@@ -12,10 +13,18 @@ import {
   ContextMenuSubTrigger,
 } from "@/src/ui/shadcn/components/ui/context-menu";
 import DeleteTaskButton from "../../actions/DeleteTaskButton";
+import { useDeleteTaskButton } from "../../actions/DeleteTaskButton/store";
 import { useTaskCardContext } from ".";
 
 const TaskCardContextMenu = () => {
-  const { task, queryKeys } = useTaskCardContext();
+  const { task, queryKey } = useTaskCardContext();
+  const { registerKey } = useDeleteTaskButton();
+
+  useEffect(() => {
+    if (queryKey) {
+      registerKey(queryKey);
+    }
+  }, [queryKey, registerKey]);
 
   return (
     <ContextMenuContent className="w-52">
@@ -41,11 +50,7 @@ const TaskCardContextMenu = () => {
           <ContextMenuItem>Developer Tools</ContextMenuItem>
           <ContextMenuSeparator />
           <ContextMenuItem variant="destructive" asChild>
-            <DeleteTaskButton
-              className="w-full"
-              taskId={task.id}
-              querykeys={queryKeys}
-            >
+            <DeleteTaskButton className="w-full" taskId={task.id}>
               Delete
             </DeleteTaskButton>
           </ContextMenuItem>
