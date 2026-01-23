@@ -1,13 +1,8 @@
-import { useEffect } from "react";
 import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
   ContextMenuSeparator,
-  ContextMenuShortcut,
   ContextMenuSub,
   ContextMenuSubContent,
   ContextMenuSubTrigger,
@@ -20,51 +15,37 @@ const TaskCardContextMenu = () => {
   const { task, queryKey } = useTaskCardContext();
   const { registerKey } = useDeleteTaskButton();
 
-  useEffect(() => {
-    if (queryKey) {
-      registerKey(queryKey);
-    }
-  }, [queryKey, registerKey]);
+  if (queryKey) {
+    registerKey(queryKey);
+  }
 
   return (
     <ContextMenuContent className="w-52">
-      <ContextMenuItem inset>
-        Back
-        <ContextMenuShortcut>⌘[</ContextMenuShortcut>
-      </ContextMenuItem>
-      <ContextMenuItem inset disabled>
-        Forward
-        <ContextMenuShortcut>⌘]</ContextMenuShortcut>
-      </ContextMenuItem>
-      <ContextMenuItem inset>
-        Reload
-        <ContextMenuShortcut>⌘R</ContextMenuShortcut>
-      </ContextMenuItem>
+      <ContextMenuItem inset>Open</ContextMenuItem>
+
+      <ContextMenuSeparator />
+      <ContextMenuCheckboxItem>Done</ContextMenuCheckboxItem>
+      <ContextMenuCheckboxItem>Pinned</ContextMenuCheckboxItem>
+      <ContextMenuCheckboxItem>Archived</ContextMenuCheckboxItem>
+
+      <ContextMenuSeparator />
       <ContextMenuSub>
         <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
-        <ContextMenuSubContent className="w-44">
-          <ContextMenuItem>Save Page...</ContextMenuItem>
-          <ContextMenuItem>Create Shortcut...</ContextMenuItem>
-          <ContextMenuItem>Name Window...</ContextMenuItem>
+        <ContextMenuSubContent>
+          <ContextMenuItem>Open Project</ContextMenuItem>
+          <ContextMenuItem>Assign to a member</ContextMenuItem>
           <ContextMenuSeparator />
-          <ContextMenuItem>Developer Tools</ContextMenuItem>
-          <ContextMenuSeparator />
-          <ContextMenuItem variant="destructive" asChild>
-            <DeleteTaskButton className="w-full" taskId={task.id}>
-              Delete
-            </DeleteTaskButton>
-          </ContextMenuItem>
+          <ContextMenuItem>Edit</ContextMenuItem>
+          <ContextMenuItem variant="destructive">Reschedule</ContextMenuItem>
         </ContextMenuSubContent>
       </ContextMenuSub>
+
       <ContextMenuSeparator />
-      <ContextMenuCheckboxItem checked>Show Bookmarks</ContextMenuCheckboxItem>
-      <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
-      <ContextMenuSeparator />
-      <ContextMenuRadioGroup value="pedro">
-        <ContextMenuLabel inset>People</ContextMenuLabel>
-        <ContextMenuRadioItem value="pedro">Pedro Duarte</ContextMenuRadioItem>
-        <ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>
-      </ContextMenuRadioGroup>
+      <ContextMenuItem inset variant="destructive" asChild>
+        <DeleteTaskButton className="w-full" taskId={task.id}>
+          Delete
+        </DeleteTaskButton>
+      </ContextMenuItem>
     </ContextMenuContent>
   );
 };
