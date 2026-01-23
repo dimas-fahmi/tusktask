@@ -15,7 +15,7 @@ export type DeleteTaskButtonProps = {
 } & React.ComponentProps<"button">;
 
 /**
- * Button with delete task implementation, functional optimistic update as long as you registered the queryKey with the `useDeleteTaskButton().registerKey()`
+ * Button to delete task, with functional optimistic update as long as you registered the queryKey with the `useDeleteTaskButton().registerKey()`
  *
  * The mutation will only revalidate registered queryKeys, so to prevent stale state do the following:
  *
@@ -38,16 +38,24 @@ export type DeleteTaskButtonProps = {
  * or use it with shadcn custom button Component
  * ```
  * <Button asChild>
- *  <DeleteTaskButton taskId={the_id}>Delete</DeleteTaskButton>
+ *  <DeleteTaskButton taskId={the_id}>
+ *    Delete
+ *  </DeleteTaskButton>
  * </Button>
  * ```
  *
  * or the other way around
  * ```
- * <DeleteTaskButton taskId={the_id} asChild><Button>Delete</Button></DeleteTaskButton>
+ * <DeleteTaskButton taskId={the_id} asChild>
+ *  <Button>
+ *    Delete
+ *  </Button>
+ * </DeleteTaskButton>
  * ```
  *
- * Note: the registerKey helper already optimize to make sure uniqueness, if you already registered the exact same key somewhere else it'll just ignore the operation to prevent double operation. So, just add and forget just make sure the result of that queryKey is a valid `v1TaskGetResponse`
+ * Note: the registerKey helper already optimize to make sure uniqueness, if you already registered the exact same key somewhere else it'll just ignore the operation to prevent double operation. So, just add and forget!
+ *
+ * Additional note: just make sure the result of that queryKey is a valid `v1TaskGetResponse`
  *
  */
 const DeleteTaskButton = React.forwardRef<
