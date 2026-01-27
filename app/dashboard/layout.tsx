@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import type React from "react";
+import { authClient } from "@/src/lib/auth/client";
 import { signout } from "@/src/lib/auth/helper/signout";
 import { useGetSelfProfile } from "@/src/lib/queries/hooks/useGetSelfProfile";
 import { useGetSelfProjects } from "@/src/lib/queries/hooks/useGetSelfProjects";
@@ -41,10 +42,15 @@ const DashboardLayout = ({
     redirect("/account/deleted");
   }
 
+  const { data: session, isPending: isLoadingSession } =
+    authClient.useSession();
+
   if (
     !isLoadingProfile &&
     typeof profile?.onboardingStatus === "string" &&
-    profile?.onboardingStatus !== "completed"
+    profile?.onboardingStatus !== "completed" &&
+    !isLoadingSession &&
+    !session
   ) {
     redirect("/onboarding");
   }
@@ -72,7 +78,7 @@ const DashboardLayout = ({
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <main className="p-4 md:p-6 lg:p-12 space-y-4 md:space-y-6">
+        <main className="px-4 md:p-6 lg:p-12 space-y-4 md:space-y-6">
           {/* Layout Header */}
           <Header />
 

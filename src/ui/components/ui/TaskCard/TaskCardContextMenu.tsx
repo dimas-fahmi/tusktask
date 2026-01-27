@@ -1,53 +1,92 @@
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { PROJECT_MEMBERSHIP_ROLE_PERMISSIONS } from "@/src/lib/app/projectRBAC";
+import { authClient } from "@/src/lib/auth/client";
+import { queryIndex } from "@/src/lib/queries";
 import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
   ContextMenuSeparator,
-  ContextMenuShortcut,
   ContextMenuSub,
   ContextMenuSubContent,
   ContextMenuSubTrigger,
 } from "@/src/ui/shadcn/components/ui/context-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/src/ui/shadcn/components/ui/tooltip";
+import DeleteTaskButton from "../../actions/DeleteTaskButton";
+import { useDeleteTaskButton } from "../../actions/DeleteTaskButton/store";
+import { useTaskCardContext } from ".";
 
 const TaskCardContextMenu = () => {
+  const { task, queryKey } = useTaskCardContext();
+  const { registerKey } = useDeleteTaskButton();
+
+  const { data: session } = authClient.useSession();
+  const membershipsQuery = queryIndex.project.memberships({
+    projectId: task.projectId,
+    userId: session?.user?.id,
+    orderBy: "type",
+    orderDirection: "asc",
+  });
+  const { data: membershipsQueryResponse } = useQuery({
+    ...membershipsQuery.queryOptions,
+  });
+  const memberships = membershipsQueryResponse?.result?.result;
+  const myMembership = memberships?.find((m) => m.userId === session?.user?.id);
+  const myPermissions = myMembership
+    ? PROJECT_MEMBERSHIP_ROLE_PERMISSIONS[myMembership?.type]
+    : undefined;
+
+  useEffect(() => {
+    if (queryKey) {
+      registerKey(queryKey);
+    }
+  }, [queryKey, registerKey]);
+
   return (
     <ContextMenuContent className="w-52">
-      <ContextMenuItem inset>
-        Back
-        <ContextMenuShortcut>⌘[</ContextMenuShortcut>
-      </ContextMenuItem>
-      <ContextMenuItem inset disabled>
-        Forward
-        <ContextMenuShortcut>⌘]</ContextMenuShortcut>
-      </ContextMenuItem>
-      <ContextMenuItem inset>
-        Reload
-        <ContextMenuShortcut>⌘R</ContextMenuShortcut>
-      </ContextMenuItem>
+      <ContextMenuItem inset>Open</ContextMenuItem>
+
+      <ContextMenuSeparator />
+      <ContextMenuCheckboxItem>Done</ContextMenuCheckboxItem>
+      <ContextMenuCheckboxItem>Pinned</ContextMenuCheckboxItem>
+      <ContextMenuCheckboxItem>Archived</ContextMenuCheckboxItem>
+
+      <ContextMenuSeparator />
       <ContextMenuSub>
         <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
-        <ContextMenuSubContent className="w-44">
-          <ContextMenuItem>Save Page...</ContextMenuItem>
-          <ContextMenuItem>Create Shortcut...</ContextMenuItem>
-          <ContextMenuItem>Name Window...</ContextMenuItem>
+        <ContextMenuSubContent>
+          <ContextMenuItem>Open Project</ContextMenuItem>
+          <ContextMenuItem>Assign to a member</ContextMenuItem>
           <ContextMenuSeparator />
-          <ContextMenuItem>Developer Tools</ContextMenuItem>
-          <ContextMenuSeparator />
-          <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+          <ContextMenuItem>Edit</ContextMenuItem>
+          <ContextMenuItem variant="destructive">Reschedule</ContextMenuItem>
         </ContextMenuSubContent>
       </ContextMenuSub>
+
       <ContextMenuSeparator />
-      <ContextMenuCheckboxItem checked>Show Bookmarks</ContextMenuCheckboxItem>
-      <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
-      <ContextMenuSeparator />
-      <ContextMenuRadioGroup value="pedro">
-        <ContextMenuLabel inset>People</ContextMenuLabel>
-        <ContextMenuRadioItem value="pedro">Pedro Duarte</ContextMenuRadioItem>
-        <ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>
-      </ContextMenuRadioGroup>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <ContextMenuItem inset variant="destructive" asChild>
+            <DeleteTaskButton
+              className="w-full"
+              taskId={task.id}
+              disabled={!myPermissions?.deleteTask}
+            >
+              Delete
+            </DeleteTaskButton>
+          </ContextMenuItem>
+        </TooltipTrigger>
+        <TooltipContent>
+          {!myPermissions?.deleteTask
+            ? "You doesn't have permission to delete this task"
+            : "Delete this task"}
+        </TooltipContent>
+      </Tooltip>
     </ContextMenuContent>
   );
 };

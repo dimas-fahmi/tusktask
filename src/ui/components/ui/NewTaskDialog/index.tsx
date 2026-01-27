@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useExhaustiveDependencies: FKOF */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -111,6 +112,15 @@ const NewTaskDialog = () => {
   // Initialize mutation
   const { mutate: createNewTask, isPending: isCreatingNewTask } =
     useCreateNewTask();
+
+  useEffect(() => {
+    if (open) return;
+    form.reset(formDefaultValues);
+    if (projects?.[0]?.id) {
+      form.setValue("projectId", projects?.[0]?.id);
+    }
+    setAdvanceMode(false);
+  }, [open]);
 
   return (
     <Dialog

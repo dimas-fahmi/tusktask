@@ -25,8 +25,8 @@ const DayByDayView = () => {
   const tasks = taskQueryResult?.result?.result || [];
 
   return (
-    <div className="min-h-[200px] flex flex-col space-y-4">
-      {/* COntroller */}
+    <div className="min-h-50 flex flex-col space-y-4">
+      {/* Controller */}
       <header>
         <Controller />
       </header>
@@ -35,7 +35,11 @@ const DayByDayView = () => {
       {tasks.length ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
           {tasks.map((task, index) => (
-            <TaskCard key={task?.id || `task-${index}`} task={task} />
+            <TaskCard
+              key={task?.id || `task-${index}`}
+              task={task}
+              queryKey={taskQuery.queryKey}
+            />
           ))}
         </div>
       ) : (

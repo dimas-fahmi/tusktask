@@ -21,6 +21,7 @@ export interface PROJECT_PERMISSIONS {
   updateTask: boolean;
   assignTask: boolean;
   archiveTask: boolean;
+  deleteTask: boolean;
 
   // Task Productivity
   claimTask: boolean;
@@ -44,6 +45,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateTask: true,
     assignTask: true,
     archiveTask: true,
+    deleteTask: true,
 
     // Task Productivity
     claimTask: true,
@@ -62,6 +64,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateTask: true,
     assignTask: true,
     archiveTask: true,
+    deleteTask: true,
 
     // Task Productivity
     claimTask: true,
@@ -80,6 +83,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateTask: true,
     assignTask: false,
     archiveTask: false,
+    deleteTask: false,
 
     // Task Productivity
     claimTask: true,
@@ -98,6 +102,7 @@ export const PROJECT_MEMBERSHIP_ROLE_PERMISSIONS: Record<
     updateTask: false,
     assignTask: false,
     archiveTask: false,
+    deleteTask: false,
 
     // Task Productivity
     claimTask: false,

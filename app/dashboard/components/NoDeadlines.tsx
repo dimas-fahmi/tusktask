@@ -22,7 +22,11 @@ const NoDeadlines = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {tasks.map((task, index) => (
-            <TaskCard key={task?.id || `task-${index}`} task={task} />
+            <TaskCard
+              key={task?.id || `task-${index}`}
+              task={task}
+              queryKey={taskQuery.queryKey}
+            />
           ))}
         </div>
       </div>
