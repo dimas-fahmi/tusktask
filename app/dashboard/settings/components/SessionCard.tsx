@@ -1,14 +1,14 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, CircleQuestionMark, Trash } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { UAParser } from "ua-parser-js";
 import type { ActiveSession } from "@/src/lib/app/app";
-import { authClient } from "@/src/lib/auth/client";
 import { DEVICE_TYPE_ICON } from "@/src/lib/lucideIcons/device";
 import { OS_NAME_ICON } from "@/src/lib/lucideIcons/os";
 import { queryIndex } from "@/src/lib/queries";
+import { revokeSession } from "@/src/lib/serverActions/revokeSession";
 import { useNotificationStore } from "@/src/lib/stores/notification";
 import { truncateStringByChar } from "@/src/lib/utils/truncateString";
 import TwoChoiceDialog from "@/src/ui/components/ui/TwoChoiceDialog";
@@ -50,6 +50,7 @@ export const SessionCard = ({
   );
   const { data: ipLookupResponse } = useQuery({
     ...ipLookupQuery.queryOptions,
+    refetchOnWindowFocus: true,
   });
 
   // Process Ip Lookup Response
@@ -69,41 +70,47 @@ export const SessionCard = ({
   // More Informtion state
   const [expand, setExpand] = useState(false);
 
+  const { mutate } = useMutation({
+    mutationFn: revokeSession,
+  });
+
   // Handle Revoke
   const handleRevoke = async () => {
     if (isCurrent || isRevoking) return;
     setIsRevoking(true);
-    await authClient.revokeSession(
-      {
-        token: session.token,
-      },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: sessionQuery.queryKey,
-          });
+    try {
+      mutate(
+        { id: session.id },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: sessionQuery.queryKey,
+            });
 
-          triggerToast(
-            "Session Terminated",
-            {
-              description:
-                "Session terminated successfully, your account is logged out from that session.",
-            },
-            "success",
-          );
+            triggerToast(
+              "Session Terminated",
+              {
+                description:
+                  "Session terminated successfully, your account is logged out from that session.",
+              },
+              "success",
+            );
+          },
+          onError: () => {
+            throw 1;
+          },
         },
-        onError: () => {
-          triggerToast(
-            "Something Went Wrong",
-            {
-              description:
-                "Failed to terminate session, try again if the issue persist please contact developer.",
-            },
-            "error",
-          );
+      );
+    } catch (_error) {
+      triggerToast(
+        "Something Went Wrong",
+        {
+          description:
+            "Failed to terminate session, try again if the issue persist please contact developer.",
         },
-      },
-    );
+        "error",
+      );
+    }
     setIsRevoking(false);
     setRevokeSessionDialog(false);
   };
