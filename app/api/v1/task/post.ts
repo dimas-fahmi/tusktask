@@ -1,3 +1,4 @@
+import { Ratelimit } from "@upstash/ratelimit";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
@@ -57,7 +58,9 @@ export const v1TaskPostRequestSchema = insertTaskSchema
 export type V1TaskPostRequest = z.infer<typeof v1TaskPostRequestSchema>;
 export type V1TaskPostResponse = StandardResponseType<TaskType | undefined>;
 
-const strictPolicyLimiter = rateLimiter();
+const strictPolicyLimiter = rateLimiter({
+  limiter: Ratelimit.slidingWindow(20, "10s"),
+});
 
 export async function v1TaskPost(request: NextRequest) {
   // Rate Limiter
