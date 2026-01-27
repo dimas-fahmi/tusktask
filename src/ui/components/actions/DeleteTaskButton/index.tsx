@@ -115,13 +115,23 @@ const DeleteTaskButton = React.forwardRef<
     onError: (err, _var, omr) => {
       console.error(err);
 
-      triggerToast(
-        "Something Went Wrong",
-        {
-          description: "Failed to delete the task, please try again.",
-        },
-        "error",
-      );
+      if (err?.message) {
+        triggerToast(
+          "Deletion Failed",
+          {
+            description: err.message,
+          },
+          "error",
+        );
+      } else {
+        triggerToast(
+          "Something Went Wrong",
+          {
+            description: "Failed to delete the task, please try again.",
+          },
+          "error",
+        );
+      }
 
       if (omr?.trashBin && Array.isArray(omr?.trashBin)) {
         omr.trashBin.forEach((q) => {
