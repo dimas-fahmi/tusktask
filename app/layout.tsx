@@ -1,6 +1,7 @@
 "use client";
 
 import { fontBody, fontHeading } from "@/src/ui/fonts";
+import { TooltipProvider } from "@/src/ui/shadcn/components/ui/tooltip";
 import { cn } from "@/src/ui/shadcn/lib/utils";
 import "@/src/ui/styles/globals.tailwind.css";
 
@@ -16,7 +17,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         fontBody.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
     </html>
   );
 }
