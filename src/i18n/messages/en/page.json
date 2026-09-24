@@ -1,1 +1,6 @@
-{}
+{
+  "sign_in": {
+    "title": "Welcome aboard, captain!",
+    "desc": "Let's get things done."
+  }
+}
