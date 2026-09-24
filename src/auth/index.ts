@@ -1,8 +1,14 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP, twoFactor } from "better-auth/plugins";
+import { COLOR_THEME_IDS, DEFAULT_COLOR_THEME_ID } from "../app/colorTheme";
 import { getEnv } from "../app/env";
+import {
+  DEFAULT_REGISTRATION_STEP,
+  REGISTRATION_STEPS,
+} from "../app/registrationPhase";
 import { nidb } from "../db";
+import { generateUsername } from "../utils/generateUsername";
 
 export const auth = betterAuth({
   // APP
@@ -55,6 +61,72 @@ export const auth = betterAuth({
     google: {
       clientId: getEnv("GOOGLE_OAUTH_ID"),
       clientSecret: getEnv("GOOGLE_OAUTH_SECRET"),
+    },
+  },
+
+  // USER MODEL
+  user: {
+    additionalFields: {
+      username: {
+        type: "string",
+        required: true,
+        input: false,
+        unique: true,
+        defaultValue: generateUsername(),
+        fieldName: "username",
+      },
+
+      colorThemeId: {
+        type: [...COLOR_THEME_IDS],
+        required: true,
+        input: false,
+        unique: false,
+        defaultValue: DEFAULT_COLOR_THEME_ID,
+        fieldName: "colorThemeId",
+      },
+
+      registrationStep: {
+        type: [...REGISTRATION_STEPS],
+        required: true,
+        input: false,
+        unique: false,
+        defaultValue: DEFAULT_REGISTRATION_STEP,
+        fieldName: "registrationStep",
+      },
+
+      soundNotification: {
+        type: "boolean",
+        required: true,
+        input: false,
+        unique: false,
+        defaultValue: true,
+        fieldName: "soundNotification",
+      },
+
+      soundEffect: {
+        type: "boolean",
+        required: true,
+        input: false,
+        unique: false,
+        defaultValue: true,
+        fieldName: "soundEffect",
+      },
+
+      attribution: {
+        type: "string",
+        required: false,
+        input: false,
+        unique: false,
+        fieldName: "attribution",
+      },
+
+      deletedAt: {
+        type: "date",
+        required: false,
+        input: false,
+        unique: false,
+        fieldName: "deletedAt",
+      },
     },
   },
 });
