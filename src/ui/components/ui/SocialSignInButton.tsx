@@ -1,18 +1,20 @@
 "use client";
 
+import { IconLoader } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { SOCIAL_PROVIDERS, type SocialProviderName } from "@/src/auth/social";
 import { Button, type ButtonProps } from "../../shadcn/components/ui/button";
+import { cn } from "../../shadcn/lib/utils";
 
 export type SocialSignInButtonProps = Omit<ButtonProps, "children" | "ref"> & {
   provider: SocialProviderName;
-  isPending?: SocialProviderName | null;
+  pending?: SocialProviderName | null;
   setPending?: (pending: SocialProviderName | null) => void;
 };
 
 const SocialSignInButton = ({
   provider,
-  isPending,
+  pending,
   setPending,
   onClick,
   className,
@@ -22,13 +24,33 @@ const SocialSignInButton = ({
   const data = SOCIAL_PROVIDERS[provider];
 
   return (
-    <Button variant={"outline"} {...props}>
-      <data.icon />
-      <span>
-        {t("component.SocialSignInButton.label", {
-          provider: data.name,
-        })}
-      </span>
+    <Button
+      disabled={!!pending}
+      variant={"outline"}
+      {...props}
+      className={cn("", className)}
+      onClick={(e) => {
+        onClick?.(e);
+
+        if (e.defaultPrevented) return;
+        setPending?.(provider);
+      }}
+    >
+      {pending === provider ? (
+        <>
+          <IconLoader className="animate-spin" />
+          <span>{t("common.wait_a_moment")}</span>
+        </>
+      ) : (
+        <>
+          <data.icon />
+          <span>
+            {t("component.SocialSignInButton.label", {
+              provider: data.name,
+            })}
+          </span>
+        </>
+      )}
     </Button>
   );
 };
