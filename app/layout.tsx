@@ -17,7 +17,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         fontBody.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col custom-scrollbar">
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
