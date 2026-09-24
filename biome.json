@@ -24,6 +24,7 @@
     "rules": {
       "recommended": true
     },
+    "includes": ["**", "!src/ui/shadcn/components/**"],
     "domains": {
       "next": "recommended",
       "react": "recommended"
