@@ -20,6 +20,9 @@ export default getRequestConfig(async () => {
       common: {
         ...(await import(`./messages/${locale}/common.json`)).default,
       },
+      component: {
+        ...(await import(`./messages/${locale}/component.json`)).default,
+      },
       error: {
         ...(await import(`./messages/${locale}/error.json`)).default,
       },

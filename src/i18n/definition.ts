@@ -13,6 +13,10 @@ import type attributionId from "./messages/id/attribution.json";
 import type commonEn from "./messages/en/common.json";
 import type commonId from "./messages/id/common.json";
 
+// Component Dictionary
+import type componentEn from "./messages/en/component.json";
+import type componentId from "./messages/id/component.json";
+
 // Error Dictionary
 import type errorEn from "./messages/en/error.json";
 import type errorId from "./messages/id/error.json";
@@ -33,6 +37,7 @@ export type Messages = {
   alert: typeof alertEn | typeof alertId;
   attribution: typeof attributionEn | typeof attributionId;
   common: typeof commonEn | typeof commonId;
+  component: typeof componentEn | typeof componentId;
   error: typeof errorEn | typeof errorId;
   page: typeof pageEn | typeof pageId;
   registrationStep: typeof registrationStepEn | typeof registrationStepId;
