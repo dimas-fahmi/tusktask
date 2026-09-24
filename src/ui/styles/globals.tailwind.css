@@ -45,6 +45,10 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Added custom color */
+  --color-link: var(--link);
+  --color-link-foreground: var(--link-foreground);
 }
 
 :root {
@@ -54,7 +58,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(32.045% 0.14524 262.241);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -80,6 +84,10 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Added custom color */
+  --link: oklch(38.905% 0.17503 262.766);
+  --link-foreground: oklch(32.045% 0.14524 262.241);
 }
 
 .dark {
@@ -114,6 +122,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Added custom color */
+  --link: oklch(92.049% 0.12643 195.228);
+  --link-foreground: oklch(37.53% 0.00004 271.152);
 }
 
 @layer base {
