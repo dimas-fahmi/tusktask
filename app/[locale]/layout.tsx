@@ -1,3 +1,4 @@
+import { NextIntlClientProvider } from "next-intl";
 import type React from "react";
 
 const LocaleLayout = ({
@@ -5,6 +6,6 @@ const LocaleLayout = ({
 }: {
   children: Readonly<React.ReactNode>;
 }) => {
-  return children;
+  return <NextIntlClientProvider>{children}</NextIntlClientProvider>;
 };
 export default LocaleLayout;
