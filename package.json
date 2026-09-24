@@ -3,14 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "biome check",
-    "format": "biome format --write"
+    "dev": "bun --bun next dev",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "nb": "biome check --write && bun --bun next build",
+    "lint": "biome check --write",
+    "format": "biome format --write",
+    "db:gen": "bunx drizzle-kit generate",
+    "db:gen:custom": "bunx drizzle-kit generate --custom",
+    "db:mig": "bunx drizzle-kit migrate",
+    "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "drizzle-orm": "^1.0.0-rc.4",
     "next": "16.3.6",
+    "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
@@ -21,6 +29,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "drizzle-kit": "^1.0.0-rc.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
