@@ -1,3 +1,7 @@
 {
-  "close": "Tutup"
+  "close": "Tutup",
+
+  "email_address": "Alamat Surel",
+
+  "sign_in": "Masuk"
 }

@@ -1,3 +1,7 @@
 {
-  "close": "Close"
+  "close": "Close",
+
+  "email_address": "Email Address",
+
+  "sign_in": "Sign In"
 }
