@@ -1,9 +1,8 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { getSessionCookie } from "better-auth/cookies";
 import { auth } from "@/src/auth";
+import { etm } from "@/src/i18n/errorTranslation/init";
 import type { BaseTRPCContext } from "../server/init";
-
-// TODO: use proper error handler
 
 export function sessionRequiredPlugin() {
   const t = initTRPC.context<BaseTRPCContext>().create();
@@ -15,6 +14,7 @@ export function sessionRequiredPlugin() {
       if (!sessionCookie) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
+          message: etm.session_undefined.construct(),
         });
       }
 
@@ -25,6 +25,7 @@ export function sessionRequiredPlugin() {
       if (!session?.user.id) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
+          message: etm.session_invalid.construct(),
         });
       }
 
