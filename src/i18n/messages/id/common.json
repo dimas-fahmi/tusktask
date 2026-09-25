@@ -5,5 +5,19 @@
 
   "sign_in": "Masuk",
 
-  "wait_a_moment": "Tunggu sebentar"
+  "wait_a_moment": "Tunggu sebentar",
+
+  "color_theme": {
+    "default": {
+      "name": "Bawaan"
+    },
+    "dark": {
+      "name": "Gelap"
+    },
+    "paper": {
+      "name": "Kertas"
+    }
+  },
+
+  "personalization": "Personalisasi"
 }

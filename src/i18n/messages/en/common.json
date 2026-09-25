@@ -5,5 +5,19 @@
 
   "sign_in": "Sign In",
 
-  "wait_a_moment": "Wait a moment"
+  "wait_a_moment": "Wait a moment",
+
+  "color_themes": {
+    "default": {
+      "name": "Default"
+    },
+    "dark": {
+      "name": "Dark"
+    },
+    "paper": {
+      "name": "Paper"
+    }
+  },
+
+  "personalization": "Personalization"
 }

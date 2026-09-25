@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: REQUIRED */
 
-type MessageInstance<TArgs extends any[] = any[]> = {
+export type MessageInstance<TArgs extends any[] = any[]> = {
   interpolation?: (params: string[]) => Record<string, string | number | Date>;
   construct: (...args: TArgs) => string;
 };
