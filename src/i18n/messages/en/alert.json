@@ -1,5 +1,10 @@
 {
   "tos_pp_consent_notice": "By proceeding, you acknowledge your acceptance of our <tos>Terms of Service</tos> and <pp>Privacy Policy</pp>",
 
-  "new_account_notice": "Don't have an account? We'll create a new one for you!"
+  "new_account_notice": "Don't have an account? We'll create a new one for you!",
+
+  "finish_registration_first": {
+    "title": "Wait Captain!",
+    "desc": "Let's finish up your registration first, won't take long."
+  }
 }
