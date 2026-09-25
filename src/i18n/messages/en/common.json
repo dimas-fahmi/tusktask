@@ -7,6 +7,8 @@
 
   "wait_a_moment": "Wait a moment",
 
+  "color_theme": "Color Theme",
+
   "color_themes": {
     "default": {
       "name": "Default"

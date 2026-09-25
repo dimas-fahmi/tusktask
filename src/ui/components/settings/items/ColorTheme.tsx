@@ -31,7 +31,7 @@ const ColorTheme = () => {
             }
           }}
         >
-          <SelectTrigger size="sm">
+          <SelectTrigger size="sm" className={"text-xs"}>
             <SelectValue>
               {t(`common.color_themes.${current}.name`)}
             </SelectValue>

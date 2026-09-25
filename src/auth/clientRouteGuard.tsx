@@ -17,13 +17,13 @@ const clientRouteGuard = ({
   children: Readonly<React.ReactNode>;
 }) => {
   const t = useTranslations();
-  const { data: myData, isFetching } = useMyData();
+  const { data: myData, isFetching, isPending } = useMyData();
 
   const router = useRouter();
   const pathname = stripLocaleFromPathname(usePathname());
 
   useEffect(() => {
-    if (isFetching) return;
+    if (isFetching || isPending) return;
 
     if (
       myData &&
@@ -55,7 +55,7 @@ const clientRouteGuard = ({
     if (isGuestOnlyRoute(pathname) && myData) {
       return router.push(route.app());
     }
-  }, [myData, isFetching, router, pathname, t]);
+  }, [myData, isFetching, router, pathname, t, isPending]);
 
   return children;
 };

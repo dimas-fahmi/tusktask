@@ -6,13 +6,17 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import quotes from "@/src/app/data/quotes.json";
 import route from "@/src/app/route";
+import { useQuickSettings } from "@/src/hooks/useQuickSettings";
 import StyledLink from "@/src/ui/components/ui/StyledLink";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import { Separator } from "@/src/ui/shadcn/components/ui/separator";
 
 const AuthLayout = ({ children }: LayoutProps<"/[locale]">) => {
   const t = useTranslations();
+
   const locale = useLocale();
+
+  const openQuickSettings = useQuickSettings((s) => s.openDialog);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 min-h-dvh gap-4">
@@ -23,15 +27,22 @@ const AuthLayout = ({ children }: LayoutProps<"/[locale]">) => {
           <Link href={route.homepage()}>
             <Image
               width={48}
-              height={59.5}
+              height={59}
               src={"/res/logo/main.png"}
               alt="TuskTask's Logo"
+              className="w-[48px] h-auto"
             />
           </Link>
 
           {/* Buttons */}
           <div>
-            <Button variant={"outline"} size={"icon"}>
+            <Button
+              variant={"outline"}
+              size={"icon"}
+              onClick={() => {
+                openQuickSettings();
+              }}
+            >
               <IconSettings />
             </Button>
           </div>
