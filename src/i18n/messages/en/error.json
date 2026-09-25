@@ -1,1 +1,15 @@
-{}
+{
+  "generic": "Something went wrong",
+
+  "string_invalid": "Please enter a valid value",
+  "string_min": "Please enter at least {min} character(s)",
+  "string_max": "Please enter no more than {max} character(s)",
+
+  "object_invalid": "Please enter a valid object",
+
+  "file_too_large": "File is too large. The maximum size is {max}.",
+  "file_format_unsupported": "Unsupported file format. Supported format(s): {formats}.",
+
+  "session_undefined": "You need to login to use this feature.",
+  "session_invalid": "Can't validate your session, try logging out and logging back in."
+}

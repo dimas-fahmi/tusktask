@@ -1,1 +1,15 @@
-{}
+{
+  "generic": "Terjadi kesalahan",
+
+  "string_invalid": "Harap masukkan nilai yang valid",
+  "string_min": "Harap masukkan minimal {min} karakter",
+  "string_max": "Harap masukkan maksimal {max} karakter",
+
+  "object_invalid": "Harap masukkan objek yang valid",
+
+  "file_too_large": "Ukuran file terlalu besar. Ukuran maksimum adalah {max}.",
+  "file_format_unsupported": "Format file tidak didukung. Format yang didukung: {formats}.",
+
+  "session_undefined": "Anda perlu masuk untuk menggunakan fitur ini.",
+  "session_invalid": "Tidak dapat memvalidasi sesi Anda; coba keluar lalu masuk kembali."
+}
