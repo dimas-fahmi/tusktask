@@ -13,7 +13,14 @@ import { cn } from "cn";
 import type * as React from "react";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 
-const toast = ToastPrimitive.createToastManager();
+export type ToastType = "success" | "error" | "warning" | "loading" | "info";
+
+export type ToastData = {
+  type?: ToastType;
+  hideClose?: boolean;
+};
+
+const toast = ToastPrimitive.createToastManager<ToastData>();
 
 function ToastProvider({ ...props }: ToastPrimitive.Provider.Props) {
   return <ToastPrimitive.Provider {...props} />;
@@ -101,7 +108,7 @@ function ToastDescription({
 
 function ToastAction({
   className,
-  render = <Button variant="outline" size="sm" />,
+  render = <Button variant="outline" size="xs" />,
   ...props
 }: ToastPrimitive.Action.Props) {
   return (
@@ -136,15 +143,11 @@ function ToastClose({
   );
 }
 
-function ToastIcon({ type }: { type: string | undefined }) {
+function ToastIcon({ type }: { type: ToastData["type"] | undefined }) {
   let icon: React.ReactNode = null;
 
   if (type === "success") {
     icon = <IconCircleCheck aria-hidden="true" />;
-  }
-
-  if (type === "info") {
-    icon = <IconInfoCircle aria-hidden="true" />;
   }
 
   if (type === "warning") {
@@ -160,7 +163,7 @@ function ToastIcon({ type }: { type: string | undefined }) {
   }
 
   if (!icon) {
-    return null;
+    icon = <IconInfoCircle aria-hidden="true" />;
   }
 
   return (
@@ -174,18 +177,28 @@ function ToastIcon({ type }: { type: string | undefined }) {
 }
 
 function ToastList() {
-  const { toasts } = ToastPrimitive.useToastManager();
+  const { toasts } = ToastPrimitive.useToastManager<ToastData>();
 
   return toasts.map((toastItem) => (
-    <Toast key={toastItem.id} toast={toastItem}>
+    <Toast
+      key={toastItem.id}
+      toast={toastItem}
+      data-type={toastItem?.data?.type ?? "info"}
+    >
       <ToastContent>
-        <ToastIcon type={toastItem.type} />
+        <ToastIcon type={toastItem.data?.type} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <ToastTitle />
           <ToastDescription />
         </div>
-        <ToastAction />
-        <ToastClose />
+
+        {toastItem?.actionProps?.children ? (
+          <ToastAction />
+        ) : toastItem?.data?.hideClose ? (
+          ""
+        ) : (
+          <ToastClose />
+        )}
       </ToastContent>
     </Toast>
   ));
