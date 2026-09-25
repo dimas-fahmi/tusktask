@@ -87,4 +87,6 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
 });
 
 export const etm = et.messages;
+
 export const deserializer = ErrorTranslation.createDeserializer(etm);
+export const protoValidator = ErrorTranslation.createProtoValidator(etm);

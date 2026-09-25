@@ -8,6 +8,7 @@ import {
   REGISTRATION_STEPS,
 } from "../app/registrationPhase";
 import { nidb } from "../db";
+import { schema } from "../db/schema";
 import { generateUsername } from "../utils/generateUsername";
 
 export const auth = betterAuth({
@@ -25,6 +26,9 @@ export const auth = betterAuth({
   // DATABASE CONNECTION
   database: drizzleAdapter(nidb, {
     provider: "pg",
+    schema: {
+      ...schema,
+    },
   }),
 
   // PLUGINS

@@ -75,4 +75,39 @@ export class ErrorTranslation<
       return { key: key as TRegisteredKey, params };
     };
   }
+  public static createProtoValidator<TRegisteredKey extends string>(
+    messages: Record<TRegisteredKey, MessageInstance>,
+  ) {
+    const pool = new Map(
+      Object.entries(messages) as [TRegisteredKey, MessageInstance][],
+    );
+    return (proto: string): boolean => {
+      const [key, _params] = proto.split(ErrorTranslation.groupSeparator);
+
+      const params = _params
+        ? _params?.split(ErrorTranslation.unitSeparator)
+        : [];
+
+      const instance = pool.get(key as TRegisteredKey);
+
+      if (!instance) return false;
+
+      if (instance?.interpolation && !params.length) return false;
+
+      if (params.length) {
+        try {
+          if (!instance?.interpolation) {
+            return false;
+          }
+
+          instance?.interpolation?.(params);
+          return true;
+        } catch (_error) {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    };
+  }
 }
