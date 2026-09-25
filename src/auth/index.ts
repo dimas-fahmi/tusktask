@@ -76,7 +76,7 @@ export const auth = betterAuth({
         required: true,
         input: false,
         unique: true,
-        defaultValue: generateUsername(),
+        defaultValue: generateUsername,
         fieldName: "username",
       },
 
