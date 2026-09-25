@@ -38,17 +38,14 @@ export class ErrorTranslation<
   }
 
   public static createDeserializer<TRegisteredKey extends string>(
-    messages: Record<TRegisteredKey, MessageInstance>,
+    messages: Map<TRegisteredKey, MessageInstance>,
   ) {
     return (proto: string) => {
       const groups = proto.split(ErrorTranslation.groupSeparator);
 
       const [key, _params] = groups.filter(Boolean);
 
-      const [_, instance] =
-        (Object.entries(messages) as [TRegisteredKey, MessageInstance][]).find(
-          ([k]) => k === key,
-        ) ?? [];
+      const instance = messages.get(key as TRegisteredKey);
 
       if (!instance) {
         throw new Error(
@@ -76,11 +73,8 @@ export class ErrorTranslation<
     };
   }
   public static createProtoValidator<TRegisteredKey extends string>(
-    messages: Record<TRegisteredKey, MessageInstance>,
+    messages: Map<TRegisteredKey, MessageInstance>,
   ) {
-    const pool = new Map(
-      Object.entries(messages) as [TRegisteredKey, MessageInstance][],
-    );
     return (proto: string): boolean => {
       const [key, _params] = proto.split(ErrorTranslation.groupSeparator);
 
@@ -88,7 +82,7 @@ export class ErrorTranslation<
         ? _params?.split(ErrorTranslation.unitSeparator)
         : [];
 
-      const instance = pool.get(key as TRegisteredKey);
+      const instance = messages.get(key as TRegisteredKey);
 
       if (!instance) return false;
 
