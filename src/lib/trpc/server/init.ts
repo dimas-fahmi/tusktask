@@ -1,10 +1,11 @@
 import { initTRPC } from "@trpc/server";
 import SuperJSON from "superjson";
 
-export const createTRPCContext = async (_opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     truth:
       "Sorry to break it to you my friend, but there is no truth in this world.",
+    headers: opts.headers,
   };
 };
 
