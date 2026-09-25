@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: REQUIRED */
 
 type MessageInstance<TArgs extends any[] = any[]> = {
-  interpolation?: (params: string[]) => Record<string, unknown>;
+  interpolation?: (params: string[]) => Record<string, string | number | Date>;
   construct: (...args: TArgs) => string;
 };
 
@@ -60,7 +60,7 @@ export class ErrorTranslation<
         ? _params.split(ErrorTranslation.unitSeparator)
         : [];
 
-      let params: Record<string, unknown> = {};
+      let params: Record<string, string | number | Date> = {};
 
       if (raw_params.length) {
         if (!instance?.interpolation) {
