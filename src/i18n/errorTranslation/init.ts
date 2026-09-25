@@ -1,5 +1,5 @@
 import type { Messages } from "../definition";
-import { ErrorTranslation } from ".";
+import { ErrorTranslation, type MessageInstance } from ".";
 
 export type ErrorTranslationKey = keyof Messages["error"];
 
@@ -87,6 +87,8 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
 });
 
 export const etm = et.messages;
-const etmMap = new Map(Object.entries(etm));
+const etmMap = new Map(
+  Object.entries(etm) as [ErrorTranslationKey, MessageInstance][],
+);
 export const deserializer = ErrorTranslation.createDeserializer(etmMap);
 export const protoValidator = ErrorTranslation.createProtoValidator(etmMap);
