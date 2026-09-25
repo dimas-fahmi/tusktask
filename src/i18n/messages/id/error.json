@@ -11,5 +11,7 @@
   "file_format_unsupported": "Format file tidak didukung. Format yang didukung: {formats}.",
 
   "session_undefined": "Anda perlu masuk untuk menggunakan fitur ini.",
-  "session_invalid": "Tidak dapat memvalidasi sesi Anda; coba keluar lalu masuk kembali."
+  "session_invalid": "Tidak dapat memvalidasi sesi Anda; coba keluar lalu masuk kembali.",
+
+  "unknown_error": "Terjadi kesalahan yang tidak diketahui penyebabnya. Silakan coba lagi; jika masalah berlanjut, hubungi layanan dukungan."
 }

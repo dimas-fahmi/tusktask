@@ -11,5 +11,7 @@
   "file_format_unsupported": "Unsupported file format. Supported format(s): {formats}.",
 
   "session_undefined": "You need to login to use this feature.",
-  "session_invalid": "Can't validate your session, try logging out and logging back in."
+  "session_invalid": "Can't validate your session, try logging out and logging back in.",
+
+  "unknown_error": "Something went wrong, and we don't know the cause. Try again, if the issue persist, contact support."
 }

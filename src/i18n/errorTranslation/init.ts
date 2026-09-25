@@ -76,6 +76,13 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
           key: "session_undefined",
         }),
     },
+
+    unknown_error: {
+      construct: () =>
+        serializer({
+          key: "unknown_error",
+        }),
+    },
   },
 });
 
