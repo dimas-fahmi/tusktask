@@ -87,7 +87,7 @@ function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
   return (
     <ToastPrimitive.Title
       data-slot="toast-title"
-      className={cn("text-sm font-medium", className)}
+      className={cn("text-sm font-semibold font-heading", className)}
       {...props}
     />
   );
@@ -100,7 +100,7 @@ function ToastDescription({
   return (
     <ToastPrimitive.Description
       data-slot="toast-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-xs text-muted-foreground", className)}
       {...props}
     />
   );
@@ -143,7 +143,13 @@ function ToastClose({
   );
 }
 
-function ToastIcon({ type }: { type: ToastData["type"] | undefined }) {
+function ToastIcon({
+  type,
+  className,
+  ...props
+}: {
+  type: ToastData["type"] | undefined;
+} & React.ComponentPropsWithoutRef<"span">) {
   let icon: React.ReactNode = null;
 
   if (type === "success") {
@@ -168,8 +174,12 @@ function ToastIcon({ type }: { type: ToastData["type"] | undefined }) {
 
   return (
     <span
+      {...props}
       data-slot="toast-icon"
-      className="shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+      className={cn(
+        "shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
+        className,
+      )}
     >
       {icon}
     </span>
@@ -186,10 +196,12 @@ function ToastList() {
       data-type={toastItem?.data?.type ?? "info"}
     >
       <ToastContent>
-        <ToastIcon type={toastItem.data?.type} />
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <ToastTitle />
-          <ToastDescription />
+        <div className="flex gap-2 flex-1">
+          <ToastIcon type={toastItem.data?.type} className="pt-[3px]" />
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <ToastTitle />
+            <ToastDescription />
+          </div>
         </div>
 
         {toastItem?.actionProps?.children ? (
