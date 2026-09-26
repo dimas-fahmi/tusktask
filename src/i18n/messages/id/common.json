@@ -33,5 +33,28 @@
     "id": "Indonesia"
   },
 
-  "Account": "Akun"
+  "Account": "Akun",
+
+  "attribution_channels": {
+    "social_media": {
+      "title": "Media Sosial",
+      "desc": "Anda mengetahui kami melalui platform media sosial seperti Facebook dan Instagram",
+      "ps": "Ini mencakup TikTok, YouTube, dan lainnya."
+    },
+    "search_engine": {
+      "title": "Mesin Pencari",
+      "desc": "Anda mengetahui kami melalui mesin pencari seperti Google dan Bing",
+      "ps": "Ini mencakup DuckDuckGo, Yahoo, dan lainnya."
+    },
+    "advertisement": {
+      "title": "Iklan",
+      "desc": "Anda mengetahui kami melalui banner iklan",
+      "ps": "Ini mencakup postingan bersponsor di media sosial atau hasil mesin pencari."
+    },
+    "word_of_mouth": {
+      "title": "Rekomendasi dari Orang Lain",
+      "desc": "Anda mengetahui kami melalui orang-orang di sekitar Anda",
+      "ps": "Ini mencakup rekan kerja atau anggota keluarga Anda."
+    }
+  }
 }

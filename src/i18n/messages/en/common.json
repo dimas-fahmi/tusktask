@@ -33,5 +33,28 @@
     "id": "Indonesian"
   },
 
-  "Account": "Account"
+  "Account": "Account",
+
+  "attribution_channels": {
+    "social_media": {
+      "title": "Social Media",
+      "desc": "You discovered us through social media platforms like Facebook and Instagram",
+      "ps": "This includes TikTok, YouTube, and others."
+    },
+    "search_engine": {
+      "title": "Search Engines",
+      "desc": "You discovered us through search engines like Google and Bing",
+      "ps": "This includes DuckDuckGo, Yahoo, and others."
+    },
+    "advertisement": {
+      "title": "Advertisements",
+      "desc": "You discovered us through advertising banners",
+      "ps": "This includes sponsored posts on social media or search engine results."
+    },
+    "word_of_mouth": {
+      "title": "Recommendations from Others",
+      "desc": "You discovered us through people around you",
+      "ps": "This includes your colleagues or family members."
+    }
+  }
 }
