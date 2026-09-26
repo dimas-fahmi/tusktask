@@ -1,4 +1,6 @@
+import RegistrationPageIndex from "./RegistrationPageIndex";
+
 const RegistrationPage = () => {
-  return <div>RegistrationPage</div>;
+  return <RegistrationPageIndex />;
 };
 export default RegistrationPage;

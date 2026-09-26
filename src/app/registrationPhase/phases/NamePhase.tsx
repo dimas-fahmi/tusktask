@@ -1,0 +1,54 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { useShallow } from "zustand/react/shallow";
+import AuthHeader from "@/app/[locale]/(auth)/components/AuthHeader";
+import { useRegistrationStep } from "@/src/hooks/useRegistrationStep";
+import { Button } from "@/src/ui/shadcn/components/ui/button";
+import type { PendingRegistrationStep } from "..";
+import { getPhase } from "../renderable";
+
+const CURRENT: PendingRegistrationStep = "name" as const;
+
+const NamePhase = () => {
+  const t = useTranslations();
+
+  const [setCurrent] = useRegistrationStep(useShallow((s) => [s.setCurrent]));
+  const { last, next } = getPhase(CURRENT);
+
+  return (
+    <div className="space-y-4">
+      <AuthHeader
+        title={t(`registrationStep.${CURRENT}.title`)}
+        desc={t(`registrationStep.${CURRENT}.desc`)}
+      />
+
+      <div>MAIN_CONTENT_HERE</div>
+
+      <footer className="flex items-center justify-end gap-1">
+        {last && (
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              setCurrent(last);
+            }}
+          >
+            {t("common.back")}
+          </Button>
+        )}
+
+        {next && (
+          <Button
+            variant={"default"}
+            onClick={() => {
+              setCurrent(next);
+            }}
+          >
+            {t("common.continue")}
+          </Button>
+        )}
+      </footer>
+    </div>
+  );
+};
+export default NamePhase;

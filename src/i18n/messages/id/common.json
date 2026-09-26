@@ -1,5 +1,11 @@
 {
   "close": "Tutup",
+  "back": "Kembali",
+  "continue": "Lanjutkan",
+  "cancel": "Batalkan",
+  "abort": "Batalkan",
+  "archive": "Arsipkan",
+  "archived": "Diarsipkan",
 
   "email_address": "Alamat Surel",
 

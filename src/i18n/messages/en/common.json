@@ -1,5 +1,11 @@
 {
   "close": "Close",
+  "back": "Back",
+  "continue": "Continue",
+  "cancel": "Cancel",
+  "abort": "Abort",
+  "archive": "Archived",
+  "archived": "Archived",
 
   "email_address": "Email Address",
 

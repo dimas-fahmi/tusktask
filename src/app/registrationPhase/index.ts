@@ -8,6 +8,7 @@ export const REGISTRATION_STEPS = [
 ] as const;
 
 export type RegistrationStep = (typeof REGISTRATION_STEPS)[number];
+
 export type PendingRegistrationStep = Exclude<RegistrationStep, "completed">;
 
 export const DEFAULT_REGISTRATION_STEP: PendingRegistrationStep =
