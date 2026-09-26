@@ -1,5 +1,10 @@
 {
   "SocialSignInButton": {
     "label": "Lanjutkan dengan {provider}"
+  },
+
+  "QuickSettingsDialog": {
+    "title": "Pengaturan Cepat",
+    "desc": "Sesuaikan pengaturan aplikasi Anda dengan cepat."
   }
 }

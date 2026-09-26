@@ -1,5 +1,10 @@
 {
   "SocialSignInButton": {
     "label": "Continue with {provider}"
+  },
+
+  "QuickSettingsDialog": {
+    "title": "Quick Settings",
+    "desc": "Quickly adjust your app settings."
   }
 }

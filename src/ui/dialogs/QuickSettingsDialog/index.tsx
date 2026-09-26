@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import { useQuickSettings } from "@/src/hooks/useQuickSettings";
 import AccessibilitySettings from "../../components/settings/blocks/Accessibility";
@@ -31,6 +32,8 @@ const Body = () => {
 };
 
 const Footer = () => {
+  const t = useTranslations();
+
   const setOpen = useQuickSettings((s) => s.setOpen);
 
   return (
@@ -41,21 +44,23 @@ const Footer = () => {
           setOpen(false);
         }}
       >
-        Close
+        {t("common.close")}
       </Button>
     </footer>
   );
 };
 
 const QuickSettingsDialog = () => {
+  const t = useTranslations();
+
   const isMobile = useIsMobile();
 
   const [open, onOpenChange] = useQuickSettings(
     useShallow((s) => [s.open, s.setOpen]),
   );
 
-  const title = "Quick Setting";
-  const desc = "Quickly customize your app's settings.";
+  const title = t("component.QuickSettingsDialog.title");
+  const desc = t("component.QuickSettingsDialog.desc");
 
   return isMobile ? (
     <Drawer {...{ open, onOpenChange }}>
