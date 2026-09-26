@@ -17,13 +17,13 @@ const AttributionPhase = () => {
   const { last, next } = getPhase(CURRENT);
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4 flex-1">
       <AuthHeader
         title={t(`registrationStep.${CURRENT}.title`)}
         desc={t(`registrationStep.${CURRENT}.desc`)}
       />
 
-      <div>MAIN_CONTENT_HERE</div>
+      <div className="flex-1">MAIN_CONTENT_HERE</div>
 
       <footer className="flex items-center justify-end gap-1">
         {last && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -33,8 +33,17 @@ const RegistrationPageIndex = () => {
   const Render = current ? RENDERABLE_REGISTRATION_STEP[current] : null;
 
   return (
-    <AnimatePresence>
-      {Render ? <Render /> : <div>Loading...</div>}
+    <AnimatePresence mode="wait">
+      {Render && (
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, y: -5, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 5, scale: 0.9 }}
+        >
+          <Render />
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 };

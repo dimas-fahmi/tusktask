@@ -21,7 +21,7 @@ const AuthLayout = ({ children }: LayoutProps<"/[locale]">) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 min-h-dvh gap-4">
       {/* Main Container */}
-      <div className="p-4 md:p-6 lg:p-12 space-y-4">
+      <div className="flex flex-col p-4 md:p-6 lg:p-12 gap-4">
         <header className="flex items-center justify-between">
           {/* Logo */}
           <Link href={route.homepage()}>
