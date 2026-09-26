@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -31,6 +32,10 @@ const RegistrationPageIndex = () => {
 
   const Render = current ? RENDERABLE_REGISTRATION_STEP[current] : null;
 
-  return Render ? <Render /> : <div>Loading...</div>;
+  return (
+    <AnimatePresence>
+      {Render ? <Render /> : <div>Loading...</div>}
+    </AnimatePresence>
+  );
 };
 export default RegistrationPageIndex;

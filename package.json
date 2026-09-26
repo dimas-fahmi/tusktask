@@ -33,6 +33,7 @@
     "drizzle-orm": "^1.0.0-rc.4",
     "input-otp": "^1.5.0",
     "js-cookie": "^3.0.8",
+    "motion": "^13.4.4",
     "next": "16.3.6",
     "next-intl": "^4.14.7",
     "postgres": "^3.4.9",
