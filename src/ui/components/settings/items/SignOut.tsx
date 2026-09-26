@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import route from "@/src/app/route";
 import { authClient } from "@/src/auth/client";
+import { useMyData } from "@/src/hooks/useMyData";
 import { useQuickSettings } from "@/src/hooks/useQuickSettings";
+import { getQueryClient } from "@/src/lib/trpc/client/client";
 import {
   SettingChevronRight,
   SettingItemAction,
@@ -14,6 +16,9 @@ import {
 } from "..";
 
 const SignOutSettingItem = () => {
+  const qc = getQueryClient();
+  const { queryKey } = useMyData();
+
   const t = useTranslations();
   const router = useRouter();
 
@@ -28,6 +33,9 @@ const SignOutSettingItem = () => {
             onSuccess: () => {
               router.push(route.signin());
               setOpenQSD(false);
+              qc.invalidateQueries({
+                queryKey,
+              });
             },
           },
         });

@@ -1,7 +1,7 @@
 "use client";
 
 import Cookies from "js-cookie";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type React from "react";
 import { useEffect } from "react";
@@ -18,6 +18,8 @@ const clientRouteGuard = ({
 }) => {
   const t = useTranslations();
   const { data: myData, isFetching, isPending } = useMyData();
+
+  const sp = useSearchParams();
 
   const router = useRouter();
   const pathname = stripLocaleFromPathname(usePathname());
@@ -42,7 +44,9 @@ const clientRouteGuard = ({
       if (!isFirst) {
         Cookies.set("registration-first", "1");
       } else {
-        toast.trigger();
+        if (!sp.get("just_signin")) {
+          toast.trigger();
+        }
       }
 
       return router.push(route.onboarding());
@@ -55,7 +59,7 @@ const clientRouteGuard = ({
     if (isGuestOnlyRoute(pathname) && myData) {
       return router.push(route.app());
     }
-  }, [myData, isFetching, router, pathname, t, isPending]);
+  }, [myData, isFetching, router, pathname, t, isPending, sp]);
 
   return children;
 };

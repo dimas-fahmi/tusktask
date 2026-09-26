@@ -1,13 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { nidb } from "@/src/db";
 import { etm } from "@/src/i18n/errorTranslation/init";
-import { sessionRequiredPlugin } from "../../plugins/sessionRequired";
-import { createBaseProcedure } from "../../server/init";
+import { authProcedure } from "../../procedures/authProcedure";
 
-export const getMyDataProc = createBaseProcedure
-  .concat(sessionRequiredPlugin().mainProc)
+export const getMyDataProc = authProcedure
+  .meta({ authRequired: false })
   .query(async (opts) => {
     try {
+      if (!opts.ctx.userId) {
+        return null;
+      }
+
       const result = await nidb.query.user.findFirst({
         where: {
           id: {

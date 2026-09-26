@@ -46,6 +46,7 @@ const SocialSignInButton = ({
               // TODO: Trigger Toast
             },
           },
+          callbackURL: "/?just_signin=true",
         });
       }}
     >
