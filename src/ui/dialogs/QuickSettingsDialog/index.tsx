@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import { useQuickSettings } from "@/src/hooks/useQuickSettings";
@@ -26,9 +27,12 @@ import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 const Body = () => {
   return (
     <div className="space-y-4">
-      <AccountSettings />
-      <AccessibilitySettings />
-      <PersonalizationSettings />
+      <AnimatePresence>
+        {/* TODO: Proper.... */}
+        <AccountSettings key={"account-settings"} />
+        <AccessibilitySettings key={"accessibility-settings"} />
+        <PersonalizationSettings key={"personalization-settings"} />
+      </AnimatePresence>
     </div>
   );
 };
