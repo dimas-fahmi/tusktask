@@ -1,5 +1,6 @@
 import { initTRPC } from "@trpc/server";
 import SuperJSON from "superjson";
+import { ZodError } from "zod";
 import { protoValidator } from "@/src/i18n/errorTranslation/init";
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
@@ -21,13 +22,20 @@ const t = initTRPC
     transformer: SuperJSON,
 
     errorFormatter({ shape, error }) {
+      const translateAbleProtocol =
+        error instanceof ZodError
+          ? protoValidator(error.issues[0].message)
+            ? error.issues[0].message
+            : null
+          : protoValidator(error?.message)
+            ? error.message
+            : null;
+
       return {
         ...shape,
         data: {
           ...shape.data,
-          translationProtocol: protoValidator(error.message)
-            ? error.message
-            : null,
+          translationProtocol: translateAbleProtocol,
         },
       };
     },
