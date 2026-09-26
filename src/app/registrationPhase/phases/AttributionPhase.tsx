@@ -37,7 +37,7 @@ const AttributionPhase = () => {
   const { queryKey } = useMyData();
   const trpc = useTRPC();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     ...trpc.myData.update.mutationOptions(),
 
     onError: (err) => {
@@ -76,6 +76,7 @@ const AttributionPhase = () => {
             onClick={() => {
               setAttribution(key);
             }}
+            disabled={isPending}
           >
             {/* ICON CONTAINER */}
             <div>
@@ -119,7 +120,7 @@ const AttributionPhase = () => {
 
         {next && (
           <Button
-            disabled={!attribution}
+            disabled={!attribution || isPending}
             variant={"default"}
             onClick={() => {
               if (!attribution) return;
@@ -129,7 +130,7 @@ const AttributionPhase = () => {
               });
             }}
           >
-            {t("common.continue")}
+            {isPending ? t("common.saving") : t("common.continue")}
           </Button>
         )}
       </footer>
