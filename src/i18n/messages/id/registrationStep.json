@@ -1,1 +1,22 @@
-{}
+{
+  "attribution": {
+    "title": "Mari Siapkan Profilmu",
+    "desc": "Pertama-tama, dari mana kamu tahu tentang kami?"
+  },
+  "name": {
+    "title": "Beri Tahu Namamu, Kapten",
+    "desc": "Menggunakan nama asli supaya temanmu tahu itu kamu tentu bagus, tapi terserah kamu juga, sih."
+  },
+  "username": {
+    "title": "Mari Berkreasi!",
+    "desc": "Gunakan nama pengguna yang unik agar temanmu bisa menemukanmu dengan mudah."
+  },
+  "avatar": {
+    "title": "Tunjukkan Dirimu pada Dunia!",
+    "desc": "Foto asli, avatar, atau bahkan gambar kucing. Siapa sih yang peduli, kan?"
+  },
+  "confirmation": {
+    "title": "Semua Beres, Kapten!",
+    "desc": "Sudah kubilang, ini tidak butuh waktu lama. Selamat Datang!"
+  }
+}

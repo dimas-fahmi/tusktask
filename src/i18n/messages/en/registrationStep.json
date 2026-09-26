@@ -1,1 +1,22 @@
-{}
+{
+  "attribution": {
+    "title": "Let's Setup Your Profile",
+    "desc": "First, how did you hear about us?"
+  },
+  "name": {
+    "title": "Tell Me Your Name, Captain",
+    "desc": "Real name so your friend know its you would be nice, it's up to you though."
+  },
+  "username": {
+    "title": "Let's Get Creative!",
+    "desc": "Unique username, so your friend could easily find you."
+  },
+  "avatar": {
+    "title": "Show the World Who You Are!",
+    "desc": "Your real picture, an avatar or even a cat. Who cares, right?"
+  },
+  "confirmation": {
+    "title": "All Set, Captain!",
+    "desc": "I told you it won't take long. By the way, Welcome Aboard!"
+  }
+}
