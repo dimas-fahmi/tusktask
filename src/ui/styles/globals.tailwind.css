@@ -49,6 +49,8 @@
   /* Added custom color */
   --color-link: var(--link);
   --color-link-foreground: var(--link-foreground);
+
+  --color-skeleton: var(--skeleton);
 }
 
 :root {
@@ -88,6 +90,8 @@
   /* Added custom color */
   --link: oklch(38.905% 0.17503 262.766);
   --link-foreground: oklch(32.045% 0.14524 262.241);
+
+  --skeleton: oklch(74.763% 0.00008 271.152);
 }
 
 .dark {
@@ -126,6 +130,8 @@
   /* Added custom color */
   --link: oklch(92.049% 0.12643 195.228);
   --link-foreground: oklch(37.53% 0.00004 271.152);
+
+  --skeleton: oklch(44.226% 0.00005 271.152);
 }
 
 @layer base {
@@ -143,7 +149,7 @@
   }
 
   html {
-    @apply font-body;
+    @apply font-body scrollbar-gutter-stable;
   }
 
   h1,

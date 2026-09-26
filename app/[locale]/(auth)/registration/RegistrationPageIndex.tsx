@@ -8,6 +8,7 @@ import { RENDERABLE_REGISTRATION_STEP } from "@/src/app/registrationPhase/render
 import route from "@/src/app/route";
 import { useMyData } from "@/src/hooks/useMyData";
 import { useRegistrationStep } from "@/src/hooks/useRegistrationStep";
+import AuthContentSkeleton from "../components/AuthContentSkeleton";
 
 const RegistrationPageIndex = () => {
   const [current, setCurrent] = useRegistrationStep(
@@ -34,7 +35,7 @@ const RegistrationPageIndex = () => {
 
   return (
     <AnimatePresence mode="wait">
-      {Render && (
+      {Render ? (
         <motion.div
           key={current}
           initial={{ opacity: 0, y: -5, scale: 0.9 }}
@@ -42,6 +43,15 @@ const RegistrationPageIndex = () => {
           exit={{ opacity: 0, y: 5, scale: 0.9 }}
         >
           <Render />
+        </motion.div>
+      ) : (
+        <motion.div
+          key={"auth-skeleton"}
+          initial={{ opacity: 0, y: -5, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 5, scale: 0.9 }}
+        >
+          <AuthContentSkeleton />
         </motion.div>
       )}
     </AnimatePresence>
