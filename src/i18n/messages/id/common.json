@@ -4,6 +4,7 @@
   "email_address": "Alamat Surel",
 
   "sign_in": "Masuk",
+  "sign_out": "Keluar",
 
   "wait_a_moment": "Tunggu sebentar",
 
@@ -30,5 +31,7 @@
   "locales": {
     "en": "Inggris",
     "id": "Indonesia"
-  }
+  },
+
+  "Account": "Akun"
 }

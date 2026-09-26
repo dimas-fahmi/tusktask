@@ -4,6 +4,7 @@
   "email_address": "Email Address",
 
   "sign_in": "Sign In",
+  "sign_out": "Sign Out",
 
   "wait_a_moment": "Wait a moment",
 
@@ -30,5 +31,7 @@
   "locales": {
     "en": "English",
     "id": "Indonesian"
-  }
+  },
+
+  "Account": "Account"
 }

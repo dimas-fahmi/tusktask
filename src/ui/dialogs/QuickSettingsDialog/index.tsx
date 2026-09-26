@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import { useQuickSettings } from "@/src/hooks/useQuickSettings";
 import AccessibilitySettings from "../../components/settings/blocks/Accessibility";
+import AccountSettings from "../../components/settings/blocks/Account";
 import PersonalizationSettings from "../../components/settings/blocks/Personalization";
 import { Button } from "../../shadcn/components/ui/button";
 import {
@@ -25,6 +26,7 @@ import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 const Body = () => {
   return (
     <div className="space-y-4">
+      <AccountSettings />
       <AccessibilitySettings />
       <PersonalizationSettings />
     </div>
