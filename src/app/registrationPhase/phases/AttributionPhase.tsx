@@ -1,11 +1,15 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import AuthHeader from "@/app/[locale]/(auth)/components/AuthHeader";
+import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
+import { useMyData } from "@/src/hooks/useMyData";
 import { useRegistrationStep } from "@/src/hooks/useRegistrationStep";
+import { getQueryClient, useTRPC } from "@/src/lib/trpc/client/client";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import { Separator } from "@/src/ui/shadcn/components/ui/separator";
 import {
@@ -26,6 +30,30 @@ const AttributionPhase = () => {
   const [attribution, setAttribution] = useState<
     AttributionChannel | undefined
   >(undefined);
+
+  const { toast } = useHandleQueryError();
+
+  const qc = getQueryClient();
+  const { queryKey } = useMyData();
+  const trpc = useTRPC();
+
+  const { mutate } = useMutation({
+    ...trpc.myData.update.mutationOptions(),
+
+    onError: (err) => {
+      toast("failed-update-my-data", err, true);
+    },
+    onSuccess: () => {
+      if (next) {
+        setCurrent(next);
+      }
+    },
+    onSettled: () => {
+      qc.invalidateQueries({
+        queryKey,
+      });
+    },
+  });
 
   return (
     <div className="flex flex-col gap-4 flex-1">
@@ -91,9 +119,14 @@ const AttributionPhase = () => {
 
         {next && (
           <Button
+            disabled={!attribution}
             variant={"default"}
             onClick={() => {
-              setCurrent(next);
+              if (!attribution) return;
+              mutate({
+                attribution,
+                registrationStep: next,
+              });
             }}
           >
             {t("common.continue")}
