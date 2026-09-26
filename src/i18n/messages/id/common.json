@@ -21,5 +21,14 @@
     }
   },
 
-  "personalization": "Personalisasi"
+  "personalization": "Personalisasi",
+
+  "accessibility": "Aksesibilitas",
+
+  "display_language": "Bahasa Tampilan",
+
+  "locales": {
+    "en": "Inggris",
+    "id": "Indonesia"
+  }
 }

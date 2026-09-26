@@ -2,6 +2,7 @@
 
 import { useShallow } from "zustand/react/shallow";
 import { useQuickSettings } from "@/src/hooks/useQuickSettings";
+import AccessibilitySettings from "../../components/settings/blocks/Accessibility";
 import PersonalizationSettings from "../../components/settings/blocks/Personalization";
 import { Button } from "../../shadcn/components/ui/button";
 import {
@@ -22,7 +23,8 @@ import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 
 const Body = () => {
   return (
-    <div>
+    <div className="space-y-4">
+      <AccessibilitySettings />
       <PersonalizationSettings />
     </div>
   );
