@@ -27,7 +27,7 @@ import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 const Body = () => {
   return (
     <div className="space-y-4">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {/* TODO: Proper.... */}
         <AccountSettings key={"account-settings"} />
         <AccessibilitySettings key={"accessibility-settings"} />
