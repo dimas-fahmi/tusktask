@@ -122,6 +122,12 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
     username_spec_char_rule: {
       construct: () => serializer({ key: "username_spec_char_rule" }),
     },
+
+    invalid_parameter: {
+      construct: (key: string) =>
+        serializer({ key: "invalid_parameter", params: [key] }),
+      interpolation: (params) => ({ key: params[0] }),
+    },
   },
 });
 

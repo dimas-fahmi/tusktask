@@ -5,8 +5,6 @@ import {
   IconMessageCircleUser,
   type TablerIcon,
 } from "@tabler/icons-react";
-import { z } from "zod";
-import { etm } from "@/src/i18n/errorTranslation/init";
 
 export type AttributionItem = {
   icon: TablerIcon;
@@ -33,7 +31,6 @@ export const ATTRIBUTION_CHANNELS_ENTRIES = Object.entries(
   ATTRIBUTION_CHANNELS,
 ) as [AttributionChannel, AttributionItem][];
 
-export const attributionEnum = z.enum(
-  Object.keys(ATTRIBUTION_CHANNELS),
-  etm.invalid_attribution_channel.construct(),
-);
+export const ATTRIBUTION_CHANNELS_KEYS = Object.keys(
+  ATTRIBUTION_CHANNELS,
+) as AttributionChannel[];

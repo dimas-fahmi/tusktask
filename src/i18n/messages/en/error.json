@@ -22,5 +22,7 @@
   "username_start_rule": "Username must start with a lowercase letter (a-z).",
   "username_char_rule": "Username can only contain letters, numbers, underscores, hyphens, and dots.",
   "username_end_rule": "Username cannot end with a special character (underscore, hyphen, or dot).",
-  "username_spec_char_rule": "Username can contain at most one special character (underscore, hyphen, or dot)."
+  "username_spec_char_rule": "Username can contain at most one special character (underscore, hyphen, or dot).",
+
+  "invalid_parameter": "Invalid parameter for {key}"
 }
