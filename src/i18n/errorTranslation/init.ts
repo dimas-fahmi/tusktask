@@ -85,10 +85,42 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
     },
 
     invalid_attribution_channel: {
-      construct: () =>
+      construct: () => serializer({ key: "invalid_attribution_channel" }),
+    },
+
+    username_min_rule: {
+      construct: (min: number) =>
         serializer({
-          key: "invalid_attribution_channel",
+          key: "username_min_rule",
+          params: [min],
         }),
+
+      interpolation: (params) => ({ min: params[0] }),
+    },
+
+    username_max_rule: {
+      construct: (max: number) =>
+        serializer({
+          key: "username_max_rule",
+          params: [max],
+        }),
+      interpolation: (params) => ({ max: params[0] }),
+    },
+
+    username_start_rule: {
+      construct: () => serializer({ key: "username_start_rule" }),
+    },
+
+    username_char_rule: {
+      construct: () => serializer({ key: "username_char_rule" }),
+    },
+
+    username_end_rule: {
+      construct: () => serializer({ key: "username_end_rule" }),
+    },
+
+    username_spec_char_rule: {
+      construct: () => serializer({ key: "username_spec_char_rule" }),
     },
   },
 });

@@ -15,5 +15,12 @@
 
   "unknown_error": "Terjadi kesalahan yang tidak diketahui penyebabnya. Silakan coba lagi; jika masalah berlanjut, hubungi layanan dukungan.",
 
-  "invalid_attribution_channel": "Harap masukan saluran atribusi yang valid"
+  "invalid_attribution_channel": "Harap masukan saluran atribusi yang valid",
+
+  "username_min_rule": "Nama pengguna harus memiliki panjang minimal {min} karakter.",
+  "username_max_rule": "Nama pengguna tidak boleh melebihi {max} karakter.",
+  "username_start_rule": "Nama pengguna harus diawali dengan huruf kecil (a-z).",
+  "username_char_rule": "Nama pengguna hanya boleh berisi huruf, angka, garis bawah, tanda hubung, dan titik.",
+  "username_end_rule": "Nama pengguna tidak boleh diakhiri dengan karakter khusus (garis bawah, tanda hubung, atau titik).",
+  "username_spec_char_rule": "Nama pengguna maksimal boleh memuat satu karakter khusus (garis bawah, tanda hubung, atau titik)."
 }

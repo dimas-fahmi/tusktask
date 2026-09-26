@@ -15,5 +15,12 @@
 
   "unknown_error": "Something went wrong, and we don't know the cause. Try again, if the issue persist, contact support.",
 
-  "invalid_attribution_channel": "Please input a valid attribution channel"
+  "invalid_attribution_channel": "Please input a valid attribution channel",
+
+  "username_min_rule": "Username must be at least {min} character(s) long.",
+  "username_max_rule": "Username cannot exceed {max} character(s).",
+  "username_start_rule": "Username must start with a lowercase letter (a-z).",
+  "username_char_rule": "Username can only contain letters, numbers, underscores, hyphens, and dots.",
+  "username_end_rule": "Username cannot end with a special character (underscore, hyphen, or dot).",
+  "username_spec_char_rule": "Username can contain at most one special character (underscore, hyphen, or dot)."
 }
