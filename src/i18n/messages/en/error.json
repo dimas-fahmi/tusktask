@@ -13,5 +13,7 @@
   "session_undefined": "You need to login to use this feature.",
   "session_invalid": "Can't validate your session, try logging out and logging back in.",
 
-  "unknown_error": "Something went wrong, and we don't know the cause. Try again, if the issue persist, contact support."
+  "unknown_error": "Something went wrong, and we don't know the cause. Try again, if the issue persist, contact support.",
+
+  "invalid_attribution_channel": "Please input a valid attribution channel"
 }

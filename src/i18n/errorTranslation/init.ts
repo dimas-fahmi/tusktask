@@ -83,6 +83,13 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
           key: "unknown_error",
         }),
     },
+
+    invalid_attribution_channel: {
+      construct: () =>
+        serializer({
+          key: "invalid_attribution_channel",
+        }),
+    },
   },
 });
 
