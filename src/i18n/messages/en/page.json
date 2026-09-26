@@ -2,5 +2,9 @@
   "sign_in": {
     "title": "Welcome aboard, captain!",
     "desc": "Let's get things done."
+  },
+
+  "registration": {
+    "title": "Let's Setup Your Profile"
   }
 }
