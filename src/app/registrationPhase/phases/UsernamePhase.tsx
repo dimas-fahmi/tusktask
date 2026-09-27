@@ -157,7 +157,7 @@ const UsernamePhase = () => {
                   ? translate(state?.error?.message)
                   : getMessage()
               }
-              isInvalid={!!state?.error || !isAvailable}
+              isInvalid={!!state?.error || (!isAvailable && !isTyping)}
               autoComplete="off"
             />
           )}
