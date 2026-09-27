@@ -63,3 +63,10 @@ export const user = authSchema.table(
     index("idx_auth_user_deletedAt").on(t.deletedAt),
   ],
 );
+
+export type UserType = typeof user.$inferSelect;
+
+export type SanitizedUserType = Pick<
+  UserType,
+  "id" | "name" | "username" | "image" | "createdAt"
+>;

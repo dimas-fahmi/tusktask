@@ -32,6 +32,15 @@
     }
   },
 
+  "username": "Username",
+  "username_taken": "Username is taken",
+  "username_available": "Username is available",
+  "username_checking": "Checking username",
+
+  "placeholders": {
+    "username": "jane_doe"
+  },
+
   "personalization": "Personalization",
 
   "accessibility": "Accessibility",

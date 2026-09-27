@@ -11,6 +11,15 @@
   "saving": "Menyimpan",
   "saved": "Disimpan",
 
+  "username": "Nama Pengguna",
+  "username_taken": "Nama pengguna tidak tersedia",
+  "username_available": "Nama pengguna tersedia",
+  "username_checking": "Memeriksa nama pengguna",
+
+  "placeholders": {
+    "username": "jajang_nurdjaman"
+  },
+
   "email_address": "Alamat Surel",
 
   "sign_in": "Masuk",

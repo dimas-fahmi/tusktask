@@ -157,7 +157,9 @@ const MainInput = React.forwardRef<HTMLInputElement, MainInputProps>(
           aria-invalid={isInvalid}
           className={cn(
             "pt-0.5",
-            isInvalid ? "placeholder:text-destructive/50 ring-[3px]" : "",
+            isInvalid
+              ? "placeholder:text-destructive/50 ring-[3px] text-destructive"
+              : "",
           )}
         />
       </InputGroup>
