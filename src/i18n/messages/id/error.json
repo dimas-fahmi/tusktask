@@ -21,8 +21,8 @@
   "username_max_rule": "Nama pengguna tidak boleh melebihi {max} karakter.",
   "username_start_rule": "Nama pengguna harus diawali dengan huruf kecil (a-z).",
   "username_char_rule": "Nama pengguna hanya boleh berisi huruf, angka, garis bawah, tanda hubung, dan titik.",
-  "username_end_rule": "Nama pengguna tidak boleh diakhiri dengan karakter khusus (garis bawah, tanda hubung, atau titik).",
-  "username_spec_char_rule": "Nama pengguna maksimal boleh memuat satu karakter khusus (garis bawah, tanda hubung, atau titik).",
+  "username_end_rule": "Nama pengguna tidak boleh diakhiri dengan karakter khusus.",
+  "username_spec_char_rule": "Nama pengguna hanya boleh memiliki satu karakter khusus.",
 
   "invalid_parameter": "Parameter tidak valid untuk {key}"
 }
