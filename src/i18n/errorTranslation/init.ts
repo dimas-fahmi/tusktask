@@ -128,6 +128,10 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
         serializer({ key: "invalid_parameter", params: [key] }),
       interpolation: (params) => ({ key: params[0] }),
     },
+
+    file_unable_to_read: {
+      construct: () => serializer({ key: "file_unable_to_read" }),
+    },
   },
 });
 

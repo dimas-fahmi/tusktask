@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import AuthHeader from "@/app/[locale]/(auth)/components/AuthHeader";
 import { useRegistrationStep } from "@/src/hooks/useRegistrationStep";
+import AvatarPicker from "@/src/ui/components/Prefab/AvatarPicker";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import type { PendingRegistrationStep } from "..";
 import { getPhase } from "../renderable";
@@ -23,7 +24,12 @@ const AvatarPhase = () => {
         desc={t(`registrationStep.${CURRENT}.desc`)}
       />
 
-      <div className="flex-1">MAIN_CONTENT_HERE</div>
+      <div className="flex-1">
+        {/* Avatar Picker */}
+        <div className="max-w-[320px] mx-auto">
+          <AvatarPicker />
+        </div>
+      </div>
 
       <footer className="flex items-center justify-end gap-1">
         {last && (

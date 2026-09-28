@@ -24,5 +24,7 @@
   "username_end_rule": "Username cannot end with a special character (underscore, hyphen, or dot).",
   "username_spec_char_rule": "Username can contain at most one special character (underscore, hyphen, or dot).",
 
-  "invalid_parameter": "Invalid parameter for {key}"
+  "invalid_parameter": "Invalid parameter for {key}",
+
+  "file_unable_to_read": "Failed to read the file; this may be due to the file being corrupted."
 }

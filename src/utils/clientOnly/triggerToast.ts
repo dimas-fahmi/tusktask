@@ -36,7 +36,6 @@ export class Toaster {
   }
 
   public trigger() {
-    console.log(this.processedOpts);
     return toast.add({
       id: this.id,
       ...this.processedOpts,
@@ -44,8 +43,13 @@ export class Toaster {
   }
 
   public update(updated_opts: Partial<Partial<Omit<ToastOpts, "id">>>) {
-    this.constructData(updated_opts);
-    toast.update(this.id, this.processedOpts);
+    this.constructData({
+      ...updated_opts,
+    });
+
+    toast.update(this.id, {
+      ...this.processedOpts,
+    });
   }
 
   public close() {
@@ -54,6 +58,7 @@ export class Toaster {
 
   private constructData(opts: Partial<ToastOpts>) {
     this.processedOpts = {
+      ...this.processedOpts,
       ...opts,
       data: {
         type: opts?.type,

@@ -42,12 +42,8 @@ export const useHandleQueryError = () => {
       });
     }
 
-    console.log(isCooldown);
-
     if (trigger) {
-      console.log("TRIGGER11");
       if (!isCooldown) {
-        console.log("TRIGGER");
         toast.trigger();
       }
     }

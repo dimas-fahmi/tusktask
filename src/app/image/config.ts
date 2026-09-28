@@ -37,7 +37,7 @@ const IMG_CONFIG_CATEGORY = {
 } as const satisfies Record<string, ImageConfigCategory>;
 
 const IMG_CONFIG_FORMAT = {
-  raw: ["jpeg", "png", "webp"],
+  raw: ["jpeg", "jpg", "png", "webp"],
   final: "webp",
 } as const satisfies {
   raw: string[];
@@ -68,3 +68,9 @@ export type AspectRatio = {
 };
 
 export type AspectRatioKey = keyof typeof ASPECT_RATIOS;
+export type ImgCategoryKey = keyof typeof IMG_CONFIG_CATEGORY;
+export type ImgRawFormat = (typeof IMG_CONFIG.format.raw)[number];
+
+export function isValidRawFormat(str?: unknown): str is ImgRawFormat {
+  return !str ? false : IMG_CONFIG.format.raw.includes(str as ImgRawFormat);
+}

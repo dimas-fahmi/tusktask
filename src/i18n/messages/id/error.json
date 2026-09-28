@@ -24,5 +24,7 @@
   "username_end_rule": "Nama pengguna tidak boleh diakhiri dengan karakter khusus.",
   "username_spec_char_rule": "Nama pengguna hanya boleh memiliki satu karakter khusus.",
 
-  "invalid_parameter": "Parameter tidak valid untuk {key}"
+  "invalid_parameter": "Parameter tidak valid untuk {key}",
+
+  "file_unable_to_read": "Gagal membaca file; hal ini mungkin disebabkan oleh file yang rusak."
 }
