@@ -16,8 +16,16 @@ mock.module("@/src/app/env", () => ({
 describe("isMyVercelBlob", () => {
   describe("Valid store URLs", () => {
     it("should return true for standard store public URLs", () => {
-      const url = `https://${MOCK_STORE_ID}.public.blob.vercel-storage.com/image.png`;
-      expect(isMyVercelBlob(url)).toBe(true);
+      expect(
+        isMyVercelBlob(
+          `https://${MOCK_STORE_ID}.public.blob.vercel-storage.com/image.png`,
+        ),
+      ).toBe(true);
+      expect(
+        isMyVercelBlob(
+          `https://${MOCK_STORE_ID}.public.blob.vercel-storage.com/tusktask/images/avatars/avatar-01a08d14-e8ab-73a8-bde4-1aa54a8587c3.webp`,
+        ),
+      ).toBe(true);
     });
 
     it("should return true for URLs with deeply nested paths or query parameters", () => {
@@ -33,6 +41,27 @@ describe("isMyVercelBlob", () => {
     it("should be case-insensitive for hostnames", () => {
       const url = `HTTPS://${MOCK_STORE_ID}.PUBLIC.BLOB.VERCEL-STORAGE.COM/photo.jpg`;
       expect(isMyVercelBlob(url)).toBe(true);
+    });
+
+    it("should return true for different host structure from vercel", () => {
+      expect(
+        isMyVercelBlob(`HTTPS://${MOCK_STORE_ID}.VERCEL-STORAGE.COM/photo.jpg`),
+      ).toBe(true);
+      expect(
+        isMyVercelBlob(
+          `HTTPS://${MOCK_STORE_ID}.BLOB.VERCEL-STORAGE.COM/photo.jpg`,
+        ),
+      ).toBe(true);
+      expect(
+        isMyVercelBlob(
+          `HTTPS://${MOCK_STORE_ID}.PUBLIC.BLOB.VERCEL-STORAGE.COM/photo.jpg`,
+        ),
+      ).toBe(true);
+      expect(
+        isMyVercelBlob(
+          `HTTPS://${MOCK_STORE_ID}.PRIVATE.BLOB.VERCEL-STORAGE.COM/photo.jpg`,
+        ),
+      ).toBe(true);
     });
   });
 

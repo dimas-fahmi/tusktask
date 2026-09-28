@@ -16,16 +16,24 @@ export function isMyVercelBlob(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
 
+    // Ensure the protocol is HTTP/HTTPS
     if (!["http:", "https:"].includes(parsedUrl.protocol)) {
       return false;
     }
 
     const hostname = parsedUrl.hostname.toLowerCase();
 
+    // Escape any special regex characters in the storeId
     const escapedStoreId = storeId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+    /**
+     * Pattern explanation:
+     * ^${escapedStoreId}       Matches our specific store ID prefix
+     * (\.[a-z0-9-]+)?          Optionally matches region subdomains (e.g., .public)
+     * \.blob\.vercel-storage\.com$ Matches Vercel's storage domain suffix
+     */
     const blobHostPattern = new RegExp(
-      `^${escapedStoreId}(\\.[a-z0-9-]+)*\\.blob\\.vercel-storage\\.com$`,
+      `^${escapedStoreId}(\\.[a-z0-9-]+)*\\.vercel-storage\\.com$`,
       "i",
     );
 
