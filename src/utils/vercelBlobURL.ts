@@ -42,3 +42,14 @@ export function isMyVercelBlob(url: string): boolean {
     return false;
   }
 }
+
+export function constructAvatarUrl(userId: string) {
+  const storeId = getEnv("NEXT_PUBLIC_VERCEL_BLOB_ID");
+  const host = `https://${storeId}.public.blob.vercel-storage.com`;
+  const path = `${getEnv("NEXT_PUBLIC_APP_NAME")}/images/avatars/${userId}.${Date.now()}.webp`;
+
+  return {
+    path,
+    url: `${host}/${path}`,
+  };
+}

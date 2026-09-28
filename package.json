@@ -6,7 +6,7 @@
     "dev": "bun --bun next dev",
     "build": "bun --bun next build",
     "start": "bun --bun next start",
-    "nb": "biome check --write && bun --bun next build",
+    "nb": "bun test && biome check --write && bun --bun next build",
     "lint": "biome check --write",
     "format": "biome format --write",
     "db:gen": "bunx drizzle-kit generate",
