@@ -7,6 +7,7 @@ import {
   IconUpload,
   IconX,
 } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
 import {
   AnimatePresence,
@@ -18,6 +19,7 @@ import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { AppError } from "@/src/app/error";
 import { useErrorTranslation } from "@/src/hooks/useErrorTranslation";
+import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { useImageCropper } from "@/src/hooks/useImageCropperDialog";
 import { useMyData } from "@/src/hooks/useMyData";
 import { etm } from "@/src/i18n/errorTranslation/init";
@@ -129,12 +131,13 @@ const ToolButton = ({
 
 const AvatarPicker = (props: AvatarPickerProps) => {
   const { translate } = useErrorTranslation();
+  const { toast } = useHandleQueryError();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const _qc = getQueryClient();
-  const _trpc = useTRPC();
-  const { data: myData, queryKey: _ } = useMyData();
+  const qc = getQueryClient();
+  const trpc = useTRPC();
+  const { data: myData, queryKey } = useMyData();
 
   const [triggerCropper] = useImageCropper(
     useShallow((s) => [s.triggerCropper]),
@@ -197,6 +200,18 @@ const AvatarPicker = (props: AvatarPickerProps) => {
   }, [status]);
 
   const imgSrc = previewURL ?? myData?.image;
+
+  const { mutate: deleteImage, isPending: isDeletingImage } = useMutation({
+    ...trpc.myData.avatar.delete.mutationOptions(),
+    onError: (err) => {
+      toast("failed-deleting-avatar", err, true);
+    },
+    onSettled: () => {
+      qc.invalidateQueries({
+        queryKey,
+      });
+    },
+  });
 
   return (
     <div
@@ -266,8 +281,10 @@ const AvatarPicker = (props: AvatarPickerProps) => {
               animate={"expand"}
               className={"text-destructive not-disabled:hover:text-destructive"}
               onClick={() => {
-                setPreviewURL(null);
+                if (!myData?.image) return;
+                deleteImage();
               }}
+              disabled={!myData?.image || isDeletingImage}
             >
               <IconTrash />
             </ToolButton>
@@ -281,6 +298,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
               onClick={() => {
                 inputRef?.current?.click();
               }}
+              disabled={isDeletingImage}
             >
               <IconFolder />
             </ToolButton>
@@ -297,7 +315,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
           >
             <Button
               variant={"outline"}
-              disabled={isOnProgress}
+              disabled={isOnProgress || isDeletingImage}
               size={"icon-sm"}
               {...props}
               onClick={(e) => {
@@ -324,7 +342,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
           >
             <IconProcessButton
               {...{ status, setStatus }}
-              disabled={status === "pending"}
+              disabled={status === "pending" || isDeletingImage}
               idleIcon={IconUpload}
               onClick={() => {
                 setIsOnProgress(true);
