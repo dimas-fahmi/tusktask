@@ -7,6 +7,7 @@ import {
   IconLoader,
   type TablerIcon,
 } from "@tabler/icons-react";
+import { cn } from "cn";
 import { AnimatePresence, motion } from "motion/react";
 import { Button, type ButtonProps } from "../../shadcn/components/ui/button";
 
@@ -72,7 +73,10 @@ const IconProcessButton = ({
                   exit={{ scale: 0 }}
                 >
                   <Icon
-                    className={`${key === "pending" ? "animate-spin" : ""}`}
+                    className={cn(
+                      `${key === "pending" ? "animate-spin" : ""}`,
+                      className,
+                    )}
                   />
                 </motion.div>
               ),

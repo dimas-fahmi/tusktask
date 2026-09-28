@@ -129,6 +129,22 @@ const ToolButton = ({
   );
 };
 
+const ToolContainer = ({
+  animate,
+  ...props
+}: ButtonProps & { animate?: ToolAnimate }) => {
+  return (
+    <motion.div
+      variants={toolVariants}
+      initial={"shrink"}
+      animate={typeof animate === "function" ? animate() : animate}
+      exit={"shrink"}
+    >
+      {props?.children}
+    </motion.div>
+  );
+};
+
 const AvatarPicker = (props: AvatarPickerProps) => {
   const { translate } = useErrorTranslation();
   const { toast } = useHandleQueryError();
@@ -148,6 +164,9 @@ const AvatarPicker = (props: AvatarPickerProps) => {
 
   const [status, setStatus] = useState<IconProcessStatus>("idle");
   const [isOnProgress, setIsOnProgress] = useState(false);
+
+  const [deletionStatus, setDeletionStatus] =
+    useState<IconProcessStatus>("idle");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastUrlRef = useRef<string | null>(null);
@@ -203,15 +222,33 @@ const AvatarPicker = (props: AvatarPickerProps) => {
 
   const { mutate: deleteImage, isPending: isDeletingImage } = useMutation({
     ...trpc.myData.avatar.delete.mutationOptions(),
+    onMutate: () => {
+      setDeletionStatus("pending");
+    },
     onError: (err) => {
       toast("failed-deleting-avatar", err, true);
+
+      setDeletionStatus("error");
+
+      setTimeout(() => {
+        setDeletionStatus("idle");
+      }, 5000);
+    },
+    onSuccess: () => {
+      setDeletionStatus("success");
     },
     onSettled: () => {
       qc.invalidateQueries({
         queryKey,
       });
+
+      setTimeout(() => {
+        setDeletionStatus("idle");
+      }, 2500);
     },
   });
+
+  const isTotalSuspense = deletionStatus !== "idle" || status !== "idle";
 
   return (
     <div
@@ -274,20 +311,23 @@ const AvatarPicker = (props: AvatarPickerProps) => {
       {/* Buttons */}
       <div className="absolute bottom-5 left-3 right-3 flex items-center justify-end gap-1">
         <AnimatePresence mode="sync">
-          {/* Delete Button */}
           {isExpanded && !previewURL && (
-            <ToolButton
+            <ToolContainer
               key={"tool-delete"}
               animate={"expand"}
               className={"text-destructive not-disabled:hover:text-destructive"}
-              onClick={() => {
-                if (!myData?.image) return;
-                deleteImage();
-              }}
-              disabled={!myData?.image || isDeletingImage}
             >
-              <IconTrash />
-            </ToolButton>
+              <IconProcessButton
+                status={deletionStatus}
+                setStatus={setDeletionStatus}
+                idleIcon={IconTrash}
+                onClick={() => {
+                  deleteImage();
+                }}
+                disabled={isTotalSuspense || !myData?.image}
+                className={"text-destructive"}
+              />
+            </ToolContainer>
           )}
 
           {/* Input Button */}
@@ -298,7 +338,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
               onClick={() => {
                 inputRef?.current?.click();
               }}
-              disabled={isDeletingImage}
+              disabled={isTotalSuspense}
             >
               <IconFolder />
             </ToolButton>
@@ -315,7 +355,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
           >
             <Button
               variant={"outline"}
-              disabled={isOnProgress || isDeletingImage}
+              disabled={isOnProgress || isDeletingImage || isTotalSuspense}
               size={"icon-sm"}
               {...props}
               onClick={(e) => {
@@ -342,7 +382,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
           >
             <IconProcessButton
               {...{ status, setStatus }}
-              disabled={status === "pending" || isDeletingImage}
+              disabled={isTotalSuspense}
               idleIcon={IconUpload}
               onClick={() => {
                 setIsOnProgress(true);
