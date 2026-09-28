@@ -15,8 +15,10 @@ import {
   type Variants,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { AppError } from "@/src/app/error";
 import { useErrorTranslation } from "@/src/hooks/useErrorTranslation";
+import { useImageCropper } from "@/src/hooks/useImageCropperDialog";
 import { etm } from "@/src/i18n/errorTranslation/init";
 import {
   Avatar,
@@ -98,14 +100,6 @@ const uploadVariants = {
     rotate: 0,
     transition,
   },
-
-  uploadingMode: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    rotate: 720,
-    transition,
-  },
 } as const satisfies Variants;
 
 export type AvatarPickerProps = {
@@ -132,24 +126,26 @@ const ToolButton = ({
 };
 
 const AvatarPicker = (props: AvatarPickerProps) => {
-  const [file, setFile] = useState<File | null>(null);
+  const { translate } = useErrorTranslation();
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { translate } = useErrorTranslation();
+  const [triggerCropper] = useImageCropper(
+    useShallow((s) => [s.triggerCropper]),
+  );
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
+  const [blob, setBlob] = useState<Blob | null>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null);
 
   const [status, setStatus] = useState<IconProcessStatus>("idle");
-
   const [isOnProgress, setIsOnProgress] = useState(false);
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const lastUrlRef = useRef<string | null>(null);
 
+  // Create ObjectURL as soon as processed blob exist
   useEffect(() => {
-    if (!file) {
+    if (!blob) {
       if (lastUrlRef.current) {
         URL.revokeObjectURL(lastUrlRef.current);
       }
@@ -157,7 +153,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
       return;
     }
 
-    const url = URL.createObjectURL(file);
+    const url = URL.createObjectURL(blob);
 
     if (lastUrlRef.current) {
       URL.revokeObjectURL(lastUrlRef.current);
@@ -172,7 +168,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
         URL.revokeObjectURL(url);
       }
     };
-  }, [file]);
+  }, [blob]);
 
   useEffect(() => {
     if (status === "idle") return;
@@ -209,7 +205,14 @@ const AvatarPicker = (props: AvatarPickerProps) => {
         accept="image/jpeg, image/webp, image/png"
         onChange={async (e) => {
           try {
-            await handleImageInput(e, "avatar", setFile);
+            await handleImageInput(e, "avatar", (file) => {
+              triggerCropper({
+                file,
+                config: "avatar",
+                callback: setBlob,
+                defaultShape: "round",
+              });
+            });
           } catch (err) {
             const toast = new Toaster({
               id: "error-handle-image-input",
@@ -247,7 +250,6 @@ const AvatarPicker = (props: AvatarPickerProps) => {
               animate={"expand"}
               className={"text-destructive not-disabled:hover:text-destructive"}
               onClick={() => {
-                setFile(null);
                 setPreviewURL(null);
               }}
             >
@@ -297,7 +299,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
             </Button>
           </motion.div>
 
-          {/* Expand & Shrink Button */}
+          {/* Upload Button */}
           <motion.div
             key={"tool-upload"}
             variants={uploadVariants}

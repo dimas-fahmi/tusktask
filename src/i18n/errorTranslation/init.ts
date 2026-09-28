@@ -132,6 +132,12 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
     file_unable_to_read: {
       construct: () => serializer({ key: "file_unable_to_read" }),
     },
+
+    file_unable_to_process: {
+      construct: (code: number) =>
+        serializer({ key: "file_unable_to_process", params: [code] }),
+      interpolation: (params) => ({ code: params[0] }),
+    },
   },
 });
 

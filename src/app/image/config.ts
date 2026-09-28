@@ -1,5 +1,6 @@
 import {
   IconCrop11,
+  IconCrop32,
   IconCrop169,
   type IconProps,
   type TablerIcon,
@@ -24,12 +25,18 @@ const ASPECT_RATIOS = {
       className: "rotate-90",
     },
   },
+  standard: {
+    label: "4:3",
+    value: 4 / 3,
+    icon: IconCrop32,
+    props: {},
+  },
 } as const satisfies Record<string, AspectRatio>;
 
 const IMG_CONFIG_CATEGORY = {
   avatar: {
     raw_size: 1024 * 1024 * 50, //50MB
-    final_size: 1024 * 100, // 100KB
+    final_size: 1024 * 20, // 20kb
     aspectRatio: "square",
     shape: "round",
     maxWidthOrHeight: 512,
@@ -52,11 +59,13 @@ const IMG_CONFIG = {
 
 export default IMG_CONFIG;
 
+export type ImageShape = "rect" | "round";
+
 export type ImageConfigCategory = {
   raw_size: number;
   final_size: number;
   aspectRatio: AspectRatioKey;
-  shape: "rect" | "round";
+  shape: ImageShape;
   maxWidthOrHeight: number;
 };
 
@@ -70,6 +79,11 @@ export type AspectRatio = {
 export type AspectRatioKey = keyof typeof ASPECT_RATIOS;
 export type ImgCategoryKey = keyof typeof IMG_CONFIG_CATEGORY;
 export type ImgRawFormat = (typeof IMG_CONFIG.format.raw)[number];
+
+export const ASPECT_RATIO_ENTRIES = Object.entries(ASPECT_RATIOS) as [
+  AspectRatioKey,
+  AspectRatio,
+][];
 
 export function isValidRawFormat(str?: unknown): str is ImgRawFormat {
   return !str ? false : IMG_CONFIG.format.raw.includes(str as ImgRawFormat);
