@@ -138,6 +138,10 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
         serializer({ key: "file_unable_to_process", params: [code] }),
       interpolation: (params) => ({ code: params[0] }),
     },
+
+    no_canvas_context: {
+      construct: () => serializer({ key: "no_canvas_context" }),
+    },
   },
 });
 

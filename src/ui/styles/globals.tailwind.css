@@ -163,6 +163,19 @@
   }
 }
 
+.text-container {
+  container-type: inline-size;
+  width: 100%;
+  height: 100%;
+}
+
+.fitting-text {
+  display: block;
+  white-space: nowrap;
+
+  font-size: clamp(16px, 15cqi, 80px);
+}
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }

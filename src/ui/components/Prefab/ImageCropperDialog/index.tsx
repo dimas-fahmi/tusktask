@@ -45,6 +45,7 @@ import {
 } from "@/src/ui/shadcn/components/ui/table";
 import { useIsMobile } from "@/src/ui/shadcn/hooks/use-mobile";
 import { compressImage } from "@/src/utils/clientOnly/browserImageCompression";
+import { getCroppedImage } from "@/src/utils/clientOnly/getCroppedImage";
 import { Toaster } from "@/src/utils/clientOnly/triggerToast";
 import { formatBytes } from "@/src/utils/formatBytes";
 
@@ -63,6 +64,7 @@ const Body = () => {
     count,
     data,
     shape,
+    onCropComplete,
   ] = useImageCropper(
     useShallow((s) => [
       s.aspectRatio,
@@ -76,13 +78,13 @@ const Body = () => {
       s.compressCount,
       s.data,
       s.shape,
+      s.onCropComplete,
     ]),
   );
 
   const lastUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    console.log("VALENTINE", compressedFile);
     const revokeUrl = () => {
       if (lastUrlRef.current) {
         URL.revokeObjectURL(lastUrlRef.current);
@@ -90,7 +92,6 @@ const Body = () => {
     };
 
     if (!compressedFile) {
-      console.log("DEADEND");
       revokeUrl();
       return;
     }
@@ -134,6 +135,9 @@ const Body = () => {
               onZoomChange,
               aspect,
               cropShape: shape,
+              onCropComplete: (_, cropped) => {
+                onCropComplete(cropped);
+              },
             }}
           />
         )}
@@ -278,7 +282,19 @@ const Body = () => {
 };
 
 const Footer = () => {
-  const [reset] = useImageCropper(useShallow((s) => [s.reset]));
+  const { translate } = useErrorTranslation();
+
+  const [reset, croppedArea, previewUrl, data, compressedFile, compressCount] =
+    useImageCropper(
+      useShallow((s) => [
+        s.reset,
+        s.croppedAreaPixels,
+        s.previewUrl,
+        s.data,
+        s.compressedFile,
+        s.compressCount,
+      ]),
+    );
 
   return (
     <footer className="grid grid-cols-2 gap-1">
@@ -290,7 +306,44 @@ const Footer = () => {
       >
         Close
       </Button>
-      <Button>Crop</Button>
+      <Button
+        onClick={async () => {
+          if (!previewUrl || !croppedArea) return;
+          try {
+            const processed = await getCroppedImage({
+              area: croppedArea,
+              src: previewUrl,
+            });
+
+            data?.callback?.(processed, {
+              compressCount,
+              compressedSize: compressedFile?.size,
+              croppedSize: processed?.size,
+              originalSize: data?.file?.size,
+            });
+          } catch (error) {
+            const toast = new Toaster({
+              id: "faile",
+              title: translate(etm.generic.construct()),
+              trigger: false,
+            });
+
+            if (error instanceof AppError) {
+              toast.update({ description: translate(error.message) });
+            } else {
+              toast.update({
+                description: translate(etm.unknown_error.construct()),
+              });
+            }
+
+            toast.trigger();
+          } finally {
+            reset();
+          }
+        }}
+      >
+        Crop
+      </Button>
     </footer>
   );
 };
@@ -315,24 +368,14 @@ const ImageCropperDialog = () => {
   useEffect(() => {
     if (!data || compressedFile) return;
 
-    console.log("MONA_LISA");
-
     const compress = async () => {
       try {
-        console.log("DAVINCI");
         const config = IMG_CONFIG.category[data.config];
         let targetFile = data.file;
         let count: number = 0;
 
-        console.log(
-          targetFile.size,
-          config.raw_size,
-          targetFile.size > config.final_size,
-        );
-
         while (targetFile.size > config.final_size) {
           count++;
-          console.log(count, targetFile);
           targetFile = await compressImage(targetFile, {
             maxSizeMB: config.final_size / (1024 * 1024),
             maxWidthOrHeight: config.maxWidthOrHeight,
@@ -344,8 +387,6 @@ const ImageCropperDialog = () => {
             },
           });
         }
-
-        console.log(targetFile.size, "Compressed");
 
         useImageCropper.setState({
           compressedFile: targetFile,

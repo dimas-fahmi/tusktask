@@ -4,10 +4,10 @@ import type { ImageShape, ImgCategoryKey } from "../app/image/config";
 import { abortImageCompression } from "../utils/clientOnly/browserImageCompression";
 
 export type ImageCropperInfo = {
-  originalSize: number;
-  compressedSize: number;
-  compressCount: number;
-  croppedSize: number;
+  originalSize?: number;
+  compressedSize?: number;
+  compressCount?: number;
+  croppedSize?: number;
 };
 
 export type ImageCropperData = {

@@ -19,7 +19,9 @@ import { useShallow } from "zustand/react/shallow";
 import { AppError } from "@/src/app/error";
 import { useErrorTranslation } from "@/src/hooks/useErrorTranslation";
 import { useImageCropper } from "@/src/hooks/useImageCropperDialog";
+import { useMyData } from "@/src/hooks/useMyData";
 import { etm } from "@/src/i18n/errorTranslation/init";
+import { getQueryClient, useTRPC } from "@/src/lib/trpc/client/client";
 import {
   Avatar,
   AvatarFallback,
@@ -130,6 +132,10 @@ const AvatarPicker = (props: AvatarPickerProps) => {
 
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const _qc = getQueryClient();
+  const _trpc = useTRPC();
+  const { data: myData, queryKey: _ } = useMyData();
+
   const [triggerCropper] = useImageCropper(
     useShallow((s) => [s.triggerCropper]),
   );
@@ -190,6 +196,8 @@ const AvatarPicker = (props: AvatarPickerProps) => {
     return () => clearTimeout(timeout);
   }, [status]);
 
+  const imgSrc = previewURL ?? myData?.image;
+
   return (
     <div
       className={cn(
@@ -235,9 +243,17 @@ const AvatarPicker = (props: AvatarPickerProps) => {
       />
 
       {/* Preview */}
-      <Avatar className={"w-full h-full rounded-full"}>
-        {previewURL && <AvatarImage src={previewURL} />}
-        <AvatarFallback>DF</AvatarFallback>
+      <Avatar className={"w-full h-full rounded-full overflow-hidden"}>
+        {imgSrc && <AvatarImage src={imgSrc} />}
+        <AvatarFallback
+          className={"[container-type:inline-size] w-full h-full"}
+        >
+          <span
+            className={"block whitespace-nowrap text-[clamp(16px,15cqi,80px)]"}
+          >
+            {myData?.name?.[0]}
+          </span>
+        </AvatarFallback>
       </Avatar>
 
       {/* Buttons */}
