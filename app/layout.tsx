@@ -1,5 +1,7 @@
 "use client";
 
+import "@/src/utils/clientOnly/triggerSound";
+
 import { TRPCReactProvider } from "@/src/lib/trpc/client/client";
 import { fontBody, fontHeading } from "@/src/ui/fonts";
 import { TooltipProvider } from "@/src/ui/shadcn/components/ui/tooltip";

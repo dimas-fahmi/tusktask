@@ -5,6 +5,7 @@ import { useShallow } from "zustand/react/shallow";
 import AuthHeader from "@/app/[locale]/(auth)/components/AuthHeader";
 import { useRegistrationStep } from "@/src/hooks/useRegistrationStep";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
+import { triggerSound } from "@/src/utils/clientOnly/triggerSound";
 import type { PendingRegistrationStep } from "..";
 import { getPhase } from "../renderable";
 
@@ -23,7 +24,48 @@ const ConfirmationPhase = () => {
         desc={t(`registrationStep.${CURRENT}.desc`)}
       />
 
-      <div className="flex-1">MAIN_CONTENT_HERE</div>
+      <div className="flex-1 grid grid-cols-2 gap-1">
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            triggerSound("alert_chime");
+          }}
+        >
+          Alert Chime
+        </Button>
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            triggerSound("alert_echo");
+          }}
+        >
+          Alert Echo
+        </Button>
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            triggerSound("pop");
+          }}
+        >
+          Pop
+        </Button>
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            triggerSound("pop_positive");
+          }}
+        >
+          Pop Positive
+        </Button>
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            triggerSound("pop_negative");
+          }}
+        >
+          Pop Negative
+        </Button>
+      </div>
 
       <footer className="flex items-center justify-end gap-1">
         {last && (
