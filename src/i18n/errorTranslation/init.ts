@@ -142,6 +142,12 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
     no_canvas_context: {
       construct: () => serializer({ key: "no_canvas_context" }),
     },
+
+    missing_parameter: {
+      construct: (key: string) =>
+        serializer({ key: "missing_parameter", params: [key] }),
+      interpolation: (params) => ({ key: params[0] }),
+    },
   },
 });
 

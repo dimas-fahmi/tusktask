@@ -163,11 +163,6 @@ const AvatarPicker = (props: AvatarPickerProps) => {
   const [previewURL, setPreviewURL] = useState<string | null>(null);
 
   const [status, setStatus] = useState<IconProcessStatus>("idle");
-  const [isOnProgress, setIsOnProgress] = useState(false);
-
-  const [deletionStatus, setDeletionStatus] =
-    useState<IconProcessStatus>("idle");
-
   const inputRef = useRef<HTMLInputElement>(null);
   const lastUrlRef = useRef<string | null>(null);
 
@@ -198,57 +193,66 @@ const AvatarPicker = (props: AvatarPickerProps) => {
     };
   }, [blob]);
 
-  useEffect(() => {
-    if (status === "idle") return;
-
-    const timeout = setTimeout(() => {
-      if (status === "pending") {
-        return setStatus("error");
-      }
-
-      if (status === "success" || status === "error") {
-        setStatus("idle");
-        setIsOnProgress(false);
-        setPreviewURL(null);
-        setIsExpanded(false);
-        return;
-      }
-    }, 3000);
-
-    return () => clearTimeout(timeout);
-  }, [status]);
-
   const imgSrc = previewURL ?? myData?.image;
 
-  const { mutate: deleteImage, isPending: isDeletingImage } = useMutation({
+  const cycle = () => {
+    setTimeout(() => {
+      setStatus("idle");
+      setIsExpanded(false);
+      setBlob(null);
+      setPreviewURL(null);
+    }, 2500);
+  };
+
+  // DELETE MUTATION
+  const { mutate: deleteImage } = useMutation({
     ...trpc.myData.avatar.delete.mutationOptions(),
     onMutate: () => {
-      setDeletionStatus("pending");
+      setStatus("pending");
     },
     onError: (err) => {
       toast("failed-deleting-avatar", err, true);
 
-      setDeletionStatus("error");
+      setStatus("error");
 
       setTimeout(() => {
-        setDeletionStatus("idle");
+        setStatus("idle");
       }, 5000);
     },
     onSuccess: () => {
-      setDeletionStatus("success");
+      setStatus("success");
     },
     onSettled: () => {
       qc.invalidateQueries({
         queryKey,
       });
 
-      setTimeout(() => {
-        setDeletionStatus("idle");
-      }, 2500);
+      cycle();
     },
   });
 
-  const isTotalSuspense = deletionStatus !== "idle" || status !== "idle";
+  const isTotalSuspense = status !== "idle";
+
+  const { mutate: upload } = useMutation({
+    ...trpc.myData.avatar.update.mutationOptions(),
+    onMutate: () => {
+      setStatus("pending");
+    },
+    onError: (err) => {
+      toast("upload-failed", err, true);
+      setStatus("success");
+    },
+    onSuccess: () => {
+      setStatus("success");
+    },
+    onSettled: () => {
+      qc.invalidateQueries({
+        queryKey,
+      });
+
+      cycle();
+    },
+  });
 
   return (
     <div
@@ -318,8 +322,8 @@ const AvatarPicker = (props: AvatarPickerProps) => {
               className={"text-destructive not-disabled:hover:text-destructive"}
             >
               <IconProcessButton
-                status={deletionStatus}
-                setStatus={setDeletionStatus}
+                status={status}
+                setStatus={setStatus}
                 idleIcon={IconTrash}
                 onClick={() => {
                   deleteImage();
@@ -355,7 +359,7 @@ const AvatarPicker = (props: AvatarPickerProps) => {
           >
             <Button
               variant={"outline"}
-              disabled={isOnProgress || isDeletingImage || isTotalSuspense}
+              disabled={isTotalSuspense}
               size={"icon-sm"}
               {...props}
               onClick={(e) => {
@@ -382,10 +386,14 @@ const AvatarPicker = (props: AvatarPickerProps) => {
           >
             <IconProcessButton
               {...{ status, setStatus }}
-              disabled={isTotalSuspense}
+              disabled={isTotalSuspense || !blob}
               idleIcon={IconUpload}
               onClick={() => {
-                setIsOnProgress(true);
+                if (!blob) return;
+
+                const formData = new FormData();
+                formData.append("blob", blob);
+                upload(formData);
               }}
             />
           </motion.div>

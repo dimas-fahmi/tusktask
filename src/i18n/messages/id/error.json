@@ -25,6 +25,7 @@
   "username_spec_char_rule": "Nama pengguna hanya boleh memiliki satu karakter khusus.",
 
   "invalid_parameter": "Parameter tidak valid untuk {key}",
+  "missing_parameter": "Parameter tidak adak: {key}",
 
   "file_unable_to_read": "Gagal membaca file; hal ini mungkin disebabkan oleh file yang rusak.",
   "file_unable_to_process": "Terjadi kesalahan saat memproses file ({code})",

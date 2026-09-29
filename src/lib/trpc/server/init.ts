@@ -20,8 +20,9 @@ const t = initTRPC
   .meta<Meta>()
   .create({
     transformer: SuperJSON,
-
     errorFormatter({ shape, error }) {
+      console.error(error);
+
       const translateAbleProtocol =
         error instanceof ZodError
           ? protoValidator(error.issues[0].message)

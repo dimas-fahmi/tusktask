@@ -25,6 +25,7 @@
   "username_spec_char_rule": "Username can contain at most one special character (underscore, hyphen, or dot).",
 
   "invalid_parameter": "Invalid parameter for {key}",
+  "missing_parameter": "Missing parameter: {key}",
 
   "file_unable_to_read": "Failed to read the file; this may be due to the file being corrupted.",
   "file_unable_to_process": "Something went wrong when processing the file ({code}).",

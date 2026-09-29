@@ -44,12 +44,12 @@ export function TRPCReactProvider({
     createTRPCClient<AppRouter>({
       links: [
         splitLink({
-          condition: (op) => isNonJsonSerializable(op),
+          condition: (op) => isNonJsonSerializable(op.input),
           true: httpLink({
             url: getURL(),
             transformer: {
               serialize: (data) => data,
-              deserialize: (data) => SuperJSON.deserialize(data),
+              deserialize: (data) => data,
             },
           }),
           false: httpBatchLink({
