@@ -6,18 +6,28 @@ import {
   DEFAULT_COLOR_THEME_ID,
 } from "../app/colorTheme";
 
-export type ColorThemeStates = {
+export type PreferenceStates = {
   colorThemeId: ColorThemeId;
+  soundNotification: boolean;
+  soundEffect: boolean;
 };
 
-export type ColorthemeActions = {
-  setColorThemeId: (id: ColorThemeStates["colorThemeId"]) => void;
+export type PreferenceActions = {
+  setColorThemeId: (value: ColorThemeId) => void;
+  setSoundNotification: (value: boolean) => void;
+  soundEffect: (value: boolean) => void;
 };
 
-export interface ColorThemeStore {
-  states: ColorThemeStates;
-  actions: ColorthemeActions;
+export interface PreferenceStore {
+  actions: PreferenceActions;
+  states: PreferenceStates;
 }
+
+const DEFAULT_PREFERENCES = {
+  colorThemeId: DEFAULT_COLOR_THEME_ID,
+  soundEffect: true,
+  soundNotification: true,
+} as const satisfies PreferenceStates;
 
 export function resetColorTheme() {
   COLOR_THEME_IDS.forEach((id) => {
@@ -30,7 +40,7 @@ export function applyColorTheme(id: ColorThemeId) {
   document.documentElement.classList.add(id);
 }
 
-export const useColorTheme = create<ColorThemeStore>()(
+export const usePreferences = create<PreferenceStore>()(
   persist(
     (set, get) => ({
       actions: {
@@ -45,13 +55,29 @@ export const useColorTheme = create<ColorThemeStore>()(
           if (!id) return;
           applyColorTheme(id);
         },
+
+        setSoundNotification: (nv) =>
+          set({
+            states: {
+              ...get().states,
+              soundNotification: nv,
+            },
+          }),
+
+        soundEffect: (nv) =>
+          set({
+            states: {
+              ...get().states,
+              soundEffect: nv,
+            },
+          }),
       },
       states: {
-        colorThemeId: DEFAULT_COLOR_THEME_ID,
+        ...DEFAULT_PREFERENCES,
       },
     }),
     {
-      name: "color-theme",
+      name: "user-preferences",
       partialize: (state) => ({
         states: state.states,
       }),

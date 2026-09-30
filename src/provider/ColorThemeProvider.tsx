@@ -3,8 +3,8 @@
 import type React from "react";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useColorTheme } from "../hooks/useColorTheme";
 import { useMyData } from "../hooks/useMyData";
+import { usePreferences } from "../hooks/usePreferences";
 
 const ColorThemeProvider = ({
   children,
@@ -14,7 +14,7 @@ const ColorThemeProvider = ({
   const { data: myData, isPending: isPendingMyData } = useMyData();
   const user = myData;
 
-  const [colorTheme, setColorTheme] = useColorTheme(
+  const [colorTheme, setColorTheme] = usePreferences(
     useShallow((s) => [s.states.colorThemeId, s.actions.setColorThemeId]),
   );
 

@@ -2,7 +2,7 @@ import { IconPaint } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import { COLOR_THEME_IDS, isColorThemeId } from "@/src/app/colorTheme";
-import { useColorTheme } from "@/src/hooks/useColorTheme";
+import { usePreferences } from "@/src/hooks/usePreferences";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,7 @@ import { SettingItem, SettingItemAction, SettingItemInfo } from "..";
 const ColorTheme = () => {
   const t = useTranslations();
 
-  const [current, setCurrent] = useColorTheme(
+  const [current, setCurrent] = usePreferences(
     useShallow((s) => [s.states.colorThemeId, s.actions.setColorThemeId]),
   );
 
