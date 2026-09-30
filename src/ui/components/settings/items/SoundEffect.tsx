@@ -1,25 +1,20 @@
-import { IconPaint } from "@tabler/icons-react";
+import { IconSpeakerphone } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
-import { COLOR_THEME_IDS } from "@/src/app/colorTheme";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { useMyData } from "@/src/hooks/useMyData";
 import { usePreferences } from "@/src/hooks/usePreferences";
 import { getQueryClient, useTRPC } from "@/src/lib/trpc/client/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/ui/shadcn/components/ui/select";
+import { Switch } from "@/src/ui/shadcn/components/ui/switch";
 import { SettingItem, SettingItemAction, SettingItemInfo } from "..";
 
-const ColorTheme = () => {
+const SoundEffectSettingItem = () => {
   const t = useTranslations();
 
-  const [current] = usePreferences(useShallow((s) => [s.states.colorThemeId]));
+  const [soundEffect] = usePreferences(
+    useShallow((s) => [s.states.soundEffect]),
+  );
 
   const trpc = useTRPC();
   const { queryKey } = useMyData();
@@ -61,33 +56,23 @@ const ColorTheme = () => {
 
   return (
     <SettingItem>
-      <SettingItemInfo icon={IconPaint} name={t("common.color_theme")} />
-      <SettingItemAction>
-        <Select value={current} disabled={isPending}>
-          <SelectTrigger size="sm" className={"min-w-24 text-xs"}>
-            <SelectValue>
-              {t(`common.color_themes.${current}.name`)}
-            </SelectValue>
-          </SelectTrigger>
+      <SettingItemInfo
+        icon={IconSpeakerphone}
+        name={t("common.sound_effects")}
+      />
 
-          <SelectContent>
-            {COLOR_THEME_IDS.map((id) => (
-              <SelectItem
-                key={id}
-                value={id}
-                onClick={() => {
-                  mutate({
-                    colorThemeId: id,
-                  });
-                }}
-              >
-                {t(`common.color_themes.${id}.name`)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <SettingItemAction>
+        <Switch
+          disabled={isPending}
+          checked={soundEffect}
+          onCheckedChange={(value) => {
+            mutate({
+              soundEffect: value,
+            });
+          }}
+        />
       </SettingItemAction>
     </SettingItem>
   );
 };
-export default ColorTheme;
+export default SoundEffectSettingItem;

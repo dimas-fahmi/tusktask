@@ -1,4 +1,5 @@
 import { Howl } from "howler";
+import { usePreferences } from "@/src/hooks/usePreferences";
 
 export type SpriteKey =
   | "alert_chime"
@@ -6,6 +7,8 @@ export type SpriteKey =
   | "pop_positive"
   | "pop"
   | "pop_negative";
+
+export type SoundReason = "notification" | "effect";
 
 const instance = new Howl({
   src: ["/res/audio/app_sprite.mp3"],
@@ -19,6 +22,18 @@ const instance = new Howl({
   preload: true,
 });
 
-export function triggerSound(sprite: SpriteKey) {
-  return instance.play(sprite);
+export function triggerSound(sprite: SpriteKey, reason: SoundReason) {
+  const soundNotification = usePreferences.getState().states.soundNotification;
+  const soundEffect = usePreferences.getState().states.soundEffect;
+
+  const shouldPlay =
+    reason === "notification"
+      ? soundNotification
+      : reason === "effect"
+        ? soundEffect
+        : false;
+
+  if (shouldPlay) {
+    instance.play(sprite);
+  }
 }

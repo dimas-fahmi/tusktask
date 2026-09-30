@@ -75,5 +75,10 @@
       "desc": "Anda mengetahui kami melalui orang-orang di sekitar Anda",
       "ps": "Ini mencakup rekan kerja atau anggota keluarga Anda."
     }
-  }
+  },
+
+  "notification_sound": "Suara Notifikasi",
+  "sound_effects": "Efek Suara",
+
+  "continue_to_app": "Lanjutkan ke aplikasi"
 }

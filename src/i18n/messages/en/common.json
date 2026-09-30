@@ -75,5 +75,10 @@
       "desc": "You discovered us through people around you",
       "ps": "This includes your colleagues or family members."
     }
-  }
+  },
+
+  "notification_sound": "Notification Sound",
+  "sound_effects": "Sound Effects",
+
+  "continue_to_app": "Continue to application"
 }

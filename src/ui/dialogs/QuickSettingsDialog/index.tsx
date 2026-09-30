@@ -1,12 +1,9 @@
 "use client";
 
-import { AnimatePresence } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useShallow } from "zustand/react/shallow";
 import { useQuickSettings } from "@/src/hooks/useQuickSettings";
-import AccessibilitySettings from "../../components/settings/blocks/Accessibility";
-import AccountSettings from "../../components/settings/blocks/Account";
-import PersonalizationSettings from "../../components/settings/blocks/Personalization";
+import QuickSettingsBody from "../../components/settings/body/QuickSettingsBody";
 import { Button } from "../../shadcn/components/ui/button";
 import {
   Dialog,
@@ -25,16 +22,7 @@ import {
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 
 const Body = () => {
-  return (
-    <div className="space-y-4">
-      <AnimatePresence mode="wait">
-        {/* TODO: Proper.... */}
-        <AccountSettings key={"account-settings"} />
-        <AccessibilitySettings key={"accessibility-settings"} />
-        <PersonalizationSettings key={"personalization-settings"} />
-      </AnimatePresence>
-    </div>
-  );
+  return <QuickSettingsBody />;
 };
 
 const Footer = () => {
@@ -89,7 +77,9 @@ const QuickSettingsDialog = () => {
           <DialogDescription>{desc}</DialogDescription>
         </DialogHeader>
 
-        <Body />
+        <div className="overflow-y-scroll custom-scrollbar max-h-[65dvh] pe-2 pb-4">
+          <Body />
+        </div>
 
         <Footer />
       </DialogContent>

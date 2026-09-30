@@ -37,6 +37,8 @@ export const updateMyDataProc = createBaseProcedure
               etm.invalid_parameter.construct("attribution"),
             )
             .optional(),
+          soundNotification: z.boolean().optional(),
+          soundEffect: z.boolean().optional(),
         },
         etm.object_invalid.construct(),
       ),
@@ -45,7 +47,9 @@ export const updateMyDataProc = createBaseProcedure
   .mutation(async (opts) => {
     const { input, ctx } = opts;
 
-    const exist = Object.values(input).some(Boolean);
+    const exist = Object.values(input).some(
+      (value) => typeof value !== "undefined",
+    );
 
     if (!exist) return true;
 
