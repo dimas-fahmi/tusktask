@@ -42,11 +42,9 @@ const SocialSignInButton = ({
           fetchOptions: {
             onError: () => {
               setPending?.(null);
-
-              // TODO: Trigger Toast
             },
           },
-          callbackURL: "/?just_signin=true",
+          callbackURL: "/app/?just_signin=true",
         });
       }}
     >

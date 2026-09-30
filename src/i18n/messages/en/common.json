@@ -80,5 +80,10 @@
   "notification_sound": "Notification Sound",
   "sound_effects": "Sound Effects",
 
-  "continue_to_app": "Continue to application"
+  "continue_to_app": "Continue to application",
+
+  "become_a_sponsor": "Become a sponsor",
+  "account_settings": "Account settings",
+  "quick_settings": "Quick settings",
+  "notifications": "Notifications"
 }

@@ -80,5 +80,10 @@
   "notification_sound": "Suara Notifikasi",
   "sound_effects": "Efek Suara",
 
-  "continue_to_app": "Lanjutkan ke aplikasi"
+  "continue_to_app": "Lanjutkan ke aplikasi",
+
+  "become_a_sponsor": "Jadi sponsor",
+  "account_settings": "Pengaturan Akun",
+  "quick_settings": "Pengaturan Cepat",
+  "notifications": "Notifikasi"
 }
