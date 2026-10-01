@@ -4,6 +4,7 @@ import ClientRouteGuard from "@/src/auth/clientRouteGuard";
 import UserPreferencesProvider from "@/src/provider/userPreferencesProvider";
 import ImageCropperDialog from "@/src/ui/components/Prefab/ImageCropperDialog";
 import QuickSettingsDialog from "@/src/ui/dialogs/QuickSettingsDialog";
+import RankDialog from "@/src/ui/dialogs/RankDialog";
 import { Toaster } from "@/src/ui/shadcn/components/ui/toast";
 
 const LocaleLayout = ({
@@ -23,6 +24,7 @@ const LocaleLayout = ({
       {/* DIALOGS */}
       <QuickSettingsDialog />
       <ImageCropperDialog />
+      <RankDialog />
     </NextIntlClientProvider>
   );
 };

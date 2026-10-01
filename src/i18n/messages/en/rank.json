@@ -1,0 +1,70 @@
+{
+  "newborn": {
+    "title": "Newborn",
+    "description": "You created an account. That's it. That's your accomplishment for today."
+  },
+  "barely_functional": {
+    "title": "Growing Up",
+    "description": "You completed a few tasks! Granted, it was probably just 'open laptop', but progress is progress."
+  },
+  "task_rookie": {
+    "title": "The New Guy",
+    "description": "70% of your completed tasks are just checking off things you already did."
+  },
+  "procrastination_survivor": {
+    "title": "New Cadet",
+    "description": "You didn't beat procrastination, you just learned to run faster than it."
+  },
+  "productivity_amateur": {
+    "title": "Private",
+    "description": "You now have 47 open browser tabs and 3 color-coded highlighters you don't use."
+  },
+  "deadline_runner": {
+    "title": "Veteran",
+    "description": "You only do your best work when there are 12 minutes left before midnight."
+  },
+  "task_grinder": {
+    "title": "Lieutenant-designate",
+    "description": "Your bloodstream is currently 40% espresso and 60% anxiety."
+  },
+  "productivity_addict": {
+    "title": "Ambitious Lieutenant",
+    "description": "You complete daily tasks not for self-improvement, but out of pure fear of losing your streak."
+  },
+  "calendar_warrior": {
+    "title": "Promoted to Major",
+    "description": "Your calendar is color-coded so aggressively it looks like a game of Tetris."
+  },
+  "deadline_destroyer": {
+    "title": "Future General",
+    "description": "Deadlines don't scare you anymore. You scare them."
+  },
+  "corporate_machine": {
+    "title": "Sycophantic General",
+    "description": "Autopilot activated. You replied to anything with \"Yes sir, yes Ma'am\""
+  },
+  "human_todo_list": {
+    "title": "Five-Star Politician",
+    "description": "You schedule bathroom breaks and lunch slots down to the exact second."
+  },
+  "productivity_overlord": {
+    "title": "Minister of Time",
+    "description": "You optimized your morning routine so hard you saved 4 minutes to stare blankly at a wall."
+  },
+  "task_deity": {
+    "title": "Assistant of the Emperor",
+    "description": "You no longer do work. Work submits itself to you out of respect."
+  },
+  "productivity_final_boss": {
+    "title": "The Emperor",
+    "description": "You have automated your entire job, life, and personal relationships."
+  },
+  "the_system_fears_you": {
+    "title": "Master of Time",
+    "description": "You never missed any task, we're starting to believe you can turn back time."
+  },
+  "why_are_you_still_here": {
+    "title": "Cosmic Overlord",
+    "description": "Water, wind, earth and fire. That's you my lord!"
+  }
+}

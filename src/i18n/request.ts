@@ -32,6 +32,9 @@ export default getRequestConfig(async () => {
       registrationStep: {
         ...(await import(`./messages/${locale}/registrationStep.json`)).default,
       },
+      rank: {
+        ...(await import(`./messages/${locale}/rank.json`)).default,
+      },
       warning: {
         ...(await import(`./messages/${locale}/warning.json`)).default,
       },

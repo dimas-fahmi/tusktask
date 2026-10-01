@@ -85,5 +85,8 @@
   "become_a_sponsor": "Jadi sponsor",
   "account_settings": "Pengaturan Akun",
   "quick_settings": "Pengaturan Cepat",
-  "notifications": "Notifikasi"
+  "notifications": "Notifikasi",
+
+  "my_points": "Poinku",
+  "points_left": "Tersisa {points} point lagi"
 }

@@ -6,5 +6,10 @@
   "QuickSettingsDialog": {
     "title": "Pengaturan Cepat",
     "desc": "Sesuaikan pengaturan aplikasi Anda dengan cepat."
+  },
+
+  "RankDialog": {
+    "title": "Tonggak Pencapaian",
+    "desc": "Ini bukan sekadar status, ini adalah hidupmu."
   }
 }

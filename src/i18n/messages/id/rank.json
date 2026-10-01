@@ -1,0 +1,70 @@
+{
+  "newborn": {
+    "title": "Bayi",
+    "description": "Baru bikin akun doang. Belum ngapa-ngapain tapi merasa udah produktif."
+  },
+  "barely_functional": {
+    "title": "Tumbuh Dewasa",
+    "description": "Udah nyelesaiin beberapa tugas. Walaupun tugasnya mungkin cuma 'bangun tidur terus mandi'."
+  },
+  "task_rookie": {
+    "title": "Anak Baru",
+    "description": "Setengah checklist kamu isinya tugas yang udah beres duluan baru dicentang."
+  },
+  "procrastination_survivor": {
+    "title": "Calon Kadet",
+    "description": "Bukan ngerjain tugas dari jauh hari, cuma udah ahli panik di jam 11 malam."
+  },
+  "productivity_amateur": {
+    "title": "Dilantik Prajurit",
+    "description": "Buka 50 tab Google Chrome, yang dibaca cuma satu. Sisa tab cuma formalitas."
+  },
+  "deadline_runner": {
+    "title": "Prajurit Berpengalaman",
+    "description": "Otak baru jalan pas sisa waktu tinggal 15 menit lagi sebelum di-submit."
+  },
+  "task_grinder": {
+    "title": "Calon Letnan",
+    "description": "Darah kamu sekarang isinya 70% es kopi susu gula aren dan 30% kecemasan."
+  },
+  "productivity_addict": {
+    "title": "Ambitious lieutenant",
+    "description": "Ngerjain tugas bukan karena rajin, tapi karena takut streak-nya putus."
+  },
+  "calendar_warrior": {
+    "title": "Diangkat Mayor",
+    "description": "Google Calendar penuh warna-warni kayak papan Ludo, tapi tetep aja sering wacana."
+  },
+  "deadline_destroyer": {
+    "title": "Calon Jenderal",
+    "description": "Mata udah kayak panda, jam tidur berantakan, tapi tugas beres semua."
+  },
+  "corporate_machine": {
+    "title": "Jenderal Penjilat",
+    "description": "Autopilot aktif. Refleks jawab chat pake 'Baik pak/bu, segera saya tindak lanjuti'."
+  },
+  "human_todo_list": {
+    "title": "Politikus Bintang 5",
+    "description": "Jam makan siang dan jam ke kamar mandi pun udah masuk jadwal harian."
+  },
+  "productivity_overlord": {
+    "title": "Mentri Ke-Waktuan",
+    "description": "Nge-hemat waktu 5 menit pakai fitur automisasi, terus dipake buat melamun."
+  },
+  "task_deity": {
+    "title": "Asisten Kaisar",
+    "description": "Tugas-tugas pada sungkem pas kamu login. Gak ada yang berani nunggak."
+  },
+  "productivity_final_boss": {
+    "title": "Kaisar",
+    "description": "Semua urusan hidup, kerjaan, sampai bales chat udah di-auto-reply semua."
+  },
+  "the_system_fears_you": {
+    "title": "Penguasa Waktu",
+    "description": "Gak pernah telat sekalipun, kami mulai percaya kamu bisa mengendalikan waktu."
+  },
+  "why_are_you_still_here": {
+    "title": "Penguasa Alam Semesta",
+    "description": "Air, angin, tanah dan api. Itulah kamu tuanku!"
+  }
+}

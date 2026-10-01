@@ -14,6 +14,7 @@ import route from "@/src/app/route";
 import { authClient } from "@/src/auth/client";
 import { useMyData } from "@/src/hooks/useMyData";
 import { useQuickSettings } from "@/src/hooks/useQuickSettings";
+import { getUserRank } from "@/src/utils/getUserRank";
 import {
   Avatar,
   AvatarFallback,
@@ -29,6 +30,7 @@ import {
 } from "../../shadcn/components/ui/dropdown-menu";
 import { Skeleton } from "../../shadcn/components/ui/skeleton";
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
+import UserPointCard from "./UserPointCard";
 
 const UserNavCardSkeleton = () => {
   return (
@@ -54,6 +56,8 @@ const UserNavCard = () => {
 
   const openQSD = useQuickSettings((s) => s.openDialog);
 
+  const rank = getUserRank(myData?.points ?? 0);
+
   const router = useRouter();
 
   return isPending ? (
@@ -76,7 +80,7 @@ const UserNavCard = () => {
               <div>
                 <h1 className="text-sm">{myData?.name}</h1>
                 <p className="text-xs font-light opacity-70">
-                  {myData?.username}
+                  {t(`rank.${rank.id}.title`)}
                 </p>
               </div>
 
@@ -90,6 +94,8 @@ const UserNavCard = () => {
         side={isMobile ? "bottom" : "right"}
         align="end"
         sideOffset={6}
+        alignOffset={2}
+        className={"md:min-w-xs"}
       >
         <div className="flex gap-2 mb-2 py-1 px-2">
           <Avatar className={"w-9 h-9"}>
@@ -98,11 +104,12 @@ const UserNavCard = () => {
           </Avatar>
 
           <div className="flex-1 flex items-center justify-between">
-            <div>
-              <h1 className="text-sm">{myData?.name}</h1>
-              <p className="text-xs font-light opacity-70">
-                {myData?.username}
-              </p>
+            <div className="w-full space-y-4">
+              <div>
+                <h1 className="text-sm">{myData?.name}</h1>
+                <p className="text-xs font-extralight">{myData?.username}</p>
+              </div>
+              <UserPointCard />
             </div>
           </div>
         </div>

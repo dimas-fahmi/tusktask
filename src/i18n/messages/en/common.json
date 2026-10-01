@@ -85,5 +85,8 @@
   "become_a_sponsor": "Become a sponsor",
   "account_settings": "Account settings",
   "quick_settings": "Quick settings",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+
+  "my_points": "My Points",
+  "points_left": "{points} points left"
 }

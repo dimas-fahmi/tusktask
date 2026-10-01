@@ -35,8 +35,6 @@ const SIDEBAR_CONFIG: SidebarNavData = [
       {
         icon: IconPlus,
         label: "New Project",
-        className:
-          "border border-border border-dashed hover:border-transparent scale-90",
       },
       { textIcon: "M", label: "My Project" },
       { icon: IconTemperature, label: "Chemistry" },

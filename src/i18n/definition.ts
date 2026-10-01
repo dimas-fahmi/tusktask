@@ -29,6 +29,10 @@ import type pageId from "./messages/id/page.json";
 import type registrationStepEn from "./messages/en/registrationStep.json";
 import type registrationStepId from "./messages/id/registrationStep.json";
 
+// RegistrationStep Dictionary
+import type rankEn from "./messages/en/rank.json";
+import type rankId from "./messages/id/rank.json";
+
 // Warning Dictionary
 import type warningEn from "./messages/en/warning.json";
 import type warningId from "./messages/id/warning.json";
@@ -41,6 +45,7 @@ export type Messages = {
   error: typeof errorEn | typeof errorId;
   page: typeof pageEn | typeof pageId;
   registrationStep: typeof registrationStepEn | typeof registrationStepId;
+  rank: typeof rankEn | typeof rankId;
   warning: typeof warningEn | typeof warningId;
 };
 
