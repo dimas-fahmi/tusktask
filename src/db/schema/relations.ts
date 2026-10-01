@@ -38,9 +38,21 @@ export const _relations = defineRelations(schema, (r) => ({
       from: r.user.id,
       to: r.twoFactor.userId,
     }),
+
+    pointHistories: r.many.pointHistory({
+      from: r.user.id,
+      to: r.pointHistory.userId,
+    }),
   },
 
   verification: {},
+
+  pointHistory: {
+    user: r.one.user({
+      from: r.pointHistory.userId,
+      to: r.user.id,
+    }),
+  },
 }));
 
 export const relations = {

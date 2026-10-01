@@ -1,4 +1,5 @@
 import { account } from "./t-account";
+import { pointHistory } from "./t-pointHistory";
 import { session } from "./t-session";
 import { twoFactor } from "./t-twoFactor";
 import { user } from "./t-user";
@@ -19,4 +20,7 @@ export const schema = {
 
   // VERIFICATION TABLE
   verification,
+
+  // POINT HISTORIY TABLE
+  pointHistory,
 } as const;

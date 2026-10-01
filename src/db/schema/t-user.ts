@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   text,
   timestamp,
   uniqueIndex,
@@ -47,7 +48,16 @@ export const user = authSchema.table(
     // ATTRIBUTION
     attribution: text("attribution"),
 
+    // POINTS
+    points: integer("points").default(0).notNull(),
+    activityStreak: integer("activity_streak").default(0).notNull(),
+
     // TIMESTAMPS
+    lastTaskCompletionAt: timestamp(
+      "last_task_completion_at",
+      TIMESTAMPZ_CONFIG,
+    ),
+    lastTaskRewardedAt: timestamp("last_task_rewarded_at", TIMESTAMPZ_CONFIG),
     createdAt: timestamp("created_at", TIMESTAMPZ_CONFIG).notNull(),
     updatedAt: timestamp("updated_at", TIMESTAMPZ_CONFIG)
       .$onUpdate(() => new Date())

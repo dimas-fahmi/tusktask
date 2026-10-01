@@ -22,3 +22,8 @@ export const registrationStepEnum = authSchema.enum(
   "registration_step_enum",
   REGISTRATION_STEPS,
 );
+
+export const pointSourceEnum = appSchema.enum("point_source_enum", [
+  "task_completion",
+  "registration",
+]);
