@@ -17,7 +17,7 @@ function Progress({
       {...props}
     >
       {children}
-      <ProgressTrack>
+      <ProgressTrack className={className}>
         <ProgressIndicator />
       </ProgressTrack>
     </ProgressPrimitive.Root>

@@ -22,6 +22,22 @@ const route = {
   onboarding() {
     return "/registration";
   },
+
+  today() {
+    return `${this.app()}/today`;
+  },
+
+  upcoming() {
+    return `${this.app()}/upcoming`;
+  },
+
+  calendar() {
+    return `${this.app()}/calendar`;
+  },
+
+  settings(section?: "account" | "session" | "security") {
+    return `${this.app()}/settings${section ? `/${section}` : ""}`;
+  },
 } as const;
 
 export default route;
