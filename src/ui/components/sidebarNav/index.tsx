@@ -7,16 +7,19 @@ import {
   type TablerIcon,
 } from "@tabler/icons-react";
 import { cn } from "cn";
+import Cookies from "js-cookie";
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type React from "react";
-import { useState } from "react";
+import { memo, useEffect, useState } from "react";
+import { stripLocaleFromPathname } from "@/src/i18n";
 import { Button, type ButtonProps } from "../../shadcn/components/ui/button";
 import { useSidebar } from "../../shadcn/components/ui/sidebar";
 
 export type SidebarNavGroup = {
   title: string;
   items: SidebarNavItem[];
+  key: string;
   defaultOpen?: boolean;
 };
 
@@ -27,27 +30,52 @@ export type SidebarNavItem = {
   href?: string;
   isActive?: boolean;
   iconNode?: React.ReactNode;
+  textIcon?: string;
 } & ButtonProps;
 
 export type SidebarNavData = SidebarNavGroup[];
 
-const SidebarNavItem = ({
-  data: {
+const SidebarNavIconContainer = ({
+  icon: Icon,
+  textIcon,
+  className,
+  ...props
+}: Omit<React.ComponentPropsWithoutRef<"div">, "children"> & {
+  icon: TablerIcon;
+  textIcon?: string;
+}) => {
+  return (
+    <div
+      {...props}
+      className={cn(
+        "min-w-7 max-w-7 min-h-7 max-h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground",
+        className,
+      )}
+    >
+      {(textIcon && <span className="text-[13px]">{textIcon?.[0]}</span>) ?? (
+        <Icon className="w-4 h-4" />
+      )}
+    </div>
+  );
+};
+
+const SidebarNavItem = memo(({ data }: { data: SidebarNavItem }) => {
+  const {
     icon,
     label,
     href,
     iconProps,
     onClick,
-    isActive,
-    iconNode: IconNode,
+    iconNode,
+    textIcon,
     ...props
-  },
-}: {
-  data: SidebarNavItem;
-}) => {
+  } = data;
   const Icon = icon ?? IconHelpCircle;
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
+
+  const pathname = stripLocaleFromPathname(usePathname());
+  const isActive = href ? pathname === href : false;
 
   return (
     <Button
@@ -71,18 +99,43 @@ const SidebarNavItem = ({
         setOpenMobile(false);
       }}
     >
-      {IconNode
-        ? IconNode
-        : Icon && (
-            <Icon {...iconProps} className={cn("", iconProps?.className)} />
-          )}
+      {iconNode ? (
+        iconNode
+      ) : (
+        <SidebarNavIconContainer icon={Icon} textIcon={textIcon} />
+      )}
       <span>{label}</span>
     </Button>
   );
-};
+});
+SidebarNavItem.displayName = "SidebarNavItem";
 
-const SidebarNavGroup = ({ data }: { data: SidebarNavGroup }) => {
-  const [expand, setExpand] = useState(!!data?.defaultOpen);
+const SidebarNavGroup = memo(({ data }: { data: SidebarNavGroup }) => {
+  const pathname = stripLocaleFromPathname(usePathname());
+
+  const hasActiveChild = data.items.some(
+    (item) => item.href && pathname === item.href,
+  );
+
+  const stored = Cookies.get(`SidebarNavGroupExpand-${data.key}`);
+
+  const [expand, setExpand] = useState(() => {
+    if (!stored) {
+      return data.defaultOpen || hasActiveChild;
+    }
+
+    return stored === "true";
+  });
+
+  useEffect(() => {
+    Cookies.set(`SidebarNavGroupExpand-${data.key}`, `${expand}`);
+  }, [expand, data.key]);
+
+  useEffect(() => {
+    if (hasActiveChild) {
+      setExpand(true);
+    }
+  }, [hasActiveChild]);
 
   return (
     <div>
@@ -93,13 +146,12 @@ const SidebarNavGroup = ({ data }: { data: SidebarNavGroup }) => {
 
         <Button
           variant={"ghost"}
-          onClick={() => {
-            setExpand((prev) => !prev);
-          }}
+          onClick={() => setExpand((prev) => !prev)}
           size={"icon-sm"}
           className={"p-0"}
         >
           <IconChevronDown
+            suppressHydrationWarning
             className={cn(
               "transition-all duration-300",
               expand ? "rotate-180" : "",
@@ -109,8 +161,9 @@ const SidebarNavGroup = ({ data }: { data: SidebarNavGroup }) => {
       </div>
 
       <motion.div
+        suppressHydrationWarning
         initial={
-          data?.defaultOpen
+          stored === "true" || data?.defaultOpen || hasActiveChild
             ? { height: "auto", scale: 1, opacity: 1 }
             : { height: 0, scale: 0.95, opacity: 0.7 }
         }
@@ -123,22 +176,25 @@ const SidebarNavGroup = ({ data }: { data: SidebarNavGroup }) => {
       >
         <div className="grid grid-cols-1 gap-1">
           {data.items.map((item) => (
-            <SidebarNavItem key={crypto.randomUUID()} data={item} />
+            <SidebarNavItem key={item.label} data={item} />
           ))}
         </div>
       </motion.div>
     </div>
   );
-};
+});
+SidebarNavGroup.displayName = "SidebarNavGroup";
 
-const SidebarNav = ({ data }: { data: SidebarNavData }) => {
+const SidebarNav = memo(({ data }: { data: SidebarNavData }) => {
   return (
     <div className="space-y-2">
       {data.map((group) => (
-        <SidebarNavGroup key={crypto.randomUUID()} data={group} />
+        <SidebarNavGroup key={group.title} data={group} />
       ))}
     </div>
   );
-};
+});
+
+SidebarNav.displayName = "SidebarNav";
 
 export { SidebarNav, SidebarNavGroup, SidebarNavItem };
