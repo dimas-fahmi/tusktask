@@ -6,10 +6,7 @@ import { user } from "./t-user";
 export const pointHistory = appSchema.table(
   "point_history",
   {
-    id: uuid("point_history")
-      .default(sql`pg_catalog.uuidv7()`)
-      .notNull()
-      .primaryKey(),
+    id: uuid("id").default(sql`pg_catalog.uuidv7()`).notNull().primaryKey(),
     userId: uuid("user_id")
       .references(() => user.id, { onDelete: "cascade" })
       .notNull(),

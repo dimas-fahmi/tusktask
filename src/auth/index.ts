@@ -1,14 +1,17 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP, twoFactor } from "better-auth/plugins";
+import { eq, sql } from "drizzle-orm";
 import { COLOR_THEME_IDS, DEFAULT_COLOR_THEME_ID } from "../app/colorTheme";
 import { getEnv } from "../app/env";
 import {
   DEFAULT_REGISTRATION_STEP,
   REGISTRATION_STEPS,
 } from "../app/registrationPhase";
-import { nidb } from "../db";
+import { idb, nidb } from "../db";
 import { schema } from "../db/schema";
+import { pointHistory } from "../db/schema/t-pointHistory";
+import { user } from "../db/schema/t-user";
 import { generateUsername } from "../utils/generateUsername";
 
 export const auth = betterAuth({
@@ -30,6 +33,34 @@ export const auth = betterAuth({
       ...schema,
     },
   }),
+
+  // DATABASE HOOKS
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (data) => {
+          const _result = await idb.transaction(async (tx) => {
+            await tx
+              .update(user)
+              .set({
+                points: sql`${user.points} + 100`,
+                lastPointRewardAt: new Date(),
+              })
+              .where(eq(user.id, data.id));
+
+            await tx.insert(pointHistory).values({
+              pointsBefore: 0,
+              pointsDelta: 100,
+              source: "registration",
+              userId: data.id,
+            });
+
+            return 1;
+          });
+        },
+      },
+    },
+  },
 
   // PLUGINS
   plugins: [

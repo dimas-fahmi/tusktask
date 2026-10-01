@@ -53,6 +53,7 @@ export const user = authSchema.table(
     activityStreak: integer("activity_streak").default(0).notNull(),
 
     // TIMESTAMPS
+    lastPointRewardAt: timestamp("last_point_reward_at", TIMESTAMPZ_CONFIG),
     lastTaskCompletionAt: timestamp(
       "last_task_completion_at",
       TIMESTAMPZ_CONFIG,
