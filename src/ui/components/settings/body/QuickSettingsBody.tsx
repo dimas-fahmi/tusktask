@@ -9,9 +9,9 @@ const QuickSettingsBody = ({
 }) => {
   return (
     <div className="space-y-4">
-      {!hideAccountSettings && <AccountSettings key={"account-settings"} />}
       <AccessibilitySettings key={"accessibility-settings"} />
       <PersonalizationSettings key={"personalization-settings"} />
+      {!hideAccountSettings && <AccountSettings key={"account-settings"} />}
     </div>
   );
 };
