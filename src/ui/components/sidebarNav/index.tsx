@@ -39,16 +39,21 @@ const SidebarNavIconContainer = ({
   icon: Icon,
   textIcon,
   className,
+  isActive,
   ...props
 }: Omit<React.ComponentPropsWithoutRef<"div">, "children"> & {
   icon: TablerIcon;
   textIcon?: string;
+  isActive: boolean;
 }) => {
   return (
     <div
       {...props}
       className={cn(
-        "min-w-7 max-w-7 min-h-7 max-h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground",
+        "min-w-7 max-w-7 min-h-7 max-h-7 rounded-full flex items-center justify-center border",
+        isActive
+          ? "bg-primary text-primary-foreground border-primary"
+          : "bg-muted text-muted-foreground",
         className,
       )}
     >
@@ -102,7 +107,11 @@ const SidebarNavItem = memo(({ data }: { data: SidebarNavItem }) => {
       {iconNode ? (
         iconNode
       ) : (
-        <SidebarNavIconContainer icon={Icon} textIcon={textIcon} />
+        <SidebarNavIconContainer
+          isActive={isActive}
+          icon={Icon}
+          textIcon={textIcon}
+        />
       )}
       <span>{label}</span>
     </Button>
