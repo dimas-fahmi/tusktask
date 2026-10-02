@@ -43,6 +43,16 @@ export const _relations = defineRelations(schema, (r) => ({
       from: r.user.id,
       to: r.pointHistory.userId,
     }),
+
+    projects: r.many.project({
+      from: r.user.id,
+      to: r.project.userId,
+    }),
+
+    tasks: r.many.task({
+      from: r.user.id,
+      to: r.task.userId,
+    }),
   },
 
   verification: {},
@@ -50,6 +60,20 @@ export const _relations = defineRelations(schema, (r) => ({
   pointHistory: {
     user: r.one.user({
       from: r.pointHistory.userId,
+      to: r.user.id,
+    }),
+  },
+
+  project: {
+    user: r.one.user({
+      from: r.project.userId,
+      to: r.user.id,
+    }),
+  },
+
+  task: {
+    user: r.one.user({
+      from: r.task.userId,
       to: r.user.id,
     }),
   },

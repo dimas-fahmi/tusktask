@@ -1,6 +1,8 @@
 import { account } from "./t-account";
 import { pointHistory } from "./t-pointHistory";
+import { project } from "./t-project";
 import { session } from "./t-session";
+import { task } from "./t-task";
 import { twoFactor } from "./t-twoFactor";
 import { user } from "./t-user";
 import { verification } from "./t-verification";
@@ -23,4 +25,10 @@ export const schema = {
 
   // POINT HISTORIY TABLE
   pointHistory,
+
+  // PROJECT ABLE
+  project,
+
+  // TASK TABLE
+  task,
 } as const;
