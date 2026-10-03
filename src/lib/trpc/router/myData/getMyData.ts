@@ -1,7 +1,15 @@
 import { TRPCError } from "@trpc/server";
+import { eq, sql } from "drizzle-orm";
 import { nidb } from "@/src/db";
+import { user } from "@/src/db/schema/t-user";
 import { etm } from "@/src/i18n/errorTranslation/init";
 import { authProcedure } from "../../procedures/authProcedure";
+
+const prepared = nidb
+  .select()
+  .from(user)
+  .where(eq(user.id, sql.placeholder("id")))
+  .prepare("get_my_data");
 
 export const getMyDataProc = authProcedure
   .meta({ authRequired: false })
@@ -11,15 +19,11 @@ export const getMyDataProc = authProcedure
         return null;
       }
 
-      const result = await nidb.query.user.findFirst({
-        where: {
-          id: {
-            eq: opts.ctx.userId,
-          },
-        },
+      const result = await prepared.execute({
+        id: opts.ctx.userId,
       });
 
-      return result;
+      return result[0];
     } catch (error) {
       console.error(error);
       throw new TRPCError({
