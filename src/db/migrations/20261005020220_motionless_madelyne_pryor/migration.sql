@@ -1,0 +1,1 @@
+ALTER TABLE "app"."project" ADD COLUMN "view_layout" text;

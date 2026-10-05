@@ -17,6 +17,8 @@ export const project = appSchema.table(
       .references(() => user.id, { onDelete: "cascade" })
       .notNull(),
 
+    viewLayout: text("view_layout"),
+
     createdAt: timestamp("created_at", TIMESTAMPZ_CONFIG)
       .notNull()
       .defaultNow(),
