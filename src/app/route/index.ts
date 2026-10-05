@@ -38,6 +38,14 @@ const route = {
   settings(section?: "account" | "session" | "security") {
     return `${this.app()}/settings${section ? `/${section}` : ""}`;
   },
+
+  myProjects() {
+    return `${this.app()}/projects`;
+  },
+
+  project(id: string) {
+    return `${this.myProjects()}/${id}`;
+  },
 } as const;
 
 export default route;

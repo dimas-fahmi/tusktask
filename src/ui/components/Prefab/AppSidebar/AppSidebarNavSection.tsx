@@ -2,6 +2,7 @@
 
 import { IconList, IconPlus } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import route from "@/src/app/route";
 import { useNewProject } from "@/src/hooks/useNewProject";
 import { useTRPC } from "@/src/lib/trpc/client/client";
@@ -22,6 +23,8 @@ import {
 const AppSidebarNavSection = () => {
   const setOpenNPD = useNewProject((s) => s.setOpen);
 
+  const router = useRouter();
+
   const trpc = useTRPC();
 
   const { data: myProjects } = useQuery({
@@ -32,6 +35,7 @@ const AppSidebarNavSection = () => {
     (value) => ({
       label: value.name,
       iconName: (value?.iconId as IconName) ?? "folder",
+      href: route.project(value.id),
     }),
   );
 
@@ -90,7 +94,11 @@ const AppSidebarNavSection = () => {
                 <IconPlus /> <span>New Project</span>
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  router.push(route.myProjects());
+                }}
+              >
                 <IconList /> <span>My Projects</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
