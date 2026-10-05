@@ -87,10 +87,10 @@ const AttributionPhase = () => {
             <div className="space-y-2 flex-1">
               <div>
                 <h1 className="font-semibold">
-                  {t(`common.attribution_channels.${key}.title`)}
+                  {t(`attribution.${key}.title`)}
                 </h1>
                 <p className="text-xs opacity-95">
-                  {t(`common.attribution_channels.${key}.desc`)}
+                  {t(`attribution.${key}.desc`)}
                 </p>
               </div>
               <Separator
@@ -99,7 +99,7 @@ const AttributionPhase = () => {
                 }
               />
               <small className="text-xs opacity-75">
-                {t(`common.attribution_channels.${key}.ps`)}
+                {t(`attribution.${key}.ps`)}
               </small>
             </div>
           </button>
