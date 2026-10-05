@@ -3,6 +3,7 @@ import type React from "react";
 import ClientRouteGuard from "@/src/auth/clientRouteGuard";
 import UserPreferencesProvider from "@/src/provider/userPreferencesProvider";
 import ImageCropperDialog from "@/src/ui/components/Prefab/ImageCropperDialog";
+import ConfirmationDialog from "@/src/ui/dialogs/ConfirmationDialog";
 import NewProjectDialog from "@/src/ui/dialogs/NewProjectDialog";
 import QuickSettingsDialog from "@/src/ui/dialogs/QuickSettingsDialog";
 import RankDialog from "@/src/ui/dialogs/RankDialog";
@@ -27,6 +28,7 @@ const LocaleLayout = ({
       <ImageCropperDialog />
       <RankDialog />
       <NewProjectDialog />
+      <ConfirmationDialog />
     </NextIntlClientProvider>
   );
 };

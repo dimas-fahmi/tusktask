@@ -6,6 +6,9 @@
   "abort": "Abort",
   "archive": "Archived",
   "archived": "Archived",
+  "delete": "Delete",
+  "new_task": "New Task",
+  "open": "Open",
 
   "save": "Save",
   "saving": "Saving",

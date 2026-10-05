@@ -6,5 +6,12 @@
   "finish_registration_first": {
     "title": "Wait Captain!",
     "desc": "Let's finish up your registration first, won't take long."
-  }
+  },
+
+  "project_deletion_confirmation": {
+    "title": "Delete Project",
+    "desc": "All tasks within it will be deleted and cannot be recovered"
+  },
+
+  "type_x_to_confirm": "Type <bold>text</bold> to confirm"
 }

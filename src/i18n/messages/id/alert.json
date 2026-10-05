@@ -6,5 +6,12 @@
   "finish_registration_first": {
     "title": "Tunggu Kapten!",
     "desc": "Mari selesaikan proses pendaftaran kamu dulu, tidak akan lama."
-  }
+  },
+
+  "project_deletion_confirmation": {
+    "title": "Hapus Proyek",
+    "desc": "Semua tugas di dalamnya akan dihapus dan tidak dapat dipulihkan"
+  },
+
+  "type_x_to_confirm": "Ketik <bold>text</bold> untuk mengkonfirmasi"
 }
