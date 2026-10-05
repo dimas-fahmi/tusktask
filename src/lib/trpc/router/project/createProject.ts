@@ -1,7 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { VIEW_LAYOUTS_KEYS } from "@/src/app/data/viewLayout";
 import { nidb } from "@/src/db";
 import { project } from "@/src/db/schema/t-project";
 import { etm } from "@/src/i18n/errorTranslation/init";
@@ -9,36 +7,14 @@ import { etzs } from "@/src/i18n/errorTranslation/schema";
 import { sessionRequiredPlugin } from "../../plugins/sessionRequired";
 import { createBaseProcedure } from "../../server/init";
 
-const prepared = nidb
-  .insert(project)
-  .values({
-    userId: sql.placeholder<string>("userId"),
-    name: sql.placeholder<string>("name"),
-    description: sql.placeholder<string>("description"),
-    iconId: sql.placeholder<string>("iconId"),
-  })
-  .prepare("create_project");
-
 export const createProjectProc = createBaseProcedure
   .concat(sessionRequiredPlugin().mainProc)
-  .input(
-    z.input(
-      z.object({
-        name: etzs.string_min_max(1, 28).optional(),
-        description: etzs.string_min_max(1, 255).optional().nullable(),
-        iconId: etzs.string_min_max(1, 255).optional().nullable(),
-        viewLayout: z.enum(
-          VIEW_LAYOUTS_KEYS,
-          etm.invalid_parameter.construct("view_layout"),
-        ),
-      }),
-    ),
-  )
+  .input(z.input(etzs.createProjectInput()))
   .mutation(async (opts) => {
     const { ctx, input } = opts;
 
     try {
-      await prepared.execute({
+      await nidb.insert(project).values({
         userId: ctx.userId,
         ...input,
       });

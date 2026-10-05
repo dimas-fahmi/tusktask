@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { VIEW_LAYOUTS_KEYS } from "@/src/app/data/viewLayout";
+import { ICON_NAMES } from "@/src/ui/components/IconRenderer/collections";
 import { etm } from "./init";
 
 export const etzs = {
@@ -45,5 +47,20 @@ export const etzs = {
           return specialCharCount <= 1;
         }, etm.username_spec_char_rule.construct())
     );
+  },
+
+  createProjectInput() {
+    return z.object({
+      name: etzs.string_min_max(1, 28).optional(),
+      description: etzs.string_max(255).optional().nullable(),
+      iconId: z
+        .enum(ICON_NAMES, etm.invalid_parameter.construct("iconId"))
+        .optional()
+        .nullable(),
+      viewLayout: z.enum(
+        VIEW_LAYOUTS_KEYS,
+        etm.invalid_parameter.construct("viewLayout"),
+      ),
+    });
   },
 } as const;

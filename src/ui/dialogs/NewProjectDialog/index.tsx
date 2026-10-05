@@ -1,17 +1,20 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { IconPencil } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useShallow } from "zustand/react/shallow";
-import {
-  VIEW_LAYOUTS_ENTRIES,
-  type ViewLayout,
-} from "@/src/app/data/viewLayout";
+import { VIEW_LAYOUTS_ENTRIES } from "@/src/app/data/viewLayout";
+import { useErrorTranslation } from "@/src/hooks/useErrorTranslation";
+import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { useNewProject } from "@/src/hooks/useNewProject";
+import { etzs } from "@/src/i18n/errorTranslation/schema";
+import { useTRPC } from "@/src/lib/trpc/client/client";
 import IconRenderer from "../../components/IconRenderer";
-import type { IconName } from "../../components/IconRenderer/collections";
 import IconPicker from "../../components/ui/IconPicker";
 import MainInput from "../../components/ui/MainInput";
 import { Button } from "../../shadcn/components/ui/button";
@@ -37,21 +40,99 @@ import {
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 
 const Body = () => {
-  const [layout, setLayout] = useState<ViewLayout>("list");
   const t = useTranslations();
+
+  const { translate } = useErrorTranslation();
+
   const [setOpen] = useNewProject(useShallow((s) => [s.setOpen]));
 
-  const [icon, setIcon] = useState<IconName>("folder");
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
 
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { isValid },
+  } = useForm({
+    mode: "onChange",
+    resolver: zodResolver(etzs.createProjectInput()),
+    defaultValues: {
+      name: "",
+      description: "",
+      iconId: "folder",
+      viewLayout: "list",
+    },
+  });
+
+  const icon = watch("iconId");
+  const layout = watch("viewLayout");
+
+  const trpc = useTRPC();
+  const queryKey = trpc.project.get.queryKey({});
+
+  const { toast } = useHandleQueryError();
+
+  const { mutate, isPending } = useMutation({
+    ...trpc.project.create.mutationOptions(),
+    onError: (err) => {
+      toast("error-failed-creating-project", err);
+    },
+    onSuccess: (_data, _variable, _onMutateResult, ctx) => {
+      ctx.client.invalidateQueries({
+        queryKey,
+      });
+      setOpen(false);
+    },
+  });
+
   return (
-    <form className="space-y-6">
+    <form
+      className="space-y-6"
+      onSubmit={handleSubmit((data) => {
+        mutate({
+          ...data,
+        });
+      })}
+    >
       <div className="space-y-6">
-        <MainInput label="Name" />
-        <MainInput
-          label="Description"
-          textArea
-          className="max-h-24 no-scrollbar"
+        <Controller
+          control={control}
+          name="name"
+          render={({ field, fieldState: state }) => (
+            <MainInput
+              label="Name"
+              {...field}
+              isInvalid={!!state?.error?.message}
+              message={
+                state?.error?.message
+                  ? translate(state?.error?.message)
+                  : undefined
+              }
+              autoComplete="off"
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="description"
+          render={({ field: { value, ...field }, fieldState: state }) => (
+            <MainInput
+              label="Description"
+              textArea
+              className="max-h-24 no-scrollbar"
+              {...field}
+              value={value ?? ""}
+              isInvalid={!!state?.error?.message}
+              message={
+                state?.error?.message
+                  ? translate(state?.error?.message)
+                  : undefined
+              }
+              autoComplete="off"
+            />
+          )}
         />
 
         <div className="flex items-center gap-3">
@@ -71,7 +152,12 @@ const Body = () => {
             <Popover open={iconPickerOpen} onOpenChange={setIconPickerOpen}>
               <PopoverTrigger
                 render={(props) => (
-                  <Button {...props} variant={"ghost"} size={"icon-sm"}>
+                  <Button
+                    {...props}
+                    variant={"ghost"}
+                    size={"icon-sm"}
+                    disabled={isPending}
+                  >
                     <IconPencil />
                   </Button>
                 )}
@@ -81,7 +167,9 @@ const Body = () => {
                 <IconPicker
                   defaultIcon="folder"
                   setOpen={setIconPickerOpen}
-                  onIconSelected={setIcon}
+                  onIconSelected={(selected) => {
+                    setValue("iconId", selected);
+                  }}
                 />
               </PopoverContent>
             </Popover>
@@ -104,8 +192,9 @@ const Body = () => {
                     : "not-disabled:hover:bg-foreground/10",
                 )}
                 onClick={() => {
-                  setLayout(key);
+                  setValue("viewLayout", key);
                 }}
+                disabled={isPending}
               >
                 <Icon className="w-4 h-4" />
                 <span>{t(`common.view_layouts.${key}`)}</span>
@@ -122,10 +211,11 @@ const Body = () => {
           onClick={() => {
             setOpen(false);
           }}
+          disabled={isPending}
         >
           Close
         </Button>
-        <Button type="submit" disabled>
+        <Button type="submit" disabled={!isValid || isPending}>
           Save
         </Button>
       </footer>
