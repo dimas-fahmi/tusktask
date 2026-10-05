@@ -1,1 +1,18 @@
-{}
+{
+  "apple": "Apple",
+  "discord": "Discord",
+  "facebook": "Facebook",
+  "google": "Google",
+
+  "briefcase": "Tas kerja",
+  "folder": "Folder",
+  "mortarboard": "Topi Toga",
+  "books": "Buku",
+  "bus": "Bus",
+  "car": "Mobil",
+  "airplane": "Pesawat",
+  "pallete": "Palet",
+  "luggage": "Bagasi",
+  "beach": "Pantai",
+  "code": "Kode"
+}
