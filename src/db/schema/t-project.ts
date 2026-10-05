@@ -34,3 +34,5 @@ export const project = appSchema.table(
     index("idx_app_project_userId").on(t.userId),
   ],
 );
+
+export type ProjectSelectType = typeof project.$inferSelect;

@@ -9,6 +9,11 @@ import type React from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { stripLocaleFromPathname } from "@/src/i18n";
 import { Button, type ButtonProps } from "../../shadcn/components/ui/button";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuTrigger,
+} from "../../shadcn/components/ui/context-menu";
 import { useSidebar } from "../../shadcn/components/ui/sidebar";
 import IconRenderer from "../IconRenderer";
 import type { IconName } from "../IconRenderer/collections";
@@ -34,6 +39,7 @@ export type SidebarNavItem = {
   isActive?: boolean;
   iconNode?: React.ReactNode;
   textIcon?: string;
+  contextMenuContent?: React.ReactNode;
 } & ButtonProps;
 
 export type SidebarNavData = SidebarNavGroup[];
@@ -76,6 +82,7 @@ const SidebarNavItem = memo(({ data }: { data: SidebarNavItem }) => {
     iconNode,
     textIcon,
     iconName,
+    contextMenuContent,
     ...props
   } = data;
   const { setOpenMobile } = useSidebar();
@@ -85,38 +92,49 @@ const SidebarNavItem = memo(({ data }: { data: SidebarNavItem }) => {
   const isActive = href ? pathname === href : false;
 
   return (
-    <Button
-      variant={"ghost"}
-      {...props}
-      className={cn(
-        "text-start justify-start disabled:opacity-50 transition-all duration-200",
-        isActive
-          ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-          : "not-disabled:hover:bg-foreground/10 opacity-70",
-        props?.className,
-      )}
-      onClick={(e) => {
-        onClick?.(e);
-        if (e.defaultPrevented) return;
+    <ContextMenu>
+      <ContextMenuTrigger
+        render={(contextMenuProps) => (
+          <Button
+            {...contextMenuProps}
+            variant={"ghost"}
+            {...props}
+            className={cn(
+              "text-start justify-start disabled:opacity-50 transition-all duration-200",
+              isActive
+                ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                : "not-disabled:hover:bg-foreground/10 opacity-70",
+              props?.className,
+            )}
+            onClick={(e) => {
+              onClick?.(e);
+              if (e.defaultPrevented) return;
 
-        if (href) {
-          router.push(href);
-        }
+              if (href) {
+                router.push(href);
+              }
 
-        setOpenMobile(false);
-      }}
-    >
-      {iconNode ? (
-        iconNode
-      ) : (
-        <SidebarNavIconContainer
-          isActive={isActive}
-          icoName={iconName}
-          textIcon={textIcon}
-        />
+              setOpenMobile(false);
+            }}
+          >
+            {iconNode ? (
+              iconNode
+            ) : (
+              <SidebarNavIconContainer
+                isActive={isActive}
+                icoName={iconName}
+                textIcon={textIcon}
+              />
+            )}
+            <span>{label}</span>
+          </Button>
+        )}
+      />
+
+      {contextMenuContent && (
+        <ContextMenuContent>{contextMenuContent}</ContextMenuContent>
       )}
-      <span>{label}</span>
-    </Button>
+    </ContextMenu>
   );
 });
 SidebarNavItem.displayName = "SidebarNavItem";

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import route from "@/src/app/route";
 import { useNewProject } from "@/src/hooks/useNewProject";
 import { useTRPC } from "@/src/lib/trpc/client/client";
+import ProjectNavContextMenu from "@/src/ui/context-menu/ProjectNavContextMenu";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
   DropdownMenu,
@@ -36,6 +37,7 @@ const AppSidebarNavSection = () => {
       label: value.name,
       iconName: (value?.iconId as IconName) ?? "folder",
       href: route.project(value.id),
+      contextMenuContent: <ProjectNavContextMenu data={value} />,
     }),
   );
 
