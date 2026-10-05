@@ -30,5 +30,8 @@
   "file_unable_to_read": "Gagal membaca file; hal ini mungkin disebabkan oleh file yang rusak.",
   "file_unable_to_process": "Terjadi kesalahan saat memproses file ({code})",
 
-  "no_canvas_context": "Browser gagal memberikan konteks untuk sebuah kanvas, dapat disebabkan karena lingkungan browser yang lawas."
+  "no_canvas_context": "Browser gagal memberikan konteks untuk sebuah kanvas, dapat disebabkan karena lingkungan browser yang lawas.",
+
+  "not_found": "Tidak ditemukan",
+  "unauthorized": "Kamu tidak memiliki izin untuk melakukan operasi ini"
 }

@@ -31,12 +31,14 @@ export const deleteMyProjectProc = createBaseProcedure
     if (!projectTarget) {
       throw new TRPCError({
         code: "NOT_FOUND",
+        message: etm.not_found.construct(),
       });
     }
 
     if (projectTarget.userId !== user.id) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
+        message: etm.unauthorized.construct(),
       });
     }
 
@@ -48,6 +50,7 @@ export const deleteMyProjectProc = createBaseProcedure
 
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
+          message: etm.unknown_error.construct(),
         });
       });
 

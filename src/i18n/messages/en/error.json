@@ -30,5 +30,8 @@
   "file_unable_to_read": "Failed to read the file; this may be due to the file being corrupted.",
   "file_unable_to_process": "Something went wrong when processing the file ({code}).",
 
-  "no_canvas_context": "Browser failed to provide context for canvas, could be caused by an old browser environment."
+  "no_canvas_context": "Browser failed to provide context for canvas, could be caused by an old browser environment.",
+
+  "not_found": "Not found",
+  "unauthorized": "You doesn't have permission to do this operation"
 }

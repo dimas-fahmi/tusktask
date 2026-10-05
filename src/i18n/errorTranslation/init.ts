@@ -148,6 +148,14 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
         serializer({ key: "missing_parameter", params: [key] }),
       interpolation: (params) => ({ key: params[0] }),
     },
+
+    not_found: {
+      construct: () => serializer({ key: "not_found" }),
+    },
+
+    unauthorized: {
+      construct: () => serializer({ key: "unauthorized" }),
+    },
   },
 });
 
