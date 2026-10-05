@@ -35,9 +35,6 @@ export default getRequestConfig(async () => {
       rank: {
         ...(await import(`./messages/${locale}/rank.json`)).default,
       },
-      warning: {
-        ...(await import(`./messages/${locale}/warning.json`)).default,
-      },
     },
   };
 });

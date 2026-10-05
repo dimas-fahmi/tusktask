@@ -33,10 +33,6 @@ import type registrationStepId from "./messages/id/registrationStep.json";
 import type rankEn from "./messages/en/rank.json";
 import type rankId from "./messages/id/rank.json";
 
-// Warning Dictionary
-import type warningEn from "./messages/en/warning.json";
-import type warningId from "./messages/id/warning.json";
-
 export type Messages = {
   alert: typeof alertEn | typeof alertId;
   attribution: typeof attributionEn | typeof attributionId;
@@ -46,7 +42,6 @@ export type Messages = {
   page: typeof pageEn | typeof pageId;
   registrationStep: typeof registrationStepEn | typeof registrationStepId;
   rank: typeof rankEn | typeof rankId;
-  warning: typeof warningEn | typeof warningId;
 };
 
 declare module "next-intl" {
