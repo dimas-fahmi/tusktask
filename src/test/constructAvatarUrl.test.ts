@@ -33,6 +33,6 @@ describe("constructAvatarUrl", () => {
   });
 
   it("Should return true when checked by isMyVercelBlob function", () => {
-    expect(isMyVercelBlob(constructAvatarUrl(userId).url)).toBe(true);
+    expect(isMyVercelBlob(result.url)).toBe(true);
   });
 });
