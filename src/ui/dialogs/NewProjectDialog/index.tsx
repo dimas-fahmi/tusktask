@@ -1,6 +1,6 @@
 "use client";
 
-import { IconFolder, IconPencil } from "@tabler/icons-react";
+import { IconPencil } from "@tabler/icons-react";
 import { cn } from "cn";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -10,6 +10,9 @@ import {
   type ViewLayout,
 } from "@/src/app/data/viewLayout";
 import { useNewProject } from "@/src/hooks/useNewProject";
+import IconRenderer from "../../components/IconRenderer";
+import type { IconName } from "../../components/IconRenderer/collections";
+import IconPicker from "../../components/ui/IconPicker";
 import MainInput from "../../components/ui/MainInput";
 import { Button } from "../../shadcn/components/ui/button";
 import {
@@ -26,12 +29,20 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "../../shadcn/components/ui/drawer";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../shadcn/components/ui/popover";
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 
 const Body = () => {
   const [layout, setLayout] = useState<ViewLayout>("list");
   const t = useTranslations();
   const [setOpen] = useNewProject(useShallow((s) => [s.setOpen]));
+
+  const [icon, setIcon] = useState<IconName>("folder");
+  const [iconPickerOpen, setIconPickerOpen] = useState(false);
 
   return (
     <form className="space-y-6">
@@ -46,7 +57,7 @@ const Body = () => {
         <div className="flex items-center gap-3">
           {/* Preview */}
           <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-            <IconFolder className="w-5 h-5" stroke={1} />
+            <IconRenderer iconName={icon} className="w-5 h-5" stroke={1} />
           </div>
 
           <div className="flex-1 flex items-center justify-between">
@@ -57,9 +68,23 @@ const Body = () => {
               </p>
             </div>
 
-            <Button variant={"ghost"} size={"icon-sm"}>
-              <IconPencil />
-            </Button>
+            <Popover open={iconPickerOpen} onOpenChange={setIconPickerOpen}>
+              <PopoverTrigger
+                render={(props) => (
+                  <Button {...props} variant={"ghost"} size={"icon-sm"}>
+                    <IconPencil />
+                  </Button>
+                )}
+              />
+
+              <PopoverContent className={"min-w-78"}>
+                <IconPicker
+                  defaultIcon="folder"
+                  setOpen={setIconPickerOpen}
+                  onIconSelected={setIcon}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 

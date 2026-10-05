@@ -24,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col custom-scrollbar">
         <TRPCReactProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          <TooltipProvider delay={500}>{children}</TooltipProvider>
           <ReactQueryDevtools />
         </TRPCReactProvider>
       </body>
