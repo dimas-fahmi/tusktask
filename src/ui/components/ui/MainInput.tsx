@@ -17,6 +17,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
+  InputGroupTextarea,
 } from "../../shadcn/components/ui/input-group";
 import { Label } from "../../shadcn/components/ui/label";
 
@@ -39,9 +40,14 @@ export type MainInputProps = {
   required?: boolean;
   message?: string;
   isInvalid?: boolean;
-} & Omit<React.ComponentPropsWithRef<"input">, "type">;
+  textArea?: boolean;
+} & (Omit<React.ComponentPropsWithRef<"input">, "type"> &
+  React.ComponentPropsWithoutRef<"textarea">);
 
-const MainInput = React.forwardRef<HTMLInputElement, MainInputProps>(
+const MainInput = React.forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  MainInputProps
+>(
   (
     {
       icon,
@@ -53,6 +59,7 @@ const MainInput = React.forwardRef<HTMLInputElement, MainInputProps>(
       isInvalid,
       required,
       id,
+      textArea,
       ...props
     },
     ref,
@@ -70,9 +77,9 @@ const MainInput = React.forwardRef<HTMLInputElement, MainInputProps>(
     const _id = id ?? crypto.randomUUID();
 
     return (
-      <InputGroup className="rounded-sm">
+      <InputGroup className="rounded-lg!">
         {/* Top Side */}
-        <InputGroupAddon align={"block-start"} className="pb-0.5 min-h-8">
+        <InputGroupAddon align={"block-start"} className="pb-1 min-h-8">
           <AnimatePresence mode="popLayout">
             {/* Icon */}
             {!isInvalid && (
@@ -150,18 +157,34 @@ const MainInput = React.forwardRef<HTMLInputElement, MainInputProps>(
           </AnimatePresence>
         </InputGroupAddon>
 
-        <InputGroupInput
-          ref={ref}
-          {...props}
-          id={_id}
-          aria-invalid={isInvalid}
-          className={cn(
-            "pt-0.5",
-            isInvalid
-              ? "placeholder:text-destructive/50 ring-[3px] text-destructive"
-              : "",
-          )}
-        />
+        {textArea ? (
+          <InputGroupTextarea
+            ref={ref as React.ForwardedRef<HTMLTextAreaElement>}
+            {...props}
+            id={_id}
+            aria-invalid={isInvalid}
+            className={cn(
+              "pt-0.5",
+              isInvalid
+                ? "placeholder:text-destructive/50 ring-[3px] text-destructive"
+                : "",
+              props?.className,
+            )}
+          />
+        ) : (
+          <InputGroupInput
+            ref={ref as React.ForwardedRef<HTMLInputElement>}
+            {...props}
+            id={_id}
+            aria-invalid={isInvalid}
+            className={cn(
+              "pt-0.5",
+              isInvalid
+                ? "placeholder:text-destructive/50 ring-[3px] text-destructive"
+                : "",
+            )}
+          />
+        )}
       </InputGroup>
     );
   },

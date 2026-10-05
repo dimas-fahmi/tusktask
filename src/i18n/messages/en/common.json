@@ -88,5 +88,10 @@
   "notifications": "Notifications",
 
   "my_points": "My Points",
-  "points_left": "{points} points left"
+  "points_left": "{points} points left",
+
+  "view_layouts": {
+    "list": "List",
+    "kanban": "Kanban"
+  }
 }

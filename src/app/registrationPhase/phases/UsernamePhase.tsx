@@ -150,7 +150,7 @@ const UsernamePhase = () => {
               onChange={(e) => {
                 setIsTyping(true);
                 field.onChange(e);
-                usernameQueryDebouncer(e);
+                usernameQueryDebouncer(e as ChangeEvent<HTMLInputElement>);
               }}
               message={
                 state?.error?.message

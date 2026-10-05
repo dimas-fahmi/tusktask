@@ -88,5 +88,10 @@
   "notifications": "Notifikasi",
 
   "my_points": "Poinku",
-  "points_left": "Tersisa {points} point lagi"
+  "points_left": "Tersisa {points} point lagi",
+
+  "view_layouts": {
+    "list": "Daftar",
+    "kanban": "Kanban"
+  }
 }

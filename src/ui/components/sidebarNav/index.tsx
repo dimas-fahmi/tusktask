@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 import { motion } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
 import type React from "react";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { stripLocaleFromPathname } from "@/src/i18n";
 import { Button, type ButtonProps } from "../../shadcn/components/ui/button";
 import { useSidebar } from "../../shadcn/components/ui/sidebar";
@@ -21,6 +21,12 @@ export type SidebarNavGroup = {
   items: SidebarNavItem[];
   key: string;
   defaultOpen?: boolean;
+  headerButtonSlots?: {
+    before?: React.ReactNode;
+    after?: React.ReactNode;
+  };
+  emptyItemMessage?: string;
+  emptyItemNode?: React.ReactNode;
 };
 
 export type SidebarNavItem = {
@@ -122,6 +128,8 @@ SidebarNavItem.displayName = "SidebarNavItem";
 const SidebarNavGroup = memo(({ data }: { data: SidebarNavGroup }) => {
   const pathname = stripLocaleFromPathname(usePathname());
 
+  const expandButtonRef = useRef<HTMLButtonElement>(null);
+
   const hasActiveChild = data.items.some(
     (item) => item.href && pathname === item.href,
   );
@@ -147,26 +155,41 @@ const SidebarNavGroup = memo(({ data }: { data: SidebarNavGroup }) => {
   }, [hasActiveChild]);
 
   return (
-    <div>
-      <div className="flex items-center justify-between ps-1">
-        <h1 className="text-xs uppercase opacity-80 font-light">
+    <div className="space-y-1.5">
+      <div
+        className="flex items-center justify-between ps-1 cursor-pointer"
+        onClick={() => {
+          expandButtonRef?.current?.click();
+        }}
+      >
+        <h1 className="text-xs uppercase opacity-80 font-light select-none">
           {data.title}
         </h1>
 
-        <Button
-          variant={"ghost"}
-          onClick={() => setExpand((prev) => !prev)}
-          size={"icon-sm"}
-          className={"p-0"}
-        >
-          <IconChevronDown
-            suppressHydrationWarning
-            className={cn(
-              "transition-all duration-300",
-              expand ? "rotate-180" : "",
-            )}
-          />
-        </Button>
+        <div className="flex items-center">
+          {data?.headerButtonSlots?.before}
+
+          <Button
+            ref={expandButtonRef}
+            variant={"ghost"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpand((prev) => !prev);
+            }}
+            size={"icon-xs"}
+            className={"p-0"}
+          >
+            <IconChevronDown
+              suppressHydrationWarning
+              className={cn(
+                "transition-all duration-300",
+                expand ? "rotate-180" : "",
+              )}
+            />
+          </Button>
+
+          {data?.headerButtonSlots?.after}
+        </div>
       </div>
 
       <motion.div
@@ -184,9 +207,15 @@ const SidebarNavGroup = memo(({ data }: { data: SidebarNavGroup }) => {
         className="overflow-hidden"
       >
         <div className="grid grid-cols-1 gap-1">
-          {data.items.map((item) => (
-            <SidebarNavItem key={item.label} data={item} />
-          ))}
+          {data.items.length
+            ? data.items.map((item) => (
+                <SidebarNavItem key={item.label} data={item} />
+              ))
+            : (data?.emptyItemNode ?? (
+                <span className="text-xs font-light w-full text-center opacity-50 p-4">
+                  {data?.emptyItemMessage}
+                </span>
+              ))}
         </div>
       </motion.div>
     </div>

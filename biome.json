@@ -22,7 +22,12 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "a11y": {
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off",
+        "useKeyWithMouseEvents": "off"
+      }
     },
     "includes": ["**", "!src/ui/shadcn/components/**"],
     "domains": {

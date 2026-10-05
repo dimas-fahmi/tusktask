@@ -4,6 +4,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+
+  allowedDevOrigins: ["192.168.1.33"],
 };
 
 const withNextIntl = createNextIntlPlugin(
