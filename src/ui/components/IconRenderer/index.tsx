@@ -6,7 +6,7 @@ import React from "react";
 import { ICONS, type IconName, isValidIconName } from "./collections";
 
 export type IconrendererProps = {
-  iconName: IconName;
+  iconName?: IconName;
   fallback?: IconName;
 } & IconProps;
 

@@ -43,5 +43,10 @@
   "credit_card": "Kartu Kredit",
   "gift": "Hadiah",
   "lock": "Kunci",
-  "trash": "Sampah"
+  "trash": "Sampah",
+
+  "dashboard": "Dasbor",
+  "calendar_event": "Kalender Acara",
+  "calendar_week": "Kalendar Minggu",
+  "help": "Bantuan"
 }

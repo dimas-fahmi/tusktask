@@ -11,6 +11,8 @@ import {
   IconBucket,
   IconBus,
   IconCalendar,
+  IconCalendarEvent,
+  IconCalendarWeek,
   IconCamera,
   IconCar,
   IconClock,
@@ -20,7 +22,9 @@ import {
   IconFolder,
   IconGift,
   IconHeart,
+  IconHelpCircle,
   IconHome,
+  IconLayoutDashboard,
   IconLock,
   IconLuggage,
   IconMail,
@@ -179,6 +183,20 @@ export const ICONS = {
   },
   trash: {
     icon: IconTrash,
+  },
+
+  dashboard: {
+    icon: IconLayoutDashboard,
+  },
+  calendar_event: {
+    icon: IconCalendarEvent,
+  },
+  calendar_week: {
+    icon: IconCalendarWeek,
+  },
+
+  help: {
+    icon: IconHelpCircle,
   },
 } as const satisfies Record<
   string,

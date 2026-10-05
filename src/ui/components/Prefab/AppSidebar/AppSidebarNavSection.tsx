@@ -1,18 +1,10 @@
 "use client";
 
-import {
-  IconCalendar,
-  IconCalendarEvent,
-  IconCalendarWeek,
-  IconHelpCircle,
-  IconLayoutDashboard,
-  IconList,
-  IconLock,
-  IconPlus,
-  IconSettings,
-} from "@tabler/icons-react";
+import { IconList, IconPlus } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import route from "@/src/app/route";
 import { useNewProject } from "@/src/hooks/useNewProject";
+import { useTRPC } from "@/src/lib/trpc/client/client";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
   DropdownMenu,
@@ -20,10 +12,28 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/ui/shadcn/components/ui/dropdown-menu";
-import { SidebarNav, type SidebarNavData } from "../../sidebarNav";
+import type { IconName } from "../../IconRenderer/collections";
+import {
+  SidebarNav,
+  type SidebarNavData,
+  type SidebarNavItem,
+} from "../../sidebarNav";
 
 const AppSidebarNavSection = () => {
   const setOpenNPD = useNewProject((s) => s.setOpen);
+
+  const trpc = useTRPC();
+
+  const { data: myProjects } = useQuery({
+    ...trpc.project.get.queryOptions({}),
+  });
+
+  const myProjectsNav: SidebarNavItem[] = (myProjects ?? []).flatMap(
+    (value) => ({
+      label: value.name,
+      iconName: (value?.iconId as IconName) ?? "folder",
+    }),
+  );
 
   const SIDEBAR_CONFIG: SidebarNavData = [
     {
@@ -31,17 +41,25 @@ const AppSidebarNavSection = () => {
       key: "main",
       defaultOpen: true,
       items: [
-        { icon: IconLayoutDashboard, label: "Dashboard", href: route.app() },
-        { icon: IconCalendar, label: "Today", href: route.today() },
-        { icon: IconCalendarEvent, label: "Upcoming", href: route.upcoming() },
-        { icon: IconCalendarWeek, label: "Calendar", href: route.calendar() },
+        { iconName: "dashboard", label: "Dashboard", href: route.app() },
+        { iconName: "calendar", label: "Today", href: route.today() },
+        {
+          iconName: "calendar_event",
+          label: "Upcoming",
+          href: route.upcoming(),
+        },
+        {
+          iconName: "calendar_week",
+          label: "Calendar",
+          href: route.calendar(),
+        },
       ],
     },
     {
       title: "Projects",
       key: "projects",
       defaultOpen: true,
-      items: [],
+      items: myProjectsNav,
       emptyItemMessage: "No project yet",
       headerButtonSlots: {
         before: (
@@ -84,9 +102,13 @@ const AppSidebarNavSection = () => {
       title: "more",
       key: "more",
       items: [
-        { icon: IconSettings, label: "Settings", href: route.settings() },
-        { icon: IconLock, label: "Security", href: route.settings("security") },
-        { icon: IconHelpCircle, label: "Help", disabled: true },
+        { iconName: "settings", label: "Settings", href: route.settings() },
+        {
+          iconName: "lock",
+          label: "Security",
+          href: route.settings("security"),
+        },
+        { iconName: "help", label: "Help", disabled: true },
       ],
     },
   ];

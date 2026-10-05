@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  IconChevronDown,
-  IconHelpCircle,
-  type IconProps,
-  type TablerIcon,
-} from "@tabler/icons-react";
+import { IconChevronDown, type IconProps } from "@tabler/icons-react";
 import { cn } from "cn";
 import Cookies from "js-cookie";
 import { motion } from "motion/react";
@@ -15,6 +10,8 @@ import { memo, useEffect, useRef, useState } from "react";
 import { stripLocaleFromPathname } from "@/src/i18n";
 import { Button, type ButtonProps } from "../../shadcn/components/ui/button";
 import { useSidebar } from "../../shadcn/components/ui/sidebar";
+import IconRenderer from "../IconRenderer";
+import type { IconName } from "../IconRenderer/collections";
 
 export type SidebarNavGroup = {
   title: string;
@@ -31,7 +28,7 @@ export type SidebarNavGroup = {
 
 export type SidebarNavItem = {
   label: string;
-  icon?: TablerIcon;
+  iconName?: IconName;
   iconProps?: IconProps;
   href?: string;
   isActive?: boolean;
@@ -42,13 +39,13 @@ export type SidebarNavItem = {
 export type SidebarNavData = SidebarNavGroup[];
 
 const SidebarNavIconContainer = ({
-  icon: Icon,
   textIcon,
   className,
   isActive,
+  icoName,
   ...props
 }: Omit<React.ComponentPropsWithoutRef<"div">, "children"> & {
-  icon: TablerIcon;
+  icoName?: IconName;
   textIcon?: string;
   isActive: boolean;
 }) => {
@@ -64,7 +61,7 @@ const SidebarNavIconContainer = ({
       )}
     >
       {(textIcon && <span className="text-[13px]">{textIcon?.[0]}</span>) ?? (
-        <Icon className="w-4 h-4" />
+        <IconRenderer iconName={icoName} className="w-4 h-4" />
       )}
     </div>
   );
@@ -72,16 +69,15 @@ const SidebarNavIconContainer = ({
 
 const SidebarNavItem = memo(({ data }: { data: SidebarNavItem }) => {
   const {
-    icon,
     label,
     href,
     iconProps,
     onClick,
     iconNode,
     textIcon,
+    iconName,
     ...props
   } = data;
-  const Icon = icon ?? IconHelpCircle;
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
 
@@ -115,7 +111,7 @@ const SidebarNavItem = memo(({ data }: { data: SidebarNavItem }) => {
       ) : (
         <SidebarNavIconContainer
           isActive={isActive}
-          icon={Icon}
+          icoName={iconName}
           textIcon={textIcon}
         />
       )}

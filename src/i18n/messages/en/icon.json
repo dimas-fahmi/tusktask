@@ -43,5 +43,10 @@
   "credit_card": "Credit Card",
   "gift": "Gift",
   "lock": "Lock",
-  "trash": "Trash"
+  "trash": "Trash",
+
+  "dashboard": "Dashboard",
+  "calendar_event": "Calendar Event",
+  "calendar_week": "Calendar Week",
+  "help": "Help"
 }
