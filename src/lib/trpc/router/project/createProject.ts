@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
+import { VIEW_LAYOUTS_KEYS } from "@/src/app/data/viewLayout";
 import { nidb } from "@/src/db";
 import { project } from "@/src/db/schema/t-project";
 import { etm } from "@/src/i18n/errorTranslation/init";
@@ -26,6 +27,10 @@ export const createProjectProc = createBaseProcedure
         name: etzs.string_min_max(1, 28).optional(),
         description: etzs.string_min_max(1, 255).optional().nullable(),
         iconId: etzs.string_min_max(1, 255).optional().nullable(),
+        viewLayout: z.enum(
+          VIEW_LAYOUTS_KEYS,
+          etm.invalid_parameter.construct("view_layout"),
+        ),
       }),
     ),
   )
