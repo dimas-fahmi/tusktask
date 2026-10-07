@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import type React from "react";
 import ClientRouteGuard from "@/src/auth/clientRouteGuard";
+import ToastURLProvider from "@/src/provider/toastURLProvider";
 import UserPreferencesProvider from "@/src/provider/userPreferencesProvider";
 import ImageCropperDialog from "@/src/ui/components/Prefab/ImageCropperDialog";
 import ConfirmationDialog from "@/src/ui/dialogs/ConfirmationDialog";
@@ -16,9 +17,11 @@ const LocaleLayout = ({
 }) => {
   return (
     <NextIntlClientProvider>
-      <ClientRouteGuard>
-        <UserPreferencesProvider>{children}</UserPreferencesProvider>
-      </ClientRouteGuard>
+      <ToastURLProvider>
+        <ClientRouteGuard>
+          <UserPreferencesProvider>{children}</UserPreferencesProvider>
+        </ClientRouteGuard>
+      </ToastURLProvider>
 
       {/* TOASTER */}
       <Toaster />

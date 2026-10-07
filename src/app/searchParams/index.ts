@@ -51,4 +51,12 @@ export const SEARCH_PARAMS = {
       },
     },
   },
+  toast: {
+    err: {
+      key: "err_tst",
+      construct(key: string) {
+        return `${this.key}=${key}`;
+      },
+    },
+  },
 } as const;
