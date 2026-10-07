@@ -1,5 +1,6 @@
 import type { ToastManagerAddOptions } from "@base-ui/react";
 import { type ToastData, toast } from "@/src/ui/shadcn/components/ui/toast";
+import { triggerSound } from "./triggerSound";
 
 export type ToastMAO = ToastManagerAddOptions<ToastData>;
 
@@ -36,6 +37,26 @@ export class Toaster {
   }
 
   public trigger() {
+    switch (this.processedOpts.data?.type) {
+      case "error":
+        triggerSound("alert_echo", "notification");
+        break;
+      case "loading":
+        break;
+      case "success":
+        triggerSound("alert_chime", "notification");
+        break;
+      case "info":
+        triggerSound("alert_chime", "notification");
+        break;
+      case "warning":
+        triggerSound("alert_echo", "notification");
+        break;
+      default:
+        triggerSound("alert_chime", "notification");
+        break;
+    }
+
     return toast.add({
       id: this.id,
       ...this.processedOpts,
