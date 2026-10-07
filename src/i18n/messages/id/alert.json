@@ -13,5 +13,7 @@
     "desc": "Semua tugas di dalamnya akan dihapus dan tidak dapat dipulihkan"
   },
 
-  "type_x_to_confirm": "Ketik <bold>text</bold> untuk mengkonfirmasi"
+  "type_x_to_confirm": "Ketik <bold>text</bold> untuk mengkonfirmasi",
+
+  "item_deleted": "{item} berhasil dihapus."
 }

@@ -13,5 +13,7 @@
     "desc": "All tasks within it will be deleted and cannot be recovered"
   },
 
-  "type_x_to_confirm": "Type <bold>text</bold> to confirm"
+  "type_x_to_confirm": "Type <bold>text</bold> to confirm",
+
+  "item_deleted": "{item} deleted successfully."
 }

@@ -8,6 +8,7 @@ import { useConfirmationDialog } from "@/src/hooks/useConfirmationDialog";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { stripLocaleFromPathname } from "@/src/i18n";
 import { useTRPC } from "@/src/lib/trpc/client/client";
+import { Toaster } from "@/src/utils/clientOnly/triggerToast";
 import {
   ContextMenuGroup,
   ContextMenuItem,
@@ -30,12 +31,23 @@ const ProjectNavContextMenu = ({ data }: { data: ProjectSelectType }) => {
   const pathname = stripLocaleFromPathname(usePathname());
   const projectURL = route.project(data.id);
 
+  const successToast = new Toaster({
+    id: data.id,
+    title: t("common.changes_saved"),
+    description: t("alert.item_deleted", {
+      item: data.name,
+    }),
+    trigger: false,
+  });
+
   const { mutate: deleteProject, isPending: isDeletingProject } = useMutation({
     ...trpc.project.delete.mutationOptions(),
     onError: (err) => {
       toast("failed_to_delete_project", err, true);
     },
     onSuccess: (_data, _var, _onMutateResult, ctx) => {
+      successToast.trigger();
+
       ctx.client.invalidateQueries({
         queryKey: myProjectsQueryKey,
       });
