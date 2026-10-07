@@ -27,6 +27,7 @@ const ToastURLProvider = ({
       title: translate(etm.generic.construct()),
       description: translate(error_toast),
       trigger: true,
+      type: "error",
     });
   }, [error_toast, pathname, translate]);
 
