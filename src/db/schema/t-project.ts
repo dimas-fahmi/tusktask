@@ -1,5 +1,7 @@
 import { sql } from "drizzle-orm";
 import { boolean, index, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import type { ViewLayout } from "@/src/app/data/viewLayout";
+import type { IconName } from "@/src/ui/components/IconRenderer/collections";
 import { appSchema, TIMESTAMPZ_CONFIG } from "./module";
 import { user } from "./t-user";
 
@@ -11,13 +13,18 @@ export const project = appSchema.table(
     description: text("description"),
 
     isPrimary: boolean("is_primary").notNull().default(false),
-    iconId: text("icon_id"),
+    iconId: text("icon_id").$type<IconName>().notNull().default("folder"),
 
     userId: uuid("user_id")
       .references(() => user.id, { onDelete: "cascade" })
       .notNull(),
 
-    viewLayout: text("view_layout"),
+    viewLayout: text("view_layout")
+      .$type<ViewLayout>()
+      .notNull()
+      .default("list"),
+
+    lastProjectOrderKey: text("last_project_order_key"),
 
     createdAt: timestamp("created_at", TIMESTAMPZ_CONFIG)
       .notNull()
