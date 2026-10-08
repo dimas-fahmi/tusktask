@@ -9,7 +9,7 @@ export const project = appSchema.table(
   "project",
   {
     id: uuid("id").default(sql`pg_catalog.uuidv7()`).primaryKey(),
-    name: text("name").notNull().default("untitle"),
+    name: text("name").notNull().default("untitled"),
     description: text("description"),
 
     isPrimary: boolean("is_primary").notNull().default(false),

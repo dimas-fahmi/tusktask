@@ -11,7 +11,6 @@ import {
 import { idb, nidb } from "../db";
 import { schema } from "../db/schema";
 import { pointHistory } from "../db/schema/t-pointHistory";
-import { project } from "../db/schema/t-project";
 import { user } from "../db/schema/t-user";
 import { generateUsername } from "../utils/generateUsername";
 
@@ -41,7 +40,6 @@ export const auth = betterAuth({
       create: {
         after: async (data) => {
           await idb.transaction(async (tx) => {
-            console.log("injecting points");
             await tx
               .update(user)
               .set({
@@ -58,12 +56,6 @@ export const auth = betterAuth({
             });
 
             return 1;
-          });
-
-          await nidb.insert(project).values({
-            userId: data.id,
-            name: `${data.name}'s Project`,
-            isPrimary: true,
           });
         },
       },

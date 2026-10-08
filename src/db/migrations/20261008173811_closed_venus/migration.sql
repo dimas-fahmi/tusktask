@@ -32,11 +32,13 @@ CREATE TABLE "app"."point_history" (
 --> statement-breakpoint
 CREATE TABLE "app"."project" (
 	"id" uuid PRIMARY KEY DEFAULT pg_catalog.uuidv7(),
-	"name" text DEFAULT 'untitle' NOT NULL,
+	"name" text DEFAULT 'untitled' NOT NULL,
 	"description" text,
 	"is_primary" boolean DEFAULT false NOT NULL,
-	"icon_id" text,
+	"icon_id" text DEFAULT 'folder' NOT NULL,
 	"user_id" uuid NOT NULL,
+	"view_layout" text DEFAULT 'list' NOT NULL,
+	"last_project_order_key" text,
 	"created_at" timestamp(6) with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

@@ -1,8 +1,8 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "90b70818-0da2-47e5-9f99-e5dcf19eff51",
-  "prevIds": ["b8f30227-575a-4d55-a963-9cf066a0c8d0"],
+  "id": "a64b132a-cbfd-4c67-9a68-04b71635c16b",
+  "prevIds": ["dcd889c5-3f99-41eb-9779-e3eba2f1c9f1"],
   "ddl": [
     {
       "name": "app",
@@ -350,7 +350,7 @@
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": "'untitle'",
+      "default": "'untitled'",
       "generated": null,
       "identity": null,
       "name": "name",
@@ -387,9 +387,9 @@
     {
       "type": "text",
       "typeSchema": null,
-      "notNull": false,
+      "notNull": true,
       "dimensions": 0,
-      "default": null,
+      "default": "'folder'",
       "generated": null,
       "identity": null,
       "name": "icon_id",
@@ -413,12 +413,25 @@
     {
       "type": "text",
       "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'list'",
+      "generated": null,
+      "identity": null,
+      "name": "view_layout",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "project"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
       "notNull": false,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "view_layout",
+      "name": "last_project_order_key",
       "entityType": "columns",
       "schema": "app",
       "table": "project"
