@@ -16,6 +16,16 @@
 
   "changes_saved": "Changes Saved",
 
+  "settings": "Settings",
+
+  "project_layout": "Project Layout",
+  "project_icon": "Project Icon",
+  "customize_project_icon": "Customize your project's icon",
+  "customize_project_configurations": "Costumize your project's configurations",
+
+  "name": "Name",
+  "description": "Description",
+
   "email_address": "Email Address",
 
   "sign_in": "Sign In",

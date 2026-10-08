@@ -1,4 +1,9 @@
-import { IconArrowRight, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  IconArrowRight,
+  IconPlus,
+  IconSettings,
+  IconTrash,
+} from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -6,6 +11,7 @@ import route from "@/src/app/route";
 import type { ProjectSelectType } from "@/src/db/schema/t-project";
 import { useConfirmationDialog } from "@/src/hooks/useConfirmationDialog";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
+import { useProjectSettings } from "@/src/hooks/useProjectSettings";
 import { stripLocaleFromPathname } from "@/src/i18n";
 import { useTRPC } from "@/src/lib/trpc/client/client";
 import { Toaster } from "@/src/utils/clientOnly/triggerToast";
@@ -13,6 +19,7 @@ import {
   ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
+  ContextMenuSeparator,
 } from "../shadcn/components/ui/context-menu";
 import { useSidebar } from "../shadcn/components/ui/sidebar";
 
@@ -22,6 +29,7 @@ const ProjectNavContextMenu = ({ data }: { data: ProjectSelectType }) => {
   const { setOpenMobile } = useSidebar();
   const router = useRouter();
 
+  const projectSettingsDialog = useProjectSettings((s) => s.openDialog);
   const confirmationDialog = useConfirmationDialog((s) => s.openDialog);
 
   const trpc = useTRPC();
@@ -77,6 +85,17 @@ const ProjectNavContextMenu = ({ data }: { data: ProjectSelectType }) => {
         <ContextMenuItem disabled={disabled}>
           <IconPlus /> <span>{t("common.new_task")}</span>
         </ContextMenuItem>
+
+        <ContextMenuSeparator />
+        <ContextMenuItem
+          disabled={disabled}
+          onClick={() => {
+            projectSettingsDialog(data.id);
+          }}
+        >
+          <IconSettings /> <span>{t("common.settings")}</span>
+        </ContextMenuItem>
+        <ContextMenuSeparator />
         <ContextMenuItem
           variant="destructive"
           disabled={data.isPrimary || disabled}

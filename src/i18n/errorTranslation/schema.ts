@@ -50,17 +50,40 @@ export const etzs = {
   },
 
   createProjectInput() {
-    return z.object({
-      name: etzs.string_min_max(1, 28).optional(),
-      description: etzs.string_max(255).optional().nullable(),
-      iconId: z
-        .enum(ICON_NAMES, etm.invalid_parameter.construct("iconId"))
-        .optional()
-        .nullable(),
-      viewLayout: z.enum(
-        VIEW_LAYOUTS_KEYS,
-        etm.invalid_parameter.construct("viewLayout"),
-      ),
-    });
+    return z
+      .object({
+        name: etzs.string_min_max(1, 28).optional(),
+        description: etzs.string_max(255).optional().nullable(),
+        iconId: z
+          .enum(ICON_NAMES, etm.invalid_parameter.construct("iconId"))
+          .optional()
+          .default("folder"),
+        viewLayout: z
+          .enum(
+            VIEW_LAYOUTS_KEYS,
+            etm.invalid_parameter.construct("viewLayout"),
+          )
+          .default("list"),
+      })
+      .strict();
+  },
+
+  updateProjectInput() {
+    return z
+      .object({
+        id: z.uuidv7(etm.invalid_parameter.construct("id")),
+        name: etzs.string_min_max(1, 28).optional(),
+        description: etzs.string_max(255).optional().nullable(),
+        iconId: z
+          .enum(ICON_NAMES, etm.invalid_parameter.construct("iconId"))
+          .optional(),
+        viewLayout: z
+          .enum(
+            VIEW_LAYOUTS_KEYS,
+            etm.invalid_parameter.construct("viewLayout"),
+          )
+          .optional(),
+      })
+      .strict();
   },
 } as const;

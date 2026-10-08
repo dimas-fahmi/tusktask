@@ -34,6 +34,16 @@
 
   "selected": "Dipilih",
 
+  "settings": "Pengaturan",
+
+  "project_layout": "Tata Letak Proyek",
+  "project_icon": "Ikon Proyek",
+  "customize_project_icon": "Atur ikon proyekmu",
+  "customize_project_configurations": "Atur pengaturan proyekmu",
+
+  "name": "Nama",
+  "description": "Deskripsi",
+
   "color_theme": "Tema Warna",
 
   "color_themes": {

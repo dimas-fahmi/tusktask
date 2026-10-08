@@ -6,6 +6,7 @@ import UserPreferencesProvider from "@/src/provider/userPreferencesProvider";
 import ImageCropperDialog from "@/src/ui/components/Prefab/ImageCropperDialog";
 import ConfirmationDialog from "@/src/ui/dialogs/ConfirmationDialog";
 import NewProjectDialog from "@/src/ui/dialogs/NewProjectDialog";
+import ProjectSettingsDialog from "@/src/ui/dialogs/ProjectSettingsDialog";
 import QuickSettingsDialog from "@/src/ui/dialogs/QuickSettingsDialog";
 import RankDialog from "@/src/ui/dialogs/RankDialog";
 import { Toaster } from "@/src/ui/shadcn/components/ui/toast";
@@ -32,6 +33,7 @@ const LocaleLayout = ({
       <RankDialog />
       <NewProjectDialog />
       <ConfirmationDialog />
+      <ProjectSettingsDialog />
     </NextIntlClientProvider>
   );
 };
