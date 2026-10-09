@@ -3,6 +3,7 @@ import { pointHistory } from "./t-pointHistory";
 import { project } from "./t-project";
 import { session } from "./t-session";
 import { task } from "./t-task";
+import { taskCategory } from "./t-taskCategory";
 import { twoFactor } from "./t-twoFactor";
 import { user } from "./t-user";
 import { verification } from "./t-verification";
@@ -31,4 +32,7 @@ export const schema = {
 
   // TASK TABLE
   task,
+
+  // TASK CATEGORY TABle
+  taskCategory,
 } as const;
