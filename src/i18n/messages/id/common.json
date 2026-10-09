@@ -87,5 +87,22 @@
   "view_layouts": {
     "list": "Daftar",
     "kanban": "Kanban"
-  }
+  },
+
+  "sidebar": "Bilah Sisi",
+  "open_sidebar": "Bukan Bilah Sisi",
+  "close_sidebar": "Tutup Bilah Sisi",
+  "search": "Car",
+  "main": "Utama",
+  "dashboard": "Dashbor",
+  "today": "Hari Ini",
+  "upcoming": "Mendatang",
+  "calendar": "Kalendar",
+  "projects": "Proyek",
+  "more": "Lainya",
+  "security": "Keamanan",
+  "support": "Bantuan",
+  "new_project": "Proyek Baru",
+  "my_projects": "Daftar Proyek Saya",
+  "no_projects_yet": "Tidak ada proyek"
 }

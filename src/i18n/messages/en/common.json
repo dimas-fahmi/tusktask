@@ -87,5 +87,22 @@
   "view_layouts": {
     "list": "List",
     "kanban": "Kanban"
-  }
+  },
+
+  "sidebar": "Sidebar",
+  "open_sidebar": "Open Sidebar",
+  "close_sidebar": "Close Sidebar",
+  "search": "Search",
+  "main": "Main",
+  "dashboard": "Dashboard",
+  "today": "Today",
+  "upcoming": "Upcoming",
+  "calendar": "Calendar",
+  "projects": "Projects",
+  "more": "More",
+  "security": "Security",
+  "support": "Support",
+  "new_project": "New Project",
+  "my_projects": "My Projects",
+  "no_projects_yet": "No projects yet"
 }
