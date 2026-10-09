@@ -255,9 +255,6 @@ const Body = () => {
         </div>
 
         <div className="space-y-2">
-          <div>
-            <h2>{t("common.project_layout")}</h2>
-          </div>
           <div className="grid grid-cols-2 gap-2">
             {VIEW_LAYOUTS_ENTRIES.map(([key, { icon: Icon }]) => (
               <button

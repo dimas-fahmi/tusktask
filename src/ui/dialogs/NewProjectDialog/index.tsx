@@ -101,7 +101,7 @@ const Body = () => {
           name="name"
           render={({ field, fieldState: state }) => (
             <MainInput
-              label="Name"
+              label={t("common.name")}
               {...field}
               isInvalid={!!state?.error?.message}
               message={
@@ -119,7 +119,7 @@ const Body = () => {
           name="description"
           render={({ field: { value, ...field }, fieldState: state }) => (
             <MainInput
-              label="Description"
+              label={t("common.description")}
               textArea
               className="max-h-24 no-scrollbar"
               {...field}
@@ -143,9 +143,9 @@ const Body = () => {
 
           <div className="flex-1 flex items-center justify-between">
             <div>
-              <h2 className="font-semibold">Project Icon</h2>
+              <h2 className="font-semibold">{t("common.project_icon")}</h2>
               <p className="text-xs opacity-70">
-                Customize your project's icon
+                {t("common.customize_project_icon")}
               </p>
             </div>
 
@@ -165,7 +165,7 @@ const Body = () => {
 
               <PopoverContent className={"min-w-78"}>
                 <IconPicker
-                  defaultIcon="folder"
+                  defaultIcon={icon ?? "folder"}
                   setOpen={setIconPickerOpen}
                   onIconSelected={(selected) => {
                     setValue("iconId", selected);
@@ -176,31 +176,26 @@ const Body = () => {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <div>
-            <h2>Project Layout</h2>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {VIEW_LAYOUTS_ENTRIES.map(([key, { icon: Icon }]) => (
-              <button
-                type="button"
-                key={key}
-                className={cn(
-                  "flex flex-col items-center justify-center p-2 border rounded-md transition-all duration-300 text-xs",
-                  layout === key
-                    ? "bg-primary text-primary-foreground"
-                    : "not-disabled:hover:bg-foreground/10",
-                )}
-                onClick={() => {
-                  setValue("viewLayout", key);
-                }}
-                disabled={isPending}
-              >
-                <Icon className="w-4 h-4" />
-                <span>{t(`common.view_layouts.${key}`)}</span>
-              </button>
-            ))}
-          </div>
+        <div className="grid grid-cols-2 gap-2">
+          {VIEW_LAYOUTS_ENTRIES.map(([key, { icon: Icon }]) => (
+            <button
+              type="button"
+              key={key}
+              className={cn(
+                "flex flex-col items-center justify-center p-2 border rounded-md transition-all duration-300 text-xs",
+                layout === key
+                  ? "bg-primary text-primary-foreground"
+                  : "not-disabled:hover:bg-foreground/10",
+              )}
+              onClick={() => {
+                setValue("viewLayout", key);
+              }}
+              disabled={isPending}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{t(`common.view_layouts.${key}`)}</span>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -213,10 +208,10 @@ const Body = () => {
           }}
           disabled={isPending}
         >
-          Close
+          {t("common.close")}
         </Button>
         <Button type="submit" disabled={!isValid || isPending}>
-          Save
+          {t("common.save")}
         </Button>
       </footer>
     </form>
