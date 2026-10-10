@@ -49,6 +49,12 @@ export const etzs = {
     );
   },
 
+  uuidv7(customMessage?: string, parameter?: string) {
+    return z.uuidv7(
+      customMessage ?? etm.invalid_parameter.construct(parameter ?? "uuidv7"),
+    );
+  },
+
   createProjectInput() {
     return z
       .object({
@@ -92,12 +98,23 @@ export const etzs = {
       name: this.string_max(48).optional(),
       description: this.string_max(255).optional().nullable(),
 
-      parentId: z.uuidv7().optional().nullable().default(null),
-      projectId: z.uuidv7(),
-      taskCategoryId: z.uuidv7().optional().nullable(),
+      parentId: this.uuidv7(undefined, "parentId").optional().nullable(),
+      projectId: z.uuidv7(etm.invalid_parameter.construct("projectId")),
+      taskCategoryId: z
+        .uuidv7(etm.invalid_parameter.construct("taskCategoryId"))
+        .optional()
+        .nullable(),
 
       projectOrderKey: this.string().optional().nullable(),
       taskCategoryOrderKey: this.string().optional().nullable(),
+    });
+  },
+
+  getTasksInput() {
+    return z.object({
+      name: this.string_max(48).optional(),
+      projectId: this.uuidv7(undefined, "projectId"),
+      taskCategoryId: this.uuidv7(undefined, "taskCategoryId"),
     });
   },
 } as const;
