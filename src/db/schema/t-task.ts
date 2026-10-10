@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { appSchema, TIMESTAMPZ_CONFIG } from "./module";
 import { project } from "./t-project";
+import { taskCategory } from "./t-taskCategory";
 import { user } from "./t-user";
 
 export const task = appSchema.table(
@@ -32,6 +33,13 @@ export const task = appSchema.table(
     projectId: uuid("project_id")
       .references(() => project.id, { onDelete: "cascade" })
       .notNull(),
+    taskCategoryId: uuid("category_id").references(() => taskCategory.id, {
+      onDelete: "cascade",
+    }),
+
+    // ORDERS
+    projectOrderKey: text("project_order_key"),
+    taskCategoryOrderKey: text("task_category_order_key"),
 
     // RECURRENCE MECHANISM
     rrule: text("rrule"),
@@ -67,6 +75,9 @@ export const task = appSchema.table(
     ),
 
     // IDX
+    index("idx_app_task_taskCategoryOrderKey").on(t.taskCategoryOrderKey),
+    index("idx_app_task_projectOrderKey").on(t.projectOrderKey),
+    index("idx_app_task_taskCategoryId").on(t.taskCategoryId),
     index("idx_app_task_parentId").on(t.parentId),
     index("idx_app_task_userId").on(t.userId),
     index("idx_app_task_projectId").on(t.projectId),
