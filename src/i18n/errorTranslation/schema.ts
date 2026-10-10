@@ -86,4 +86,18 @@ export const etzs = {
       })
       .strict();
   },
+
+  createTaskInput() {
+    return z.object({
+      name: this.string_max(48).optional(),
+      description: this.string_max(255).optional().nullable(),
+
+      parentId: z.uuidv7().optional().nullable().default(null),
+      projectId: z.uuidv7(),
+      taskCategoryId: z.uuidv7().optional().nullable(),
+
+      projectOrderKey: this.string().optional().nullable(),
+      taskCategoryOrderKey: this.string().optional().nullable(),
+    });
+  },
 } as const;

@@ -89,3 +89,5 @@ export const task = appSchema.table(
     index("idx_app_task_createdAt").on(t.createdAt),
   ],
 );
+
+export type TaskInserType = typeof task.$inferInsert;
