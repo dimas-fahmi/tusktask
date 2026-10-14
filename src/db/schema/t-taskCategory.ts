@@ -31,3 +31,5 @@ export const taskCategory = appSchema.table(
     index("idx_app_taskCategory_projectId").on(t.projectId),
   ],
 );
+
+export type TaskCategoryInsertType = typeof taskCategory.$inferInsert;
