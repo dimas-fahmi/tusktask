@@ -24,7 +24,9 @@ export const project = appSchema.table(
       .notNull()
       .default("list"),
 
-    lastProjectOrderKey: text("last_project_order_key"),
+    lastTaskOrderKey: text("last_task_order_key"), // Last order key generated for a task
+
+    lastCategoryOrderKey: text("last_category_order_key"), // Last order key generated for a category
 
     createdAt: timestamp("created_at", TIMESTAMPZ_CONFIG)
       .notNull()

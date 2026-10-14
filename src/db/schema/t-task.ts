@@ -38,8 +38,8 @@ export const task = appSchema.table(
     }),
 
     // ORDERS
-    projectOrderKey: text("project_order_key"),
-    taskCategoryOrderKey: text("task_category_order_key"),
+    projectOrderKey: text("project_order_key"), // This task order key in project
+    taskCategoryOrderKey: text("task_category_order_key"), // This task order key in category
 
     // RECURRENCE MECHANISM
     rrule: text("rrule"),

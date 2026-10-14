@@ -11,7 +11,11 @@ export const taskCategory = appSchema.table(
     projectId: uuid("project_id")
       .references(() => project.id, { onDelete: "cascade" })
       .notNull(),
-    lastCategoryOrderKey: text("last_category_order_key"),
+
+    lastTaskOrderKey: text("last_task_order_key"), // Last order key generated for task
+
+    projectOrderKey: text("project_order_key"), // This category order key in project
+
     createdAt: timestamp("created_at", TIMESTAMPZ_CONFIG)
       .notNull()
       .defaultNow(),
