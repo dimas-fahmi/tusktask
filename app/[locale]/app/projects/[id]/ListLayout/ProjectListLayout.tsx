@@ -6,8 +6,8 @@ import { useState } from "react";
 import type { ProjectSelectType } from "@/src/db/schema/t-project";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { useTRPC } from "@/src/lib/trpc/client/client";
+import CategoryCard from "@/src/ui/components/ui/CategoryCard";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
-import CategoryCard from "./CategoryCard";
 
 const ProjectListLayout = ({
   data: projectData,
