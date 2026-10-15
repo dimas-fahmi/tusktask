@@ -192,6 +192,9 @@ const CategoryCard = ({
                 "grid grid-cols-1 gap-2",
                 isPending ? "animate-pulse" : "",
               )}
+              onDoubleClick={() => {
+                setEditMode(!editMode);
+              }}
             >
               <div className="flex items-center justify-between gap-2 border-b pb-2">
                 <IconGripVertical
