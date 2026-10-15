@@ -2,6 +2,7 @@
 
 import { useSortable } from "@dnd-kit/react/sortable";
 import {
+  IconDeviceFloppy,
   IconDots,
   IconGripVertical,
   IconPencil,
@@ -35,10 +36,16 @@ const SharedItems = ({
   category,
   isPending,
   setIsPending,
+  editMode,
+  setEditMode,
+  handleSave,
 }: {
   category: TaskCategorySelectType;
   isPending: boolean;
   setIsPending: (pending: boolean) => void;
+  editMode: boolean;
+  setEditMode: (value: boolean) => void;
+  handleSave: () => void;
 }) => {
   const t = useTranslations();
 
@@ -69,12 +76,27 @@ const SharedItems = ({
       {/* Menu */}
       <ContextMenuGroup>
         <ContextMenuLabel>Menu</ContextMenuLabel>
-        <ContextMenuItem disabled={isPending}>
+        {editMode && (
+          <ContextMenuItem
+            onClick={() => {
+              handleSave();
+            }}
+          >
+            <IconDeviceFloppy />
+            <span>{t("common.save")}</span>
+          </ContextMenuItem>
+        )}
+        <ContextMenuItem
+          disabled={isPending || editMode}
+          onClick={() => {
+            setEditMode(true);
+          }}
+        >
           <IconPencil /> Edit
         </ContextMenuItem>
         <ContextMenuItem
           variant="destructive"
-          disabled={isPending}
+          disabled={isPending || editMode}
           onClick={() => {
             deleteCategory.mutate({
               projectId: category.projectId,
@@ -99,13 +121,58 @@ const CategoryCard = ({
   dragging?: string | null;
 }) => {
   const t = useTranslations();
+
   const [expand, setExpand] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+
+  const [categoryName, setCategoryName] = useState(
+    category?.name === "untitled" || !category?.name
+      ? t("common.untitled")
+      : category.name,
+  );
+
   const { ref } = useSortable({ id: category.id, index });
 
   const [isPending, setIsPending] = useState(false);
 
   const id = `${category.id}-category-card`;
   const isBeingDrag = dragging === category.id;
+
+  const trpc = useTRPC();
+  const { toast } = useHandleQueryError();
+
+  const updateTaskCategory = useMutation({
+    ...trpc.taskCategory.updateTaskCategory.mutationOptions(),
+    onMutate: () => {
+      setIsPending(true);
+    },
+    onError: (err) => {
+      toast("update-task-category-mutation-failed", err, true);
+    },
+    onSuccess: () => {},
+    onSettled: (_d, _err, _var, _omr, ctx) => {
+      setIsPending(false);
+      ctx.client.invalidateQueries({
+        queryKey: trpc.taskCategory.getTaskCategories.queryKey({
+          projectId: category.projectId,
+        }),
+      });
+    },
+  });
+
+  const handleSave = () => {
+    setEditMode(false);
+
+    if (categoryName !== category.name) {
+      updateTaskCategory.mutate({
+        projectId: category.projectId,
+        taskCategoryId: category.id,
+        data: {
+          name: categoryName,
+        },
+      });
+    }
+  };
 
   return (
     <div
@@ -131,41 +198,89 @@ const CategoryCard = ({
                   stroke={1}
                   className="opacity-70 w-4 h-4 hover:cursor-grab active:cursor-grabbing"
                 />
-                <button
-                  type="button"
-                  className="flex items-center gap-2 flex-1"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                  disabled={isPending}
-                >
-                  <span className="text-sm font-semibold">
-                    {category.name === "untitled" || !category.name
-                      ? t("common.untitled")
-                      : category.name}
-                  </span>
-                </button>
+                {editMode ? (
+                  <form
+                    className="flex-1"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSave();
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Category Name"
+                      className="outline-0 text-sm w-full"
+                      value={categoryName}
+                      onChange={(e) => {
+                        setCategoryName(e.target.value);
+                      }}
+                      autoComplete="off"
+                    />
+                  </form>
+                ) : (
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 flex-1"
+                    onClick={() => {
+                      setExpand(!expand);
+                    }}
+                    disabled={isPending}
+                  >
+                    <span className="text-sm font-semibold">
+                      {categoryName === "untitled" || !categoryName
+                        ? t("common.untitled")
+                        : categoryName}
+                    </span>
+                  </button>
+                )}
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    render={(props) => (
-                      <button
-                        type="button"
-                        {...props}
-                        disabled={isPending}
-                        onClick={(e) => {
-                          props?.onClick?.(e);
+                <div className="flex items-center gap-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={editMode ? { width: "auto" } : { width: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <button
+                      type="button"
+                      disabled={isPending}
+                      onClick={() => {
+                        handleSave();
+                      }}
+                    >
+                      <IconDeviceFloppy className="w-4 h-4" stroke={1} />
+                    </button>
+                  </motion.div>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={(props) => (
+                        <button
+                          type="button"
+                          {...props}
+                          disabled={isPending}
+                          onClick={(e) => {
+                            props?.onClick?.(e);
+                          }}
+                        >
+                          <IconDots stroke={1} className="w-4 h-4" />
+                        </button>
+                      )}
+                    />
+
+                    <DropdownMenuContent>
+                      <SharedItems
+                        {...{
+                          isPending,
+                          setIsPending,
+                          category,
+                          editMode,
+                          setEditMode,
+                          handleSave,
                         }}
-                      >
-                        <IconDots stroke={1} className="w-4 h-4" />
-                      </button>
-                    )}
-                  />
-
-                  <DropdownMenuContent>
-                    <SharedItems {...{ isPending, setIsPending, category }} />
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      />
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
 
               <motion.div
@@ -190,7 +305,16 @@ const CategoryCard = ({
         />
 
         <ContextMenuContent>
-          <SharedItems {...{ category, isPending, setIsPending }} />
+          <SharedItems
+            {...{
+              category,
+              isPending,
+              setIsPending,
+              editMode,
+              setEditMode,
+              handleSave,
+            }}
+          />
         </ContextMenuContent>
       </ContextMenu>
     </div>
