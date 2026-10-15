@@ -91,3 +91,4 @@ export const task = appSchema.table(
 );
 
 export type TaskInserType = typeof task.$inferInsert;
+export type TaskSelectType = typeof task.$inferSelect;

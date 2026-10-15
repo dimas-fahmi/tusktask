@@ -3,6 +3,8 @@ import { boolean, index, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import type { ViewLayout } from "@/src/app/data/viewLayout";
 import type { IconName } from "@/src/ui/components/IconRenderer/collections";
 import { appSchema, TIMESTAMPZ_CONFIG } from "./module";
+import type { TaskSelectType } from "./t-task";
+import type { TaskCategorySelectType } from "./t-taskCategory";
 import { user } from "./t-user";
 
 export const project = appSchema.table(
@@ -45,3 +47,10 @@ export const project = appSchema.table(
 );
 
 export type ProjectSelectType = typeof project.$inferSelect;
+
+export type CompleteProjectType = ProjectSelectType & {
+  taskCategories: (TaskCategorySelectType & {
+    tasks: TaskSelectType[];
+  })[];
+  uncategorizedTasks: TaskSelectType[];
+};

@@ -73,6 +73,15 @@ export const _relations = defineRelations(schema, (r) => ({
       from: r.project.id,
       to: r.taskCategory.projectId,
     }),
+    uncategorizedTasks: r.many.task({
+      from: r.project.id,
+      to: r.task.projectId,
+      where: {
+        taskCategoryId: {
+          isNull: true,
+        },
+      },
+    }),
   },
 
   task: {

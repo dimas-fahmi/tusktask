@@ -1,9 +1,10 @@
 import { DragDropProvider } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { IconPlus } from "@tabler/icons-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { motion } from "motion/react";
 import { useState } from "react";
-import type { ProjectSelectType } from "@/src/db/schema/t-project";
+import type { CompleteProjectType } from "@/src/db/schema/t-project";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { useTRPC } from "@/src/lib/trpc/client/client";
 import CategoryCard from "@/src/ui/components/ui/CategoryCard";
@@ -12,21 +13,14 @@ import { Button } from "@/src/ui/shadcn/components/ui/button";
 const ProjectListLayout = ({
   data: projectData,
 }: {
-  data?: ProjectSelectType;
+  data?: CompleteProjectType;
 }) => {
   const [isDragging, setIsDragging] = useState<string | null>(null);
 
   const trpc = useTRPC();
   const { toast } = useHandleQueryError();
 
-  const { data: _categories } = useQuery({
-    ...trpc.taskCategory.getTaskCategories.queryOptions({
-      projectId: projectData?.id ?? "",
-    }),
-    enabled: !!projectData?.id,
-  });
-
-  const categories = _categories ?? [];
+  const categories = projectData?.taskCategories ?? [];
 
   const createCategory = useMutation({
     ...trpc.taskCategory.createTaskCategory.mutationOptions(),
@@ -36,8 +30,8 @@ const ProjectListLayout = ({
     onSuccess: (_d, _v, _omr, ctx) => {
       if (projectData) {
         ctx.client.invalidateQueries({
-          queryKey: trpc.taskCategory.getTaskCategories.queryKey({
-            projectId: projectData?.id,
+          queryKey: trpc.project.getProjectDetail.queryKey({
+            id: projectData.id,
           }),
         });
       }
@@ -47,7 +41,7 @@ const ProjectListLayout = ({
   return (
     <div className="grid grid-cols-1 gap-2">
       {/* Non-categorized tasks */}
-      <div className="grid grid-cols-1 gap-2">
+      <motion.div className="grid grid-cols-1 gap-2" layout>
         {/* New Button */}
         <Button
           variant={"ghost"}
@@ -55,11 +49,11 @@ const ProjectListLayout = ({
         >
           <IconPlus /> <span>New Task</span>
         </Button>
-      </div>
+      </motion.div>
 
       {/* Categories Container */}
       {!!categories.length && (
-        <div className="space-y-2 md:px-4">
+        <motion.div className="space-y-2 md:px-4" layout>
           <DragDropProvider
             onDragStart={(e) => {
               if (isSortable(e.operation.source)) {
@@ -86,11 +80,11 @@ const ProjectListLayout = ({
                 />
               ))}
           </DragDropProvider>
-        </div>
+        </motion.div>
       )}
 
       {/* Categorized Task */}
-      <div className="grid grid-cols-1 gap-2">
+      <motion.div className="grid grid-cols-1 gap-2" layout>
         {/* New Button */}
         <Button
           disabled={createCategory.isPending || !projectData?.id}
@@ -106,7 +100,7 @@ const ProjectListLayout = ({
         >
           <IconPlus /> <span>New Category</span>
         </Button>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { nidb } from "@/src/db";
+import type { CompleteProjectType } from "@/src/db/schema/t-project";
 import { etm } from "@/src/i18n/errorTranslation/init";
 import { sessionRequiredPlugin } from "../../plugins/sessionRequired";
 import { createBaseProcedure } from "../../server/init";
@@ -18,16 +19,25 @@ export const getProjectDetailProc = createBaseProcedure
     const { ctx, input } = opts;
     const user = ctx.session.user;
 
-    const result = await nidb.query.project.findFirst({
-      where: {
-        id: {
-          eq: input.id,
+    const result: CompleteProjectType | undefined =
+      await nidb.query.project.findFirst({
+        where: {
+          id: {
+            eq: input.id,
+          },
+          userId: {
+            eq: user.id,
+          },
         },
-        userId: {
-          eq: user.id,
+        with: {
+          taskCategories: {
+            with: {
+              tasks: true,
+            },
+          },
+          uncategorizedTasks: true,
         },
-      },
-    });
+      });
 
     if (!result) {
       throw new TRPCError({
