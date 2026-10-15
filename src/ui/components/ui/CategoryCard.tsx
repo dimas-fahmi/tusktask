@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TaskCategorySelectType } from "@/src/db/schema/t-taskCategory";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { useTRPC } from "@/src/lib/trpc/client/client";
@@ -63,8 +63,8 @@ const SharedItems = ({
     onSuccess: () => {},
     onSettled: (_d, _e, _v, _omr, ctx) => {
       ctx.client.invalidateQueries({
-        queryKey: trpc.taskCategory.getTaskCategories.queryKey({
-          projectId: category.projectId,
+        queryKey: trpc.project.getProjectDetail.queryKey({
+          id: category.projectId,
         }),
       });
       setIsPending(false);
@@ -132,6 +132,7 @@ const CategoryCard = ({
   );
 
   const { ref } = useSortable({ id: category.id, index });
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [isPending, setIsPending] = useState(false);
 
@@ -159,6 +160,11 @@ const CategoryCard = ({
       });
     },
   });
+
+  useEffect(() => {
+    if (!editMode) return;
+    inputRef?.current?.focus();
+  }, [editMode]);
 
   const handleSave = () => {
     setEditMode(false);
@@ -210,6 +216,7 @@ const CategoryCard = ({
                     }}
                   >
                     <input
+                      ref={inputRef}
                       type="text"
                       placeholder="Category Name"
                       className="outline-0 text-sm w-full"
