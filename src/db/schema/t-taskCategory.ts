@@ -33,3 +33,5 @@ export const taskCategory = appSchema.table(
 );
 
 export type TaskCategoryInsertType = typeof taskCategory.$inferInsert;
+
+export type TaskCategorySelectType = typeof taskCategory.$inferSelect;

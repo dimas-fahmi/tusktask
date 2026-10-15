@@ -104,5 +104,7 @@
   "support": "Bantuan",
   "new_project": "Proyek Baru",
   "my_projects": "Daftar Proyek Saya",
-  "no_projects_yet": "Tidak ada proyek"
+  "no_projects_yet": "Tidak ada proyek",
+
+  "untitled": "Tanpa Judul"
 }

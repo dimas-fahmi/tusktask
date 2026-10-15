@@ -104,5 +104,7 @@
   "support": "Support",
   "new_project": "New Project",
   "my_projects": "My Projects",
-  "no_projects_yet": "No projects yet"
+  "no_projects_yet": "No projects yet",
+
+  "untitled": "Untitled"
 }
