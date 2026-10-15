@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { index, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { appSchema, TIMESTAMPZ_CONFIG } from "./module";
 import { project } from "./t-project";
+import type { TaskSelectType } from "./t-task";
 
 export const taskCategory = appSchema.table(
   "task_category",
@@ -35,3 +36,7 @@ export const taskCategory = appSchema.table(
 export type TaskCategoryInsertType = typeof taskCategory.$inferInsert;
 
 export type TaskCategorySelectType = typeof taskCategory.$inferSelect;
+
+export type TaskCategoryWithTasks = TaskCategorySelectType & {
+  tasks: TaskSelectType[];
+};

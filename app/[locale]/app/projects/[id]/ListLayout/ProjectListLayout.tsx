@@ -6,14 +6,16 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import type { CompleteProjectType } from "@/src/db/schema/t-project";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
+import { useNewTask } from "@/src/hooks/useNewTask";
 import { useTRPC } from "@/src/lib/trpc/client/client";
 import CategoryCard from "@/src/ui/components/ui/CategoryCard";
+import TaskCard from "@/src/ui/components/ui/TaskCard";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 
 const ProjectListLayout = ({
   data: projectData,
 }: {
-  data?: CompleteProjectType;
+  data: CompleteProjectType;
 }) => {
   const [isDragging, setIsDragging] = useState<string | null>(null);
 
@@ -38,14 +40,30 @@ const ProjectListLayout = ({
     },
   });
 
+  const uncategorizedTasks = projectData?.uncategorizedTasks ?? [];
+
+  const newTaskDialog = useNewTask((s) => s.open);
+
   return (
     <div className="grid grid-cols-1 gap-2">
       {/* Non-categorized tasks */}
       <motion.div className="grid grid-cols-1 gap-2" layout>
+        <div>
+          {uncategorizedTasks.map((task) => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </div>
+
         {/* New Button */}
         <Button
           variant={"ghost"}
           className={"justify-start opacity-70 hover:opacity-100"}
+          onClick={() => {
+            newTaskDialog({
+              projectId: projectData.id,
+              taskCategoryId: null,
+            });
+          }}
         >
           <IconPlus /> <span>New Task</span>
         </Button>

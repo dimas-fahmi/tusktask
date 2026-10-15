@@ -35,10 +35,15 @@ const ProjectDetailPageIndex = () => {
         )}
       </header>
 
-      {data?.viewLayout === "kanban" ? (
-        <ProjectKanbanLayout data={data} />
+      {data ? (
+        data?.viewLayout === "kanban" ? (
+          <ProjectKanbanLayout data={data} />
+        ) : (
+          <ProjectListLayout data={data} />
+        )
       ) : (
-        <ProjectListLayout data={data} />
+        // TODO: Use Proper Loader
+        <>Loading...</>
       )}
     </div>
   );

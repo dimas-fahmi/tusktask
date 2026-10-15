@@ -14,8 +14,12 @@ import { cn } from "cn";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import type { TaskCategorySelectType } from "@/src/db/schema/t-taskCategory";
+import type {
+  TaskCategorySelectType,
+  TaskCategoryWithTasks,
+} from "@/src/db/schema/t-taskCategory";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
+import { useNewTask } from "@/src/hooks/useNewTask";
 import { useTRPC } from "@/src/lib/trpc/client/client";
 import { Button } from "@/src/ui/shadcn/components/ui/button";
 import {
@@ -31,6 +35,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/src/ui/shadcn/components/ui/dropdown-menu";
+import TaskCard from "./TaskCard";
 
 const SharedItems = ({
   category,
@@ -116,7 +121,7 @@ const CategoryCard = ({
   index,
   dragging,
 }: {
-  category: TaskCategorySelectType;
+  category: TaskCategoryWithTasks;
   index: number;
   dragging?: string | null;
 }) => {
@@ -154,8 +159,8 @@ const CategoryCard = ({
     onSettled: (_d, _err, _var, _omr, ctx) => {
       setIsPending(false);
       ctx.client.invalidateQueries({
-        queryKey: trpc.taskCategory.getTaskCategories.queryKey({
-          projectId: category.projectId,
+        queryKey: trpc.project.getProjectDetail.queryKey({
+          id: category.projectId,
         }),
       });
     },
@@ -179,6 +184,8 @@ const CategoryCard = ({
       });
     }
   };
+
+  const newTaskDialog = useNewTask((s) => s.open);
 
   return (
     <div
@@ -301,10 +308,20 @@ const CategoryCard = ({
                 className="overflow-hidden"
               >
                 <div className="grid grid-cols-1">
+                  {category.tasks.map((task) => (
+                    <TaskCard key={task.id} task={task} />
+                  ))}
+
                   <Button
                     disabled={isPending}
                     variant={"ghost"}
                     className={"justify-start opacity-70 hover:opacity-100"}
+                    onClick={() => {
+                      newTaskDialog({
+                        projectId: category.projectId,
+                        taskCategoryId: category.id,
+                      });
+                    }}
                   >
                     <IconPlus /> <span>New Task</span>
                   </Button>

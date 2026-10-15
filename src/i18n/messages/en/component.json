@@ -11,5 +11,10 @@
   "RankDialog": {
     "title": "Milestones",
     "desc": "This is not just a status, this is your life."
+  },
+
+  "NewTaskDialog": {
+    "title": "New Task",
+    "desc": "Create a new task"
   }
 }

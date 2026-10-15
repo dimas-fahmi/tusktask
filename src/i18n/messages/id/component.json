@@ -11,5 +11,10 @@
   "RankDialog": {
     "title": "Tonggak Pencapaian",
     "desc": "Ini bukan sekadar status, ini adalah hidupmu."
+  },
+
+  "NewTaskDialog": {
+    "title": "Tugas Baru",
+    "desc": "Buat tugas baru"
   }
 }
