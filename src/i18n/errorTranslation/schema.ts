@@ -20,6 +20,12 @@ export const etzs = {
       .max(max, etm.string_max.construct(max));
   },
 
+  date(customMessage?: string, parameter?: string) {
+    return z.date(
+      customMessage ?? etm.invalid_parameter.construct(parameter ?? "Date"),
+    );
+  },
+
   taskName() {
     return this.string_max(48);
   },
@@ -133,6 +139,17 @@ export const etzs = {
   deleteTaskInput() {
     return z.object({
       taskId: this.uuidv7(undefined, "taskId"),
+    });
+  },
+
+  updateTaskInput() {
+    return z.object({
+      taskId: this.uuidv7(undefined, "taskId"),
+      data: z.object({
+        name: this.taskName().optional(),
+        description: this.description().optional(),
+        completedAt: this.date(undefined, "completedAt"),
+      }),
     });
   },
 } as const;
