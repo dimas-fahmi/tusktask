@@ -38,6 +38,9 @@ export default getRequestConfig(async () => {
       icon: {
         ...(await import(`./messages/${locale}/icon.json`)).default,
       },
+      time: {
+        ...(await import(`./messages/${locale}/time.json`)).default,
+      },
     },
   };
 });

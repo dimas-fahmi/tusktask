@@ -37,6 +37,10 @@ import type rankId from "./messages/id/rank.json";
 import type iconEn from "./messages/en/icon.json";
 import type iconId from "./messages/id/icon.json";
 
+// Icon Dictionary
+import type timeEn from "./messages/en/time.json";
+import type timeId from "./messages/id/time.json";
+
 export type Messages = {
   alert: typeof alertEn | typeof alertId;
   attribution: typeof attributionEn | typeof attributionId;
@@ -47,6 +51,7 @@ export type Messages = {
   registrationStep: typeof registrationStepEn | typeof registrationStepId;
   rank: typeof rankEn | typeof rankId;
   icon: typeof iconEn | typeof iconId;
+  time: typeof timeEn | typeof timeId;
 };
 
 declare module "next-intl" {
