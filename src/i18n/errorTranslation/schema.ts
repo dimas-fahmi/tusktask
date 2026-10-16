@@ -112,20 +112,37 @@ export const etzs = {
   },
 
   createTaskInput() {
-    return z.object({
-      name: this.taskName().optional(),
-      description: this.taskName().optional().nullable(),
+    return z
+      .object({
+        name: this.taskName().optional(),
+        description: this.taskName().optional().nullable(),
 
-      parentId: this.uuidv7(undefined, "parentId").optional().nullable(),
-      projectId: z.uuidv7(etm.invalid_parameter.construct("projectId")),
-      taskCategoryId: z
-        .uuidv7(etm.invalid_parameter.construct("taskCategoryId"))
-        .optional()
-        .nullable(),
+        parentId: this.uuidv7(undefined, "parentId").optional().nullable(),
+        projectId: z.uuidv7(etm.invalid_parameter.construct("projectId")),
+        taskCategoryId: z
+          .uuidv7(etm.invalid_parameter.construct("taskCategoryId"))
+          .optional()
+          .nullable(),
 
-      projectOrderKey: this.string().optional().nullable(),
-      taskCategoryOrderKey: this.string().optional().nullable(),
-    });
+        projectOrderKey: this.string().optional().nullable(),
+        taskCategoryOrderKey: this.string().optional().nullable(),
+
+        reminderAt: this.date(undefined, "reminderAt").optional().nullable(),
+        startAt: this.date(undefined, "startAt").optional().nullable(),
+        deadlineAt: this.date(undefined, "deadlineAt").optional().nullable(),
+      })
+      .refine((check) => {
+        if (!check.reminderAt || !check.startAt) return true;
+        return check.reminderAt.getTime() < check.startAt.getTime();
+      }, etm.invalid_parameter.construct("reminderAt & startAt"))
+      .refine((check) => {
+        if (!check.reminderAt || !check.deadlineAt) return true;
+        return check.reminderAt.getTime() < check.deadlineAt.getTime();
+      }, etm.invalid_parameter.construct("reminderAt & deadlineAt"))
+      .refine((check) => {
+        if (!check.deadlineAt || !check.startAt) return true;
+        return check.startAt.getTime() < check.deadlineAt.getTime();
+      }, etm.invalid_parameter.construct("startAt & deadlineAt"));
   },
 
   getTasksInput() {
