@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
+import { formatDistance } from "date-fns";
 import { useState } from "react";
 import type { TaskSelectType } from "@/src/db/schema/t-task";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
@@ -67,41 +68,61 @@ const SharedItems = ({
   });
 
   return (
-    <ContextMenuGroup>
-      <ContextMenuLabel>Task Menu</ContextMenuLabel>
+    <>
+      <ContextMenuGroup>
+        <ContextMenuItem>
+          <div className="space-y-2">
+            <div className="text-xs space-y-2">
+              <p className="font-extralight opacity-70">Deadline At</p>
+              <p>
+                {task?.deadlineAt
+                  ? formatDistance(task.deadlineAt, new Date(), {
+                      addSuffix: true,
+                    })
+                  : "Not set"}
+              </p>
+            </div>
+          </div>
+        </ContextMenuItem>
+      </ContextMenuGroup>
 
-      <ContextMenuItem disabled={isPending}>
-        <IconArrowUp /> <span>Open</span>
-      </ContextMenuItem>
+      {/* Task menu */}
+      <ContextMenuGroup>
+        <ContextMenuLabel>Task Menu</ContextMenuLabel>
 
-      <ContextMenuItem disabled={isPending}>
-        <IconCircleCheck /> <span>Scratch</span>
-      </ContextMenuItem>
+        <ContextMenuItem disabled={isPending}>
+          <IconArrowUp /> <span>Open</span>
+        </ContextMenuItem>
 
-      <ContextMenuItem disabled={isPending}>
-        <IconPencil /> <span>Edit</span>
-      </ContextMenuItem>
+        <ContextMenuItem disabled={isPending}>
+          <IconCircleCheck /> <span>Scratch</span>
+        </ContextMenuItem>
 
-      <ContextMenuSeparator />
+        <ContextMenuItem disabled={isPending}>
+          <IconPencil /> <span>Edit</span>
+        </ContextMenuItem>
 
-      <ContextMenuItem disabled={isPending}>
-        <IconArchive /> <span>Archive</span>
-      </ContextMenuItem>
+        <ContextMenuSeparator />
 
-      <ContextMenuSeparator />
+        <ContextMenuItem disabled={isPending}>
+          <IconArchive /> <span>Archive</span>
+        </ContextMenuItem>
 
-      <ContextMenuItem
-        disabled={isPending}
-        variant="destructive"
-        onClick={() => {
-          deleteTask({
-            taskId: task.id,
-          });
-        }}
-      >
-        <IconTrash /> <span>Delete</span>
-      </ContextMenuItem>
-    </ContextMenuGroup>
+        <ContextMenuSeparator />
+
+        <ContextMenuItem
+          disabled={isPending}
+          variant="destructive"
+          onClick={() => {
+            deleteTask({
+              taskId: task.id,
+            });
+          }}
+        >
+          <IconTrash /> <span>Delete</span>
+        </ContextMenuItem>
+      </ContextMenuGroup>
+    </>
   );
 };
 
