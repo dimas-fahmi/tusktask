@@ -20,6 +20,18 @@ export const etzs = {
       .max(max, etm.string_max.construct(max));
   },
 
+  taskName() {
+    return this.string_max(48);
+  },
+
+  projectName() {
+    return this.string_min_max(1, 48);
+  },
+
+  description() {
+    return this.string_max(255);
+  },
+
   username(min = 3, max = 24) {
     return (
       this.string()
@@ -58,8 +70,8 @@ export const etzs = {
   createProjectInput() {
     return z
       .object({
-        name: etzs.string_min_max(1, 28).optional(),
-        description: etzs.string_max(255).optional().nullable(),
+        name: this.projectName().optional(),
+        description: this.description().optional().nullable(),
         iconId: z
           .enum(ICON_NAMES, etm.invalid_parameter.construct("iconId"))
           .optional()
@@ -78,8 +90,8 @@ export const etzs = {
     return z
       .object({
         id: z.uuidv7(etm.invalid_parameter.construct("id")),
-        name: etzs.string_min_max(1, 28).optional(),
-        description: etzs.string_max(255).optional().nullable(),
+        name: this.projectName().optional(),
+        description: this.description().optional().nullable(),
         iconId: z
           .enum(ICON_NAMES, etm.invalid_parameter.construct("iconId"))
           .optional(),
@@ -95,8 +107,8 @@ export const etzs = {
 
   createTaskInput() {
     return z.object({
-      name: this.string_max(48).optional(),
-      description: this.string_max(255).optional().nullable(),
+      name: this.taskName().optional(),
+      description: this.taskName().optional().nullable(),
 
       parentId: this.uuidv7(undefined, "parentId").optional().nullable(),
       projectId: z.uuidv7(etm.invalid_parameter.construct("projectId")),
@@ -112,9 +124,15 @@ export const etzs = {
 
   getTasksInput() {
     return z.object({
-      name: this.string_max(48).optional(),
+      name: this.taskName().optional(),
       projectId: this.uuidv7(undefined, "projectId"),
       taskCategoryId: this.uuidv7(undefined, "taskCategoryId"),
+    });
+  },
+
+  deleteTaskInput() {
+    return z.object({
+      taskId: this.uuidv7(undefined, "taskId"),
     });
   },
 } as const;

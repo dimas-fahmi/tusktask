@@ -4,18 +4,13 @@ import { z } from "zod";
 import { nidb } from "@/src/db";
 import { task } from "@/src/db/schema/t-task";
 import { etm } from "@/src/i18n/errorTranslation/init";
+import { etzs } from "@/src/i18n/errorTranslation/schema";
 import { sessionRequiredPlugin } from "../../plugins/sessionRequired";
 import { createBaseProcedure } from "../../server/init";
 
 export const deleteTaskProc = createBaseProcedure
   .concat(sessionRequiredPlugin().mainProc)
-  .input(
-    z.input(
-      z.object({
-        taskId: z.uuidv7(),
-      }),
-    ),
-  )
+  .input(z.input(etzs.deleteTaskInput()))
   .mutation(async (opts) => {
     const { ctx, input } = opts;
     const currentUser = ctx.session.user;
