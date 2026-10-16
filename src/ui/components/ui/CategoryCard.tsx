@@ -80,7 +80,7 @@ const SharedItems = ({
     <>
       {/* Menu */}
       <ContextMenuGroup>
-        <ContextMenuLabel>Menu</ContextMenuLabel>
+        <ContextMenuLabel>Category Menu</ContextMenuLabel>
         {editMode && (
           <ContextMenuItem
             onClick={() => {
