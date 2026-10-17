@@ -129,20 +129,47 @@ export const etzs = {
 
         reminderAt: this.date(undefined, "reminderAt").optional().nullable(),
         startAt: this.date(undefined, "startAt").optional().nullable(),
-        deadlineAt: this.date(undefined, "deadlineAt").optional().nullable(),
+        deadlineAt: this.date(undefined, "deadlineAt")
+          .optional()
+          .nullable()
+          .refine((check) => {
+            if (!check) return true;
+
+            const now = new Date();
+
+            return now.getTime() < check.getTime();
+          }, etm.invalid_parameter.construct("deadlineAt")),
       })
-      .refine((check) => {
-        if (!check.reminderAt || !check.startAt) return true;
-        return check.reminderAt.getTime() < check.startAt.getTime();
-      }, etm.invalid_parameter.construct("reminderAt & startAt"))
-      .refine((check) => {
-        if (!check.reminderAt || !check.deadlineAt) return true;
-        return check.reminderAt.getTime() < check.deadlineAt.getTime();
-      }, etm.invalid_parameter.construct("reminderAt & deadlineAt"))
-      .refine((check) => {
-        if (!check.deadlineAt || !check.startAt) return true;
-        return check.startAt.getTime() < check.deadlineAt.getTime();
-      }, etm.invalid_parameter.construct("startAt & deadlineAt"));
+      .refine(
+        (check) => {
+          if (!check.reminderAt || !check.startAt) return true;
+          return check.reminderAt.getTime() < check.startAt.getTime();
+        },
+        {
+          error: etm.invalid_parameter.construct("reminderAt & startAt"),
+          path: ["reminderAt"],
+        },
+      )
+      .refine(
+        (check) => {
+          if (!check.reminderAt || !check.deadlineAt) return true;
+          return check.reminderAt.getTime() < check.deadlineAt.getTime();
+        },
+        {
+          error: etm.invalid_parameter.construct("reminderAt & deadlineAt"),
+          path: ["reminderAt"],
+        },
+      )
+      .refine(
+        (check) => {
+          if (!check.deadlineAt || !check.startAt) return true;
+          return check.startAt.getTime() < check.deadlineAt.getTime();
+        },
+        {
+          error: etm.invalid_parameter.construct("startAt & deadlineAt"),
+          path: ["startAt"],
+        },
+      );
   },
 
   getTasksInput() {
