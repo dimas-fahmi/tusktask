@@ -21,7 +21,7 @@ mock.module("@/src/app/env", () => ({
 describe("constructAvatarUrl", () => {
   const userId = "01a08d14-e8ab-73a8-bde4-1aa54a8587c3";
   const now = Date.now();
-  const result = constructAvatarUrl(userId);
+  const result = constructAvatarUrl(userId, now);
 
   it("Should pass when compared against proven constructed url", () => {
     const proven = `https://${MOCKED_STORE_ID}.public.blob.vercel-storage.com/tusktask/images/avatars/${userId}.${now}.webp`;
