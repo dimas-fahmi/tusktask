@@ -117,5 +117,7 @@
   "deadline_time": "Waktu Tenggat",
   "reminder": "Pengingat",
 
-  "untitled": "Tanpa Judul"
+  "untitled": "Tanpa Judul",
+
+  "deadline_in_x": "Tenggat waktu diatur {x}"
 }

@@ -117,5 +117,7 @@
   "deadline_time": "Deadline Time",
   "reminder": "Reminder",
 
-  "untitled": "Untitled"
+  "untitled": "Untitled",
+
+  "deadline_in_x": "Deadline set {x}"
 }
