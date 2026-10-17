@@ -1,11 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconExclamationCircle, IconHelp, IconPlus } from "@tabler/icons-react";
+import {
+  IconClockExclamation,
+  IconExclamationCircle,
+  IconHelp,
+  IconPlus,
+} from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { en as chronoEn, id as chronoId } from "chrono-node";
 import { cn } from "cn";
+import { formatDistance } from "date-fns";
+import { enUS as enDFNS } from "date-fns/locale/en-US";
+import { id as idDFNS } from "date-fns/locale/id";
 import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useShallow } from "zustand/react/shallow";
@@ -40,13 +49,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../shadcn/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "../../shadcn/components/ui/tooltip";
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
+
+const CHRONO = {
+  id: chronoId,
+  en: chronoEn,
+} as const;
+
+const DATE_FNS_LOCALE = {
+  id: idDFNS,
+  en: enDFNS,
+} as const;
 
 const Body = () => {
   const t = useTranslations();
+  const locale = useLocale();
   const { translate } = useErrorTranslation();
   const [data, reset] = useNewTask(useShallow((s) => [s.data, s.reset]));
   const [expand, setExpand] = useState(false);
+
+  const [deadlineManual, setDeadlineManual] = useState(false);
 
   const trpc = useTRPC();
   const { toast } = useHandleQueryError();
@@ -121,18 +148,64 @@ const Body = () => {
     >
       {/* Body */}
       <div className="space-y-1.5">
-        <Controller
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <input
-              className="text-3xl font-bold outline-0"
-              placeholder={t("common.name")}
-              {...field}
-              autoComplete="off"
-            />
-          )}
-        />
+        <div className="flex items-center">
+          <motion.div
+            initial={{ width: 0, marginRight: "0px" }}
+            animate={
+              deadlineAt
+                ? { width: "auto", marginRight: "16px" }
+                : { width: 0, marginRight: "0px" }
+            }
+            className="overflow-hidden flex items-center justify-center"
+          >
+            <Tooltip>
+              <TooltipTrigger
+                render={(props) => <IconClockExclamation {...props} />}
+              />
+
+              {deadlineAt && (
+                <TooltipContent>
+                  {t("common.deadline_in_x", {
+                    x: formatDistance(deadlineAt, new Date(), {
+                      addSuffix: true,
+                      locale: DATE_FNS_LOCALE[locale],
+                    }),
+                  })}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </motion.div>
+
+          <Controller
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <input
+                className="text-3xl font-bold outline-0"
+                placeholder={t("common.name")}
+                {...field}
+                autoComplete="off"
+                onChange={(e) => {
+                  const parsed = CHRONO[locale].parseDate(e.target.value);
+
+                  if (parsed && !deadlineManual) {
+                    form.setValue("deadlineAt", parsed, {
+                      shouldValidate: true,
+                    });
+                  }
+
+                  if (!deadlineManual && !parsed) {
+                    form.setValue("deadlineAt", null, {
+                      shouldValidate: true,
+                    });
+                  }
+
+                  field.onChange(e);
+                }}
+              />
+            )}
+          />
+        </div>
 
         <Controller
           control={form.control}
@@ -272,6 +345,12 @@ const Body = () => {
                     form.setValue("deadlineAt", date, {
                       shouldValidate: true,
                     });
+
+                    if (date) {
+                      setDeadlineManual(true);
+                    } else {
+                      setDeadlineManual(false);
+                    }
                   }}
                   isInvalid={!!state?.error?.message}
                   message={
