@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconExclamationCircle, IconPlus } from "@tabler/icons-react";
+import { IconExclamationCircle, IconHelp, IconPlus } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { cn } from "cn";
 import { motion } from "motion/react";
@@ -73,6 +73,7 @@ const Body = () => {
   const categoryId = form.watch("taskCategoryId");
   const startAt = form.watch("startAt");
   const deadlineAt = form.watch("deadlineAt");
+  const reminderAt = form.watch("reminderAt");
 
   const selectedProject = projects.find((p) => p?.id === projectId);
 
@@ -109,6 +110,17 @@ const Body = () => {
   const startTimeBeforeDeadlineError =
     startAt && deadlineAt ? startAt.getTime() > deadlineAt.getTime() : false;
 
+  const reminderBeforeStartError =
+    reminderAt && startAt ? reminderAt.getTime() > startAt.getTime() : false;
+
+  const reminderBeforeDeadlineError =
+    reminderAt && deadlineAt
+      ? reminderAt.getTime() > deadlineAt.getTime()
+      : false;
+
+  const reminderBeforeStartDeadlineError =
+    reminderBeforeStartError || reminderBeforeDeadlineError;
+
   return (
     <form
       className="flex flex-col gap-4 overflow-hidden max-h-full"
@@ -119,47 +131,47 @@ const Body = () => {
       })}
     >
       {/* Body */}
-      <div className="px-1 overflow-hidden">
-        <div className="space-y-1.5">
-          <Controller
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <input
-                className="text-3xl font-bold outline-0"
-                placeholder="Name"
-                {...field}
-                autoComplete="off"
-              />
-            )}
-          />
+      <div className="space-y-1.5">
+        <Controller
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <input
+              className="text-3xl font-bold outline-0"
+              placeholder="Name"
+              {...field}
+              autoComplete="off"
+            />
+          )}
+        />
 
-          <Controller
-            control={form.control}
-            name="description"
-            render={({ field: { value, ...field } }) => (
-              <textarea
-                className="w-full resize-none outline-0 field-sizing-content min-h-14 max-h-28 custom-scrollbar"
-                placeholder="Description"
-                {...field}
-                autoComplete="off"
-                value={value ?? ""}
-              />
-            )}
-          />
-        </div>
+        <Controller
+          control={form.control}
+          name="description"
+          render={({ field: { value, ...field } }) => (
+            <textarea
+              className="w-full resize-none outline-0 field-sizing-content min-h-14 max-h-28 custom-scrollbar"
+              placeholder="Description"
+              {...field}
+              autoComplete="off"
+              value={value ?? ""}
+            />
+          )}
+        />
+      </div>
 
-        <motion.div
-          initial={{ height: 0 }}
-          animate={expand ? { height: "auto" } : { height: 0 }}
-          transition={{
-            duration: 0.5,
-            type: "tween",
-          }}
-          className="space-y-4"
-        >
+      <motion.div
+        initial={{ height: 0 }}
+        animate={expand ? { height: "auto" } : { height: 0 }}
+        transition={{
+          duration: 0.5,
+          type: "tween",
+        }}
+        className="max-h-[50vh] overflow-hidden overflow-y-scroll custom-scrollbar px-2"
+      >
+        <div className="pb-2">
           {/* Project */}
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2 mb-4">
             <Label>Project</Label>
             <Select
               defaultValue={null}
@@ -190,7 +202,7 @@ const Body = () => {
           </div>
 
           {/* Categories */}
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2 mb-4">
             <Label>Category</Label>
             <Select
               disabled={!selectedProject || isPendingSelectedProject}
@@ -232,7 +244,7 @@ const Body = () => {
           </div>
 
           {/* Start At & Deadline At */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 mb-4">
             <Controller
               control={form.control}
               name="startAt"
@@ -282,9 +294,11 @@ const Body = () => {
           </div>
 
           <motion.div
-            initial={{ height: 0 }}
+            initial={{ height: 0, marginBottom: "0px" }}
             animate={
-              startTimeBeforeDeadlineError ? { height: "auto" } : { height: 0 }
+              startTimeBeforeDeadlineError
+                ? { height: "auto", marginBottom: "16px" }
+                : { height: 0, marginBottom: "0px" }
             }
             className="overflow-hidden"
           >
@@ -293,8 +307,58 @@ const Body = () => {
               <span>Start time should happened before deadline time.</span>
             </p>
           </motion.div>
-        </motion.div>
-      </div>
+
+          {/* Reminder At */}
+          <div className="mb-4">
+            <Controller
+              control={form.control}
+              name="reminderAt"
+              render={({ fieldState: state }) => (
+                <NlDatePicker
+                  label="Reminder"
+                  value={form.getValues("reminderAt")}
+                  onValueChange={(date) => {
+                    form.setValue("reminderAt", date, {
+                      shouldValidate: true,
+                    });
+                  }}
+                  isInvalid={!!state.error?.message}
+                  message={
+                    state?.error?.message
+                      ? translate(state.error.message)
+                      : undefined
+                  }
+                />
+              )}
+            />
+          </div>
+
+          <motion.div
+            initial={{ height: 0, marginBottom: "0px" }}
+            animate={
+              reminderBeforeStartDeadlineError
+                ? { height: "auto", marginBottom: "16px" }
+                : { height: 0, marginBottom: "0px" }
+            }
+            className="overflow-hidden"
+          >
+            <p className="p-2 bg-destructive/10 text-xs rounded-md font-light text-destructive flex items-center gap-2">
+              <IconExclamationCircle className="w-4 h-4" />
+              <span>
+                Reminder should be set before start and deadline time.
+              </span>
+            </p>
+          </motion.div>
+        </div>
+
+        <div className="flex items-center">
+          {/* TODO: Implement tusky pedia */}
+          <Button variant={"link"} className={"px-0"} disabled>
+            <IconHelp />
+            Tusky Pedia
+          </Button>
+        </div>
+      </motion.div>
 
       {/* FOOTER */}
       <footer className="flex gap-2">
@@ -317,6 +381,7 @@ const Body = () => {
             <IconPlus />
           </Button>
         </motion.div>
+
         <Button
           variant={"outline"}
           className={"flex-1"}

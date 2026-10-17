@@ -127,7 +127,14 @@ export const etzs = {
         projectOrderKey: this.string().optional().nullable(),
         taskCategoryOrderKey: this.string().optional().nullable(),
 
-        reminderAt: this.date(undefined, "reminderAt").optional().nullable(),
+        reminderAt: this.date(undefined, "reminderAt")
+          .optional()
+          .nullable()
+          .refine((reminder) => {
+            if (!reminder) return true;
+            const now = Date.now();
+            return reminder.getTime() > now;
+          }, etm.invalid_parameter.construct("reminderAt")),
         startAt: this.date(undefined, "startAt").optional().nullable(),
         deadlineAt: this.date(undefined, "deadlineAt")
           .optional()
