@@ -16,5 +16,11 @@
   "NewTaskDialog": {
     "title": "New Task",
     "desc": "Create a new task"
+  },
+
+  "NLDatePicker": {
+    "default_label": "Select Date & Time",
+    "placeholder": "Tomorrow or in 2 days at 4pm",
+    "describer": "Describe when or select your date manually"
   }
 }

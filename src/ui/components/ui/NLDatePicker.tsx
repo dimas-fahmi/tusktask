@@ -1,11 +1,11 @@
 "use client";
 
 import { IconCalendarWeek } from "@tabler/icons-react";
-import { parseDate } from "chrono-node";
+import { en as enChrono, id as idChrono } from "chrono-node";
 import { formatRelative } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
 import { id } from "date-fns/locale/id";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import { Field, FieldLabel } from "../../shadcn/components/ui/field";
 import {
@@ -40,6 +40,11 @@ function formatDate(date: Date | undefined) {
   });
 }
 
+const CHRONO = {
+  id: idChrono,
+  en: enChrono,
+};
+
 export function NlDatePicker({
   label,
   value: _value,
@@ -47,12 +52,13 @@ export function NlDatePicker({
   message,
   isInvalid,
 }: NLDatePickerProps) {
+  const t = useTranslations();
   const locale = useLocale();
 
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const [_date, _setDate] = React.useState<Date | undefined>(
-    parseDate(value) || undefined,
+    CHRONO[locale].parseDate(value) || undefined,
   );
 
   const date = _value ?? _date;
@@ -64,13 +70,13 @@ export function NlDatePicker({
         htmlFor={`${label ?? crypto.randomUUID()}-date-picker`}
         className={`${isInvalid ? "text-destructive" : ""}`}
       >
-        {label ?? "Schedule Date"}
+        {label ?? t("component.NLDatePicker.default_label")}
       </FieldLabel>
       <InputGroup>
         <InputGroupInput
           id={`${label ?? crypto.randomUUID()}-date-picker`}
           value={value}
-          placeholder="Tomorrow or next week"
+          placeholder={t("component.NLDatePicker.placeholder")}
           onChange={(e) => {
             setValue(e.target.value);
 
@@ -78,7 +84,7 @@ export function NlDatePicker({
               setDate(undefined);
             }
 
-            const date = parseDate(e.target.value);
+            const date = CHRONO[locale].parseDate(e.target.value);
 
             if (date) {
               setDate(date);
@@ -107,7 +113,9 @@ export function NlDatePicker({
                     stroke={1}
                     className={`${isInvalid ? "text-destructive" : ""}`}
                   />
-                  <span className="sr-only">Select date</span>
+                  <span className="sr-only">
+                    {t("component.NLDatePicker.default_label")}
+                  </span>
                 </InputGroupButton>
               }
             />
@@ -143,7 +151,7 @@ export function NlDatePicker({
             })}
           </span>
         ) : (
-          <>Describe when or select your date manually</>
+          t("component.NLDatePicker.describer")
         )}
       </div>
     </Field>

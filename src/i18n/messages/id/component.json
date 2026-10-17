@@ -16,5 +16,11 @@
   "NewTaskDialog": {
     "title": "Tugas Baru",
     "desc": "Buat tugas baru"
+  },
+
+  "NLDatePicker": {
+    "default_label": "Pilih Tanggal & Waktu",
+    "placeholder": "Jam 5 sore atau besok jam 2",
+    "describer": "Jelaskan kapan atau pilih tanggalmu secara manual"
   }
 }
