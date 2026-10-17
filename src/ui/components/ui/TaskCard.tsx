@@ -70,22 +70,22 @@ const SharedItems = ({
 
   return (
     <>
-      <ContextMenuGroup>
-        <ContextMenuItem>
-          <div className="space-y-2">
-            <div className="text-xs space-y-2">
-              <p className="font-extralight opacity-70">Deadline At</p>
-              <p>
-                {task?.deadlineAt
-                  ? formatDistance(task.deadlineAt, new Date(), {
-                      addSuffix: true,
-                    })
-                  : "Not set"}
-              </p>
+      {task.deadlineAt && (
+        <ContextMenuGroup>
+          <ContextMenuItem>
+            <div className="space-y-2">
+              <div className="text-xs space-y-2">
+                <p className="font-extralight opacity-70">Deadline At</p>
+                <p>
+                  {formatDistance(task.deadlineAt, new Date(), {
+                    addSuffix: true,
+                  })}
+                </p>
+              </div>
             </div>
-          </div>
-        </ContextMenuItem>
-      </ContextMenuGroup>
+          </ContextMenuItem>
+        </ContextMenuGroup>
+      )}
 
       {/* Task menu */}
       <ContextMenuGroup>
