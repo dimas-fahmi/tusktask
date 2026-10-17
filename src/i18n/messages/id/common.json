@@ -99,12 +99,23 @@
   "upcoming": "Mendatang",
   "calendar": "Kalendar",
   "projects": "Proyek",
+  "project": "Proyek",
+  "select_project": "Pilih Proyek",
+  "select_category": "Pilih Kategori",
+  "without_category": "Tanpa Kategori",
+  "no_category": "Tidak ada kategori",
+  "category": "Kategori",
+  "categories": "Kategori-kategori",
   "more": "Lainya",
   "security": "Keamanan",
   "support": "Bantuan",
   "new_project": "Proyek Baru",
   "my_projects": "Daftar Proyek Saya",
   "no_projects_yet": "Tidak ada proyek",
+
+  "start_time": "Waktu Mulai",
+  "deadline_time": "Waktu Tenggat",
+  "reminder": "Pengingat",
 
   "untitled": "Tanpa Judul"
 }
