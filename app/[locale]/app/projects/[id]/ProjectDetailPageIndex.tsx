@@ -19,7 +19,7 @@ const ProjectDetailPageIndex = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <header className="space-y-1">
+      <header className="space-y-2">
         {isPending ? (
           <Skeleton className="h-9 w-48" />
         ) : (
@@ -43,7 +43,7 @@ const ProjectDetailPageIndex = () => {
         )
       ) : (
         // TODO: Use Proper Loader
-        <>Loading...</>
+        <Skeleton className="w-full h-72" />
       )}
     </div>
   );
