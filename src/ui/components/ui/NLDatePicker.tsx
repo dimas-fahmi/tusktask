@@ -73,7 +73,13 @@ export function NlDatePicker({
           placeholder="Tomorrow or next week"
           onChange={(e) => {
             setValue(e.target.value);
+
+            if (!e.target.value) {
+              setDate(undefined);
+            }
+
             const date = parseDate(e.target.value);
+
             if (date) {
               setDate(date);
             }
