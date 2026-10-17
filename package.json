@@ -29,6 +29,7 @@
     "@vercel/blob": "^2.8.0",
     "better-auth": "^1.7.5",
     "browser-image-compression": "^2.0.2",
+    "chrono-node": "^2.10.3",
     "class-variance-authority": "^0.7.1",
     "client-only": "^0.0.1",
     "cmdk": "^1.1.1",
