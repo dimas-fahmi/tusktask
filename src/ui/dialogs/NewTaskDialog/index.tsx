@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconPlus } from "@tabler/icons-react";
+import { IconExclamationCircle, IconPlus } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { cn } from "cn";
 import { motion } from "motion/react";
@@ -9,10 +9,12 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useShallow } from "zustand/react/shallow";
+import { useErrorTranslation } from "@/src/hooks/useErrorTranslation";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
 import { useNewTask } from "@/src/hooks/useNewTask";
 import { etzs } from "@/src/i18n/errorTranslation/schema";
 import { useTRPC } from "@/src/lib/trpc/client/client";
+import { NlDatePicker } from "../../components/ui/NLDatePicker";
 import { Button } from "../../shadcn/components/ui/button";
 import {
   Dialog,
@@ -41,6 +43,7 @@ import {
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 
 const Body = () => {
+  const { translate } = useErrorTranslation();
   const [data, reset] = useNewTask(useShallow((s) => [s.data, s.reset]));
   const [expand, setExpand] = useState(false);
 
@@ -61,11 +64,15 @@ const Body = () => {
       description: "",
       projectId: data?.projectId ?? "",
       taskCategoryId: data?.taskCategoryId ?? null,
+      deadlineAt: null,
+      startAt: null,
     },
   });
 
   const projectId = form.watch("projectId");
   const categoryId = form.watch("taskCategoryId");
+  const startAt = form.watch("startAt");
+  const deadlineAt = form.watch("deadlineAt");
 
   const selectedProject = projects.find((p) => p?.id === projectId);
 
@@ -99,9 +106,12 @@ const Body = () => {
     },
   });
 
+  const startTimeBeforeDeadlineError =
+    startAt && deadlineAt ? startAt.getTime() > deadlineAt.getTime() : false;
+
   return (
     <form
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 overflow-hidden max-h-full"
       onSubmit={form.handleSubmit((data) => {
         createTask({
           ...data,
@@ -109,7 +119,7 @@ const Body = () => {
       })}
     >
       {/* Body */}
-      <div className="overflow-hidden">
+      <div className="px-1 overflow-hidden">
         <div className="space-y-1.5">
           <Controller
             control={form.control}
@@ -146,7 +156,7 @@ const Body = () => {
             duration: 0.5,
             type: "tween",
           }}
-          className="overflow-hidden space-y-4"
+          className="space-y-4"
         >
           {/* Project */}
           <div className="grid grid-cols-1 gap-2">
@@ -202,7 +212,7 @@ const Body = () => {
                   <SelectGroup>
                     <SelectLabel>Categories</SelectLabel>
 
-                    <SelectItem value={null}>No Category</SelectItem>
+                    <SelectItem value={null}>Without Category</SelectItem>
 
                     {categories?.length ? (
                       categories.map((cat) => (
@@ -211,13 +221,78 @@ const Body = () => {
                         </SelectItem>
                       ))
                     ) : (
-                      <p>No Category</p>
+                      <small className="text-center text-xs font-light opacity-50 block py-1">
+                        No Category
+                      </small>
                     )}
                   </SelectGroup>
                 </SelectContent>
               )}
             </Select>
           </div>
+
+          {/* Start At & Deadline At */}
+          <div className="grid grid-cols-2 gap-2">
+            <Controller
+              control={form.control}
+              name="startAt"
+              render={({ fieldState: state }) => (
+                <NlDatePicker
+                  label="Start At"
+                  value={startAt}
+                  onValueChange={(date) => {
+                    form.clearErrors();
+                    form.setValue("startAt", date, {
+                      shouldValidate: true,
+                    });
+                  }}
+                  isInvalid={
+                    !!state?.error?.message || startTimeBeforeDeadlineError
+                  }
+                  message={
+                    state?.error?.message
+                      ? translate(state?.error.message)
+                      : undefined
+                  }
+                />
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name="deadlineAt"
+              render={({ fieldState: state }) => (
+                <NlDatePicker
+                  label="Deadline At"
+                  value={deadlineAt}
+                  onValueChange={(date) => {
+                    form.setValue("deadlineAt", date, {
+                      shouldValidate: true,
+                    });
+                  }}
+                  isInvalid={!!state?.error?.message}
+                  message={
+                    state?.error?.message
+                      ? translate(state?.error?.message)
+                      : undefined
+                  }
+                />
+              )}
+            />
+          </div>
+
+          <motion.div
+            initial={{ height: 0 }}
+            animate={
+              startTimeBeforeDeadlineError ? { height: "auto" } : { height: 0 }
+            }
+            className="overflow-hidden"
+          >
+            <p className="p-2 bg-destructive/10 text-xs rounded-md font-light text-destructive flex items-center gap-2">
+              <IconExclamationCircle className="w-4 h-4" />
+              <span>Start time should happened before deadline time.</span>
+            </p>
+          </motion.div>
         </motion.div>
       </div>
 
@@ -313,7 +388,7 @@ const NewTaskDialog = () => {
     </Drawer>
   ) : (
     <Dialog {...{ open, onOpenChange }}>
-      <DialogContent>
+      <DialogContent className={"min-w-[678px]"}>
         <DialogHeader className="sr-only">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{desc}</DialogDescription>
