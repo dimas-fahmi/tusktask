@@ -141,6 +141,8 @@ const Body = () => {
     <form
       className="flex flex-col gap-4 overflow-hidden max-h-full"
       onSubmit={form.handleSubmit((data) => {
+        if (!form.formState.isValid) return;
+
         createTask({
           ...data,
         });
