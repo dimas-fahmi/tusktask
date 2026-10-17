@@ -181,7 +181,7 @@ const Body = () => {
             name="name"
             render={({ field }) => (
               <input
-                className="text-3xl font-bold outline-0"
+                className="text-3xl font-bold outline-0 w-full"
                 placeholder={t("common.name")}
                 {...field}
                 autoComplete="off"
