@@ -20,10 +20,8 @@ export const etzs = {
       .max(max, etm.string_max.construct(max));
   },
 
-  date(customMessage?: string, parameter?: string) {
-    return z.date(
-      customMessage ?? etm.invalid_parameter.construct(parameter ?? "Date"),
-    );
+  date(customMessage?: string) {
+    return z.date(customMessage ?? etm.invalid_date.construct());
   },
 
   taskName() {
@@ -111,11 +109,32 @@ export const etzs = {
       .strict();
   },
 
+  reminderAt() {
+    return this.date().refine((data) => {
+      if (!data) return true;
+      return Date.now() < data.getTime();
+    }, etm.reminder_time_before_now.construct());
+  },
+
+  startAt() {
+    return this.date().refine((data) => {
+      if (!data) return true;
+      return Date.now() < data.getTime();
+    }, etm.start_time_before_now.construct());
+  },
+
+  deadlineAt() {
+    return this.date().refine((data) => {
+      if (!data) return true;
+      return Date.now() < data.getTime();
+    }, etm.deadline_time_before_now.construct());
+  },
+
   createTaskInput() {
     return z
       .object({
         name: this.taskName().optional(),
-        description: this.taskName().optional().nullable(),
+        description: this.description().optional().nullable(),
 
         parentId: this.uuidv7(undefined, "parentId").optional().nullable(),
         projectId: z.uuidv7(etm.invalid_parameter.construct("projectId")),
@@ -127,25 +146,9 @@ export const etzs = {
         projectOrderKey: this.string().optional().nullable(),
         taskCategoryOrderKey: this.string().optional().nullable(),
 
-        reminderAt: this.date(undefined, "reminderAt")
-          .optional()
-          .nullable()
-          .refine((reminder) => {
-            if (!reminder) return true;
-            const now = Date.now();
-            return reminder.getTime() > now;
-          }, etm.invalid_parameter.construct("reminderAt")),
-        startAt: this.date(undefined, "startAt").optional().nullable(),
-        deadlineAt: this.date(undefined, "deadlineAt")
-          .optional()
-          .nullable()
-          .refine((check) => {
-            if (!check) return true;
-
-            const now = new Date();
-
-            return now.getTime() < check.getTime();
-          }, etm.invalid_parameter.construct("deadlineAt")),
+        reminderAt: this.reminderAt().optional().nullable(),
+        startAt: this.startAt().optional().nullable(),
+        deadlineAt: this.deadlineAt().optional().nullable(),
       })
       .refine(
         (check) => {
@@ -153,7 +156,7 @@ export const etzs = {
           return check.reminderAt.getTime() < check.startAt.getTime();
         },
         {
-          error: etm.invalid_parameter.construct("reminderAt & startAt"),
+          error: etm.reminder_before_start_deadline.construct(),
           path: ["reminderAt"],
         },
       )
@@ -163,7 +166,7 @@ export const etzs = {
           return check.reminderAt.getTime() < check.deadlineAt.getTime();
         },
         {
-          error: etm.invalid_parameter.construct("reminderAt & deadlineAt"),
+          error: etm.reminder_before_start_deadline.construct(),
           path: ["reminderAt"],
         },
       )
@@ -173,7 +176,7 @@ export const etzs = {
           return check.startAt.getTime() < check.deadlineAt.getTime();
         },
         {
-          error: etm.invalid_parameter.construct("startAt & deadlineAt"),
+          error: etm.start_before_deadline.construct(),
           path: ["startAt"],
         },
       );
@@ -199,7 +202,7 @@ export const etzs = {
       data: z.object({
         name: this.taskName().optional(),
         description: this.description().optional(),
-        completedAt: this.date(undefined, "completedAt"),
+        completedAt: this.date(undefined),
       }),
     });
   },
