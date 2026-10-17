@@ -14,3 +14,14 @@ export class AppError extends Error {
     this.message = message;
   }
 }
+
+export type ErrorObjectWithMessage = {
+  message: string;
+};
+
+export function isErrorObjectWithMessage(
+  obj?: unknown,
+): obj is ErrorObjectWithMessage {
+  const _obj = obj as { message?: string };
+  return !obj ? false : typeof _obj?.message === "string" && !!_obj?.message;
+}
