@@ -12,13 +12,13 @@ export function makeQueryClient() {
       },
 
       dehydrate: {
-        serializeData: SuperJSON.deserialize,
+        serializeData: (bound) => SuperJSON.serialize(bound),
         shouldDehydrateQuery: (q) =>
           defaultShouldDehydrateQuery(q) || q.state.status === "pending",
       },
 
       hydrate: {
-        deserializeData: SuperJSON.deserialize,
+        deserializeData: (bound) => SuperJSON.deserialize(bound),
       },
     },
   });
