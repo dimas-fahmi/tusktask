@@ -127,7 +127,7 @@ const Body = () => {
           render={({ field }) => (
             <input
               className="text-3xl font-bold outline-0"
-              placeholder="Name"
+              placeholder={t("common.name")}
               {...field}
               autoComplete="off"
             />
@@ -140,7 +140,7 @@ const Body = () => {
           render={({ field: { value, ...field } }) => (
             <textarea
               className="w-full resize-none outline-0 field-sizing-content min-h-14 max-h-28 custom-scrollbar"
-              placeholder="Description"
+              placeholder={t("common.description")}
               {...field}
               autoComplete="off"
               value={value ?? ""}
@@ -160,8 +160,8 @@ const Body = () => {
       >
         <div className="pb-2">
           {/* Project */}
-          <div className="grid grid-cols-1 gap-2 mb-4">
-            <Label>Project</Label>
+          <div className="grid grid-cols-1 gap-4 mb-4">
+            <Label>{t("common.project")}</Label>
             <Select
               defaultValue={null}
               disabled={isPendingProjects}
@@ -178,7 +178,7 @@ const Body = () => {
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value={null} disabled>
-                    Select Project
+                    {t("common.select_project")}
                   </SelectItem>
                   {projects.map((project) => (
                     <SelectItem value={project.id} key={project.id}>
@@ -191,8 +191,8 @@ const Body = () => {
           </div>
 
           {/* Categories */}
-          <div className="grid grid-cols-1 gap-2 mb-4">
-            <Label>Category</Label>
+          <div className="grid grid-cols-1 gap-4 mb-4">
+            <Label>{t("common.category")}</Label>
             <Select
               disabled={!selectedProject || isPendingSelectedProject}
               value={categoryId}
@@ -204,16 +204,18 @@ const Body = () => {
             >
               <SelectTrigger size="sm" className={"w-full"}>
                 <SelectValue>
-                  {selectedCategory?.name ?? "Select Category"}
+                  {selectedCategory?.name ?? t("common.select_category")}
                 </SelectValue>
               </SelectTrigger>
 
               {selectedProject && (
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Categories</SelectLabel>
+                    <SelectLabel>{t("common.categories")}</SelectLabel>
 
-                    <SelectItem value={null}>Without Category</SelectItem>
+                    <SelectItem value={null}>
+                      {t("common.without_category")}
+                    </SelectItem>
 
                     {categories?.length ? (
                       categories.map((cat) => (
@@ -223,7 +225,7 @@ const Body = () => {
                       ))
                     ) : (
                       <small className="text-center text-xs font-light opacity-50 block py-1">
-                        No Category
+                        {t("common.no_category")}
                       </small>
                     )}
                   </SelectGroup>
@@ -239,7 +241,7 @@ const Body = () => {
               name="startAt"
               render={({ fieldState: state }) => (
                 <NlDatePicker
-                  label="Start At"
+                  label={t("common.start_time")}
                   value={startAt}
                   onValueChange={(date) => {
                     form.clearErrors();
@@ -264,7 +266,7 @@ const Body = () => {
               name="deadlineAt"
               render={({ fieldState: state }) => (
                 <NlDatePicker
-                  label="Deadline At"
+                  label={t("common.deadline_time")}
                   value={deadlineAt}
                   onValueChange={(date) => {
                     form.setValue("deadlineAt", date, {
@@ -304,7 +306,7 @@ const Body = () => {
               name="reminderAt"
               render={({ fieldState: state }) => (
                 <NlDatePicker
-                  label="Reminder"
+                  label={t("common.reminder")}
                   value={form.getValues("reminderAt")}
                   onValueChange={(date) => {
                     form.setValue("reminderAt", date, {
@@ -361,7 +363,7 @@ const Body = () => {
             reset();
           }}
         >
-          Cancel
+          {t("common.cancel")}
         </Button>
         <Button
           type="submit"
@@ -374,7 +376,7 @@ const Body = () => {
             isCreatingTask
           }
         >
-          Save
+          {t("common.save")}
         </Button>
       </footer>
     </form>
