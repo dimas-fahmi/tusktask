@@ -1,12 +1,13 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import { getEnv } from "@/src/app/env";
 import route from "@/src/app/route";
 import { SEARCH_PARAMS } from "@/src/app/searchParams";
 import { etm, protoValidator } from "@/src/i18n/errorTranslation/init";
 import { serverGetQueryClient, serverTRPC } from "@/src/lib/trpc/server/caller";
+import { Skeleton } from "@/src/ui/shadcn/components/ui/skeleton";
 import ProjectDetailPageIndex from "./ProjectDetailPageIndex";
 
 const getProjectById = cache(async (id: string) => {
@@ -22,7 +23,7 @@ const getProjectById = cache(async (id: string) => {
       const url = new URL(route.myProjects(), getEnv("NEXT_PUBLIC_APP_URL"));
       url.searchParams.append(
         SEARCH_PARAMS.toast.err.key,
-        isTranslateable ? err?.message : etm.unknown_error.construct(),
+        isTranslateable ? err?.message : etm.project_not_found.construct(),
       );
       redirect(url.toString());
     });
@@ -43,6 +44,19 @@ export async function generateMetadata({
   };
 }
 
+const PageSkeleton = () => {
+  return (
+    <div className="space-y-6">
+      <header className="space-y-2">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-78" />
+      </header>
+
+      <Skeleton className="h-78 w-full" />
+    </div>
+  );
+};
+
 const ProjectPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
@@ -50,7 +64,9 @@ const ProjectPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ProjectDetailPageIndex />
+      <Suspense fallback={<PageSkeleton />}>
+        <ProjectDetailPageIndex />
+      </Suspense>
     </HydrationBoundary>
   );
 };

@@ -41,5 +41,7 @@
   "reminder_time_before_now": "Reminder should be set after now",
   "deadline_time_before_now": "Deadline time should be set after now",
   "reminder_before_start_deadline": "Reminder should be set before start and deadline time",
-  "start_before_deadline": "Start time should be set before deadline"
+  "start_before_deadline": "Start time should be set before deadline",
+
+  "project_not_found": "Project Not Found"
 }

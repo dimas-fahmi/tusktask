@@ -40,5 +40,7 @@
   "reminder_time_before_now": "Pengingat harus diatur setelah waktu saat ini",
   "deadline_time_before_now": "Waktu tenggat harus diatur setelah waktu saat ini",
   "reminder_before_start_deadline": "Pengingat harus diatur sebelum waktu mulai dan tenggat",
-  "start_before_deadline": "Waktu mulati harus diatur sebelum waktu tenggat"
+  "start_before_deadline": "Waktu mulati harus diatur sebelum waktu tenggat",
+
+  "project_not_found": "Proyek tidak ditemukan"
 }

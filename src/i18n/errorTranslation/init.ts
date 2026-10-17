@@ -180,6 +180,10 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
     reminder_before_start_deadline: {
       construct: () => serializer({ key: "reminder_before_start_deadline" }),
     },
+
+    project_not_found: {
+      construct: () => serializer({ key: "project_not_found" }),
+    },
   },
 });
 
