@@ -23,6 +23,10 @@ import TimePicker from "./TimePicker";
 
 export type NLDatePickerProps = {
   label?: string;
+  value?: Date | null;
+  onValueChange?: (date?: Date | null) => void;
+  message?: string;
+  isInvalid?: boolean;
 };
 
 function formatDate(date: Date | undefined) {
@@ -36,23 +40,35 @@ function formatDate(date: Date | undefined) {
   });
 }
 
-export function NlDatePicker({ label }: NLDatePickerProps) {
+export function NlDatePicker({
+  label,
+  value: _value,
+  onValueChange: _onValueChange,
+  message,
+  isInvalid,
+}: NLDatePickerProps) {
   const locale = useLocale();
 
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
-  const [date, setDate] = React.useState<Date | undefined>(
+  const [_date, _setDate] = React.useState<Date | undefined>(
     parseDate(value) || undefined,
   );
 
+  const date = _value ?? _date;
+  const setDate = _onValueChange ?? _setDate;
+
   return (
     <Field>
-      <FieldLabel htmlFor="date-optional">
+      <FieldLabel
+        htmlFor={`${label ?? crypto.randomUUID()}-date-picker`}
+        className={`${isInvalid ? "text-destructive" : ""}`}
+      >
         {label ?? "Schedule Date"}
       </FieldLabel>
       <InputGroup>
         <InputGroupInput
-          id="date-optional"
+          id={`${label ?? crypto.randomUUID()}-date-picker`}
           value={value}
           placeholder="Tomorrow or next week"
           onChange={(e) => {
@@ -68,9 +84,10 @@ export function NlDatePicker({ label }: NLDatePickerProps) {
               setOpen(true);
             }
           }}
+          className={`${isInvalid ? "text-destructive" : ""}`}
           autoComplete="off"
         />
-        <InputGroupAddon align="inline-end">
+        <InputGroupAddon align="inline-end" aria-invalid={isInvalid}>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger
               render={
@@ -80,7 +97,10 @@ export function NlDatePicker({ label }: NLDatePickerProps) {
                   size="icon-xs"
                   aria-label="Select date"
                 >
-                  <IconCalendarWeek />
+                  <IconCalendarWeek
+                    stroke={1}
+                    className={`${isInvalid ? "text-destructive" : ""}`}
+                  />
                   <span className="sr-only">Select date</span>
                 </InputGroupButton>
               }
@@ -105,8 +125,12 @@ export function NlDatePicker({ label }: NLDatePickerProps) {
           </Popover>
         </InputGroupAddon>
       </InputGroup>
-      <div className="px-1 text-xs font-light text-muted-foreground">
-        {date ? (
+      <div
+        className={`${isInvalid ? "text-destructive" : "text-muted-foreground"} px-1 text-xs font-light`}
+      >
+        {message ? (
+          message
+        ) : date ? (
           <span className="font-medium">
             {formatRelative(date, new Date(), {
               locale: locale === "en" ? enUS : id,
