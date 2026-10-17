@@ -12,6 +12,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
 import { formatDistance } from "date-fns";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type { TaskSelectType } from "@/src/db/schema/t-task";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
@@ -127,6 +128,7 @@ const SharedItems = ({
 };
 
 const TaskCard = ({ task }: { task: TaskSelectType }) => {
+  const t = useTranslations();
   const [isPending, setIsPending] = useState(false);
 
   return (
@@ -145,7 +147,11 @@ const TaskCard = ({ task }: { task: TaskSelectType }) => {
                 <IconCircle stroke={1} className="w-5 h-5" />
               </button>
               <button type="button" className="text-start">
-                <span>{task.name}</span>
+                <span>
+                  {task.name === "untitled" || !task.name
+                    ? t("common.untitled")
+                    : task.name}
+                </span>
               </button>
             </div>
 
