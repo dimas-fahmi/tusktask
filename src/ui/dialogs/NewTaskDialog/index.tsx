@@ -43,6 +43,7 @@ import {
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
 
 const Body = () => {
+  const t = useTranslations();
   const { translate } = useErrorTranslation();
   const [data, reset] = useNewTask(useShallow((s) => [s.data, s.reset]));
   const [expand, setExpand] = useState(false);
@@ -73,7 +74,6 @@ const Body = () => {
   const categoryId = form.watch("taskCategoryId");
   const startAt = form.watch("startAt");
   const deadlineAt = form.watch("deadlineAt");
-  const reminderAt = form.watch("reminderAt");
 
   const selectedProject = projects.find((p) => p?.id === projectId);
 
@@ -109,17 +109,6 @@ const Body = () => {
 
   const startTimeBeforeDeadlineError =
     startAt && deadlineAt ? startAt.getTime() > deadlineAt.getTime() : false;
-
-  const reminderBeforeStartError =
-    reminderAt && startAt ? reminderAt.getTime() > startAt.getTime() : false;
-
-  const reminderBeforeDeadlineError =
-    reminderAt && deadlineAt
-      ? reminderAt.getTime() > deadlineAt.getTime()
-      : false;
-
-  const reminderBeforeStartDeadlineError =
-    reminderBeforeStartError || reminderBeforeDeadlineError;
 
   return (
     <form
@@ -304,7 +293,7 @@ const Body = () => {
           >
             <p className="p-2 bg-destructive/10 text-xs rounded-md font-light text-destructive flex items-center gap-2">
               <IconExclamationCircle className="w-4 h-4" />
-              <span>Start time should happened before deadline time.</span>
+              <span>{t("error.start_before_deadline")}</span>
             </p>
           </motion.div>
 
@@ -332,23 +321,6 @@ const Body = () => {
               )}
             />
           </div>
-
-          <motion.div
-            initial={{ height: 0, marginBottom: "0px" }}
-            animate={
-              reminderBeforeStartDeadlineError
-                ? { height: "auto", marginBottom: "16px" }
-                : { height: 0, marginBottom: "0px" }
-            }
-            className="overflow-hidden"
-          >
-            <p className="p-2 bg-destructive/10 text-xs rounded-md font-light text-destructive flex items-center gap-2">
-              <IconExclamationCircle className="w-4 h-4" />
-              <span>
-                Reminder should be set before start and deadline time.
-              </span>
-            </p>
-          </motion.div>
         </div>
 
         <div className="flex items-center">
