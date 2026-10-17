@@ -121,5 +121,9 @@
 
   "deadline_in_x": "Deadline set {x}",
 
-  "new_category": "New Category"
+  "new_category": "New Category",
+
+  "task_menu": "Task Menu",
+  "cross_out": "Cross Out",
+  "edit": "Edit"
 }

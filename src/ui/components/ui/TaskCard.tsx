@@ -12,7 +12,9 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
 import { formatDistance } from "date-fns";
-import { useTranslations } from "next-intl";
+import { enUS as enDFNSL } from "date-fns/locale/en-US";
+import { id as idDFNSL } from "date-fns/locale/id";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import type { TaskSelectType } from "@/src/db/schema/t-task";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
@@ -33,6 +35,11 @@ import {
   DropdownMenuTrigger,
 } from "../../shadcn/components/ui/dropdown-menu";
 
+const DATE_FNS_LOCALE = {
+  en: enDFNSL,
+  id: idDFNSL,
+} as const;
+
 const SharedItems = ({
   task,
   isPending,
@@ -42,6 +49,8 @@ const SharedItems = ({
   isPending: boolean;
   setIsPending: (val: boolean) => void;
 }) => {
+  const t = useTranslations();
+  const locale = useLocale();
   const trpc = useTRPC();
   const { toast } = useHandleQueryError();
 
@@ -75,10 +84,12 @@ const SharedItems = ({
           <ContextMenuItem>
             <div className="space-y-2">
               <div className="text-xs space-y-2">
-                <p className="font-extralight opacity-70">Deadline At</p>
-                <p>
+                <p className="font-extralight opacity-70">
+                  {t("common.deadline_time")}
+                </p>
+                <p className="capitalize">
                   {formatDistance(task.deadlineAt, new Date(), {
-                    addSuffix: true,
+                    locale: DATE_FNS_LOCALE[locale],
                   })}
                 </p>
               </div>
@@ -89,24 +100,24 @@ const SharedItems = ({
 
       {/* Task menu */}
       <ContextMenuGroup>
-        <ContextMenuLabel>Task Menu</ContextMenuLabel>
+        <ContextMenuLabel>{t("common.task_menu")}</ContextMenuLabel>
 
         <ContextMenuItem disabled={isPending}>
-          <IconArrowUp /> <span>Open</span>
+          <IconArrowUp /> <span>{t("common.open")}</span>
         </ContextMenuItem>
 
         <ContextMenuItem disabled={isPending}>
-          <IconCircleCheck /> <span>Scratch</span>
+          <IconCircleCheck /> <span>{t("common.cross_out")}</span>
         </ContextMenuItem>
 
         <ContextMenuItem disabled={isPending}>
-          <IconPencil /> <span>Edit</span>
+          <IconPencil /> <span>{t("common.edit")}</span>
         </ContextMenuItem>
 
         <ContextMenuSeparator />
 
         <ContextMenuItem disabled={isPending}>
-          <IconArchive /> <span>Archive</span>
+          <IconArchive /> <span>{t("common.archive")}</span>
         </ContextMenuItem>
 
         <ContextMenuSeparator />
@@ -120,7 +131,7 @@ const SharedItems = ({
             });
           }}
         >
-          <IconTrash /> <span>Delete</span>
+          <IconTrash /> <span>{t("common.delete")}</span>
         </ContextMenuItem>
       </ContextMenuGroup>
     </>

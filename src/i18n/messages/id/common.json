@@ -121,5 +121,9 @@
 
   "deadline_in_x": "Tenggat waktu diatur {x}",
 
-  "new_category": "Kategori Baru"
+  "new_category": "Kategori Baru",
+
+  "task_menu": "Menu Tugas",
+  "cross_out": "Coret",
+  "edit": "Rubah"
 }
