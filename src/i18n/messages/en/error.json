@@ -33,5 +33,13 @@
   "no_canvas_context": "Browser failed to provide context for canvas, could be caused by an old browser environment.",
 
   "not_found": "Not found",
-  "unauthorized": "You doesn't have permission to do this operation"
+  "unauthorized": "You doesn't have permission to do this operation",
+
+  "invalid_date": "Invalid date",
+
+  "start_time_before_now": "Start time should be set after now",
+  "reminder_time_before_now": "Reminder should be set after now",
+  "deadline_time_before_now": "Deadline time should be set after now",
+  "reminder_before_start_deadline": "Reminder should be set before start and deadline time",
+  "start_before_deadline": "Start time should be set before deadline"
 }

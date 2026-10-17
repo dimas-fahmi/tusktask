@@ -156,6 +156,30 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
     unauthorized: {
       construct: () => serializer({ key: "unauthorized" }),
     },
+
+    invalid_date: {
+      construct: () => serializer({ key: "invalid_date" }),
+    },
+
+    start_time_before_now: {
+      construct: () => serializer({ key: "start_time_before_now" }),
+    },
+
+    reminder_time_before_now: {
+      construct: () => serializer({ key: "reminder_time_before_now" }),
+    },
+
+    deadline_time_before_now: {
+      construct: () => serializer({ key: "deadline_time_before_now" }),
+    },
+
+    start_before_deadline: {
+      construct: () => serializer({ key: "start_before_deadline" }),
+    },
+
+    reminder_before_start_deadline: {
+      construct: () => serializer({ key: "reminder_before_start_deadline" }),
+    },
   },
 });
 
