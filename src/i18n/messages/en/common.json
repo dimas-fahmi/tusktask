@@ -119,5 +119,7 @@
 
   "untitled": "Untitled",
 
-  "deadline_in_x": "Deadline set {x}"
+  "deadline_in_x": "Deadline set {x}",
+
+  "new_category": "New Category"
 }

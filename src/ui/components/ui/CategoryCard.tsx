@@ -323,7 +323,7 @@ const CategoryCard = ({
                       });
                     }}
                   >
-                    <IconPlus /> <span>New Task</span>
+                    <IconPlus /> <span>{t("common.new_task")}</span>
                   </Button>
                 </div>
               </motion.div>

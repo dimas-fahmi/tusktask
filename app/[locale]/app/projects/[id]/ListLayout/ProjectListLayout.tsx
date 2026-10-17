@@ -3,6 +3,7 @@ import { isSortable } from "@dnd-kit/react/sortable";
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type { CompleteProjectType } from "@/src/db/schema/t-project";
 import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
@@ -17,6 +18,7 @@ const ProjectListLayout = ({
 }: {
   data: CompleteProjectType;
 }) => {
+  const t = useTranslations();
   const [isDragging, setIsDragging] = useState<string | null>(null);
 
   const trpc = useTRPC();
@@ -65,7 +67,7 @@ const ProjectListLayout = ({
             });
           }}
         >
-          <IconPlus /> <span>New Task</span>
+          <IconPlus /> <span>{t("common.new_task")}</span>
         </Button>
       </motion.div>
 
@@ -116,7 +118,7 @@ const ProjectListLayout = ({
             });
           }}
         >
-          <IconPlus /> <span>New Category</span>
+          <IconPlus /> <span>{t("common.new_category")}</span>
         </Button>
       </motion.div>
     </div>
