@@ -44,7 +44,8 @@ export const useTaskActions = ({
   const deleteMutation = useMutation({
     ...trpc.task.deleteTask.mutationOptions(),
     onMutate: (variables, ctx) => {
-      let projectDetail_OU: {
+      // Optimistic Updates States
+      let ou_projectDetail: {
         oldData: CompleteProjectType | undefined;
         queryKey: unknown[];
       } | null = null;
@@ -63,40 +64,40 @@ export const useTaskActions = ({
           queryKey: projectDetailQC,
         });
 
-        const oldData = ctx.client.getQueryData(projectDetailQC);
+        const projectOldData = ctx.client.getQueryData(projectDetailQC);
 
-        const updateTaskCategories = () => {
-          const taskCategories = oldData?.taskCategories || [];
+        if (projectOldData) {
+          const updateTaskCategories = () => {
+            const taskCategories = projectOldData?.taskCategories || [];
 
-          if (task.taskCategoryId) {
-            const taskCategory: TaskCategoryWithTasks | undefined =
-              taskCategories.find((cat) => cat.id === task.taskCategoryId);
+            if (task.taskCategoryId) {
+              const taskCategory: TaskCategoryWithTasks | undefined =
+                taskCategories.find((cat) => cat.id === task.taskCategoryId);
 
-            if (taskCategory) {
-              const newTaskCategory: TaskCategoryWithTasks = {
-                ...taskCategory,
-                tasks: taskCategory.tasks.filter(
-                  (_task) => _task.id !== variables.taskId,
-                ),
-              };
+              if (taskCategory) {
+                const newTaskCategory: TaskCategoryWithTasks = {
+                  ...taskCategory,
+                  tasks: taskCategory.tasks.filter(
+                    (_task) => _task.id !== variables.taskId,
+                  ),
+                };
 
-              return [
-                ...taskCategories.filter(
-                  (cat) => cat.id !== task.taskCategoryId,
-                ),
-                newTaskCategory,
-              ];
+                return [
+                  ...taskCategories.filter(
+                    (cat) => cat.id !== task.taskCategoryId,
+                  ),
+                  newTaskCategory,
+                ];
+              }
             }
-          }
 
-          return taskCategories;
-        };
+            return taskCategories;
+          };
 
-        if (oldData) {
           ctx.client.setQueryData(projectDetailQC, () => {
             return {
-              ...oldData,
-              uncategorizedTasks: oldData.uncategorizedTasks.filter(
+              ...projectOldData,
+              uncategorizedTasks: projectOldData.uncategorizedTasks.filter(
                 (_task) => _task.id !== variables.taskId,
               ),
               taskCategories: updateTaskCategories(),
@@ -104,16 +105,18 @@ export const useTaskActions = ({
           });
         }
 
-        projectDetail_OU = {
-          oldData,
+        ou_projectDetail = {
+          oldData: projectOldData,
           queryKey: projectDetailQC,
         };
+
+        // ------ END OF projectDetail optimistic update -------
       }
 
       setIsPending?.(true);
 
       return {
-        projectDetail_OU,
+        ou_projectDetail,
       };
     },
 
@@ -121,17 +124,24 @@ export const useTaskActions = ({
       toast("task-deletion-failed", err, true);
 
       /**
-       * Revert changes: projectDetail
+       * Rollback: projectDetail
        */
-      if (omr?.projectDetail_OU) {
+      if (omr?.ou_projectDetail) {
         ctx.client.setQueryData(
-          omr.projectDetail_OU.queryKey,
-          omr.projectDetail_OU.oldData,
+          omr.ou_projectDetail.queryKey,
+          omr.ou_projectDetail.oldData,
         );
       }
     },
 
-    onSuccess: () => {},
+    onSuccess: (_d, variables, _omr, ctx) => {
+      // Delete Task Detail Data
+      ctx.client.removeQueries({
+        queryKey: trpc.task.getTaskDetail.queryKey({
+          taskId: variables.taskId,
+        }),
+      });
+    },
 
     onSettled: (_d, _e, _v, _omr, ctx) => {
       if (task) {
@@ -167,6 +177,7 @@ export const useTaskActions = ({
   };
 
   return {
+    // Delete Action
     delete: () => {
       guard();
       return deleteMutation;
