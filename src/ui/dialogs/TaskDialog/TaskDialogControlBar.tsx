@@ -25,7 +25,7 @@ const TaskDialogControlBar = ({
   const t = useTranslations();
   const isMobile = useIsMobile();
 
-  const { deleteMutation: deleteTask } = useTaskActions({ task: taskDetail });
+  const { delete: deleteTask } = useTaskActions({ task: taskDetail });
 
   return (
     <div className="px-4 py-2 md:bg-primary md:text-primary-foreground text-xs flex items-center justify-between gap-4">
@@ -78,7 +78,7 @@ const TaskDialogControlBar = ({
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => {
-                  deleteTask.mutate(
+                  deleteTask().mutate(
                     {
                       taskId: taskDetail.id,
                     },

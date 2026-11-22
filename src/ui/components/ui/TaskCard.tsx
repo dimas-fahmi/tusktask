@@ -53,7 +53,7 @@ const SharedItems = ({
 
   const TaskDialog = useTaskDialog((s) => s.openDialog);
 
-  const { deleteMutation: deleteTask } = useTaskActions({ task, setIsPending });
+  const { delete: deleteTask } = useTaskActions({ task, setIsPending });
 
   return (
     <>
@@ -109,7 +109,7 @@ const SharedItems = ({
           disabled={isPending}
           variant="destructive"
           onClick={() => {
-            deleteTask.mutate({
+            deleteTask().mutate({
               taskId: task.id,
             });
           }}
