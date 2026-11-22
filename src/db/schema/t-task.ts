@@ -9,9 +9,9 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { appSchema, TIMESTAMPZ_CONFIG } from "./module";
-import { project } from "./t-project";
-import { taskCategory } from "./t-taskCategory";
-import { user } from "./t-user";
+import { type ProjectSelectType, project } from "./t-project";
+import { type TaskCategorySelectType, taskCategory } from "./t-taskCategory";
+import { type SanitizedUserType, user } from "./t-user";
 
 export const task = appSchema.table(
   "task",
@@ -90,5 +90,12 @@ export const task = appSchema.table(
   ],
 );
 
-export type TaskInserType = typeof task.$inferInsert;
+export type TaskInsertType = typeof task.$inferInsert;
 export type TaskSelectType = typeof task.$inferSelect;
+
+export type TaskDetailType = TaskSelectType & {
+  project: ProjectSelectType;
+  category: TaskCategorySelectType | null;
+  user: SanitizedUserType;
+  subtasks: TaskSelectType[];
+};

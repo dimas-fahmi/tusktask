@@ -22,7 +22,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         fontBody.variable,
       )}
     >
-      <body className="min-h-full flex flex-col custom-scrollbar">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col custom-scrollbar"
+      >
         <TRPCReactProvider>
           <TooltipProvider delay={500}>{children}</TooltipProvider>
           <ReactQueryDevtools />

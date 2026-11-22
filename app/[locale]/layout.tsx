@@ -10,6 +10,7 @@ import NewTaskDialog from "@/src/ui/dialogs/NewTaskDialog";
 import ProjectSettingsDialog from "@/src/ui/dialogs/ProjectSettingsDialog";
 import QuickSettingsDialog from "@/src/ui/dialogs/QuickSettingsDialog";
 import RankDialog from "@/src/ui/dialogs/RankDialog";
+import TaskDialog from "@/src/ui/dialogs/TaskDialog";
 import { Toaster } from "@/src/ui/shadcn/components/ui/toast";
 
 const LocaleLayout = ({
@@ -36,6 +37,7 @@ const LocaleLayout = ({
       <ConfirmationDialog />
       <ProjectSettingsDialog />
       <NewTaskDialog />
+      <TaskDialog />
     </NextIntlClientProvider>
   );
 };

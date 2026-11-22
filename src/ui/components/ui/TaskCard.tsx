@@ -9,7 +9,6 @@ import {
   IconPencil,
   IconTrash,
 } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
 import { formatDistance } from "date-fns";
 import { enUS as enDFNSL } from "date-fns/locale/en-US";
@@ -17,8 +16,8 @@ import { id as idDFNSL } from "date-fns/locale/id";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import type { TaskSelectType } from "@/src/db/schema/t-task";
-import { useHandleQueryError } from "@/src/hooks/useHandleQueryError";
-import { useTRPC } from "@/src/lib/trpc/client/client";
+import { useTaskActions } from "@/src/hooks/useTaskActions";
+import { useTaskDialog } from "@/src/hooks/useTaskDialog";
 import { Button } from "../../shadcn/components/ui/button";
 import {
   ContextMenu,
@@ -51,31 +50,10 @@ const SharedItems = ({
 }) => {
   const t = useTranslations();
   const locale = useLocale();
-  const trpc = useTRPC();
-  const { toast } = useHandleQueryError();
 
-  const { mutate: deleteTask } = useMutation({
-    ...trpc.task.deleteTask.mutationOptions(),
-    onMutate: () => {
-      setIsPending(true);
-    },
+  const TaskDialog = useTaskDialog((s) => s.openDialog);
 
-    onError: (err) => {
-      toast("task-deletion-failed", err, true);
-    },
-
-    onSuccess: () => {},
-
-    onSettled: (_d, _e, _v, _omr, ctx) => {
-      ctx.client.invalidateQueries({
-        queryKey: trpc.project.getProjectDetail.queryKey({
-          id: task.projectId,
-        }),
-      });
-
-      setIsPending(false);
-    },
-  });
+  const { deleteMutation: deleteTask } = useTaskActions({ task, setIsPending });
 
   return (
     <>
@@ -102,7 +80,12 @@ const SharedItems = ({
       <ContextMenuGroup>
         <ContextMenuLabel>{t("common.task_menu")}</ContextMenuLabel>
 
-        <ContextMenuItem disabled={isPending}>
+        <ContextMenuItem
+          disabled={isPending}
+          onClick={() => {
+            TaskDialog(task.id);
+          }}
+        >
           <IconArrowUp /> <span>{t("common.open")}</span>
         </ContextMenuItem>
 
@@ -126,7 +109,7 @@ const SharedItems = ({
           disabled={isPending}
           variant="destructive"
           onClick={() => {
-            deleteTask({
+            deleteTask.mutate({
               taskId: task.id,
             });
           }}
@@ -142,6 +125,8 @@ const TaskCard = ({ task }: { task: TaskSelectType }) => {
   const t = useTranslations();
   const [isPending, setIsPending] = useState(false);
 
+  const taskDialog = useTaskDialog((s) => s.openDialog);
+
   return (
     <ContextMenu>
       <ContextMenuTrigger
@@ -154,10 +139,18 @@ const TaskCard = ({ task }: { task: TaskSelectType }) => {
               <button
                 type="button"
                 className={cn("text-start flex items-center gap-2")}
+                disabled={isPending}
               >
                 <IconCircle stroke={1} className="w-5 h-5" />
               </button>
-              <button type="button" className="text-start">
+              <button
+                type="button"
+                className="text-start"
+                disabled={isPending}
+                onClick={() => {
+                  taskDialog(task.id);
+                }}
+              >
                 <span>
                   {task.name === "untitled" || !task.name
                     ? t("common.untitled")

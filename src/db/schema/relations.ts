@@ -97,6 +97,10 @@ export const _relations = defineRelations(schema, (r) => ({
       from: r.task.taskCategoryId,
       to: r.taskCategory.id,
     }),
+    subtasks: r.many.task({
+      from: r.task.id,
+      to: r.task.parentId,
+    }),
   },
 
   taskCategory: {
