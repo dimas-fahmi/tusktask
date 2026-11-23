@@ -79,7 +79,7 @@ const TaskDialogInfo = ({
       <TaskDialogControlSection title="Start">
         {taskDetail?.startAt ? (
           <TimeCard
-            formatted={formatDate(taskDetail.startAt, "PPpp", {
+            formatted={formatDate(taskDetail.startAt, "PPp", {
               locale: dateLocale[locale],
             })}
             distance={formatDistance(taskDetail.startAt, now, {
@@ -96,7 +96,7 @@ const TaskDialogInfo = ({
       <TaskDialogControlSection title="Deadline">
         {taskDetail?.deadlineAt ? (
           <TimeCard
-            formatted={formatDate(taskDetail.deadlineAt, "PPpp", {
+            formatted={formatDate(taskDetail.deadlineAt, "PPp", {
               locale: dateLocale[locale],
             })}
             distance={formatDistance(taskDetail.deadlineAt, now, {
