@@ -88,6 +88,7 @@ export const _relations = defineRelations(schema, (r) => ({
     user: r.one.user({
       from: r.task.userId,
       to: r.user.id,
+      optional: false,
     }),
     project: r.one.project({
       from: r.task.projectId,
