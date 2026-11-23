@@ -1,4 +1,10 @@
+"use client";
+
 import { IconDots } from "@tabler/icons-react";
+import { formatDate, formatDistance } from "date-fns";
+import { enUS } from "date-fns/locale/en-US";
+import { id } from "date-fns/locale/id";
+import { useLocale, useTranslations } from "next-intl";
 import type { GetTaskDetailProcResult } from "@/src/lib/trpc/router/task/getTaskDetail";
 import {
   Avatar,
@@ -8,11 +14,38 @@ import {
 import { Button } from "../../shadcn/components/ui/button";
 import TaskDialogControlSection from "./TaskDialogControlSection";
 
+const dateLocale = {
+  en: enUS,
+  id: id,
+};
+
+const TimeCard = ({
+  distance,
+  formatted,
+}: {
+  formatted: string;
+  distance: string;
+}) => {
+  return (
+    <div>
+      <p className="text-sm font-semibold">{formatted}</p>
+      <small className="text-xs font-extralight opacity-80">
+        {`${distance.charAt(0).toUpperCase()}${distance.slice(1)}`}
+      </small>
+    </div>
+  );
+};
+
 const TaskDialogInfo = ({
   taskDetail,
 }: {
   taskDetail: GetTaskDetailProcResult;
 }) => {
+  const locale = useLocale();
+  const t = useTranslations();
+
+  const now = Date.now();
+
   return (
     <>
       {/* Owner */}
@@ -44,12 +77,36 @@ const TaskDialogInfo = ({
 
       {/* Start At */}
       <TaskDialogControlSection title="Start">
-        <span>Not Set</span>
+        {taskDetail?.startAt ? (
+          <TimeCard
+            formatted={formatDate(taskDetail.startAt, "PPpp", {
+              locale: dateLocale[locale],
+            })}
+            distance={formatDistance(taskDetail.startAt, now, {
+              locale: dateLocale[locale],
+              addSuffix: true,
+            })}
+          />
+        ) : (
+          t("common.not_set")
+        )}
       </TaskDialogControlSection>
 
       {/* Deadline At */}
       <TaskDialogControlSection title="Deadline">
-        <span>Not Set</span>
+        {taskDetail?.deadlineAt ? (
+          <TimeCard
+            formatted={formatDate(taskDetail.deadlineAt, "PPpp", {
+              locale: dateLocale[locale],
+            })}
+            distance={formatDistance(taskDetail.deadlineAt, now, {
+              locale: dateLocale[locale],
+              addSuffix: true,
+            })}
+          />
+        ) : (
+          t("common.not_set")
+        )}
       </TaskDialogControlSection>
 
       {/* Priority */}
