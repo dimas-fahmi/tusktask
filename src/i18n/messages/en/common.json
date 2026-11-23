@@ -125,5 +125,7 @@
 
   "task_menu": "Task Menu",
   "cross_out": "Cross Out",
-  "edit": "Edit"
+  "edit": "Edit",
+
+  "not_set": "Not Set"
 }
