@@ -202,7 +202,9 @@ export const etzs = {
       data: z.object({
         name: this.taskName().optional(),
         description: this.description().optional(),
-        completedAt: this.date(undefined),
+        completedAt: this.date().optional(),
+        startAt: this.date().optional(),
+        deadlineAt: this.date().optional(),
       }),
     });
   },
