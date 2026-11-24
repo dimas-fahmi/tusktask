@@ -33,8 +33,10 @@ import {
   IconMicrophone,
   IconMusic,
   IconPalette,
+  IconPencil,
   IconPhone,
   IconPlane,
+  IconPlus,
   type IconProps,
   IconSchool,
   IconSearch,
@@ -47,6 +49,7 @@ import {
   IconUser,
   IconVideo,
   IconWallet,
+  IconX,
   type TablerIcon,
 } from "@tabler/icons-react";
 
@@ -197,6 +200,16 @@ export const ICONS = {
 
   help: {
     icon: IconHelpCircle,
+  },
+
+  plus: {
+    icon: IconPlus,
+  },
+  x: {
+    icon: IconX,
+  },
+  pencil: {
+    icon: IconPencil,
   },
 } as const satisfies Record<
   string,

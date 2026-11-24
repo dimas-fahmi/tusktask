@@ -5,6 +5,7 @@ import ToastURLProvider from "@/src/provider/toastURLProvider";
 import UserPreferencesProvider from "@/src/provider/userPreferencesProvider";
 import ImageCropperDialog from "@/src/ui/components/Prefab/ImageCropperDialog";
 import ConfirmationDialog from "@/src/ui/dialogs/ConfirmationDialog";
+import DatePickerDialog from "@/src/ui/dialogs/DatePickerDialog";
 import NewProjectDialog from "@/src/ui/dialogs/NewProjectDialog";
 import NewTaskDialog from "@/src/ui/dialogs/NewTaskDialog";
 import ProjectSettingsDialog from "@/src/ui/dialogs/ProjectSettingsDialog";
@@ -38,6 +39,7 @@ const LocaleLayout = ({
       <ProjectSettingsDialog />
       <NewTaskDialog />
       <TaskDialog />
+      <DatePickerDialog />
     </NextIntlClientProvider>
   );
 };

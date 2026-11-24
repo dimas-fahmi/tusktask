@@ -42,7 +42,7 @@ const Body = () => {
       <TaskDialogControlBar setOpen={setOpen} taskDetail={taskDetail} />
 
       {/* Main */}
-      <div className="md:grid md:grid-cols-[auto_270px] gap-4 p-4">
+      <div className="md:grid md:grid-cols-[auto_280px] gap-4 p-4">
         {/* Main Task Panel */}
         <TaskDialogMainPanel taskDetail={taskDetail} setOpen={setOpen} />
 

@@ -19,7 +19,7 @@ const TaskDialogControlSection = ({
     >
       <button
         type="button"
-        className="text-center flex items-center justify-between gap-4"
+        className="text-center flex items-center justify-between gap-4 px-3"
         onClick={() => {
           setExpand(!expand);
         }}
