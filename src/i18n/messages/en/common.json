@@ -127,5 +127,13 @@
   "cross_out": "Cross Out",
   "edit": "Edit",
 
-  "not_set": "Not Set"
+  "not_set": "Not Set",
+
+  "update_deadline_time": "Update deadline time",
+  "update_start_time": "Update start time",
+  "update_reminder_time": "Update reminder time",
+  "update_priority": "Update priority",
+
+  "set_priority": "Set Priority",
+  "priority": "Priority"
 }

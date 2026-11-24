@@ -127,5 +127,13 @@
   "cross_out": "Coret",
   "edit": "Rubah",
 
-  "not_set": "Tidak Diatur"
+  "not_set": "Tidak Diatur",
+
+  "update_deadline_time": "Perbarui tenggat waktu",
+  "update_start_time": "Perbarui waktu mulai",
+  "update_reminder_time": "Perbarui waktu pengingat",
+  "update_priority": "Perbarui prioritas",
+
+  "set_priority": "Atur Prioritas",
+  "priority": "Prioritas"
 }
