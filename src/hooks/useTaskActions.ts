@@ -4,6 +4,8 @@ import type { TaskSelectType } from "../db/schema/t-task";
 import type { TaskCategoryWithTasks } from "../db/schema/t-taskCategory";
 import { etm } from "../i18n/errorTranslation/init";
 import { useTRPC } from "../lib/trpc/client/client";
+import type { GetTaskDetailProcResult } from "../lib/trpc/router/task/getTaskDetail";
+import type { OptimisticUpdateState } from "../types/types";
 import { Toaster } from "../utils/clientOnly/triggerToast";
 import { useErrorTranslation } from "./useErrorTranslation";
 import { useHandleQueryError } from "./useHandleQueryError";
@@ -43,6 +45,52 @@ export const useTaskActions = ({
   // Update Task
   const updateMutation = useMutation({
     ...trpc.task.updateTask.mutationOptions(),
+
+    onMutate: (data, ctx) => {
+      let ou_taskDetail: OptimisticUpdateState<GetTaskDetailProcResult> = null;
+
+      if (task) {
+        const taskDetailQK = trpc.task.getTaskDetail.queryKey({
+          taskId: task.id,
+        });
+        const taskDetailOldData = ctx.client.getQueryData(taskDetailQK);
+
+        if (taskDetailOldData) {
+          ctx.client.setQueryData(taskDetailQK, () => {
+            return {
+              ...taskDetailOldData,
+              ...data,
+            };
+          });
+        }
+
+        ou_taskDetail = {
+          oldData: taskDetailOldData,
+          queryKey: taskDetailQK,
+        };
+      }
+
+      return {
+        ou_taskDetail,
+      };
+    },
+
+    onError: (err, _var, omr, ctx) => {
+      toast("task-update-failed", err, true);
+
+      /**
+       * Rollback: taskDetail
+       */
+      if (omr?.ou_taskDetail) {
+        ctx.client.setQueryData(
+          omr.ou_taskDetail.queryKey,
+          omr.ou_taskDetail.oldData,
+        );
+      }
+    },
+
+    onSuccess: () => {},
+
     onSettled: (_d, _err, _var, _omr, ctx) => {
       if (task) {
         ctx.client.invalidateQueries({
@@ -59,10 +107,7 @@ export const useTaskActions = ({
     ...trpc.task.deleteTask.mutationOptions(),
     onMutate: (variables, ctx) => {
       // Optimistic Updates States
-      let ou_projectDetail: {
-        oldData: CompleteProjectType | undefined;
-        queryKey: unknown[];
-      } | null = null;
+      let ou_projectDetail: OptimisticUpdateState<CompleteProjectType> = null;
 
       if (task) {
         /**
