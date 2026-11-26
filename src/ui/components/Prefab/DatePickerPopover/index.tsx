@@ -137,12 +137,14 @@ export const DatePickerPopover = ({
           <div className="grid px-1 grid-cols-1 gap-1 border-b pb-2">
             <MenuItem
               onClick={(e) => {
-                onToday?.(date, e);
-                onValueChange?.(date, e);
+                const newValue = getDateTimes().today;
+
+                onToday?.(newValue, e);
+                onValueChange?.(newValue, e);
 
                 if (e.defaultPrevented) return;
                 onOpenChange(false);
-                setDate(getDateTimes().today);
+                setDate(newValue);
               }}
             >
               <IconCalendarDown /> <span>{t("common.today")}</span>
@@ -150,46 +152,52 @@ export const DatePickerPopover = ({
 
             <MenuItem
               onClick={(e) => {
-                onTomorrow?.(date, e);
-                onValueChange?.(date, e);
+                const newValue = getDateTimes().tomorrow;
+
+                onTomorrow?.(newValue, e);
+                onValueChange?.(newValue, e);
 
                 if (e.defaultPrevented) return;
                 onOpenChange(false);
-                setDate(getDateTimes().tomorrow);
+                setDate(newValue);
               }}
             >
               <IconCalendarUp /> <span>{t("common.tomorrow")}</span>
             </MenuItem>
             <MenuItem
               onClick={(e) => {
-                onWeekend?.(date, e);
-                onValueChange?.(date, e);
+                const newValue = getDateTimes().weekend;
+
+                onWeekend?.(newValue, e);
+                onValueChange?.(newValue, e);
 
                 if (e.defaultPrevented) return;
                 onOpenChange(false);
-                setDate(getDateTimes().weekend);
+                setDate(newValue);
               }}
             >
               <IconSofa /> <span>{t("common.weekend")}</span>
             </MenuItem>
             <MenuItem
               onClick={(e) => {
-                onNextWeek?.(date, e);
-                onValueChange?.(date, e);
+                const newValue = getDateTimes().nextWeek;
+
+                onNextWeek?.(newValue, e);
+                onValueChange?.(newValue, e);
 
                 if (e.defaultPrevented) return;
                 onOpenChange(false);
-                setDate(getDateTimes().nextWeek);
+                setDate(newValue);
               }}
             >
-              <IconBed /> <span>{t("common.weekend")}</span>
+              <IconBed /> <span>{t("common.next_week")}</span>
             </MenuItem>
 
             <MenuItem
               disabled={!date}
               onClick={(e) => {
-                onNoDate?.(date, e);
-                onValueChange?.(date, e);
+                onNoDate?.(null, e);
+                onValueChange?.(null, e);
 
                 if (e.defaultPrevented) return;
                 onOpenChange(false);
