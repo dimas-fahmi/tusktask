@@ -135,5 +135,10 @@
   "update_priority": "Perbarui prioritas",
 
   "set_priority": "Atur Prioritas",
-  "priority": "Prioritas"
+  "priority": "Prioritas",
+
+  "tomorrow": "Besok",
+  "weekend": "Akhir minggu",
+  "next_week": "Minggu depan",
+  "unset_date_time": "Hapus tanggal & waktu"
 }

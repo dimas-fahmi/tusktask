@@ -135,5 +135,10 @@
   "update_priority": "Update priority",
 
   "set_priority": "Set Priority",
-  "priority": "Priority"
+  "priority": "Priority",
+
+  "tomorrow": "Tomorrow",
+  "weekend": "Weekend",
+  "next_week": "Next week",
+  "unset_date_time": "Unset date & time"
 }
