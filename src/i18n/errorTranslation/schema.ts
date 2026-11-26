@@ -20,6 +20,22 @@ export const etzs = {
       .max(max, etm.string_max.construct(max));
   },
 
+  number() {
+    return z.number(etm.number_invalid.construct());
+  },
+
+  number_min(min: number) {
+    return this.number().min(min, etm.number_min.construct(min));
+  },
+
+  number_max(max: number) {
+    return this.number().max(max, etm.number_max.construct(max));
+  },
+
+  number_min_max(min: number, max: number) {
+    return this.number_min(min).max(max, etm.number_max.construct(max));
+  },
+
   date(customMessage?: string) {
     return z.date(customMessage ?? etm.invalid_date.construct());
   },
@@ -205,6 +221,7 @@ export const etzs = {
         completedAt: this.date().optional().nullable(),
         startAt: this.date().optional().nullable(),
         deadlineAt: this.date().optional().nullable(),
+        priority: this.number_min_max(0, 100).optional(),
       }),
     });
   },
