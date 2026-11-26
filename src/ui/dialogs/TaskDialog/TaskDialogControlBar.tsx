@@ -1,7 +1,6 @@
 import { IconDots, IconPencil, IconX } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useTaskActions } from "@/src/hooks/useTaskActions";
-import type { GetTaskDetailProcResult } from "@/src/lib/trpc/router/task/getTaskDetail";
 import IconRenderer from "../../components/IconRenderer";
 import { Button } from "../../shadcn/components/ui/button";
 import {
@@ -14,16 +13,13 @@ import {
   DropdownMenuTrigger,
 } from "../../shadcn/components/ui/dropdown-menu";
 import { useIsMobile } from "../../shadcn/hooks/use-mobile";
+import { useTaskDialogCtx } from ".";
 
-const TaskDialogControlBar = ({
-  taskDetail,
-  setOpen,
-}: {
-  taskDetail: GetTaskDetailProcResult;
-  setOpen: (open: boolean) => void;
-}) => {
+const TaskDialogControlBar = () => {
   const t = useTranslations();
   const isMobile = useIsMobile();
+
+  const { taskDetail, setOpen } = useTaskDialogCtx();
 
   const { delete: deleteTask } = useTaskActions({ task: taskDetail });
 

@@ -1,14 +1,10 @@
 import { IconCircle, IconPlus } from "@tabler/icons-react";
-import type { GetTaskDetailProcResult } from "@/src/lib/trpc/router/task/getTaskDetail";
 import { Button } from "../../shadcn/components/ui/button";
+import { useTaskDialogCtx } from ".";
 
-const TaskDialogMainPanel = ({
-  taskDetail,
-  setOpen,
-}: {
-  taskDetail: GetTaskDetailProcResult;
-  setOpen?: (open: boolean) => void;
-}) => {
+const TaskDialogMainPanel = () => {
+  const { setOpen, taskDetail } = useTaskDialogCtx();
+
   return (
     <div className="grid grid-cols-1 gap-6">
       {/* Top Side */}

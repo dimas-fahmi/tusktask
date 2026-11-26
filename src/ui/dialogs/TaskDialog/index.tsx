@@ -1,10 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { createContext, useContext } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useTaskDialog } from "@/src/hooks/useTaskDialog";
 import { useTRPC } from "@/src/lib/trpc/client/client";
-
+import type { GetTaskDetailProcResult } from "@/src/lib/trpc/router/task/getTaskDetail";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,25 @@ import TaskDialogControlBar from "./TaskDialogControlBar";
 import TaskDialogInfo from "./TaskDialogInfo";
 import TaskDialogMainPanel from "./TaskDialogMainPanel";
 
+export interface TaskDialogContext {
+  taskDetail: GetTaskDetailProcResult;
+  setOpen: (open: boolean) => void;
+}
+
+const TaskDialogContext = createContext<TaskDialogContext | null>(null);
+
+export const useTaskDialogCtx = () => {
+  const ctx = useContext(TaskDialogContext);
+
+  if (!ctx) {
+    throw new Error(
+      "TaskDialogContext is undefined, this hook could only be use inside TaskDialogContext.Provider",
+    );
+  }
+
+  return ctx;
+};
+
 const Body = () => {
   const [taskId, setOpen] = useTaskDialog(
     useShallow((s) => [s.taskId, s.onOpenChange]),
@@ -37,21 +57,28 @@ const Body = () => {
   });
 
   return taskDetail ? (
-    <div className="space-y-2">
-      {/* Control Bar */}
-      <TaskDialogControlBar setOpen={setOpen} taskDetail={taskDetail} />
+    <TaskDialogContext.Provider
+      value={{
+        taskDetail,
+        setOpen,
+      }}
+    >
+      <div className="space-y-2">
+        {/* Control Bar */}
+        <TaskDialogControlBar />
 
-      {/* Main */}
-      <div className="md:grid md:grid-cols-[auto_280px] gap-4 p-4">
-        {/* Main Task Panel */}
-        <TaskDialogMainPanel taskDetail={taskDetail} setOpen={setOpen} />
+        {/* Main */}
+        <div className="md:grid md:grid-cols-[auto_280px] gap-4 p-4">
+          {/* Main Task Panel */}
+          <TaskDialogMainPanel />
 
-        {/* Sidebar Information */}
-        <div className="hidden md:flex flex-col gap-4">
-          <TaskDialogInfo taskDetail={taskDetail} />
+          {/* Sidebar Information */}
+          <div className="hidden md:flex flex-col gap-4">
+            <TaskDialogInfo />
+          </div>
         </div>
       </div>
-    </div>
+    </TaskDialogContext.Provider>
   ) : (
     <div>Loading...</div>
   );

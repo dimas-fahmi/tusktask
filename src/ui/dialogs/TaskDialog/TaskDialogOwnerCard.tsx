@@ -1,20 +1,18 @@
 "use client";
 
 import { IconDots } from "@tabler/icons-react";
-import type { GetTaskDetailProcResult } from "@/src/lib/trpc/router/task/getTaskDetail";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "../../shadcn/components/ui/avatar";
 import { Button } from "../../shadcn/components/ui/button";
+import { useTaskDialogCtx } from ".";
 import TaskDialogControlSection from "./TaskDialogControlSection";
 
-const TaskDialogOwnerCard = ({
-  taskDetail,
-}: {
-  taskDetail: GetTaskDetailProcResult;
-}) => {
+const TaskDialogOwnerCard = () => {
+  const { taskDetail } = useTaskDialogCtx();
+
   return (
     <TaskDialogControlSection title="Owner">
       <div className="flex items-center gap-2 p-2 border border-transparent hover:border-border transition-all duration-300 rounded-md">

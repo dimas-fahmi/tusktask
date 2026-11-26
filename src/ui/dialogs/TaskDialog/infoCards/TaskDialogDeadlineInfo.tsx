@@ -3,7 +3,6 @@
 import { formatDate, formatDistance } from "date-fns";
 import { useTranslations } from "next-intl";
 import { useDateLocale } from "@/src/hooks/useDateLocale";
-import type { GetTaskDetailProcResult } from "@/src/lib/trpc/router/task/getTaskDetail";
 import { DatePickerPopover } from "@/src/ui/components/Prefab/DatePickerPopover";
 import {
   Tooltip,
@@ -11,16 +10,15 @@ import {
   TooltipTrigger,
 } from "@/src/ui/shadcn/components/ui/tooltip";
 import { capitalizeFirstLetter } from "@/src/utils/capitalizeFirstLetter";
+import { useTaskDialogCtx } from "..";
 import TaskDialogControlButton from "../TaskDialogControlButton";
 import TaskDialogControlSection from "../TaskDialogControlSection";
 
-const TaskDialogDeadlineInfo = ({
-  taskDetail,
-}: {
-  taskDetail: GetTaskDetailProcResult;
-}) => {
+const TaskDialogDeadlineInfo = () => {
   const t = useTranslations();
   const dateLocale = useDateLocale();
+
+  const { taskDetail } = useTaskDialogCtx();
 
   return (
     <TaskDialogControlSection title={t("common.deadline_time")}>

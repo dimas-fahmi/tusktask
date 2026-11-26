@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { GetTaskDetailProcResult } from "@/src/lib/trpc/router/task/getTaskDetail";
 
 import TaskDialogDeadlineInfo from "./infoCards/TaskDialogDeadlineInfo";
 import TaskDialogStartInfo from "./infoCards/TaskDialogStartInfo";
@@ -9,17 +8,13 @@ import TaskDialogControlButton from "./TaskDialogControlButton";
 import TaskDialogControlSection from "./TaskDialogControlSection";
 import TaskDialogOwnerCard from "./TaskDialogOwnerCard";
 
-const TaskDialogInfo = ({
-  taskDetail,
-}: {
-  taskDetail: GetTaskDetailProcResult;
-}) => {
+const TaskDialogInfo = () => {
   const t = useTranslations();
 
   return (
     <>
       {/* Owner */}
-      <TaskDialogOwnerCard taskDetail={taskDetail} />
+      <TaskDialogOwnerCard />
 
       {/* Priority */}
       <TaskDialogControlSection title={t("common.priority")}>
@@ -30,7 +25,7 @@ const TaskDialogInfo = ({
       <TaskDialogStartInfo />
 
       {/* Deadline Time */}
-      <TaskDialogDeadlineInfo taskDetail={taskDetail} />
+      <TaskDialogDeadlineInfo />
     </>
   );
 };
