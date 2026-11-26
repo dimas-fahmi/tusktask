@@ -1,0 +1,1 @@
+ALTER TABLE "app"."task" RENAME CONSTRAINT "idx_app_task_priority_max" TO "idx_app_task_priority_min_max";

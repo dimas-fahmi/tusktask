@@ -1,0 +1,2 @@
+ALTER TABLE "app"."task" ADD COLUMN "priority" smallint DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE "app"."task" ADD CONSTRAINT "idx_app_task_priority_max" CHECK ("priority" BETWEEN 0 AND 100);

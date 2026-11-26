@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  check,
   foreignKey,
   index,
   json,
@@ -54,6 +55,7 @@ export const task = appSchema.table(
     deadlineAt: timestamp("deadline_at", TIMESTAMPZ_CONFIG),
     archivedAt: timestamp("archived_at", TIMESTAMPZ_CONFIG),
     completedAt: timestamp("completed_at", TIMESTAMPZ_CONFIG),
+    priority: smallint("priority").default(50).notNull(),
 
     // TIMESTAMPS
     createdAt: timestamp("created_at", TIMESTAMPZ_CONFIG)
@@ -72,6 +74,12 @@ export const task = appSchema.table(
     index("fts_app_task_name").using(
       "gin",
       sql`to_tsvector('english', ${t.name})`,
+    ),
+
+    // CHECK
+    check(
+      "idx_app_task_priority_min_max",
+      sql`${t.priority} BETWEEN 0 AND 100`,
     ),
 
     // IDX
