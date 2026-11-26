@@ -204,6 +204,17 @@ const Body = () => {
 
                   field.onChange(e);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setExpand(true);
+                  }
+
+                  if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    setExpand(false);
+                  }
+                }}
               />
             )}
           />
