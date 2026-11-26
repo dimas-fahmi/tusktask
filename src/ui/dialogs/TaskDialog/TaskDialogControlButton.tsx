@@ -20,7 +20,7 @@ const TaskDialogControlButton = ({
       variant={"ghost"}
       {...props}
       className={cn(
-        "flex items-center justify-between w-full rounded-md opacity-50 text-sm font-extralight hover:opacity-100 transition-all duration-300 px-3",
+        "flex items-center justify-between w-full rounded-md opacity-50 text-xs hover:opacity-100 transition-all duration-300 px-3",
         className,
       )}
     >
