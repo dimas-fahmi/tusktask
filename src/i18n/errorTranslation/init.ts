@@ -184,6 +184,28 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
     project_not_found: {
       construct: () => serializer({ key: "project_not_found" }),
     },
+
+    number_invalid: {
+      construct: () => serializer({ key: "number_invalid" }),
+    },
+
+    number_max: {
+      construct: (max: number) =>
+        serializer({ key: "number_max", params: [max] }),
+      interpolation: (params) => ({ max: params[0] }),
+    },
+
+    number_min: {
+      construct: (min: number) =>
+        serializer({ key: "number_min", params: [min] }),
+      interpolation: (params) => ({ min: params[0] }),
+    },
+
+    number_min_max: {
+      construct: (min: number, max: number) =>
+        serializer({ key: "number_min_max", params: [min, max] }),
+      interpolation: (params) => ({ min: params[0], max: params[1] }),
+    },
   },
 });
 
