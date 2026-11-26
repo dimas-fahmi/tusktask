@@ -3,6 +3,7 @@
 import { formatDate, formatDistance } from "date-fns";
 import { useTranslations } from "next-intl";
 import { useDateLocale } from "@/src/hooks/useDateLocale";
+import { useTaskActions } from "@/src/hooks/useTaskActions";
 import { DatePickerPopover } from "@/src/ui/components/Prefab/DatePickerPopover";
 import {
   Tooltip,
@@ -20,9 +21,19 @@ const TaskDialogDeadlineInfo = () => {
 
   const { taskDetail } = useTaskDialogCtx();
 
+  const { update } = useTaskActions({ task: taskDetail });
+
   return (
     <TaskDialogControlSection title={t("common.deadline_time")}>
       <DatePickerPopover
+        onValueChange={(date) => {
+          update().mutate({
+            taskId: taskDetail.id,
+            data: {
+              deadlineAt: date,
+            },
+          });
+        }}
         trigger={(popoverProps) => (
           <Tooltip>
             <TooltipTrigger

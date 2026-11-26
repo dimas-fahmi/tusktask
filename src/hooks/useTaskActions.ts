@@ -40,6 +40,20 @@ export const useTaskActions = ({
   const trpc = useTRPC();
   const { toast } = useHandleQueryError();
 
+  // Update Task
+  const updateMutation = useMutation({
+    ...trpc.task.updateTask.mutationOptions(),
+    onSettled: (_d, _err, _var, _omr, ctx) => {
+      if (task) {
+        ctx.client.invalidateQueries({
+          queryKey: trpc.task.getTaskDetail.queryKey({
+            taskId: task.id,
+          }),
+        });
+      }
+    },
+  });
+
   // Delete Mutation
   const deleteMutation = useMutation({
     ...trpc.task.deleteTask.mutationOptions(),
@@ -181,6 +195,12 @@ export const useTaskActions = ({
     delete: () => {
       guard();
       return deleteMutation;
+    },
+
+    // Update Action
+    update: () => {
+      guard();
+      return updateMutation;
     },
   };
 };
