@@ -2,6 +2,7 @@
 
 import { formatDate, formatDistance } from "date-fns";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { useDateLocale } from "@/src/hooks/useDateLocale";
 import { useTaskActions } from "@/src/hooks/useTaskActions";
 import { DatePickerPopover } from "@/src/ui/components/Prefab/DatePickerPopover";
@@ -19,13 +20,21 @@ const TaskDialogDeadlineInfo = () => {
   const t = useTranslations();
   const dateLocale = useDateLocale();
 
+  const [date, setDate] = useState<Date | null>(null);
+
   const { taskDetail } = useTaskDialogCtx();
+
+  useEffect(() => {
+    setDate(taskDetail?.deadlineAt ?? null);
+  }, [taskDetail]);
 
   const { update } = useTaskActions({ task: taskDetail });
 
   return (
     <TaskDialogControlSection title={t("common.deadline_time")}>
       <DatePickerPopover
+        date={date}
+        setDate={setDate}
         onValueChange={(date) => {
           update().mutate({
             taskId: taskDetail.id,
