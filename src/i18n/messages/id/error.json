@@ -42,5 +42,10 @@
   "reminder_before_start_deadline": "Pengingat harus diatur sebelum waktu mulai dan tenggat",
   "start_before_deadline": "Waktu mulati harus diatur sebelum waktu tenggat",
 
-  "project_not_found": "Proyek tidak ditemukan"
+  "project_not_found": "Proyek tidak ditemukan",
+
+  "number_invalid": "Angka tidak valid",
+  "number_min": "Angka harus minimal {min}",
+  "number_max": "Angka tidak boleh melebihi {max}",
+  "number_min_max": "Angka harus berada di antara {min} dan {max}"
 }

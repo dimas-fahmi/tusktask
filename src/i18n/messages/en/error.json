@@ -43,5 +43,10 @@
   "reminder_before_start_deadline": "Reminder should be set before start and deadline time",
   "start_before_deadline": "Start time should be set before deadline",
 
-  "project_not_found": "Project Not Found"
+  "project_not_found": "Project Not Found",
+
+  "number_invalid": "Invalid number",
+  "number_min": "Number must be at least {min}",
+  "number_max": "Number can't exceed {max}",
+  "number_min_max": "Number must be between {min} and {max}"
 }
