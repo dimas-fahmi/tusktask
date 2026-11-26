@@ -115,15 +115,15 @@ export const useTaskActions = ({
          *
          * Deleting the task from its task collections.
          */
-        const projectDetailQC = trpc.project.getProjectDetail.queryKey({
+        const projectDetailQK = trpc.project.getProjectDetail.queryKey({
           id: task.projectId,
         });
 
         ctx.client.cancelQueries({
-          queryKey: projectDetailQC,
+          queryKey: projectDetailQK,
         });
 
-        const projectOldData = ctx.client.getQueryData(projectDetailQC);
+        const projectOldData = ctx.client.getQueryData(projectDetailQK);
 
         if (projectOldData) {
           const updateTaskCategories = () => {
@@ -153,7 +153,7 @@ export const useTaskActions = ({
             return taskCategories;
           };
 
-          ctx.client.setQueryData(projectDetailQC, () => {
+          ctx.client.setQueryData(projectDetailQK, () => {
             return {
               ...projectOldData,
               uncategorizedTasks: projectOldData.uncategorizedTasks.filter(
@@ -166,7 +166,7 @@ export const useTaskActions = ({
 
         ou_projectDetail = {
           oldData: projectOldData,
-          queryKey: projectDetailQC,
+          queryKey: projectDetailQK,
         };
 
         // ------ END OF projectDetail optimistic update -------
