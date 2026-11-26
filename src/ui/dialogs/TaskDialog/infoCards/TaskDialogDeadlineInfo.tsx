@@ -33,6 +33,7 @@ const TaskDialogDeadlineInfo = () => {
   return (
     <TaskDialogControlSection title={t("common.deadline_time")}>
       <DatePickerPopover
+        min={taskDetail?.startAt}
         date={date}
         setDate={setDate}
         onValueChange={(date) => {
