@@ -59,7 +59,7 @@ export const useTaskActions = ({
           ctx.client.setQueryData(taskDetailQK, () => {
             return {
               ...taskDetailOldData,
-              ...data,
+              ...data.data,
             };
           });
         }
