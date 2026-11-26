@@ -49,6 +49,8 @@ export interface DatePickerPopoverProps {
   date?: Date | null;
   setDate?: (date: Date | null) => void;
   open?: boolean;
+  min?: Date | null;
+  max?: Date | null;
   setOpen?: (open: boolean) => void;
   trigger: React.FC<React.ComponentPropsWithoutRef<"button">>;
   onSave?: (date: Date | null, event: MouseEvent<HTMLButtonElement>) => void;
@@ -82,6 +84,8 @@ export const DatePickerPopover = ({
   open: _open,
   setOpen: _onOpenChange,
   onSave,
+  max,
+  min,
 }: DatePickerPopoverProps) => {
   const isMobile = useIsMobile();
 
@@ -96,6 +100,16 @@ export const DatePickerPopover = ({
 
   const open = _open !== undefined ? _open : __open;
   const onOpenChange = _onOpenChange ?? __onOpenChange;
+
+  const isMinInvalid = (check: Date | null) => {
+    if (!check) return false;
+    return min ? check.getTime() < min.getTime() : false;
+  };
+
+  const isMaxInvalid = (check: Date | null) => {
+    if (!check) return false;
+    return max ? check.getTime() > max.getTime() : false;
+  };
 
   return (
     <Popover {...{ open, onOpenChange }}>
@@ -136,6 +150,10 @@ export const DatePickerPopover = ({
           {/* Shortcuts */}
           <div className="grid px-1 grid-cols-1 gap-1 border-b pb-2">
             <MenuItem
+              disabled={
+                isMinInvalid(getDateTimes().today) ||
+                isMaxInvalid(getDateTimes().today)
+              }
               onClick={(e) => {
                 const newValue = getDateTimes().today;
 
@@ -151,6 +169,10 @@ export const DatePickerPopover = ({
             </MenuItem>
 
             <MenuItem
+              disabled={
+                isMinInvalid(getDateTimes().tomorrow) ||
+                isMaxInvalid(getDateTimes().tomorrow)
+              }
               onClick={(e) => {
                 const newValue = getDateTimes().tomorrow;
 
@@ -165,6 +187,10 @@ export const DatePickerPopover = ({
               <IconCalendarUp /> <span>{t("common.tomorrow")}</span>
             </MenuItem>
             <MenuItem
+              disabled={
+                isMinInvalid(getDateTimes().weekend) ||
+                isMaxInvalid(getDateTimes().weekend)
+              }
               onClick={(e) => {
                 const newValue = getDateTimes().weekend;
 
@@ -179,6 +205,10 @@ export const DatePickerPopover = ({
               <IconSofa /> <span>{t("common.weekend")}</span>
             </MenuItem>
             <MenuItem
+              disabled={
+                isMinInvalid(getDateTimes().nextWeek) ||
+                isMaxInvalid(getDateTimes().nextWeek)
+              }
               onClick={(e) => {
                 const newValue = getDateTimes().nextWeek;
 
@@ -231,6 +261,7 @@ export const DatePickerPopover = ({
                 if (e.defaultPrevented) return;
                 onOpenChange(false);
               }}
+              disabled={isMinInvalid(date) || isMaxInvalid(date)}
             >
               {t("common.save")}
             </Button>
