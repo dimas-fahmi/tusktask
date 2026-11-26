@@ -2,11 +2,12 @@
 
 import { IconCalendarWeek } from "@tabler/icons-react";
 import { en as enChrono, id as idChrono } from "chrono-node";
+import { cn } from "cn";
 import { formatRelative } from "date-fns";
-import { enUS } from "date-fns/locale/en-US";
-import { id } from "date-fns/locale/id";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
+import { useDateLocale } from "@/src/hooks/useDateLocale";
+import { capitalizeFirstLetter } from "@/src/utils/capitalizeFirstLetter";
 import { Field, FieldLabel } from "../../shadcn/components/ui/field";
 import {
   InputGroup,
@@ -27,6 +28,9 @@ export type NLDatePickerProps = {
   onValueChange?: (date?: Date | null) => void;
   message?: string;
   isInvalid?: boolean;
+  hideLabel?: boolean;
+  inputClassName?: string;
+  hidePicked?: boolean;
 };
 
 function formatDate(date: Date | undefined) {
@@ -51,14 +55,21 @@ export function NlDatePicker({
   onValueChange: _onValueChange,
   message,
   isInvalid,
+  hideLabel,
+  inputClassName,
+  hidePicked,
 }: NLDatePickerProps) {
+  const id = React.useId();
+
   const t = useTranslations();
+
   const locale = useLocale();
+  const dateLocale = useDateLocale();
 
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [inputValue, setInputValue] = React.useState("");
   const [_date, _setDate] = React.useState<Date | undefined>(
-    CHRONO[locale].parseDate(value) || undefined,
+    CHRONO[locale].parseDate(inputValue) || undefined,
   );
 
   const date = _value ?? _date;
@@ -66,19 +77,21 @@ export function NlDatePicker({
 
   return (
     <Field>
-      <FieldLabel
-        htmlFor={`${label ?? crypto.randomUUID()}-date-picker`}
-        className={`${isInvalid ? "text-destructive" : ""}`}
-      >
-        {label ?? t("component.NLDatePicker.default_label")}
-      </FieldLabel>
+      {!hideLabel && (
+        <FieldLabel
+          htmlFor={id}
+          className={`${isInvalid ? "text-destructive" : ""}`}
+        >
+          {label ?? t("component.NLDatePicker.default_label")}
+        </FieldLabel>
+      )}
       <InputGroup>
         <InputGroupInput
-          id={`${label ?? crypto.randomUUID()}-date-picker`}
-          value={value}
+          id={id}
+          value={inputValue}
           placeholder={t("component.NLDatePicker.placeholder")}
           onChange={(e) => {
-            setValue(e.target.value);
+            setInputValue(e.target.value);
 
             if (!e.target.value) {
               setDate(undefined);
@@ -96,7 +109,10 @@ export function NlDatePicker({
               setOpen(true);
             }
           }}
-          className={`${isInvalid ? "text-destructive" : ""}`}
+          className={cn(
+            `${isInvalid ? "text-destructive" : ""}`,
+            inputClassName,
+          )}
           autoComplete="off"
         />
         <InputGroupAddon align="inline-end" aria-invalid={isInvalid}>
@@ -130,7 +146,7 @@ export function NlDatePicker({
                   defaultMonth: date,
                   onSelect: (date) => {
                     setDate(date);
-                    setValue(formatDate(date));
+                    setInputValue(formatDate(date));
                   },
                 }}
                 onOpenChange={setOpen}
@@ -139,21 +155,26 @@ export function NlDatePicker({
           </Popover>
         </InputGroupAddon>
       </InputGroup>
-      <div
-        className={`${isInvalid ? "text-destructive" : "text-muted-foreground"} px-1 text-xs font-light`}
-      >
-        {message ? (
-          message
-        ) : date ? (
-          <span className="font-medium">
-            {formatRelative(date, new Date(), {
-              locale: locale === "en" ? enUS : id,
-            })}
-          </span>
-        ) : (
-          t("component.NLDatePicker.describer")
-        )}
-      </div>
+
+      {!hidePicked && (
+        <div
+          className={`${isInvalid ? "text-destructive" : "text-muted-foreground"} px-1 text-xs font-light`}
+        >
+          {message ? (
+            message
+          ) : date ? (
+            <span className="font-medium">
+              {capitalizeFirstLetter(
+                formatRelative(date, new Date(), {
+                  locale: dateLocale,
+                }),
+              )}
+            </span>
+          ) : (
+            t("component.NLDatePicker.describer")
+          )}
+        </div>
+      )}
     </Field>
   );
 }
