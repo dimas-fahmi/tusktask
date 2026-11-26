@@ -1,0 +1,234 @@
+"use client";
+
+import {
+  IconBed,
+  IconCalendarDown,
+  IconCalendarUp,
+  IconCalendarWeek,
+  IconClockX,
+  IconSofa,
+} from "@tabler/icons-react";
+import { cn } from "cn";
+import { formatDate, formatDistance } from "date-fns";
+import { useTranslations } from "next-intl";
+import type React from "react";
+import { type MouseEvent, useState } from "react";
+import { useDateLocale } from "@/src/hooks/useDateLocale";
+import { Button } from "@/src/ui/shadcn/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/ui/shadcn/components/ui/popover";
+import { useIsMobile } from "@/src/ui/shadcn/hooks/use-mobile";
+import { capitalizeFirstLetter } from "@/src/utils/capitalizeFirstLetter";
+import { getDateTimes } from "@/src/utils/clientOnly/getDateTimes";
+import { NlDatePicker } from "../../ui/NLDatePicker";
+
+const MenuItem = ({
+  children,
+  className,
+  ...props
+}: React.ComponentPropsWithRef<"button">) => {
+  return (
+    <Button
+      variant={"ghost"}
+      size={"sm"}
+      {...props}
+      className={cn(
+        "justify-start text-xs font-light opacity-80 hover:opacity-90",
+        className,
+      )}
+    >
+      {children}
+    </Button>
+  );
+};
+
+export interface DatePickerPopoverProps {
+  date?: Date | null;
+  setDate?: (date: Date | null) => void;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
+  trigger: React.FC<React.ComponentPropsWithoutRef<"button">>;
+  onSave?: (date: Date | null, event: MouseEvent<HTMLButtonElement>) => void;
+  onValueChange?: (
+    date: Date | null,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => void;
+  onToday?: (date: Date | null, event: MouseEvent<HTMLButtonElement>) => void;
+  onTomorrow?: (
+    date: Date | null,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => void;
+  onWeekend?: (date: Date | null, event: MouseEvent<HTMLButtonElement>) => void;
+  onNextWeek?: (
+    date: Date | null,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => void;
+  onNoDate?: (date: Date | null, event: MouseEvent<HTMLButtonElement>) => void;
+}
+
+export const DatePickerPopover = ({
+  trigger: Trigger,
+  date: _date,
+  setDate: _setDate,
+  onNextWeek,
+  onNoDate,
+  onValueChange,
+  onToday,
+  onTomorrow,
+  onWeekend,
+  open: _open,
+  setOpen: _onOpenChange,
+  onSave,
+}: DatePickerPopoverProps) => {
+  const isMobile = useIsMobile();
+
+  const t = useTranslations();
+  const dateLocale = useDateLocale();
+
+  const [__date, __setDate] = useState<Date | null>(null);
+  const [__open, __onOpenChange] = useState(false);
+
+  const date = _date ?? __date;
+  const setDate = _setDate ?? __setDate;
+
+  const open = _open ?? __open;
+  const onOpenChange = _onOpenChange ?? __onOpenChange;
+
+  return (
+    <Popover {...{ open, onOpenChange }}>
+      <PopoverTrigger
+        render={(triggerProps) => <Trigger {...triggerProps} />}
+      />
+
+      <PopoverContent
+        side={isMobile ? "bottom" : "left"}
+        className={"p-0 overflow-hidden my-4"}
+      >
+        <div className="space-y-2">
+          {/* Status */}
+          <div className="flex px-4 pt-3 pb-2 border-b gap-2 opacity-80">
+            <IconCalendarWeek />
+            <div className="flex flex-col">
+              <span className="text-sm">
+                {date
+                  ? capitalizeFirstLetter(
+                      formatDate(date, "PPp", {
+                        locale: dateLocale,
+                      }),
+                    )
+                  : t("common.not_set")}
+              </span>
+              <small>
+                {date
+                  ? capitalizeFirstLetter(
+                      formatDistance(date, Date.now(), {
+                        locale: dateLocale,
+                      }),
+                    )
+                  : "-"}
+              </small>
+            </div>
+          </div>
+
+          {/* Shortcuts */}
+          <div className="grid px-1 grid-cols-1 gap-1 border-b pb-2">
+            <MenuItem
+              onClick={(e) => {
+                onToday?.(date, e);
+                onValueChange?.(date, e);
+
+                if (e.defaultPrevented) return;
+                onOpenChange(false);
+                setDate(getDateTimes().today);
+              }}
+            >
+              <IconCalendarDown /> <span>{t("common.today")}</span>
+            </MenuItem>
+
+            <MenuItem
+              onClick={(e) => {
+                onTomorrow?.(date, e);
+                onValueChange?.(date, e);
+
+                if (e.defaultPrevented) return;
+                onOpenChange(false);
+                setDate(getDateTimes().tomorrow);
+              }}
+            >
+              <IconCalendarUp /> <span>{t("common.tomorrow")}</span>
+            </MenuItem>
+            <MenuItem
+              onClick={(e) => {
+                onWeekend?.(date, e);
+                onValueChange?.(date, e);
+
+                if (e.defaultPrevented) return;
+                onOpenChange(false);
+                setDate(getDateTimes().weekend);
+              }}
+            >
+              <IconSofa /> <span>{t("common.weekend")}</span>
+            </MenuItem>
+            <MenuItem
+              onClick={(e) => {
+                onNextWeek?.(date, e);
+                onValueChange?.(date, e);
+
+                if (e.defaultPrevented) return;
+                onOpenChange(false);
+                setDate(getDateTimes().nextWeek);
+              }}
+            >
+              <IconBed /> <span>{t("common.weekend")}</span>
+            </MenuItem>
+
+            <MenuItem
+              disabled={!date}
+              onClick={(e) => {
+                onNoDate?.(date, e);
+                onValueChange?.(date, e);
+
+                if (e.defaultPrevented) return;
+                onOpenChange(false);
+                setDate(null);
+              }}
+            >
+              <IconClockX /> <span>{t("common.unset_date_time")}</span>
+            </MenuItem>
+          </div>
+
+          {/* Manual Input */}
+          <div className="grid grid-cols-1 gap-2 border-b p-2 pt-1">
+            <NlDatePicker
+              hideLabel
+              hidePicked
+              value={date}
+              onValueChange={(date) => setDate(date ?? null)}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 px-2 pt-1 pb-3 gap-2">
+            {/* Status */}
+            <Button
+              variant={"outline"}
+              size={"xs"}
+              className={"bg-transparent"}
+              onClick={(e) => {
+                onSave?.(date, e);
+                onValueChange?.(date, e);
+
+                if (e.defaultPrevented) return;
+                onOpenChange(false);
+              }}
+            >
+              {t("common.save")}
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
