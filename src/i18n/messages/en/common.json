@@ -140,5 +140,21 @@
   "tomorrow": "Tomorrow",
   "weekend": "Weekend",
   "next_week": "Next week",
-  "unset_date_time": "Unset date & time"
+  "unset_date_time": "Unset date & time",
+
+  "task_priorities": {
+    "urgent": "Priority Urgent",
+    "high": "Priority High",
+    "medium": "Priority Medium",
+    "low": "Priority Low",
+    "trivial": "Priority Trivial",
+
+    "shorts": {
+      "urgent": "Urgent",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "trivial": "Trivial"
+    }
+  }
 }

@@ -140,5 +140,21 @@
   "tomorrow": "Besok",
   "weekend": "Akhir minggu",
   "next_week": "Minggu depan",
-  "unset_date_time": "Hapus tanggal & waktu"
+  "unset_date_time": "Hapus tanggal & waktu",
+
+  "task_priorities": {
+    "urgent": "Prioritas Mendesak",
+    "high": "Prioritas Tinggi",
+    "medium": "Prioritas Sedang",
+    "low": "Prioritas Rendah",
+    "trivial": "Prioritas Sepele",
+
+    "shorts": {
+      "urgent": "Mendesak",
+      "high": "Tinggi",
+      "medium": "Sedang",
+      "low": "Rendah",
+      "trivial": "Sepele"
+    }
+  }
 }
