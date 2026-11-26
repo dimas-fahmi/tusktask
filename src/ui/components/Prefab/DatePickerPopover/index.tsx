@@ -91,10 +91,10 @@ export const DatePickerPopover = ({
   const [__date, __setDate] = useState<Date | null>(null);
   const [__open, __onOpenChange] = useState(false);
 
-  const date = _date ?? __date;
+  const date = _date !== undefined ? _date : __date;
   const setDate = _setDate ?? __setDate;
 
-  const open = _open ?? __open;
+  const open = _open !== undefined ? _open : __open;
   const onOpenChange = _onOpenChange ?? __onOpenChange;
 
   return (
