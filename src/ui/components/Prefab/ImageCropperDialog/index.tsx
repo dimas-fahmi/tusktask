@@ -348,6 +348,10 @@ const Footer = () => {
   );
 };
 
+/**
+ * @deprecated use the one from "src/ui/dialogs/ImageCropperDialog"
+ * @returns
+ */
 const ImageCropperDialog = () => {
   const isMobile = useIsMobile();
 
