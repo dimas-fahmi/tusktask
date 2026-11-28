@@ -222,6 +222,8 @@ export const etzs = {
         startAt: this.date().optional().nullable(),
         deadlineAt: this.date().optional().nullable(),
         priority: this.number_min_max(0, 100).optional(),
+        projectOrderKey: this.string_max(568).optional().nullable(),
+        taskCategoryOrderKey: this.string_max(568).optional().nullable(),
       }),
     });
   },
