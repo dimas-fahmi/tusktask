@@ -1,8 +1,10 @@
 import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import { AppError } from "@/src/app/error";
 import { idb } from "@/src/db";
+import { user } from "@/src/db/schema/t-user";
 import { etm } from "@/src/i18n/errorTranslation/init";
-import { deleteAvatar } from "../../actions/deleteAvatar";
+import { deleteAvatarData } from "../../actions/deleteAvatarData";
 import { sessionRequiredPlugin } from "../../plugins/sessionRequired";
 import { createBaseProcedure } from "../../server/init";
 
@@ -16,7 +18,14 @@ export const deleteMyAvatarProc = createBaseProcedure
 
     try {
       await idb.transaction(async (tx) => {
-        deleteAvatar(currentUser, tx);
+        deleteAvatarData(currentUser, tx);
+
+        await tx
+          .update(user)
+          .set({
+            image: null,
+          })
+          .where(eq(user.id, currentUser.id));
       });
 
       return true;

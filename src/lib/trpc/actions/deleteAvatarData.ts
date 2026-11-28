@@ -4,10 +4,10 @@ import { getEnv } from "@/src/app/env";
 import { AppError } from "@/src/app/error";
 import type { AsyncTransaction } from "@/src/db";
 import { image } from "@/src/db/schema/t-image";
-import { type UserType, user } from "@/src/db/schema/t-user";
+import type { UserType } from "@/src/db/schema/t-user";
 import { etm } from "@/src/i18n/errorTranslation/init";
 
-export async function deleteAvatar(
+export async function deleteAvatarData(
   currentUser: Pick<UserType, "id"> & { image?: string | null },
   tx: AsyncTransaction,
 ) {
@@ -58,11 +58,4 @@ export async function deleteAvatar(
         });
     }
   }
-
-  await tx
-    .update(user)
-    .set({
-      image: null,
-    })
-    .where(eq(user.id, currentUser.id));
 }
