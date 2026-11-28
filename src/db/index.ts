@@ -1,5 +1,9 @@
 import { drizzle as nidbDrizzle } from "drizzle-orm/neon-http";
-import { drizzle as idbDrizzle } from "drizzle-orm/postgres-js";
+import type { PgAsyncTransaction } from "drizzle-orm/pg-core";
+import {
+  drizzle as idbDrizzle,
+  type PostgresJsQueryResultHKT,
+} from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { getEnv } from "../app/env";
 import { relations } from "./schema/relations";
@@ -18,3 +22,8 @@ export const idb = idbDrizzle({
   client: pg_client,
   relations,
 });
+
+export type AsyncTransaction = PgAsyncTransaction<
+  PostgresJsQueryResultHKT,
+  typeof relations
+>;
