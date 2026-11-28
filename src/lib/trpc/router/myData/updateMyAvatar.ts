@@ -76,7 +76,7 @@ export const updateMyAvatarProc = createBaseProcedure
     try {
       uploaded = await idb.transaction(async (tx) => {
         if (currentUser.image) {
-          deleteAvatarData(currentUser, tx);
+          await deleteAvatarData(currentUser, tx);
         }
 
         const [recordedData] = await tx

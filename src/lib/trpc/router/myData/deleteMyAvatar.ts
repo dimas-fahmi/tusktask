@@ -18,7 +18,7 @@ export const deleteMyAvatarProc = createBaseProcedure
 
     try {
       await idb.transaction(async (tx) => {
-        deleteAvatarData(currentUser, tx);
+        await deleteAvatarData(currentUser, tx);
 
         await tx
           .update(user)
