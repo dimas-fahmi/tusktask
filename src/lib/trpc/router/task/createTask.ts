@@ -1,6 +1,9 @@
 import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
+import { generateKeyBetween } from "fractional-indexing";
 import { z } from "zod";
 import { nidb } from "@/src/db";
+import { project } from "@/src/db/schema/t-project";
 import { task } from "@/src/db/schema/t-task";
 import { etm } from "@/src/i18n/errorTranslation/init";
 import { etzs } from "@/src/i18n/errorTranslation/schema";
@@ -36,11 +39,58 @@ export const createTaskProc = createBaseProcedure
       });
     }
 
+    const projectOrderKey = generateKeyBetween(
+      targetProject.lastTaskOrderKey,
+      null,
+    );
+
+    let categoryOrderKey: string | null = null;
+
+    if (input.taskCategoryId) {
+      const category = await nidb.query.taskCategory.findFirst({
+        where: {
+          id: {
+            eq: input.taskCategoryId,
+          },
+          projectId: {
+            eq: input.projectId,
+          },
+        },
+        columns: {
+          lastTaskOrderKey: true,
+        },
+      });
+
+      if (!category) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: etm.not_found.construct(),
+        });
+      }
+
+      categoryOrderKey = generateKeyBetween(category.lastTaskOrderKey, null);
+    } else {
+      await nidb
+        .update(project)
+        .set({
+          lastTaskOrderKey: projectOrderKey,
+        })
+        .where(eq(project.id, input.projectId))
+        .catch((err) => {
+          console.error(
+            "task.createTask: Error updating project task order key",
+            err,
+          );
+        });
+    }
+
     await nidb
       .insert(task)
       .values({
         userId: user.id,
         ...input,
+        projectOrderKey: input.taskCategoryId ? undefined : projectOrderKey,
+        taskCategoryOrderKey: categoryOrderKey,
       })
       .catch((err) => {
         console.error(err);
