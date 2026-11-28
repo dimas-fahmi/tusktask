@@ -47,5 +47,7 @@
   "number_invalid": "Angka tidak valid",
   "number_min": "Angka harus minimal {min}",
   "number_max": "Angka tidak boleh melebihi {max}",
-  "number_min_max": "Angka harus berada di antara {min} dan {max}"
+  "number_min_max": "Angka harus berada di antara {min} dan {max}",
+
+  "resource_not_found": "Sumber daya tidak ditemukan: {resource}"
 }

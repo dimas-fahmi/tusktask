@@ -48,5 +48,7 @@
   "number_invalid": "Invalid number",
   "number_min": "Number must be at least {min}",
   "number_max": "Number can't exceed {max}",
-  "number_min_max": "Number must be between {min} and {max}"
+  "number_min_max": "Number must be between {min} and {max}",
+
+  "resource_not_found": "Resource not found: {resource}"
 }

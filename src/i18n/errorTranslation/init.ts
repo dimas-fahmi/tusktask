@@ -206,6 +206,15 @@ export const et = ErrorTranslation.init<ErrorTranslationKey>()({
         serializer({ key: "number_min_max", params: [min, max] }),
       interpolation: (params) => ({ min: params[0], max: params[1] }),
     },
+
+    resource_not_found: {
+      construct: (resource: string) =>
+        serializer({
+          key: "resource_not_found",
+          params: [resource],
+        }),
+      interpolation: (params) => ({ resource: params[0] }),
+    },
   },
 });
 
