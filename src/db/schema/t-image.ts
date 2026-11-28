@@ -18,7 +18,8 @@ export const image = mediaSchema.table(
     name: text("name").default("untitled").notNull(),
     description: text("description"),
 
-    src: text("src").unique().notNull(),
+    src: text("src").unique(),
+    constructedSrc: text("constructed_src").unique().notNull(),
 
     userId: uuid("user_id")
       .notNull()
