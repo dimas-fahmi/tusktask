@@ -10,10 +10,6 @@ import { relations } from "./schema/relations";
 
 const DB_URL = getEnv("DATABASE_URL");
 
-export const nidb = nidbDrizzle(DB_URL, {
-  relations,
-});
-
 const pg_client = postgres(DB_URL, {
   prepare: false,
 });
@@ -22,6 +18,13 @@ export const idb = idbDrizzle({
   client: pg_client,
   relations,
 });
+
+export const nidb =
+  process.env.NODE_ENV === "production"
+    ? nidbDrizzle(DB_URL, {
+        relations,
+      })
+    : idb;
 
 export type AsyncTransaction = PgAsyncTransaction<
   PostgresJsQueryResultHKT,
