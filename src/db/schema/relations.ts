@@ -53,6 +53,11 @@ export const _relations = defineRelations(schema, (r) => ({
       from: r.user.id,
       to: r.task.userId,
     }),
+
+    images: r.many.image({
+      from: r.user.id,
+      to: r.image.userId,
+    }),
   },
 
   verification: {},
@@ -101,6 +106,13 @@ export const _relations = defineRelations(schema, (r) => ({
     subtasks: r.many.task({
       from: r.task.id,
       to: r.task.parentId,
+    }),
+  },
+
+  image: {
+    user: r.one.user({
+      from: r.image.userId,
+      to: r.user.id,
     }),
   },
 

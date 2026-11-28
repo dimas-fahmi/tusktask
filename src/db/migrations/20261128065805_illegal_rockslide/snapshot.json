@@ -1,8 +1,10 @@
 {
-  "id": "a464b073-fe4c-4072-a79a-667e1e513964",
-  "prevIds": ["a64b132a-cbfd-4c67-9a68-04b71635c16b"],
   "version": "8",
   "dialect": "postgres",
+  "id": "d6321b67-80c4-4588-b3c6-fb34a92b6114",
+  "prevIds": [
+    "04f73c2f-240e-4396-bade-8411823615c6"
+  ],
   "ddl": [
     {
       "name": "app",
@@ -13,13 +15,23 @@
       "entityType": "schemas"
     },
     {
-      "values": ["default", "dark"],
+      "name": "media",
+      "entityType": "schemas"
+    },
+    {
+      "values": [
+        "default",
+        "dark"
+      ],
       "name": "color_theme_enum",
       "entityType": "enums",
       "schema": "auth"
     },
     {
-      "values": ["task_completion", "registration"],
+      "values": [
+        "task_completion",
+        "registration"
+      ],
       "name": "point_source_enum",
       "entityType": "enums",
       "schema": "app"
@@ -45,6 +57,12 @@
     },
     {
       "isRlsEnabled": false,
+      "name": "image",
+      "entityType": "tables",
+      "schema": "media"
+    },
+    {
+      "isRlsEnabled": false,
       "name": "point_history",
       "entityType": "tables",
       "schema": "app"
@@ -64,6 +82,12 @@
     {
       "isRlsEnabled": false,
       "name": "task",
+      "entityType": "tables",
+      "schema": "app"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "task_category",
       "entityType": "tables",
       "schema": "app"
     },
@@ -264,6 +288,136 @@
       "identity": null,
       "name": "id",
       "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'untitled'",
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "description",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "src",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "format",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "size",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "is_local_development",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "timestamp(6) with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "timestamp(6) with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "pg_catalog.uuidv7()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
       "schema": "app",
       "table": "point_history"
     },
@@ -431,7 +585,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "last_project_order_key",
+      "name": "last_task_order_key",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "project"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "last_category_order_key",
       "entityType": "columns",
       "schema": "app",
       "table": "project"
@@ -632,6 +799,45 @@
       "table": "task"
     },
     {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "category_id",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "project_order_key",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "task_category_order_key",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task"
+    },
+    {
       "type": "text",
       "typeSchema": null,
       "notNull": false,
@@ -762,6 +968,19 @@
       "table": "task"
     },
     {
+      "type": "smallint",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "50",
+      "generated": null,
+      "identity": null,
+      "name": "priority",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task"
+    },
+    {
       "type": "timestamp(6) with time zone",
       "typeSchema": null,
       "notNull": true,
@@ -773,6 +992,84 @@
       "entityType": "columns",
       "schema": "app",
       "table": "task"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "pg_catalog.uuidv7()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'untitled'",
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "project_id",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "last_task_order_key",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "project_order_key",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "type": "timestamp(6) with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "app",
+      "table": "task_category"
     },
     {
       "type": "uuid",
@@ -1228,6 +1525,111 @@
       "nameExplicit": true,
       "columns": [
         {
+          "value": "src",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "uidx_media_image_src",
+      "entityType": "indexes",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_media_image_userId",
+      "entityType": "indexes",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "format",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_media_image_format",
+      "entityType": "indexes",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "is_local_development",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_media_image_isLocalDevelopment",
+      "entityType": "indexes",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_media_image_deletedAt",
+      "entityType": "indexes",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
           "value": "user_id",
           "isExpression": false,
           "asc": true,
@@ -1346,6 +1748,69 @@
       "method": "gin",
       "concurrently": false,
       "name": "fts_app_task_name",
+      "entityType": "indexes",
+      "schema": "app",
+      "table": "task"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "task_category_order_key",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_app_task_taskCategoryOrderKey",
+      "entityType": "indexes",
+      "schema": "app",
+      "table": "task"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "project_order_key",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_app_task_projectOrderKey",
+      "entityType": "indexes",
+      "schema": "app",
+      "table": "task"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "category_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_app_task_taskCategoryId",
       "entityType": "indexes",
       "schema": "app",
       "table": "task"
@@ -1543,6 +2008,48 @@
       "nameExplicit": true,
       "columns": [
         {
+          "value": "to_tsvector('simple', \"name\")",
+          "isExpression": true,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "gin",
+      "concurrently": false,
+      "name": "fts_app_taskCategory_name",
+      "entityType": "indexes",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "project_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_app_taskCategory_projectId",
+      "entityType": "indexes",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
           "value": "secret",
           "isExpression": false,
           "asc": true,
@@ -1667,10 +2174,14 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["user_id"],
+      "columns": [
+        "user_id"
+      ],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "account_user_id_user_id_fkey",
@@ -1680,10 +2191,31 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["user_id"],
+      "columns": [
+        "user_id"
+      ],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "name": "image_user_id_user_id_fkey",
+      "entityType": "fks",
+      "schema": "media",
+      "table": "image"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "auth",
+      "tableTo": "user",
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "point_history_user_id_user_id_fkey",
@@ -1693,10 +2225,14 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["user_id"],
+      "columns": [
+        "user_id"
+      ],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "project_user_id_user_id_fkey",
@@ -1706,10 +2242,14 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["user_id"],
+      "columns": [
+        "user_id"
+      ],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "session_user_id_user_id_fkey",
@@ -1719,10 +2259,14 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["user_id"],
+      "columns": [
+        "user_id"
+      ],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "task_user_id_user_id_fkey",
@@ -1732,10 +2276,14 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["project_id"],
+      "columns": [
+        "project_id"
+      ],
       "schemaTo": "app",
       "tableTo": "project",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "task_project_id_project_id_fkey",
@@ -1744,11 +2292,32 @@
       "table": "task"
     },
     {
+      "nameExplicit": false,
+      "columns": [
+        "category_id"
+      ],
+      "schemaTo": "app",
+      "tableTo": "task_category",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "task_category_id_task_category_id_fkey",
+      "entityType": "fks",
+      "schema": "app",
+      "table": "task"
+    },
+    {
       "nameExplicit": true,
-      "columns": ["parent_id"],
+      "columns": [
+        "parent_id"
+      ],
       "schemaTo": "app",
       "tableTo": "task",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "sfk_app_task_parentId",
@@ -1758,10 +2327,31 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["user_id"],
+      "columns": [
+        "project_id"
+      ],
+      "schemaTo": "app",
+      "tableTo": "project",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "task_category_project_id_project_id_fkey",
+      "entityType": "fks",
+      "schema": "app",
+      "table": "task_category"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
       "schemaTo": "auth",
       "tableTo": "user",
-      "columnsTo": ["id"],
+      "columnsTo": [
+        "id"
+      ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "two_factor_user_id_user_id_fkey",
@@ -1770,7 +2360,9 @@
       "table": "two_factor"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "account_pkey",
       "schema": "auth",
@@ -1778,7 +2370,19 @@
       "entityType": "pks"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "image_pkey",
+      "schema": "media",
+      "table": "image",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "point_history_pkey",
       "schema": "app",
@@ -1786,7 +2390,9 @@
       "entityType": "pks"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "project_pkey",
       "schema": "app",
@@ -1794,7 +2400,9 @@
       "entityType": "pks"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "session_pkey",
       "schema": "auth",
@@ -1802,7 +2410,9 @@
       "entityType": "pks"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "task_pkey",
       "schema": "app",
@@ -1810,7 +2420,19 @@
       "entityType": "pks"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "task_category_pkey",
+      "schema": "app",
+      "table": "task_category",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "two_factor_pkey",
       "schema": "auth",
@@ -1818,7 +2440,9 @@
       "entityType": "pks"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "user_pkey",
       "schema": "auth",
@@ -1826,7 +2450,9 @@
       "entityType": "pks"
     },
     {
-      "columns": ["id"],
+      "columns": [
+        "id"
+      ],
       "nameExplicit": false,
       "name": "verification_pkey",
       "schema": "auth",
@@ -1835,7 +2461,20 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["token"],
+      "columns": [
+        "src"
+      ],
+      "nullsNotDistinct": false,
+      "name": "image_src_key",
+      "schema": "media",
+      "table": "image",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "token"
+      ],
       "nullsNotDistinct": false,
       "name": "session_token_key",
       "schema": "auth",
@@ -1844,7 +2483,9 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["username"],
+      "columns": [
+        "username"
+      ],
       "nullsNotDistinct": false,
       "name": "user_username_key",
       "schema": "auth",
@@ -1853,12 +2494,21 @@
     },
     {
       "nameExplicit": false,
-      "columns": ["email"],
+      "columns": [
+        "email"
+      ],
       "nullsNotDistinct": false,
       "name": "user_email_key",
       "schema": "auth",
       "table": "user",
       "entityType": "uniques"
+    },
+    {
+      "value": "\"priority\" BETWEEN 0 AND 100",
+      "name": "idx_app_task_priority_min_max",
+      "entityType": "checks",
+      "schema": "app",
+      "table": "task"
     }
   ],
   "renames": []

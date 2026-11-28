@@ -1,4 +1,5 @@
 import { account } from "./t-account";
+import { image } from "./t-image";
 import { pointHistory } from "./t-pointHistory";
 import { project } from "./t-project";
 import { session } from "./t-session";
@@ -33,6 +34,9 @@ export const schema = {
   // TASK TABLE
   task,
 
-  // TASK CATEGORY TABle
+  // TASK CATEGORY TABLE
   taskCategory,
+
+  // IMAGE TABLE
+  image,
 } as const;

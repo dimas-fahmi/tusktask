@@ -1,1 +1,0 @@
-ALTER TABLE "app"."task" ALTER COLUMN "priority" SET DEFAULT 50;

@@ -1,2 +1,0 @@
-ALTER TABLE "app"."project" RENAME COLUMN "last_project_order_key" TO "last_task_order_key";--> statement-breakpoint
-ALTER TABLE "app"."task_category" RENAME COLUMN "last_category_order_key" TO "last_task_order_key";

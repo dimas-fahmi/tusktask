@@ -5,6 +5,7 @@ import { REGISTRATION_STEPS } from "@/src/app/registrationPhase";
 // SCHEMA
 export const appSchema = pgSchema("app");
 export const authSchema = pgSchema("auth");
+export const mediaSchema = pgSchema("media");
 
 // CONFIGS
 export const TIMESTAMPZ_CONFIG: PgTimestampConfig = {
